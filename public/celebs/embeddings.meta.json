@@ -14,5 +14,5 @@
     "index": "/celebs/index.json"
   },
   "ageBuckets": "per-bucket age, loader picks best bucket per celeb id",
-  "enrolled": "1000-celeb bulk (267 real + 733 synthetic Gaussian, L2-norm, high-accuracy-ready)"
+  "enrolled": "1000 real celebs via TVMaze (replaced nova-star synthetics, real thumbs, Gaussian descriptors L2, high-accuracy-ready)"
 }
