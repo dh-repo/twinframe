@@ -165,19 +165,8 @@ export function AppHome() {
         setProgress(100);
         setResult(matchResult);
 
-        if (noFace || (isLowQuality && matchResult.matches.length === 0)) {
+        if (!matchResult.matches || matchResult.matches.length === 0) {
           setPhase("quality-blocked");
-        } else if (isLowQuality) {
-          if (
-            !matchResult.quality.ok ||
-            matchResult.quality.score < 0.48 ||
-            matchResult.quality.faceCoverage < 0.04 ||
-            sharpness < 45
-          ) {
-            setPhase("quality-blocked");
-          } else {
-            setPhase("results");
-          }
         } else {
           setPhase("results");
         }

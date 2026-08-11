@@ -42,6 +42,7 @@ async function getFaceApiDetector(): Promise<FaceApiModule> {
     }
     await Promise.all([
       api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+      api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
       api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
     ]);
     detectorReady = true;
