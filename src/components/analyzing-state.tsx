@@ -1,17 +1,42 @@
 import { Progress } from "@/components/ui/progress";
 import { FaceScanningHud } from "@/components/scanning/face-scanning-hud";
+import type { FaceTelemetry } from "@/lib/face/types";
+
+export interface AnalyzingStateProps {
+  stepIndex: number;
+  previewUrl?: string | null;
+  croppedPreviewUrl?: string | null;
+  normalizedBox?: { x: number; y: number; width: number; height: number } | null;
+  candidateBoxes?: Array<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    isPrimary: boolean;
+  }> | null;
+  imageWidth?: number;
+  imageHeight?: number;
+  normalizedLandmarks?: { x: number; y: number }[] | null;
+  croppedLandmarks?: { x: number; y: number }[] | null;
+  progress?: number;
+  gallerySize?: number;
+  telemetry?: FaceTelemetry | null;
+}
 
 export function AnalyzingState({
   stepIndex,
   previewUrl,
+  croppedPreviewUrl,
+  normalizedBox,
+  candidateBoxes,
+  imageWidth,
+  imageHeight,
+  normalizedLandmarks,
+  croppedLandmarks,
   progress,
   gallerySize = 1000,
-}: {
-  stepIndex: number;
-  previewUrl?: string | null;
-  progress?: number;
-  gallerySize?: number;
-}) {
+  telemetry,
+}: AnalyzingStateProps) {
   const STEPS = [
     { label: "Loading face recognition model", detail: "FaceNet + gallery" },
     { label: "Detecting & cropping face", detail: "SSD MobileNet · 68 landmarks" },
@@ -31,11 +56,11 @@ export function AnalyzingState({
       <div className="border-b border-border bg-bg-subtle/50 px-5 py-4 sm:px-6">
         <div className="flex items-center gap-3.5">
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-bg">
-            {previewUrl ? (
+            {croppedPreviewUrl || previewUrl ? (
               <img
-                src={previewUrl}
+                src={croppedPreviewUrl || previewUrl!}
                 alt=""
-                className="h-full w-full object-cover object-top"
+                className="h-full w-full object-cover object-center"
               />
             ) : (
               <div className="h-full w-full animate-pulse-soft bg-bg-subtle" />
@@ -47,6 +72,11 @@ export function AnalyzingState({
             <p className="truncate text-xs text-fg-muted">
               {active.label} • {active.detail}
             </p>
+            {candidateBoxes && candidateBoxes.length > 1 && (
+              <div className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-match/30 bg-match/10 px-2.5 py-0.5 text-[10px] font-mono text-match">
+                <span>GROUP_SCAN::FACE_1_OF_{candidateBoxes.length}</span>
+              </div>
+            )}
           </div>
           <span className="shrink-0 text-xs font-medium tabular-nums text-fg-muted">{pct}%</span>
         </div>
@@ -58,7 +88,18 @@ export function AnalyzingState({
       <div className="p-6 sm:p-7">
         <div className="flex flex-col items-center gap-5 text-center">
           {/* Face scanning HUD overlay */}
-          <FaceScanningHud previewUrl={previewUrl} stepIndex={stepIndex} />
+          <FaceScanningHud
+            previewUrl={previewUrl}
+            croppedPreviewUrl={croppedPreviewUrl}
+            normalizedBox={normalizedBox}
+            candidateBoxes={candidateBoxes}
+            normalizedLandmarks={normalizedLandmarks}
+            croppedLandmarks={croppedLandmarks}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
+            stepIndex={stepIndex}
+            telemetry={telemetry}
+          />
 
           <ol className="w-full max-w-xs space-y-2.5 text-left">
             {STEPS.map((s, i) => {
@@ -117,4 +158,3 @@ export function AnalyzingState({
     </section>
   );
 }
-

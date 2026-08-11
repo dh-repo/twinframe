@@ -114,6 +114,44 @@ export interface CelebrityMatch {
   distance?: number;
 }
 
+/**
+ * Detailed breakdown of face processing stage execution latencies in milliseconds.
+ */
+export interface FaceStageLatencies {
+  /** Time spent loading/fetching TF.js neural network models */
+  modelLoadMs: number;
+  /** Time spent downscaling input image to detection canvas */
+  downscaleMs: number;
+  /** Time spent on SSD MobileNet face detection pass */
+  ssdPassMs: number;
+  /** Time spent on CLAHE local contrast boost adjustment pass (0 if skipped) */
+  claheMs: number;
+  /** Time spent on 128-d FaceNet descriptor embedding extraction */
+  embeddingMs: number;
+  /** Total wall-clock execution latency for full face analysis */
+  totalMs: number;
+}
+
+/**
+ * Diagnostic telemetry data recorded during face detection and analysis.
+ */
+export interface FaceTelemetry {
+  /** Original image source width in pixels */
+  originalWidth: number;
+  /** Original image source height in pixels */
+  originalHeight: number;
+  /** Downscaled detection canvas width in pixels */
+  downscaledWidth: number;
+  /** Downscaled detection canvas height in pixels */
+  downscaledHeight: number;
+  /** Number of face candidates detected in original image */
+  faceCount: number;
+  /** SSD MobileNet detector confidence score for primary selected face [0.0..1.0] */
+  primaryConfidence: number;
+  /** Breakdown of stage latencies */
+  latencies: FaceStageLatencies;
+}
+
 export interface MatchResult {
   features: FaceFeatures | null;
   quality: FaceQuality;
@@ -123,6 +161,8 @@ export interface MatchResult {
   facePreviewUrl?: string;
   estimatedAge?: number;
   estimatedGender?: string;
+  telemetry?: FaceTelemetry;
 }
 
 export const ENGINE_VERSION = "3.1.0-high-accuracy";
+

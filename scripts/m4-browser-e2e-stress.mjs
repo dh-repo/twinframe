@@ -117,11 +117,9 @@ async function main() {
   writeFileSync(testImgPath, buffer);
 
   console.log("Uploading test photo to dropzone...");
-  const fileChooserPromise = page.waitForEvent("filechooser");
-  const uploadButton = page.locator("button:has-text('Upload photo')").first();
-  await uploadButton.click();
-  const fileChooser = await fileChooserPromise;
-  await fileChooser.setFiles(testImgPath);
+  const fileInput = page.locator("input[type='file']").first();
+  await fileInput.setInputFiles(testImgPath);
+
 
   console.log("Waiting for crop review screen...");
   await page.waitForTimeout(1000);

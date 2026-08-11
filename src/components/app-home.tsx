@@ -12,7 +12,7 @@ import {
   loadImageFromBlob,
   prefetchModel,
 } from "@/lib/face/pipeline";
-import type { FaceQuality, MatchResult } from "@/lib/face/types";
+import type { FaceQuality, FaceTelemetry, MatchResult } from "@/lib/face/types";
 import { loadCelebrityEmbeddings } from "@/lib/face/embeddings";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
@@ -67,10 +67,25 @@ export function AppHome() {
     setReviewFileName(undefined);
   }, []);
 
+  const [detectedDetails, setDetectedDetails] = useState<{
+    normalizedBox?: { x: number; y: number; width: number; height: number };
+    normalizedLandmarks?: { x: number; y: number }[];
+    croppedLandmarks?: { x: number; y: number }[];
+    facePreviewUrl?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+    candidateBoxes?: Array<{ x: number; y: number; width: number; height: number; isPrimary: boolean }>;
+    telemetry?: FaceTelemetry;
+  } | null>(null);
+
   const runAnalysis = useCallback(
-    async (blob: Blob) => {
+    async (
+      blob: Blob,
+      selectedBox?: { x: number; y: number; width: number; height: number },
+    ) => {
       setError(null);
       setResult(null);
+      setDetectedDetails(null);
       setPhase("analyzing");
       setStepIndex(0);
       setProgress(5);
@@ -80,31 +95,55 @@ export function AppHome() {
 
       // Smooth ticker keeps progress moving smoothly during async model/WASM tasks
       let currentProgress = 5;
+      let cancelled = false;
       const ticker = window.setInterval(() => {
-        currentProgress = Math.min(94, currentProgress + 1);
+        if (cancelled) return;
+        currentProgress = Math.min(88, currentProgress + 1);
         setProgress((prev) => Math.max(prev, currentProgress));
       }, 100);
 
       // Safety timeout (20s) in case device WASM/WebGL stalls
       const timeoutId = window.setTimeout(() => {
+        cancelled = true;
         setError("Analysis timed out. Please try a clearer front-facing photo.");
         setPhase("error");
       }, 20000);
 
       try {
         const img = await loadImageFromBlob(blob);
+        if (cancelled) return;
+
         const matchResult = await analyzeFaceSource(img, {
           topK: 6,
-          onProgress: (stepIdx, pct) => {
+          selectedBox,
+          onProgress: (stepIdx, pct, details) => {
+            if (cancelled) return;
             setStepIndex(stepIdx);
-            currentProgress = Math.max(currentProgress, pct);
-            setProgress(currentProgress);
+            if (details) {
+              setDetectedDetails(details);
+            }
+            if (pct > currentProgress) {
+              currentProgress = pct;
+              setProgress(pct);
+            }
           },
         });
 
-        // --- High-accuracy quality gate: stricter than before ---
+        if (cancelled) return;
+
+        clearInterval(ticker);
+        // Step to 100% when finished
+        setProgress(100);
+        setStepIndex(3);
+        setResult(matchResult);
+
+        // --- High-accuracy quality gate ---
         const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
         const sharpness = (q as unknown as { sharpness: number }).sharpness ?? 60;
+        const noFace =
+          !matchResult.matches.length &&
+          (!matchResult.quality.ok || matchResult.quality.faceCoverage <= 0);
+
         const isLowQuality =
           !matchResult.matches.length ||
           !matchResult.quality.ok ||
@@ -112,18 +151,23 @@ export function AppHome() {
           matchResult.quality.faceCoverage < 0.035 ||
           sharpness < 42 ||
           matchResult.quality.issues.some(
-            (i) => i.includes("blurry") || i.includes("Low face confidence") || i.includes("Dim lighting"),
+            (i) =>
+              i.includes("blurry") ||
+              i.includes("Low face confidence") ||
+              i.includes("Dim lighting") ||
+              i.includes("No face"),
           );
 
         // Keep a short beat for polish before showing results
         await new Promise((r) => setTimeout(r, 260));
+        if (cancelled) return;
+
         setProgress(100);
         setResult(matchResult);
 
-        if (isLowQuality && matchResult.matches.length === 0) {
+        if (noFace || (isLowQuality && matchResult.matches.length === 0)) {
           setPhase("quality-blocked");
         } else if (isLowQuality) {
-          // High-accuracy mode: any quality issue blocks to force retake, unless user overrides
           if (
             !matchResult.quality.ok ||
             matchResult.quality.score < 0.48 ||
@@ -138,6 +182,7 @@ export function AppHome() {
           setPhase("results");
         }
       } catch (e) {
+        if (cancelled) return;
         const msg =
           e instanceof Error
             ? e.message
@@ -174,9 +219,12 @@ export function AppHome() {
   );
 
   const onApproveCrop = useCallback(
-    (croppedBlob: Blob) => {
+    (
+      croppedBlob: Blob,
+      selectedBox?: { x: number; y: number; width: number; height: number },
+    ) => {
       clearReview();
-      void runAnalysis(croppedBlob);
+      void runAnalysis(croppedBlob, selectedBox);
     },
     [clearReview, runAnalysis],
   );
@@ -294,8 +342,16 @@ export function AppHome() {
           <AnalyzingState
             stepIndex={stepIndex}
             previewUrl={previewUrl}
+            croppedPreviewUrl={detectedDetails?.facePreviewUrl}
+            normalizedBox={detectedDetails?.normalizedBox}
+            normalizedLandmarks={detectedDetails?.normalizedLandmarks}
+            croppedLandmarks={detectedDetails?.croppedLandmarks}
+            candidateBoxes={detectedDetails?.candidateBoxes}
+            imageWidth={detectedDetails?.imageWidth}
+            imageHeight={detectedDetails?.imageHeight}
             progress={progress}
             gallerySize={gallerySize}
+            telemetry={detectedDetails?.telemetry}
           />
         )}
 
@@ -421,4 +477,3 @@ export function AppHome() {
     </div>
   );
 }
-

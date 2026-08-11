@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppHomeRouteImport } from './routes/app-home'
 import { Route as ReEncodeRouteImport } from './routes/re-encode'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppHomeRoute = AppHomeRouteImport.update({
+  id: '/app-home',
+  path: '/app-home',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReEncodeRoute = ReEncodeRouteImport.update({
@@ -25,27 +31,31 @@ const ReEncodeRoute = ReEncodeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app-home': typeof AppHomeRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app-home': typeof AppHomeRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app-home': typeof AppHomeRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/re-encode'
+  fullPaths: '/' | '/app-home' | '/re-encode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/re-encode'
-  id: '__root__' | '/' | '/re-encode'
+  to: '/' | '/app-home' | '/re-encode'
+  id: '__root__' | '/' | '/app-home' | '/re-encode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppHomeRoute: typeof AppHomeRoute
   ReEncodeRoute: typeof ReEncodeRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app-home': {
+      id: '/app-home'
+      path: '/app-home'
+      fullPath: '/app-home'
+      preLoaderRoute: typeof AppHomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/re-encode': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppHomeRoute: AppHomeRoute,
   ReEncodeRoute: ReEncodeRoute,
 }
 export const routeTree = rootRouteImport

@@ -6,6 +6,12 @@ import {
   sampleRegionColor,
   type Landmark,
 } from "./geometry.ts";
+import {
+  scoreCandidateFace,
+  sortFaceCandidates,
+  applyLocalContrastBoost,
+  type FaceCandidateInput,
+} from "./faceapi-engine.ts";
 
 /** Minimal ImageData stand-in for Node (no canvas DOM). */
 function makeImageData(
@@ -129,3 +135,120 @@ describe("sampleRegionColor", () => {
     assert.ok(Math.abs(c.b - 90) < 1);
   });
 });
+
+describe("scoreCandidateFace", () => {
+  it("gives maximum score for centered high-confidence face", () => {
+    const box = { x: 200, y: 200, width: 200, height: 200 };
+    const score = scoreCandidateFace(box, 0.95, { width: 600, height: 600 });
+    assert.equal(score, 38000);
+  });
+
+  it("applies distance penalty to peripheral corner faces", () => {
+    const centerBox = { x: 200, y: 200, width: 200, height: 200 };
+    const cornerBox = { x: 0, y: 0, width: 200, height: 200 };
+    const centerScore = scoreCandidateFace(centerBox, 0.90, { width: 600, height: 600 });
+    const cornerScore = scoreCandidateFace(cornerBox, 0.90, { width: 600, height: 600 });
+
+    assert.ok(cornerScore < centerScore * 0.1, "Corner score should be significantly lower than center score");
+  });
+
+  it("handles fallback confidence score without NaN", () => {
+    const box = { x: 100, y: 100, width: 150, height: 150 };
+    const score = scoreCandidateFace(box, NaN, { width: 400, height: 400 });
+    assert.ok(Number.isFinite(score));
+    assert.ok(score > 0);
+  });
+});
+
+describe("sortFaceCandidates", () => {
+  it("ranks primary face correctly in a 3-person group photo", () => {
+    const candidates: FaceCandidateInput[] = [
+      { id: "person-B", box: { x: 50, y: 150, width: 100, height: 120 }, confidence: 0.85 },
+      { id: "person-A", box: { x: 300, y: 200, width: 200, height: 240 }, confidence: 0.92 },
+      { id: "person-C", box: { x: 600, y: 180, width: 110, height: 130 }, confidence: 0.88 },
+    ];
+
+    const sorted = sortFaceCandidates(candidates, { width: 800, height: 600 });
+
+    assert.equal(sorted.length, 3);
+    assert.equal(sorted[0]!.id, "person-A");
+    assert.equal(sorted[0]!.isPrimary, true);
+    assert.equal(sorted[1]!.isPrimary, false);
+    assert.equal(sorted[2]!.isPrimary, false);
+  });
+
+  it("prioritizes central high-confidence face over large low-confidence background blur", () => {
+    const candidates: FaceCandidateInput[] = [
+      { id: "background-blur", box: { x: 0, y: 0, width: 300, height: 300 }, confidence: 0.10 },
+      { id: "subject", box: { x: 250, y: 200, width: 180, height: 220 }, confidence: 0.95 },
+    ];
+
+    const sorted = sortFaceCandidates(candidates, { width: 700, height: 700 });
+    assert.equal(sorted[0]!.id, "subject");
+    assert.equal(sorted[0]!.isPrimary, true);
+  });
+
+  it("ensures monotonic non-increasing candidate scores", () => {
+    const candidates: FaceCandidateInput[] = Array.from({ length: 10 }, (_, i) => ({
+      id: `face-${i}`,
+      box: { x: i * 50, y: i * 30, width: 100 + i * 10, height: 100 + i * 10 },
+      confidence: 0.5 + (i % 5) * 0.1,
+    }));
+
+    const sorted = sortFaceCandidates(candidates, { width: 1000, height: 1000 });
+    for (let i = 0; i < sorted.length - 1; i++) {
+      assert.ok(sorted[i]!.score >= sorted[i + 1]!.score, `Score at ${i} should be >= ${i + 1}`);
+    }
+  });
+});
+
+describe("Milestone 1 Timing & Performance Benchmarks (< 300ms SLA)", () => {
+  it("sorts 50 candidate faces in < 5ms", () => {
+    const candidates: FaceCandidateInput[] = Array.from({ length: 50 }, (_, i) => ({
+      id: `candidate-${i}`,
+      box: { x: (i * 20) % 800, y: (i * 15) % 600, width: 80 + (i % 10) * 10, height: 80 + (i % 10) * 10 },
+      confidence: 0.5 + (i % 5) * 0.08,
+    }));
+
+    const start = performance.now();
+    const sorted = sortFaceCandidates(candidates, { width: 1280, height: 960 });
+    const duration = performance.now() - start;
+
+    assert.equal(sorted.length, 50);
+    assert.ok(duration < 5, `Sorting 50 candidates took ${duration}ms, expected < 5ms`);
+  });
+
+  it("CLAHE contrast boost on ImageData/Uint8Array completes under sub-300ms SLA budget", () => {
+    const w = 320;
+    const h = 320;
+    const mockCanvas: any = {
+      width: w,
+      height: h,
+      getContext: () => ({
+        drawImage: () => {},
+        getImageData: () => ({
+          data: new Uint8ClampedArray(w * h * 4),
+          width: w,
+          height: h,
+        }),
+        putImageData: () => {},
+      }),
+    };
+
+    if (typeof globalThis.document === "undefined") {
+      (globalThis as any).document = {
+        createElement: (tag: string) => {
+          if (tag === "canvas") return mockCanvas;
+          return {};
+        },
+      };
+    }
+
+    const start = performance.now();
+    applyLocalContrastBoost(mockCanvas);
+    const duration = performance.now() - start;
+
+    assert.ok(duration < 100, `CLAHE boost took ${duration}ms, expected < 100ms`);
+  });
+});
+

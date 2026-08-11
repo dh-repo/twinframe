@@ -1,4 +1,4 @@
-import type { FaceFeatures, FaceQuality, MatchResult } from "./types";
+import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types";
 import { ENGINE_VERSION } from "./types";
 import { emptyFeatures } from "./math";
 import { rankByDescriptor } from "./match";
@@ -6,6 +6,7 @@ import {
   detectAndDescribeWithTTA,
   prefetchFaceApi,
   assessDetectionQuality,
+  logFaceTelemetry,
 } from "./faceapi-engine";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings";
 
@@ -25,7 +26,22 @@ export function prefetchModel(): void {
 
 export interface AnalyzeOptions {
   topK?: number;
-  onProgress?: (stepIndex: number, progressPct: number) => void;
+  selectedCandidateIndex?: number;
+  selectedBox?: { x: number; y: number; width: number; height: number };
+  onProgress?: (
+    stepIndex: number,
+    progressPct: number,
+    details?: {
+      normalizedBox?: { x: number; y: number; width: number; height: number };
+      normalizedLandmarks?: { x: number; y: number }[];
+      croppedLandmarks?: { x: number; y: number }[];
+      facePreviewUrl?: string;
+      imageWidth?: number;
+      imageHeight?: number;
+      candidateBoxes?: Array<{ x: number; y: number; width: number; height: number; isPrimary: boolean }>;
+      telemetry?: FaceTelemetry;
+    },
+  ) => void;
 }
 
 /**
@@ -40,16 +56,41 @@ export async function analyzeFaceSource(
   const topK = options.topK ?? 5;
   const onProgress = options.onProgress;
 
-  onProgress?.(0, 12);
+  onProgress?.(0, 15);
   const galleryPromise = loadCelebrityEmbeddings();
 
-  onProgress?.(1, 30);
-  const det = await detectAndDescribeWithTTA(source);
+  onProgress?.(1, 35);
+  const det = await detectAndDescribeWithTTA(source, options);
 
-  onProgress?.(2, 60);
+  let facePreviewUrl: string | undefined;
+  if (det?.faceCanvas) {
+    try {
+      facePreviewUrl = det.faceCanvas.toDataURL("image/jpeg", 0.88);
+    } catch {
+      facePreviewUrl = undefined;
+    }
+  }
+
+  if (det) {
+    onProgress?.(1, 55, {
+      normalizedBox: det.normalizedBox,
+      normalizedLandmarks: det.normalizedLandmarks,
+      croppedLandmarks: det.croppedLandmarks,
+      facePreviewUrl,
+      imageWidth: det.imageWidth,
+      imageHeight: det.imageHeight,
+      candidateBoxes: det.candidateBoxes,
+      telemetry: det.telemetry,
+    });
+    if (det.telemetry) {
+      logFaceTelemetry(det.telemetry);
+    }
+  }
+
+  onProgress?.(2, 75);
   const gallery = await galleryPromise;
 
-  onProgress?.(3, 85);
+  onProgress?.(3, 90);
 
   if (!det) {
     onProgress?.(3, 100);
@@ -73,25 +114,26 @@ export async function analyzeFaceSource(
   }
 
   const quality: FaceQuality = assessDetectionQuality(det);
+  const faceCoverage =
+    (det.box.width * det.box.height) /
+    Math.max(1, det.imageWidth * det.imageHeight);
   const matches = rankByDescriptor(
     {
       descriptor: det.descriptor,
       age: det.age,
       gender: det.gender,
       genderProbability: det.genderProbability,
+      // Feed real detection quality into match confidence (was defaulting to optimistic values)
+      detConfidence: det.confidence,
+      sharpness: det.sharpness,
+      faceCoverage,
+      qualityScore: quality.score,
     },
     gallery,
     topK,
   );
 
-  onProgress?.(3, 96);
-
-  let facePreviewUrl: string | undefined;
-  try {
-    facePreviewUrl = det.faceCanvas.toDataURL("image/jpeg", 0.88);
-  } catch {
-    facePreviewUrl = undefined;
-  }
+  onProgress?.(3, 98);
 
   // Geometry features left empty for embedding path (traits come from age/gender/embedding)
   const features: FaceFeatures = emptyFeatures();
@@ -105,6 +147,7 @@ export async function analyzeFaceSource(
     facePreviewUrl,
     estimatedAge: Math.round(det.age),
     estimatedGender: det.gender,
+    telemetry: det.telemetry,
   };
 }
 

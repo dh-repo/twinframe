@@ -1,11 +1,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { FaceStageLatencies, FaceTelemetry } from "./types";
 
 type FaceApiModule = typeof import("@vladmandic/face-api");
 
 let faceApiMod: FaceApiModule | null = null;
 let loadPromise: Promise<FaceApiModule> | null = null;
+let detectorApi: FaceApiModule | null = null;
+let detectorOnlyPromise: Promise<FaceApiModule> | null = null;
+let detectorReady = false;
 
 const MODEL_URL = "/models/face-api";
+
+async function importFaceApi(): Promise<any> {
+  const mod = await import("@vladmandic/face-api");
+  return (mod as any).default?.nets ? (mod as any).default : mod;
+}
+
+/**
+ * Fast path: SSD (+ Tiny) only — enough for crop-review face boxes.
+ * Avoids downloading ~7MB of recognition/age nets before the user even approves.
+ */
+async function getFaceApiDetector(): Promise<FaceApiModule> {
+  if (typeof window === "undefined") {
+    throw new Error("Face recognition only runs in the browser.");
+  }
+  if (faceApiMod) return faceApiMod;
+  if (detectorApi) return detectorApi;
+  if (detectorOnlyPromise) return detectorOnlyPromise;
+
+  detectorOnlyPromise = (async () => {
+    const api = await importFaceApi();
+    // Prefer WebGL; fall back silently
+    try {
+      const tf = (api as any).tf;
+      if (tf?.setBackend) {
+        await tf.setBackend("webgl").catch(() => tf.setBackend("cpu"));
+        await tf.ready?.();
+      }
+    } catch {
+      /* backend optional */
+    }
+    await Promise.all([
+      api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+      api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
+    ]);
+    detectorReady = true;
+    detectorApi = api as FaceApiModule;
+    return detectorApi;
+  })().catch((err) => {
+    detectorOnlyPromise = null;
+    throw err;
+  });
+
+  return detectorOnlyPromise;
+}
 
 async function getFaceApi(): Promise<FaceApiModule> {
   if (typeof window === "undefined") {
@@ -15,12 +63,23 @@ async function getFaceApi(): Promise<FaceApiModule> {
   if (loadPromise) return loadPromise;
 
   loadPromise = (async () => {
-    // Dynamic import keeps this out of the SSR/server graph
-    const mod = await import("@vladmandic/face-api");
-    const api = (mod as any).default?.nets ? (mod as any).default : mod;
+    const api = await importFaceApi();
+    try {
+      const tf = (api as any).tf;
+      if (tf?.setBackend) {
+        await tf.setBackend("webgl").catch(() => tf.setBackend("cpu"));
+        await tf.ready?.();
+      }
+    } catch {
+      /* optional */
+    }
+    // Ensure detector nets first, then the rest
     await Promise.all([
       api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
       api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
+    ]);
+    detectorReady = true;
+    await Promise.all([
       api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
       api.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
       api.nets.ageGenderNet.loadFromUri(MODEL_URL),
@@ -41,7 +100,67 @@ export async function loadFaceApi(): Promise<FaceApiModule> {
 
 export function prefetchFaceApi(): void {
   if (typeof window === "undefined") return;
-  void getFaceApi().catch(() => {});
+  // Prefetch detector nets only — keeps first paint snappy
+  void getFaceApiDetector().catch(() => {});
+}
+
+/** Yield so React can paint progress between heavy passes. */
+function yieldToUi(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => resolve());
+    } else {
+      setTimeout(resolve, 0);
+    }
+  });
+}
+
+export interface FaceCandidate {
+  /** Unscaled bounding box in original source image pixels */
+  box: { x: number; y: number; width: number; height: number };
+  /** Normalized bounding box in percentage [0..100%] of image width and height */
+  normalizedBox: { x: number; y: number; width: number; height: number };
+  /** Normalized 68 facial landmark coordinates in [0..100%] percentage */
+  normalizedLandmarks?: { x: number; y: number }[];
+  /** Detector confidence score (0.0 to 1.0) */
+  confidence: number;
+  /** Composite ranking score (combining area, center proximity, confidence) */
+  score: number;
+  /** Whether this candidate is selected as the primary face for doppelgänger matching */
+  isPrimary: boolean;
+  /** Candidate age estimate */
+  age?: number;
+  /** Candidate gender estimate */
+  gender?: "male" | "female";
+  /** Candidate gender probability */
+  genderProbability?: number;
+}
+
+export interface DetectOptions {
+  /** Index of candidate face to select as primary (default: 0 = highest composite score) */
+  selectedCandidateIndex?: number;
+  /** Selected face bounding box (normalized or unscaled) to match as primary candidate */
+  selectedBox?: { x: number; y: number; width: number; height: number };
+  /** Maximum side dimension for canvas downscaling (default: 800) */
+  maxSide?: number;
+  /** Enable CLAHE / local contrast adjustment pass for outdoor/sunset lighting (default: true) */
+  enableContrastBoost?: boolean;
+  /** Fast-exit confidence threshold (default: 0.70) */
+  fastExitConfidence?: number;
+}
+
+export interface FaceCandidateInput {
+  id?: string;
+  box: { x: number; y: number; width: number; height: number };
+  confidence: number;
+  landmarks?: { x: number; y: number }[];
+}
+
+export interface SortedFaceCandidate extends FaceCandidateInput {
+  score: number;
+  isPrimary: boolean;
+  normalizedBox?: { x: number; y: number; width: number; height: number };
+  normalizedLandmarks?: { x: number; y: number }[];
 }
 
 export interface FaceDetectionResult {
@@ -55,9 +174,41 @@ export interface FaceDetectionResult {
   blurScore: number;
   illumination: number;
   box: { x: number; y: number; width: number; height: number };
+  normalizedBox?: { x: number; y: number; width: number; height: number };
+  normalizedLandmarks?: { x: number; y: number }[];
+  croppedLandmarks?: { x: number; y: number }[];
   imageWidth: number;
   imageHeight: number;
   landmarks?: unknown;
+  /** All detected face candidates in group / multi-person photos */
+  allFaces?: FaceCandidate[];
+  /** Candidate face reticle boxes formatted for HUD rendering */
+  candidateBoxes?: Array<{ x: number; y: number; width: number; height: number; isPrimary: boolean }>;
+  /** Diagnostic stage telemetry and image dimensions */
+  telemetry?: FaceTelemetry;
+  /** Stage latency breakdown in milliseconds */
+  stageLatencies?: FaceStageLatencies;
+}
+
+/**
+ * Formatted console telemetry logger [Twinframe Telemetry]
+ */
+export function logFaceTelemetry(telemetry: FaceTelemetry): void {
+  const {
+    originalWidth,
+    originalHeight,
+    downscaledWidth,
+    downscaledHeight,
+    faceCount,
+    primaryConfidence,
+    latencies,
+  } = telemetry;
+
+  console.log(
+    `%c[Twinframe Telemetry]%c Image: ${originalWidth}x${originalHeight} -> Canvas: ${downscaledWidth}x${downscaledHeight} (${latencies.downscaleMs}ms) | SSD: ${latencies.ssdPassMs}ms (${faceCount} face${faceCount === 1 ? "" : "s"}, conf: ${(primaryConfidence * 100).toFixed(0)}%) | CLAHE: ${latencies.claheMs}ms | Embedding: ${latencies.embeddingMs}ms | Model: ${latencies.modelLoadMs}ms | Total: ${latencies.totalMs}ms`,
+    "color: #38bdf8; font-weight: bold;",
+    "color: inherit;",
+  );
 }
 
 function sourceSize(
@@ -73,6 +224,294 @@ function sourceSize(
     };
   }
   return { w: source.width, h: source.height };
+}
+
+/** IoU of two axis-aligned boxes in the same coordinate space. */
+export function boxIoU(
+  a: { x: number; y: number; width: number; height: number },
+  b: { x: number; y: number; width: number; height: number },
+): number {
+  const x1 = Math.max(a.x, b.x);
+  const y1 = Math.max(a.y, b.y);
+  const x2 = Math.min(a.x + a.width, b.x + b.width);
+  const y2 = Math.min(a.y + a.height, b.y + b.height);
+  const inter = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+  const union = a.width * a.height + b.width * b.height - inter;
+  return union > 0 ? inter / union : 0;
+}
+
+/** Non-max suppression: keep highest-confidence boxes, drop heavy overlaps. */
+export function nmsFaceBoxes(
+  boxes: Array<{ box: { x: number; y: number; width: number; height: number }; confidence: number }>,
+  iouThreshold = 0.4,
+): typeof boxes {
+  const sorted = [...boxes].sort((a, b) => b.confidence - a.confidence);
+  const kept: typeof boxes = [];
+  for (const cand of sorted) {
+    if (cand.box.width < 2 || cand.box.height < 2) continue;
+    const overlaps = kept.some((k) => boxIoU(k.box, cand.box) >= iouThreshold);
+    if (!overlaps) kept.push(cand);
+  }
+  return kept;
+}
+
+/**
+ * Downscale image onto a canvas for detection.
+ * Phone JPEGs: createImageBitmap with resizeWidth/Height so we never allocate a 24MP buffer.
+ * `scale` maps detection-canvas pixels → naturalWidth/Height space used by the UI.
+ */
+async function rasterizeSource(
+  source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+  maxSide: number,
+): Promise<{ canvas: HTMLCanvasElement; scale: number; w: number; h: number }> {
+  const { w, h } = sourceSize(source);
+  if (!w || !h) {
+    const empty = document.createElement("canvas");
+    empty.width = 1;
+    empty.height = 1;
+    return { canvas: empty, scale: 1, w: 1, h: 1 };
+  }
+
+  const scale = Math.min(1, maxSide / Math.max(w, h));
+  const cw = Math.max(1, Math.round(w * scale));
+  const ch = Math.max(1, Math.round(h * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = cw;
+  canvas.height = ch;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return { canvas, scale, w, h };
+  (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+
+  if (typeof createImageBitmap === "function" && source instanceof HTMLImageElement) {
+    try {
+      // Decode + downscale in one step (huge win on 12–24MP camera rolls)
+      const bmp = await createImageBitmap(source, {
+        resizeWidth: cw,
+        resizeHeight: ch,
+        resizeQuality: "high",
+        ...({ imageOrientation: "from-image" } as object),
+      } as ImageBitmapOptions);
+      // If EXIF orientation swapped axes, bitmap size may differ — fit canvas
+      if (bmp.width !== cw || bmp.height !== ch) {
+        canvas.width = bmp.width;
+        canvas.height = bmp.height;
+        // Map using natural dimensions still (UI boxes use naturalWidth space).
+        // When orientation swaps, naturalWidth/Height in modern browsers usually already reflect display size.
+        ctx.drawImage(bmp, 0, 0);
+        const s = Math.min(bmp.width / w, bmp.height / h);
+        bmp.close();
+        return { canvas, scale: s > 0 ? s : scale, w, h };
+      }
+      ctx.drawImage(bmp, 0, 0);
+      bmp.close();
+      return { canvas, scale, w, h };
+    } catch {
+      /* fall through */
+    }
+  }
+
+  ctx.drawImage(source as CanvasImageSource, 0, 0, cw, ch);
+  return { canvas, scale, w, h };
+}
+
+/** Mean luminance 0–1 for a quick empty/black canvas check. */
+function canvasMeanLuma(canvas: HTMLCanvasElement): number {
+  const s = 32;
+  const c = document.createElement("canvas");
+  c.width = s;
+  c.height = s;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return 0.5;
+  ctx.drawImage(canvas, 0, 0, s, s);
+  const data = ctx.getImageData(0, 0, s, s).data;
+  let sum = 0;
+  for (let i = 0; i < s * s; i++) {
+    sum += 0.299 * (data[i * 4] ?? 0) + 0.587 * (data[i * 4 + 1] ?? 0) + 0.114 * (data[i * 4 + 2] ?? 0);
+  }
+  return sum / (s * s) / 255;
+}
+
+/**
+ * Calculates candidate face composite score based on confidence, area, and distance to image center.
+ * Formula: score = confidence * (area / (1 + 0.3 * distanceToCenter))
+ */
+export function scoreCandidateFace(
+  box: { x: number; y: number; width: number; height: number },
+  confidence: number,
+  imageDimensions: { width: number; height: number },
+): number {
+  const centerX = imageDimensions.width / 2;
+  const centerY = imageDimensions.height / 2;
+  const boxCenterX = box.x + box.width / 2;
+  const boxCenterY = box.y + box.height / 2;
+  const distFromCenter = Math.hypot(boxCenterX - centerX, boxCenterY - centerY);
+  const area = box.width * box.height;
+  const safeConfidence = Number.isFinite(confidence) && confidence >= 0 ? confidence : 0.5;
+  return safeConfidence * (area / (1 + distFromCenter * 0.3));
+}
+
+/**
+ * Sorts detected face candidates in descending order of score and marks the top face as primary.
+ */
+export function sortFaceCandidates(
+  candidates: FaceCandidateInput[],
+  imageDimensions: { width: number; height: number },
+): SortedFaceCandidate[] {
+  const scored = candidates.map((c) => ({
+    ...c,
+    score: scoreCandidateFace(c.box, c.confidence, imageDimensions),
+    isPrimary: false,
+  }));
+
+  scored.sort((a, b) => b.score - a.score);
+  if (scored.length > 0) {
+    scored[0]!.isPrimary = true;
+  }
+  return scored;
+}
+
+/**
+ * CLAHE (Contrast Limited Adaptive Histogram Equalization) & Local Contrast Boost
+ * Enhances local contrast in low-light / backlit outdoor images (e.g. sunset photos).
+ */
+export function applyLocalContrastBoost(
+  sourceCanvas: HTMLCanvasElement,
+  clipLimit = 3.0,
+  gridTiles = 8,
+  maxClaheSide = 640,
+): HTMLCanvasElement {
+  const origW = sourceCanvas.width;
+  const origH = sourceCanvas.height;
+  if (!origW || !origH) return sourceCanvas;
+
+  // Pre-downscale to maxClaheSide (640px) to keep CPU pixel loop < 25ms
+  let workingCanvas: HTMLCanvasElement = sourceCanvas;
+  if (Math.max(origW, origH) > maxClaheSide && typeof document !== "undefined") {
+    const scale = maxClaheSide / Math.max(origW, origH);
+    const sw = Math.max(1, Math.round(origW * scale));
+    const sh = Math.max(1, Math.round(origH * scale));
+    const downCanvas = document.createElement("canvas");
+    downCanvas.width = sw;
+    downCanvas.height = sh;
+    const dctx = downCanvas.getContext("2d", { willReadFrequently: true });
+    if (dctx) {
+      (dctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+      dctx.drawImage(sourceCanvas, 0, 0, sw, sh);
+      workingCanvas = downCanvas;
+    }
+  }
+
+  const w = workingCanvas.width;
+  const h = workingCanvas.height;
+  const outCanvas = document.createElement("canvas");
+  outCanvas.width = w;
+  outCanvas.height = h;
+  const ctx = outCanvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return sourceCanvas;
+
+  // Always sample from workingCanvas (may already be pre-downscaled to maxClaheSide)
+  ctx.drawImage(workingCanvas, 0, 0);
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const data = imgData.data;
+
+  const tileW = Math.max(1, Math.ceil(w / gridTiles));
+  const tileH = Math.max(1, Math.ceil(h / gridTiles));
+  const numPixels = w * h;
+  const lum = new Uint8Array(numPixels);
+
+  // 1. Calculate pixel luminance Y = 0.299R + 0.587G + 0.114B
+  for (let i = 0; i < numPixels; i++) {
+    const r = data[i * 4] ?? 0;
+    const g = data[i * 4 + 1] ?? 0;
+    const b = data[i * 4 + 2] ?? 0;
+    lum[i] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+  }
+
+  // 2. Compute histogram, clip limit, and CDF per tile
+  const numBins = 256;
+  const tileCDFs: Float32Array[] = [];
+
+  for (let ty = 0; ty < gridTiles; ty++) {
+    for (let tx = 0; tx < gridTiles; tx++) {
+      const hist = new Int32Array(numBins);
+      const startX = tx * tileW;
+      const endX = Math.min(w, startX + tileW);
+      const startY = ty * tileH;
+      const endY = Math.min(h, startY + tileH);
+      const tileSize = Math.max(1, (endX - startX) * (endY - startY));
+
+      for (let y = startY; y < endY; y++) {
+        const rowOffset = y * w;
+        for (let x = startX; x < endX; x++) {
+          const lVal = lum[rowOffset + x] ?? 0;
+          hist[lVal] = (hist[lVal] ?? 0) + 1;
+        }
+      }
+
+      // Clip histogram excess
+      const clipThreshold = Math.max(1, Math.round((clipLimit * tileSize) / numBins));
+      let excess = 0;
+      for (let i = 0; i < numBins; i++) {
+        if ((hist[i] ?? 0) > clipThreshold) {
+          excess += (hist[i] ?? 0) - clipThreshold;
+          hist[i] = clipThreshold;
+        }
+      }
+
+      // Redistribute excess evenly across all bins
+      const bonus = Math.floor(excess / numBins);
+      for (let i = 0; i < numBins; i++) {
+        hist[i] = (hist[i] ?? 0) + bonus;
+      }
+
+      // Calculate tile CDF
+      const cdf = new Float32Array(numBins);
+      let cum = 0;
+      for (let i = 0; i < numBins; i++) {
+        cum += hist[i] ?? 0;
+        cdf[i] = Math.min(255, (cum / tileSize) * 255);
+      }
+      tileCDFs.push(cdf);
+    }
+  }
+
+  // 3. Bilinear interpolation across tile CDFs
+  for (let y = 0; y < h; y++) {
+    const v = y / tileH - 0.5;
+    const ty1 = Math.max(0, Math.floor(v));
+    const ty2 = Math.min(gridTiles - 1, ty1 + 1);
+    const yLerp = Math.max(0, Math.min(1, v - ty1));
+
+    for (let x = 0; x < w; x++) {
+      const u = x / tileW - 0.5;
+      const tx1 = Math.max(0, Math.floor(u));
+      const tx2 = Math.min(gridTiles - 1, tx1 + 1);
+      const xLerp = Math.max(0, Math.min(1, u - tx1));
+
+      const idx = y * w + x;
+      const val = lum[idx] ?? 0;
+
+      const cdfTL = tileCDFs[ty1 * gridTiles + tx1]?.[val] ?? val;
+      const cdfTR = tileCDFs[ty1 * gridTiles + tx2]?.[val] ?? val;
+      const cdfBL = tileCDFs[ty2 * gridTiles + tx1]?.[val] ?? val;
+      const cdfBR = tileCDFs[ty2 * gridTiles + tx2]?.[val] ?? val;
+
+      const top = cdfTL * (1 - xLerp) + cdfTR * xLerp;
+      const bottom = cdfBL * (1 - xLerp) + cdfBR * xLerp;
+      const newLum = top * (1 - yLerp) + bottom * yLerp;
+
+      const origLum = Math.max(1, val);
+      const ratio = newLum / origLum;
+
+      const pxIdx = idx * 4;
+      data[pxIdx] = Math.min(255, Math.max(0, Math.round((data[pxIdx] ?? 0) * ratio)));
+      data[pxIdx + 1] = Math.min(255, Math.max(0, Math.round((data[pxIdx + 1] ?? 0) * ratio)));
+      data[pxIdx + 2] = Math.min(255, Math.max(0, Math.round((data[pxIdx + 2] ?? 0) * ratio)));
+    }
+  }
+
+  ctx.putImageData(imgData, 0, 0);
+  return outCanvas;
 }
 
 // ---- High-accuracy helpers ----
@@ -108,7 +547,6 @@ function computeSharpness(canvas: HTMLCanvasElement): { sharpness: number; illum
   }
   const mean = sum / gray.length;
   // Laplacian kernel response
-  let varSum = 0;
   let lapSum = 0;
   let lapSq = 0;
   for (let y = 1; y < s - 1; y++) {
@@ -137,7 +575,7 @@ function averageDescriptors(a: ArrayLike<number>, b: ArrayLike<number>): Float32
 
 function createPaddedCanvas(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
-  maxSide = 1024,
+  maxSide = 800,
   padPct = 0.20,
 ): { canvas: HTMLCanvasElement; scale: number; padX: number; padY: number } {
   const { w, h } = sourceSize(source);
@@ -201,130 +639,372 @@ function generateImageRegionDescriptor(canvas: HTMLCanvasElement): Float32Array 
   return l2NormalizeVec(desc);
 }
 
+type ScoredRawCandidate = {
+  raw: any;
+  candidate: FaceCandidate;
+};
+
+/** Map raw face-api detections into scored candidates in original image coordinates. */
+function mapRawDetections(
+  rawDetections: any[],
+  imgW: number,
+  imgH: number,
+  activeScale: number,
+  offsetX: number,
+  offsetY: number,
+  options: DetectOptions,
+): { scored: ScoredRawCandidate[]; primaryIndex: number } {
+  const scored: ScoredRawCandidate[] = rawDetections.map((raw: any) => {
+    const bBox = raw.detection.box;
+    const conf = raw.detection.score ?? 0.5;
+
+    const unscaledBox = {
+      x: Math.max(0, (bBox.x - offsetX) / activeScale),
+      y: Math.max(0, (bBox.y - offsetY) / activeScale),
+      width: bBox.width / activeScale,
+      height: bBox.height / activeScale,
+    };
+
+    const score = scoreCandidateFace(unscaledBox, conf, { width: imgW, height: imgH });
+
+    const normalizedBox = {
+      x: Math.min(100, Math.max(0, (unscaledBox.x / imgW) * 100)),
+      y: Math.min(100, Math.max(0, (unscaledBox.y / imgH) * 100)),
+      width: Math.min(100, Math.max(0, (unscaledBox.width / imgW) * 100)),
+      height: Math.min(100, Math.max(0, (unscaledBox.height / imgH) * 100)),
+    };
+
+    const normalizedLandmarks: { x: number; y: number }[] = [];
+    if (raw.landmarks && Array.isArray(raw.landmarks.positions)) {
+      for (const pt of raw.landmarks.positions) {
+        const px = ((pt._x ?? pt.x) - offsetX) / activeScale;
+        const py = ((pt._y ?? pt.y) - offsetY) / activeScale;
+        normalizedLandmarks.push({
+          x: Math.min(100, Math.max(0, (px / imgW) * 100)),
+          y: Math.min(100, Math.max(0, (py / imgH) * 100)),
+        });
+      }
+    }
+
+    return {
+      raw,
+      candidate: {
+        box: unscaledBox,
+        normalizedBox,
+        normalizedLandmarks,
+        confidence: conf,
+        score,
+        isPrimary: false,
+        age: Math.round(raw.age ?? 30),
+        gender: (raw.gender ?? "male") as "male" | "female",
+        genderProbability: raw.genderProbability ?? 0.85,
+      } as FaceCandidate,
+    };
+  });
+
+  scored.sort((a, b) => b.candidate.score - a.candidate.score);
+
+  let primaryIndex = 0;
+  if (options.selectedBox && scored.length > 0) {
+    let bestMatchIdx = 0;
+    let minCenterDist = Infinity;
+    const sb = options.selectedBox;
+    // Accept either normalized [0..100] or pixel-ish boxes (width > 1.5 → treat as %)
+    const looksNormalized = sb.width <= 100 && sb.height <= 100 && sb.x <= 100 && sb.y <= 100;
+    const sbCenter = looksNormalized
+      ? { x: sb.x + sb.width / 2, y: sb.y + sb.height / 2 }
+      : {
+          x: ((sb.x + sb.width / 2) / imgW) * 100,
+          y: ((sb.y + sb.height / 2) / imgH) * 100,
+        };
+    scored.forEach((item, idx) => {
+      const nb = item.candidate.normalizedBox;
+      const cCenter = { x: nb.x + nb.width / 2, y: nb.y + nb.height / 2 };
+      const dist = Math.hypot(cCenter.x - sbCenter.x, cCenter.y - sbCenter.y);
+      if (dist < minCenterDist) {
+        minCenterDist = dist;
+        bestMatchIdx = idx;
+      }
+    });
+    primaryIndex = bestMatchIdx;
+  } else if (options.selectedCandidateIndex !== undefined && scored.length > 0) {
+    primaryIndex = Math.min(scored.length - 1, Math.max(0, options.selectedCandidateIndex));
+  }
+
+  scored.forEach((item, idx) => {
+    item.candidate.isPrimary = idx === primaryIndex;
+  });
+
+  return { scored, primaryIndex };
+}
+
+export interface DetectFacesOnlyResult {
+  faces: FaceCandidate[];
+  imageWidth: number;
+  imageHeight: number;
+  /** Working detection canvas (oriented + downscaled) */
+  detectionCanvas: HTMLCanvasElement;
+  detectionScale: number;
+  latencies: { modelLoadMs: number; detectMs: number; totalMs: number };
+}
+
+/**
+ * Fast multi-face box detection for crop review + pipeline.
+ * Designed to stay under ~2s after models are warm on phone JPEGs.
+ *
+ * Strategy (early-exit):
+ *  1. EXIF-oriented downscale ≤ 800px
+ *  2. SSD once
+ *  3. If empty → CLAHE + SSD
+ *  4. If empty → TinyFace
+ *  5. If still empty on large images → 3 column tiles
+ */
+export async function detectFacesOnly(
+  source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+  options: DetectOptions = {},
+): Promise<DetectFacesOnlyResult> {
+  const t0 = performance.now();
+  const tModel = performance.now();
+  // Detector-only nets — do NOT wait on FaceNet/age models for crop UI
+  const api = (await getFaceApiDetector()) as any;
+  const modelLoadMs = Math.round(performance.now() - tModel);
+
+  // Cap hard — 800 is enough for SSD group faces and keeps 24MP phone photos snappy
+  const maxSide = Math.min(options.maxSide ?? 800, 960);
+  const enableClahe = options.enableContrastBoost !== false;
+
+  await yieldToUi();
+  const primary = await rasterizeSource(source, maxSide);
+  let { w, h, scale: primaryScale, canvas: primaryCanvas } = primary;
+
+  // Black canvas recovery (failed decode / orientation)
+  if (canvasMeanLuma(primaryCanvas) < 0.02) {
+    const retry = document.createElement("canvas");
+    const { w: rw, h: rh } = sourceSize(source);
+    const s = Math.min(1, maxSide / Math.max(rw, rh, 1));
+    retry.width = Math.max(1, Math.round(rw * s));
+    retry.height = Math.max(1, Math.round(rh * s));
+    const rctx = retry.getContext("2d");
+    if (rctx) {
+      (rctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+      rctx.drawImage(source as CanvasImageSource, 0, 0, retry.width, retry.height);
+      primaryCanvas = retry;
+      primaryScale = s;
+      w = rw;
+      h = rh;
+    }
+  }
+
+  type RawBox = { box: { x: number; y: number; width: number; height: number }; confidence: number };
+  const collected: RawBox[] = [];
+
+  const pushRaw = (
+    rawList: any[] | null | undefined,
+    scaleToOrig: number,
+    offX = 0,
+    offY = 0,
+    minConf = 0.1,
+  ) => {
+    if (!rawList?.length) return;
+    for (const raw of rawList) {
+      const b = raw.detection?.box ?? raw.box;
+      const conf = Number(raw.detection?.score ?? raw.score ?? 0.5);
+      if (!b || !Number.isFinite(conf) || conf < minConf) continue;
+      const box = {
+        x: Math.max(0, (b.x - offX) / scaleToOrig),
+        y: Math.max(0, (b.y - offY) / scaleToOrig),
+        width: b.width / scaleToOrig,
+        height: b.height / scaleToOrig,
+      };
+      if (box.width < 10 || box.height < 10) continue;
+      const areaFrac = (box.width * box.height) / Math.max(1, w * h);
+      if (areaFrac < 0.0003 || areaFrac > 0.6) continue;
+      const aspect = box.width / Math.max(1, box.height);
+      if (aspect < 0.35 || aspect > 2.0) continue;
+      collected.push({ box, confidence: conf });
+    }
+  };
+
+  const runSsd = async (canvas: HTMLCanvasElement, minConf: number) => {
+    try {
+      return await api.detectAllFaces(
+        canvas,
+        new api.SsdMobilenetv1Options({ minConfidence: minConf }),
+      );
+    } catch {
+      return [];
+    }
+  };
+
+  const tDetect = performance.now();
+
+  // Pass 1 — single full-frame SSD (the common case)
+  await yieldToUi();
+  pushRaw(await runSsd(primaryCanvas, 0.15), primaryScale, 0, 0, 0.12);
+  if (collected.length === 0) {
+    pushRaw(await runSsd(primaryCanvas, 0.05), primaryScale, 0, 0, 0.05);
+  }
+
+  // Pass 2 — CLAHE for sunset / backlit outdoor
+  if (collected.length === 0 && enableClahe) {
+    await yieldToUi();
+    try {
+      const boosted = applyLocalContrastBoost(primaryCanvas, 2.5, 6, 512);
+      const claheScale = primaryScale * (boosted.width / Math.max(1, primaryCanvas.width));
+      pushRaw(await runSsd(boosted, 0.05), claheScale, 0, 0, 0.05);
+    } catch {
+      /* optional */
+    }
+  }
+
+  // Pass 3 — TinyFace
+  if (collected.length === 0 && api.nets.tinyFaceDetector?.isLoaded) {
+    await yieldToUi();
+    try {
+      const tiny = await api.detectAllFaces(
+        primaryCanvas,
+        new api.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.08 }),
+      );
+      pushRaw(tiny, primaryScale, 0, 0, 0.08);
+    } catch {
+      /* optional */
+    }
+  }
+
+  // Pass 4 — 3 column tiles only if still empty (group / outdoor miss)
+  if (collected.length === 0 && Math.max(w, h) >= 900) {
+    await yieldToUi();
+    const pcW = primaryCanvas.width;
+    const pcH = primaryCanvas.height;
+    const colW = Math.round(pcW * 0.55);
+    for (const sx of [0, Math.round(pcW * 0.225), Math.max(0, pcW - colW)]) {
+      const tile = document.createElement("canvas");
+      const localScale = Math.min(1, 640 / Math.max(colW, pcH));
+      tile.width = Math.max(1, Math.round(colW * localScale));
+      tile.height = Math.max(1, Math.round(pcH * localScale));
+      const tctx = tile.getContext("2d");
+      if (!tctx) continue;
+      tctx.drawImage(primaryCanvas, sx, 0, colW, pcH, 0, 0, tile.width, tile.height);
+      const scaleToOrig = localScale * primaryScale;
+      pushRaw(await runSsd(tile, 0.06), scaleToOrig, -sx * localScale, 0, 0.06);
+      if (collected.length > 0) break;
+    }
+  }
+
+  const detectMs = Math.round(performance.now() - tDetect);
+
+  const strong = collected.filter((c) => c.confidence >= 0.25);
+  const pool = strong.length > 0 ? strong : collected;
+  const merged = nmsFaceBoxes(pool, 0.35);
+
+  const faceInputs: FaceCandidateInput[] = merged.map((m, i) => ({
+    id: `face-${i}`,
+    box: m.box,
+    confidence: m.confidence,
+  }));
+
+  let sorted = sortFaceCandidates(faceInputs, { width: w, height: h });
+  sorted = [...sorted].sort((a, b) => {
+    const confDelta = b.confidence - a.confidence;
+    if (Math.abs(confDelta) > 0.08) return confDelta;
+    return b.score - a.score;
+  });
+  sorted = sorted.map((f, i) => ({ ...f, isPrimary: i === 0 }));
+
+  if (options.selectedBox && sorted.length > 0) {
+    const sb = options.selectedBox;
+    const looksNorm = sb.width <= 100 && sb.height <= 100 && sb.x <= 100 && sb.y <= 100;
+    const cx = looksNorm ? sb.x + sb.width / 2 : ((sb.x + sb.width / 2) / w) * 100;
+    const cy = looksNorm ? sb.y + sb.height / 2 : ((sb.y + sb.height / 2) / h) * 100;
+    let best = 0;
+    let bestD = Infinity;
+    sorted.forEach((f, i) => {
+      const d = Math.hypot(
+        (f.box.x + f.box.width / 2) / w * 100 - cx,
+        (f.box.y + f.box.height / 2) / h * 100 - cy,
+      );
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    sorted = sorted.map((f, i) => ({ ...f, isPrimary: i === best }));
+    if (best > 0) {
+      const [p] = sorted.splice(best, 1);
+      if (p) sorted.unshift({ ...p, isPrimary: true });
+      sorted = sorted.map((f, i) => ({ ...f, isPrimary: i === 0 }));
+    }
+  } else if (options.selectedCandidateIndex !== undefined && sorted.length > 0) {
+    const idx = Math.min(sorted.length - 1, Math.max(0, options.selectedCandidateIndex));
+    sorted = sorted.map((f, i) => ({ ...f, isPrimary: i === idx }));
+  }
+
+  const faces: FaceCandidate[] = sorted.map((f) => ({
+    box: f.box,
+    normalizedBox: {
+      x: Math.min(100, Math.max(0, (f.box.x / w) * 100)),
+      y: Math.min(100, Math.max(0, (f.box.y / h) * 100)),
+      width: Math.min(100, Math.max(0, (f.box.width / w) * 100)),
+      height: Math.min(100, Math.max(0, (f.box.height / h) * 100)),
+    },
+    confidence: f.confidence,
+    score: f.score,
+    isPrimary: f.isPrimary,
+  }));
+
+  return {
+    faces,
+    imageWidth: w,
+    imageHeight: h,
+    detectionCanvas: primaryCanvas,
+    detectionScale: primaryScale,
+    latencies: {
+      modelLoadMs,
+      detectMs,
+      totalMs: Math.round(performance.now() - t0),
+    },
+  };
+}
+
 /**
  * Detect the face, extract FaceNet descriptor + age/gender, crop face.
- * Fast & fail-safe 5-stage detection: SSD MobileNet + Boundary Padding + Group Center + TinyFace + Direct Fallback.
+ * Uses detectFacesOnly for robust multi-scale multi-person boxes, then embeds primary.
+ * Returns null when no real face is detected (no synthetic/fake face fallback).
  */
 export async function detectAndDescribe(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+  options: DetectOptions = {},
 ): Promise<FaceDetectionResult | null> {
+  const tTotalStart = performance.now();
+  const tModelStart = performance.now();
   const api = (await getFaceApi()) as any;
-  const { w, h } = sourceSize(source);
-  if (!w || !h) return null;
+  const modelLoadMs = Math.round(performance.now() - tModelStart);
 
-  // Pass 1: Standard scale canvas (1024 maxSide)
-  const maxSide = 1024;
-  const scale = Math.min(1, maxSide / Math.max(w, h));
-  const cw = Math.max(1, Math.round(w * scale));
-  const ch = Math.max(1, Math.round(h * scale));
-  const canvas = document.createElement("canvas");
-  canvas.width = cw;
-  canvas.height = ch;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) return null;
-  (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
-  ctx.drawImage(source, 0, 0, cw, ch);
+  const tDown = performance.now();
+  const detection = await detectFacesOnly(source, options);
+  const downscaleMs = Math.round(performance.now() - tDown);
+  const { faces, imageWidth: w, imageHeight: h, detectionCanvas, detectionScale } = detection;
 
-  let det: any = null;
-  let activeCanvas = canvas;
-  let activeScale = scale;
-  let offsetX = 0;
-  let offsetY = 0;
+  if (!faces.length) return null;
 
-  // 1a. Fast single face SSD MobileNet
-  det =
-    (await api.detectSingleFace(canvas, new api.SsdMobilenetv1Options({ minConfidence: 0.25 }))
-      .withFaceLandmarks().withFaceDescriptor().withAgeAndGender()) ||
-    (await api.detectSingleFace(canvas, new api.SsdMobilenetv1Options({ minConfidence: 0.10 }))
-      .withFaceLandmarks().withFaceDescriptor().withAgeAndGender());
+  const primaryIdx = Math.max(0, faces.findIndex((f) => f.isPrimary));
+  const primary = faces[primaryIdx] ?? faces[0]!;
+  const allFaces = faces;
 
-  // Pass 2: Padded Canvas for faces cut off at top or side image borders
-  if (!det) {
-    const padded = createPaddedCanvas(source, 1024, 0.20);
-    det = await api.detectSingleFace(padded.canvas, new api.SsdMobilenetv1Options({ minConfidence: 0.08 }))
-      .withFaceLandmarks().withFaceDescriptor().withAgeAndGender();
-    if (det) {
-      activeCanvas = padded.canvas;
-      activeScale = padded.scale;
-      offsetX = padded.padX;
-      offsetY = padded.padY;
-    }
-  }
-
-  // Pass 3: Multi-person / Group shots (detectAllFaces)
-  if (!det) {
-    const all = await api
-      .detectAllFaces(canvas, new api.SsdMobilenetv1Options({ minConfidence: 0.08 }))
-      .withFaceLandmarks()
-      .withFaceDescriptors()
-      .withAgeAndGender();
-
-    if (all.length > 0) {
-      const centerX = cw / 2;
-      const centerY = ch / 2;
-      all.sort((a: any, b: any) => {
-        const aBox = a.detection.box;
-        const bBox = b.detection.box;
-        const aDist = Math.hypot(aBox.x + aBox.width / 2 - centerX, aBox.y + aBox.height / 2 - centerY);
-        const bDist = Math.hypot(bBox.x + bBox.width / 2 - centerX, bBox.y + bBox.height / 2 - centerY);
-        const aArea = aBox.width * aBox.height;
-        const bArea = bBox.width * bBox.height;
-        return (bArea / (1 + bDist * 0.4)) - (aArea / (1 + bDist * 0.4));
-      });
-      det = all[0];
-    }
-  }
-
-  // Pass 4: TinyFaceDetector for low contrast / outdoor faces
-  if (!det && api.nets.tinyFaceDetector?.isLoaded) {
-    const tinyOpts = new api.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.06 });
-    det = await api.detectSingleFace(canvas, tinyOpts)
-      .withFaceLandmarks().withFaceDescriptor().withAgeAndGender();
-  }
-
-  // Pass 5: Direct FaceNet Descriptor Extractor Fallback (GUARANTEES NO HANG OR FAILURE)
-  if (!det) {
-    const faceCanvas = extractCenterFaceCanvas(source, 320);
-    let descriptor: Float32Array;
-    try {
-      if (typeof api.computeFaceDescriptor === "function") {
-        const raw = await api.computeFaceDescriptor(faceCanvas);
-        descriptor = l2NormalizeVec(raw);
-      } else {
-        descriptor = generateImageRegionDescriptor(faceCanvas);
-      }
-    } catch {
-      descriptor = generateImageRegionDescriptor(faceCanvas);
-    }
-
-    const { sharpness, illumination } = computeSharpness(faceCanvas);
-    return {
-      descriptor,
-      age: 32,
-      gender: "male",
-      genderProbability: 0.88,
-      faceCanvas,
-      confidence: 0.68,
-      sharpness: Math.max(50, sharpness),
-      blurScore: 0.75,
-      illumination,
-      box: {
-        x: w * 0.15,
-        y: h * 0.10,
-        width: w * 0.70,
-        height: h * 0.75,
-      },
-      imageWidth: w,
-      imageHeight: h,
-    };
-  }
-
-  const box = det.detection.box;
+  // Crop face from original source (high-res) for embedding quality
+  const tEmbStart = performance.now();
+  const origBox = primary.box;
   const pad = 0.35;
-  const bx = Math.max(0, box.x - box.width * pad);
-  const by = Math.max(0, box.y - box.height * pad * 1.1);
-  const bw = Math.min(activeCanvas.width - bx, box.width * (1 + pad * 2));
-  const bh = Math.min(activeCanvas.height - by, box.height * (1 + pad * 2.2));
+  const padX = origBox.width * pad;
+  const padY = origBox.height * pad * 1.1;
+  let cropX = Math.max(0, origBox.x - padX);
+  let cropY = Math.max(0, origBox.y - padY);
+  let cropW = Math.min(w - cropX, origBox.width + padX * 2);
+  let cropH = Math.min(h - cropY, origBox.height + padY * 2.2);
+  const side = Math.max(cropW, cropH);
+  cropX = Math.max(0, Math.min(w - side, cropX + (cropW - side) / 2));
+  cropY = Math.max(0, Math.min(h - side, cropY + (cropH - side) / 2));
+  const cropSide = Math.min(side, w - cropX, h - cropY);
 
   const faceCanvas = document.createElement("canvas");
   const outSize = 320;
@@ -333,82 +1013,228 @@ export async function detectAndDescribe(
   const fctx = faceCanvas.getContext("2d");
   if (fctx) {
     (fctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
-    const side = Math.max(bw, bh);
-    const sx = bx + (bw - side) / 2;
-    const sy = by + (bh - side) / 2;
-    fctx.drawImage(activeCanvas, sx, sy, side, side, 0, 0, outSize, outSize);
+    // Always crop from EXIF-oriented detection canvas so phone JPEGs stay correct
+    const sx = cropX * detectionScale;
+    const sy = cropY * detectionScale;
+    const ss = cropSide * detectionScale;
+    if (ss >= 2) {
+      fctx.drawImage(detectionCanvas, sx, sy, ss, ss, 0, 0, outSize, outSize);
+    } else {
+      fctx.drawImage(
+        source as CanvasImageSource,
+        cropX,
+        cropY,
+        cropSide,
+        cropSide,
+        0,
+        0,
+        outSize,
+        outSize,
+      );
+    }
   }
 
-  const rawDesc = det.descriptor as ArrayLike<number>;
+  // Landmarks on the face crop (best effort — never fail the whole detect)
+  let normalizedLandmarks: { x: number; y: number }[] = [];
+  let croppedLandmarks: { x: number; y: number }[] = [];
+  let landmarks: unknown;
+  try {
+    const withLm = await api
+      .detectSingleFace(faceCanvas, new api.SsdMobilenetv1Options({ minConfidence: 0.1 }))
+      .withFaceLandmarks();
+    if (withLm?.landmarks?.positions) {
+      landmarks = withLm.landmarks;
+      for (const pt of withLm.landmarks.positions) {
+        const lx = (pt._x ?? pt.x) as number;
+        const ly = (pt._y ?? pt.y) as number;
+        croppedLandmarks.push({
+          x: Math.min(100, Math.max(0, (lx / outSize) * 100)),
+          y: Math.min(100, Math.max(0, (ly / outSize) * 100)),
+        });
+        // Map crop-space landmark → original image %
+        const ox = cropX + (lx / outSize) * cropSide;
+        const oy = cropY + (ly / outSize) * cropSide;
+        normalizedLandmarks.push({
+          x: Math.min(100, Math.max(0, (ox / w) * 100)),
+          y: Math.min(100, Math.max(0, (oy / h) * 100)),
+        });
+      }
+      if (normalizedLandmarks.length) {
+        allFaces[primaryIdx] = {
+          ...primary,
+          normalizedLandmarks,
+        };
+      }
+    }
+  } catch {
+    /* landmarks optional */
+  }
+
+  // FaceNet descriptor
+  let rawDesc: Float32Array;
+  try {
+    if (typeof api.computeFaceDescriptor === "function") {
+      rawDesc = await api.computeFaceDescriptor(faceCanvas);
+    } else if (api.nets.faceRecognitionNet?.isLoaded) {
+      rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(faceCanvas);
+    } else {
+      rawDesc = generateImageRegionDescriptor(faceCanvas);
+    }
+  } catch {
+    rawDesc = generateImageRegionDescriptor(faceCanvas);
+  }
   const descriptor = l2NormalizeVec(rawDesc);
+
+  let age = 30;
+  let gender: "male" | "female" = "male";
+  let genderProbability = 0.85;
+  if (api.nets.ageGenderNet?.isLoaded) {
+    try {
+      const ag = await api.nets.ageGenderNet.predictAgeAndGender(faceCanvas);
+      if (ag) {
+        age = Math.round(ag.age ?? 30);
+        gender = (ag.gender ?? "male") as "male" | "female";
+        genderProbability = ag.genderProbability ?? 0.85;
+      }
+    } catch {
+      /* optional */
+    }
+  }
+
+  if (allFaces[primaryIdx]) {
+    allFaces[primaryIdx] = {
+      ...allFaces[primaryIdx]!,
+      age,
+      gender,
+      genderProbability,
+      isPrimary: true,
+    };
+  }
+
+  const embeddingMs = Math.round(performance.now() - tEmbStart);
   const { sharpness, illumination } = computeSharpness(faceCanvas);
+
+  const normalizedBox = primary.normalizedBox;
+  const candidateBoxes = allFaces.map((f) => ({
+    ...f.normalizedBox,
+    isPrimary: f.isPrimary,
+  }));
+
+  const totalMs = Math.round(performance.now() - tTotalStart);
+  const stageLatencies: FaceStageLatencies = {
+    modelLoadMs,
+    downscaleMs,
+    ssdPassMs: detection.latencies.detectMs,
+    claheMs: 0,
+    embeddingMs,
+    totalMs,
+  };
+
+  const telemetry: FaceTelemetry = {
+    originalWidth: w,
+    originalHeight: h,
+    downscaledWidth: detectionCanvas.width,
+    downscaledHeight: detectionCanvas.height,
+    faceCount: allFaces.length,
+    primaryConfidence: primary.confidence,
+    latencies: stageLatencies,
+  };
 
   return {
     descriptor,
-    age: Math.round(det.age ?? 30),
-    gender: (det.gender ?? "male") as "male" | "female",
-    genderProbability: det.genderProbability ?? 0.85,
+    age,
+    gender,
+    genderProbability,
     faceCanvas,
-    confidence: det.detection.score ?? 0.75,
+    confidence: primary.confidence,
     sharpness,
     blurScore: Math.min(1, sharpness / 65),
     illumination,
-    box: {
-      x: Math.max(0, (box.x - offsetX) / activeScale),
-      y: Math.max(0, (box.y - offsetY) / activeScale),
-      width: box.width / activeScale,
-      height: box.height / activeScale,
-    },
+    box: origBox,
+    normalizedBox,
+    normalizedLandmarks,
+    croppedLandmarks,
     imageWidth: w,
     imageHeight: h,
-    landmarks: det.landmarks,
+    landmarks,
+    allFaces,
+    candidateBoxes,
+    telemetry,
+    stageLatencies,
   };
 }
 
 /**
- * High-accuracy TTA: averaged descriptor from original + horizontally flipped view.
- * Returns the higher-confidence result with averaged embedding for better pose invariance.
+ * Fast-exit Crop-Level TTA Embedding Extraction (<300ms SLA).
+ * High-accuracy TTA: averaged descriptor from original + crop-level horizontally flipped view.
  */
 export async function detectAndDescribeWithTTA(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+  options: DetectOptions = {},
 ): Promise<FaceDetectionResult | null> {
-  const primary = await detectAndDescribe(source);
+  const t0 = performance.now();
+  const primary = await detectAndDescribe(source, options);
   if (!primary) return null;
 
-  // Quick blur gate: if very sharp already, skip TTA to save time
-  // For highest accuracy we always do flip averaging when confidence <0.75
-  if (primary.confidence > 0.82 && primary.sharpness > 72) return primary;
+  // Fast exit: if primary has confidence >= fastExitConfidence (default 0.70), skip TTA
+  const fastExitThreshold = options.fastExitConfidence ?? 0.70;
+  if (primary.confidence >= fastExitThreshold) return primary;
+
+  // Safeguard: if primary detection took > 220ms, exit fast to respect <300ms budget
+  if (performance.now() - t0 > 220) return primary;
 
   try {
-    // Create flipped source
-    const { w, h } = sourceSize(source);
+    const api = (await getFaceApi()) as any;
+    const cropCanvas = primary.faceCanvas;
+    if (!cropCanvas) return primary;
+
+    const tTtaStart = performance.now();
+    // High-speed crop-level horizontal flip (320x320)
     const flipCanvas = document.createElement("canvas");
-    flipCanvas.width = w;
-    flipCanvas.height = h;
+    flipCanvas.width = cropCanvas.width;
+    flipCanvas.height = cropCanvas.height;
     const fctx = flipCanvas.getContext("2d");
     if (!fctx) return primary;
-    fctx.translate(w, 0);
+    fctx.translate(cropCanvas.width, 0);
     fctx.scale(-1, 1);
-    fctx.drawImage(source as unknown as CanvasImageSource, 0, 0);
+    fctx.drawImage(cropCanvas, 0, 0);
 
-    const flipped = await detectAndDescribe(flipCanvas);
-    if (!flipped) return primary;
+    let flippedRaw: Float32Array;
+    if (typeof api.computeFaceDescriptor === "function") {
+      flippedRaw = await api.computeFaceDescriptor(flipCanvas);
+    } else if (api.nets.faceRecognitionNet?.isLoaded) {
+      flippedRaw = await api.nets.faceRecognitionNet.computeFaceDescriptor(flipCanvas);
+    } else {
+      flippedRaw = generateImageRegionDescriptor(flipCanvas);
+    }
 
-    // Average descriptors in normalized space
-    const avg = averageDescriptors(primary.descriptor, flipped.descriptor);
+    if (!flippedRaw || flippedRaw.length === 0) return primary;
+    const flippedDesc = l2NormalizeVec(flippedRaw);
+    const avg = averageDescriptors(primary.descriptor, flippedDesc);
 
-    // Keep primary's geometry but use averaged descriptor; age/gender from higher conf
-    const bestAgeGender = flipped.confidence > primary.confidence ? flipped : primary;
+    const ttaMs = Math.round(performance.now() - tTtaStart);
+    let updatedTelemetry = primary.telemetry;
+    let updatedLatencies = primary.stageLatencies;
+
+    if (primary.telemetry) {
+      const embeddingMs = primary.telemetry.latencies.embeddingMs + ttaMs;
+      const totalMs = primary.telemetry.latencies.totalMs + ttaMs;
+      updatedLatencies = {
+        ...primary.telemetry.latencies,
+        embeddingMs,
+        totalMs,
+      };
+      updatedTelemetry = {
+        ...primary.telemetry,
+        latencies: updatedLatencies,
+      };
+    }
 
     return {
       ...primary,
       descriptor: avg,
-      age: bestAgeGender.age,
-      gender: bestAgeGender.gender,
-      genderProbability: Math.max(primary.genderProbability, flipped.genderProbability),
-      // marginal sharpness boost from averaging
-      sharpness: Math.max(primary.sharpness, flipped.sharpness),
-      blurScore: Math.max(primary.blurScore, flipped.blurScore),
+      telemetry: updatedTelemetry,
+      stageLatencies: updatedLatencies,
     };
   } catch {
     return primary;
@@ -429,6 +1255,9 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
   const imgArea = det.imageWidth * det.imageHeight || 1;
   const faceCoverage = area / imgArea;
 
+  const isMultiFace = Boolean(det.allFaces && det.allFaces.length > 1);
+  const minFaceCoverageThreshold = isMultiFace ? 0.025 : 0.035;
+
   if (faceCoverage < 0.025) {
     issues.push(
       "Face was very small in the photo — we zoomed in automatically. A closer selfie will be more accurate.",
@@ -439,7 +1268,7 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
     );
   }
 
-  if (det.confidence < 0.42) {
+  if (det.confidence < 0.40) {
     issues.push(
       "Low face confidence — try better lighting and a clearer front view.",
     );
@@ -457,7 +1286,7 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
   }
 
   // Illumination gate
-  if (det.illumination < 0.28) {
+  if (det.illumination < 0.20) {
     issues.push("Dim lighting detected — brighter, even light improves accuracy.");
   } else if (det.illumination > 0.92) {
     issues.push("Very bright / overexposed — soften harsh light for better detail.");
@@ -466,7 +1295,7 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
   const cx = (det.box.x + det.box.width / 2) / det.imageWidth;
   const cy = (det.box.y + det.box.height / 2) / det.imageHeight;
   const centered = 1 - Math.min(1, Math.hypot(cx - 0.5, cy - 0.5) / 0.5);
-  if (centered < 0.55) {
+  if (centered < 0.50) {
     issues.push("Face is near the edge — center it for a cleaner match.");
   }
 
@@ -484,11 +1313,11 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
 
   const ok =
     issues.length === 0 &&
-    det.confidence >= 0.48 &&
-    det.sharpness >= 45 &&
-    faceCoverage >= 0.04 &&
-    det.illumination >= 0.25 &&
-    det.illumination <= 0.88;
+    det.confidence >= 0.45 &&
+    det.sharpness >= 42 &&
+    faceCoverage >= minFaceCoverageThreshold &&
+    det.illumination >= 0.20 &&
+    det.illumination <= 0.90;
 
   return {
     ok,
@@ -500,3 +1329,4 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
     issues,
   };
 }
+
