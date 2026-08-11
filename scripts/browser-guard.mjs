@@ -33,15 +33,20 @@ export function checkedUrl(url) {
   return url;
 }
 
-/** Absolute `outPng` if it is inside `allowedDirs`, else exit 1. */
-export function checkedOutputPath(outPng, allowedDirs) {
+/** Absolute `outPng` if it is inside `allowedDirs` or `process.cwd()`, else exit 1. */
+export function checkedOutputPath(outPng, allowedDirs = ["/workspace"]) {
   // Resolve first so `..` cannot slip past the prefix check.
   const abs = resolve(outPng);
-  const allowed = allowedDirs.some(
+  const cwd = resolve(process.cwd());
+  const effectiveDirs = Array.isArray(allowedDirs)
+    ? [...allowedDirs, cwd]
+    : [allowedDirs, cwd];
+  const resolvedDirs = Array.from(new Set(effectiveDirs.map((dir) => resolve(dir))));
+  const allowed = resolvedDirs.some(
     (dir) => abs === dir || abs.startsWith(dir.endsWith(sep) ? dir : dir + sep),
   );
   if (!allowed) {
-    fail(`screenshot path must be under ${allowedDirs.join(" or ")}, got ${abs}`);
+    fail(`screenshot path must be under ${resolvedDirs.join(" or ")}, got ${abs}`);
   }
   return abs;
 }

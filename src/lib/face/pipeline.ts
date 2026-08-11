@@ -25,6 +25,7 @@ export function prefetchModel(): void {
 
 export interface AnalyzeOptions {
   topK?: number;
+  onProgress?: (stepIndex: number, progressPct: number) => void;
 }
 
 /**
@@ -37,13 +38,21 @@ export async function analyzeFaceSource(
   options: AnalyzeOptions = {},
 ): Promise<MatchResult> {
   const topK = options.topK ?? 5;
+  const onProgress = options.onProgress;
 
-  const [det, gallery] = await Promise.all([
-    detectAndDescribeWithTTA(source),
-    loadCelebrityEmbeddings(),
-  ]);
+  onProgress?.(0, 12);
+  const galleryPromise = loadCelebrityEmbeddings();
+
+  onProgress?.(1, 30);
+  const det = await detectAndDescribeWithTTA(source);
+
+  onProgress?.(2, 60);
+  const gallery = await galleryPromise;
+
+  onProgress?.(3, 85);
 
   if (!det) {
+    onProgress?.(3, 100);
     return {
       features: emptyFeatures(),
       quality: {
@@ -74,6 +83,8 @@ export async function analyzeFaceSource(
     gallery,
     topK,
   );
+
+  onProgress?.(3, 96);
 
   let facePreviewUrl: string | undefined;
   try {

@@ -5,9 +5,15 @@ import {
   euclideanDistance,
   distanceToMatchPercent,
   rankPercentsFromDistances,
+  ageAffinity,
+  genderAffinity,
+  computeMatchConfidence,
+  type CelebrityEmbedding,
 } from "./embeddings.ts";
+import { rankByDescriptor, type UserFaceQuery } from "./match.ts";
 import { mergeFeatures, emptyFeatures } from "./math.ts";
 import { CELEBRITIES, getCelebrityById } from "../celebrities/database.ts";
+import { catalogFor } from "../celebrities/catalog.ts";
 import type { FaceFeatures } from "./types.ts";
 import type { CelebrityProfile } from "../celebrities/types.ts";
 
@@ -21,10 +27,31 @@ describe("euclideanDistance / calibration", () => {
     assert.equal(euclideanDistance(a, a), 0);
   });
 
-  it("distanceToMatchPercent is high for close faces", () => {
+  it("distanceToMatchPercent(0) returns exactly 100", () => {
+    assert.equal(distanceToMatchPercent(0), 100);
+  });
+
+  it("calibrates Hill Equation curve at key sample points", () => {
+    assert.equal(distanceToMatchPercent(0.35), 85.9);
+    assert.equal(distanceToMatchPercent(0.45), 73.9);
+    assert.equal(distanceToMatchPercent(0.55), 61.1);
+    assert.equal(distanceToMatchPercent(0.65), 49.8);
+  });
+
+  it("maintains strict non-increasing monotonicity across d in [0, 1.5]", () => {
+    for (let d = 0; d < 1.5; d += 0.02) {
+      const p1 = distanceToMatchPercent(d);
+      const p2 = distanceToMatchPercent(d + 0.02);
+      assert.ok(
+        p1 >= p2,
+        `Monotonicity violation at d=${d}: p(${d})=${p1} < p(${d + 0.02})=${p2}`,
+      );
+    }
+    assert.ok(distanceToMatchPercent(0) > distanceToMatchPercent(0.3));
     assert.ok(distanceToMatchPercent(0.3) > distanceToMatchPercent(0.6));
-    assert.ok(distanceToMatchPercent(0.35) >= 70);
-    assert.ok(distanceToMatchPercent(0.9) < 45);
+    assert.ok(distanceToMatchPercent(0.6) > distanceToMatchPercent(0.9));
+    assert.ok(distanceToMatchPercent(0.9) > distanceToMatchPercent(1.2));
+    assert.ok(distanceToMatchPercent(1.2) > distanceToMatchPercent(1.5));
   });
 
   it("rank percents preserve distance order", () => {
@@ -32,6 +59,84 @@ describe("euclideanDistance / calibration", () => {
     const p = rankPercentsFromDistances(d);
     assert.ok(p[1]! > p[2]!);
     assert.ok(p[2]! > p[0]!);
+  });
+});
+
+describe("Continuous Gaussian Age & Gender Affinity", () => {
+  it("computes continuous Gaussian age affinity smoothly", () => {
+    assert.equal(ageAffinity(25, 25), 1.0);
+    const a10 = ageAffinity(25, 35);
+    const expected10 = Math.exp(-Math.pow(10 / 28, 2));
+    assert.ok(Math.abs(a10 - expected10) < 1e-6);
+
+    // Strict monotonicity with increasing age delta
+    assert.ok(ageAffinity(25, 26) > ageAffinity(25, 30));
+    assert.ok(ageAffinity(25, 30) > ageAffinity(25, 40));
+    assert.ok(ageAffinity(25, 40) > ageAffinity(25, 60));
+  });
+
+  it("weights gender affinity smoothly without step function discontinuities", () => {
+    const maleCeleb: CelebrityEmbedding = {
+      id: "test-male",
+      name: "Test Male",
+      path: "/test.jpg",
+      descriptor: new Array(128).fill(0),
+      age: 30,
+      gender: "male",
+      genderProb: 0.95,
+    };
+    const g1 = genderAffinity("female", 0.5, maleCeleb);
+    const g2 = genderAffinity("female", 0.7, maleCeleb);
+    const g3 = genderAffinity("female", 0.95, maleCeleb);
+
+    assert.ok(g1 >= g2);
+    assert.ok(g2 >= g3);
+    assert.ok(g3 >= 0.75 && g3 <= 1.0);
+  });
+});
+
+describe("Match Confidence & Granular Descriptor Traits", () => {
+  it("computes match confidence rating in range [10, 100]", () => {
+    assert.equal(computeMatchConfidence(0, 0, 0, 0), 10.0);
+    assert.equal(computeMatchConfidence(1, 1, 0.25, 1), 100.0);
+
+    const conf = computeMatchConfidence(0.92, 70, 0.15, 0.9);
+    assert.ok(conf >= 10 && conf <= 100);
+  });
+
+  it("outputs 4 granular traits in rankByDescriptor", () => {
+    const user: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 30,
+      gender: "female",
+      genderProbability: 0.92,
+      detConfidence: 0.95,
+      sharpness: 80,
+      faceCoverage: 0.2,
+    };
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "zendaya",
+        name: "Zendaya",
+        path: "/zendaya.webp",
+        descriptor: new Array(128).fill(0.12),
+        age: 28,
+        gender: "female",
+        genderProb: 0.98,
+      },
+    ];
+
+    const matches = rankByDescriptor(user, mockGallery, 1);
+    assert.equal(matches.length, 1);
+    const match = matches[0]!;
+    assert.ok(match.confidenceScore !== undefined && match.confidenceScore >= 10 && match.confidenceScore <= 100);
+    assert.equal(match.traits.length, 4);
+
+    const labels = match.traits.map((t) => t.label);
+    assert.ok(labels.includes("Facial Structure"));
+    assert.ok(labels.includes("Age Affinity"));
+    assert.ok(labels.includes("Gender Presentation"));
+    assert.ok(labels.includes("Lighting & Quality"));
   });
 });
 
@@ -194,3 +299,23 @@ describe("gallery integrity", () => {
     }
   });
 });
+
+describe("curated catalog expansion", () => {
+  it("catalogFor returns curated metadata for expanded international figures", () => {
+    const devPatel = catalogFor("dev-patel");
+    assert.equal(devPatel.knownFor, "Actor");
+    assert.ok(devPatel.tags.includes("intense"));
+    assert.equal(devPatel.accentHue, 25);
+
+    const simuLiu = catalogFor("simu-liu");
+    assert.equal(simuLiu.knownFor, "Actor");
+    assert.ok(simuLiu.tags.includes("athletic"));
+
+    const badBunny = catalogFor("bad-bunny");
+    assert.equal(badBunny.knownFor, "Artist");
+
+    const adrianaLima = catalogFor("adriana-lima");
+    assert.equal(adrianaLima.knownFor, "Model");
+  });
+});
+

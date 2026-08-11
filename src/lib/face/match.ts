@@ -7,14 +7,21 @@ import {
   rankPercentsFromDistances,
   genderAffinity,
   ageAffinity,
+  computeMatchConfidence,
   mergeWithProfile,
 } from "./embeddings.ts";
+
+export { computeMatchConfidence };
 
 export interface UserFaceQuery {
   descriptor: ArrayLike<number>;
   age: number;
   gender: "male" | "female" | "unknown";
   genderProbability: number;
+  qualityScore?: number;
+  detConfidence?: number;
+  sharpness?: number;
+  faceCoverage?: number;
 }
 
 /**
@@ -49,6 +56,12 @@ export function rankByDescriptor(
   deduped.sort((a, b) => a.adjusted - b.adjusted);
   const top = deduped.slice(0, topK);
   const percents = rankPercentsFromDistances(top.map((t) => t.adjusted));
+  const confScore = computeMatchConfidence(
+    user.detConfidence ?? 0.92,
+    user.sharpness ?? 0.85,
+    user.faceCoverage ?? 0.25,
+    user.genderProbability,
+  );
 
   return top.map((t, i) => {
     const meta = mergeWithProfile(t.celeb, CELEBRITIES);
@@ -63,6 +76,7 @@ export function rankByDescriptor(
       knownFor: meta.knownFor,
       matchPercent: percents[i] ?? 0,
       rawScore: 1 / (1 + t.adjusted),
+      confidenceScore: confScore,
       traits: buildDescriptorTraits(user, t.celeb, t.dist),
       accentHue: meta.accentHue,
       initials: initials(displayName),
@@ -86,30 +100,45 @@ function buildDescriptorTraits(
     user.gender === "unknown"
       ? 0.7
       : user.gender === celeb.gender
-        ? user.genderProbability
-        : 1 - user.genderProbability * 0.7;
+        ? Math.min(1, 0.85 + 0.15 * user.genderProbability)
+        : Math.max(0.2, 1 - user.genderProbability * 0.7);
+
+  const confidence = computeMatchConfidence(
+    user.detConfidence ?? 0.92,
+    user.sharpness ?? 0.85,
+    user.faceCoverage ?? 0.25,
+    user.genderProbability,
+  );
+  const qualitySim = confidence / 100;
 
   return [
     {
-      trait: "faceEmbedding",
+      trait: "facialStructure",
       userValue: faceSim,
       celebValue: 1,
       similarity: faceSim,
-      label: "Facial structure",
+      label: "Facial Structure",
     },
     {
-      trait: "age",
-      userValue: user.age / 100,
-      celebValue: celeb.age / 100,
+      trait: "ageAffinity",
+      userValue: Math.min(1, user.age / 100),
+      celebValue: Math.min(1, celeb.age / 100),
       similarity: ageSim,
-      label: "Age range",
+      label: "Age Affinity",
     },
     {
-      trait: "presentation",
+      trait: "genderPresentation",
       userValue: user.genderProbability,
       celebValue: celeb.genderProb,
       similarity: genderSim,
-      label: "Presentation",
+      label: "Gender Presentation",
+    },
+    {
+      trait: "lightingQuality",
+      userValue: user.qualityScore ?? qualitySim,
+      celebValue: 0.92,
+      similarity: qualitySim,
+      label: "Lighting & Quality",
     },
   ].sort((a, b) => b.similarity - a.similarity);
 }

@@ -103,6 +103,7 @@ export interface CelebrityMatch {
   knownFor: string;
   matchPercent: number;
   rawScore: number;
+  confidenceScore?: number;
   traits: TraitInsight[];
   accentHue: number;
   initials: string;

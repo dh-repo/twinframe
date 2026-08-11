@@ -10,16 +10,20 @@
  * Targets are restricted (browser-guard.mjs): http/https loopback, PNG under
  * /workspace. A rejected target exits 1.
  */
-import { mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { existsSync, mkdirSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { chromium } from "playwright";
 import { checkedOutputPath, checkedUrl } from "./browser-guard.mjs";
 import { computeBrandWarnings } from "./brand-check.mjs";
 
+const defaultOutPng = existsSync("/workspace")
+  ? "/workspace/screenshots/app-builder-preview.png"
+  : join(process.cwd(), "screenshots", "app-builder-preview.png");
+
 const url = checkedUrl(process.argv[2] || "http://127.0.0.1:8080/");
 const outPng = checkedOutputPath(
-  process.argv[3] || "/workspace/screenshots/app-builder-preview.png",
-  ["/workspace"],
+  process.argv[3] || defaultOutPng,
+  ["/workspace", process.cwd()],
 );
 const timeoutMs = Number(process.env.BROWSER_SMOKE_TIMEOUT_MS || 45000);
 

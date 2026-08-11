@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Camera, Shield, Zap, ScanFace } from "lucide-react";
+import { Brain, ShieldCheck, Zap, ScanFace } from "lucide-react";
 import { PhotoUploader } from "@/components/capture/photo-uploader";
 import { WebcamCapture } from "@/components/capture/webcam-capture";
 import { CropReview } from "@/components/capture/crop-review";
 import { MatchResults } from "@/components/results/match-results";
 import { AnalyzingState } from "@/components/analyzing-state";
+import { StarGalleryModal } from "@/components/gallery/star-gallery-modal";
 import { Button } from "@/components/ui/button";
 import {
   analyzeFaceSource,
@@ -19,6 +20,7 @@ type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality
 export function AppHome() {
   const [phase, setPhase] = useState<Phase>("capture");
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [result, setResult] = useState<MatchResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -71,24 +73,34 @@ export function AppHome() {
       setResult(null);
       setPhase("analyzing");
       setStepIndex(0);
-      setProgress(8);
+      setProgress(5);
 
       const url = URL.createObjectURL(blob);
       setPreview(url);
 
-      // polished timed progress
-      const timers: number[] = [];
-      timers.push(window.setTimeout(() => { setStepIndex(1); setProgress(28); }, 600));
-      timers.push(window.setTimeout(() => { setStepIndex(2); setProgress(56); }, 1400));
-      timers.push(window.setTimeout(() => { setStepIndex(3); setProgress(82); }, 2300));
+      // Smooth ticker keeps progress moving smoothly during async model/WASM tasks
+      let currentProgress = 5;
+      const ticker = window.setInterval(() => {
+        currentProgress = Math.min(94, currentProgress + 1);
+        setProgress((prev) => Math.max(prev, currentProgress));
+      }, 100);
+
+      // Safety timeout (20s) in case device WASM/WebGL stalls
+      const timeoutId = window.setTimeout(() => {
+        setError("Analysis timed out. Please try a clearer front-facing photo.");
+        setPhase("error");
+      }, 20000);
 
       try {
         const img = await loadImageFromBlob(blob);
-        setStepIndex(1);
-        setProgress(32);
-        const matchResult = await analyzeFaceSource(img, { topK: 6 });
-        setStepIndex(3);
-        setProgress(96);
+        const matchResult = await analyzeFaceSource(img, {
+          topK: 6,
+          onProgress: (stepIdx, pct) => {
+            setStepIndex(stepIdx);
+            currentProgress = Math.max(currentProgress, pct);
+            setProgress(currentProgress);
+          },
+        });
 
         // --- High-accuracy quality gate: stricter than before ---
         const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
@@ -133,7 +145,8 @@ export function AppHome() {
         setError(msg);
         setPhase("error");
       } finally {
-        timers.forEach(clearTimeout);
+        clearInterval(ticker);
+        clearTimeout(timeoutId);
       }
     },
     [setPreview],
@@ -186,21 +199,21 @@ export function AppHome() {
   const showHero = phase === "capture" || phase === "review";
 
   return (
-    <div className="app-shell">
-      <div className="app-content mx-auto w-full max-w-md px-4 pb-16 pt-[max(1rem,env(safe-area-inset-top))] sm:max-w-lg sm:px-6">
-        <header className={showHero ? "mb-7 sm:mb-9" : "mb-5"}>
-          <div className="mb-4 flex items-center justify-between gap-3 sm:mb-5">
+    <div className="app-shell min-h-screen bg-[#090a0f] text-white">
+      <div className="app-content mx-auto w-full max-w-xl px-4 pb-16 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-6">
+        <header className={showHero ? "mb-8 sm:mb-10" : "mb-5"}>
+          <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-border bg-bg-elevated">
-                <ScanFace className="h-4 w-4 text-fg" strokeWidth={1.5} />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white shadow-inner">
+                <ScanFace className="h-5 w-5" strokeWidth={1.75} />
               </div>
-              <span className="text-sm font-medium tracking-tight">Twinframe</span>
+              <span className="text-base font-bold tracking-tight text-white">Twinframe</span>
             </div>
             {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") && (
               <button
                 type="button"
                 onClick={reset}
-                className="text-xs text-fg-muted transition-colors hover:text-fg"
+                className="text-xs text-white/60 transition-colors hover:text-white"
               >
                 New photo
               </button>
@@ -208,58 +221,63 @@ export function AppHome() {
           </div>
 
           {showHero && (
-            <>
-              <h1 className="text-[1.75rem] sm:text-[2.15rem] font-medium tracking-tight leading-[1.12] text-balance">
-                Find your celebrity doppelgänger
+            <div className="text-center space-y-3.5 mb-8">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                Find Your Celebrity Doppelgänger
               </h1>
-              <p className="mt-2.5 max-w-md text-sm leading-relaxed text-fg-muted text-pretty">
-                Upload a selfie or use your camera. Matching runs on-device with
-                FaceNet embeddings against{" "}
-                <span className="tabular-nums text-fg">{gallerySize}</span> stars.
+              <p className="max-w-lg mx-auto text-sm sm:text-base leading-relaxed text-white/70">
+                Upload a selfie or use your camera. Instant, on-device matching with FaceNet against{" "}
+                <span className="font-semibold text-white">{gallerySize.toLocaleString()}+ stars</span>.
               </p>
-            </>
+
+              {/* 3 Horizontal Pill Badges */}
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-2.5">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
+                  <Brain className="h-4 w-4 text-indigo-300" />
+                  On-device AI
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
+                  <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                  100% Private
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
+                  <Zap className="h-4 w-4 text-amber-300" />
+                  Instant Results
+                </span>
+              </div>
+            </div>
           )}
         </header>
 
         {phase === "capture" && (
-          <ul className="mb-5 flex flex-wrap gap-2">
-            {[
-              { icon: Shield, label: "Private · on-device" },
-              { icon: Zap, label: "FaceNet match" },
-              { icon: Camera, label: "Upload or camera" },
-            ].map(({ icon: Icon, label }) => (
-              <li
-                key={label}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-elevated/80 px-2.5 py-1 text-[11px] text-fg-muted"
-              >
-                <Icon className="h-3 w-3" strokeWidth={1.75} />
-                {label}
-              </li>
-            ))}
-          </ul>
-        )}
+          <div className="animate-fade-up space-y-8">
+            <PhotoUploader
+              onFile={onFile}
+              onCameraClick={() => setCameraOpen(true)}
+            />
 
-        {phase === "capture" && (
-          <div className="animate-fade-up space-y-3.5">
-            <PhotoUploader onFile={onFile} />
-            <div className="relative flex items-center gap-3 py-0.5">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-[11px] text-fg-subtle">or</span>
-              <div className="h-px flex-1 bg-border" />
+            {/* Teaser Sample Match Preview Showcase */}
+            <div className="flex flex-col items-center justify-center space-y-2 pt-2">
+              <div className="flex items-center gap-2.5">
+                <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
+                  <img
+                    src="/celebs/sample_user.jpg"
+                    alt="User portrait sample"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
+                  <img
+                    src="/celebs/leonardo-dicaprio.jpg"
+                    alt="Leonardo DiCaprio sample match"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-[#161824]/90 px-4 py-1.5 text-xs font-bold text-white shadow-xl backdrop-blur-md">
+                Match Found! 94% Similarity
+              </div>
             </div>
-            <Button
-              type="button"
-              variant="secondary"
-              size="lg"
-              className="w-full"
-              onClick={() => setCameraOpen(true)}
-            >
-              <Camera className="h-5 w-5" />
-              Use camera
-            </Button>
-            <p className="pt-1 text-center text-[11px] leading-relaxed text-fg-subtle text-pretty">
-              Best results: face the light, look at the lens, fill the frame.
-            </p>
           </div>
         )}
 
@@ -273,7 +291,12 @@ export function AppHome() {
         )}
 
         {phase === "analyzing" && (
-          <AnalyzingState stepIndex={stepIndex} previewUrl={previewUrl} progress={progress} />
+          <AnalyzingState
+            stepIndex={stepIndex}
+            previewUrl={previewUrl}
+            progress={progress}
+            gallerySize={gallerySize}
+          />
         )}
 
         {phase === "results" && result && (
@@ -294,8 +317,8 @@ export function AppHome() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-sm font-medium leading-tight">Photo quality too low for high-accuracy match</h2>
-                  <p className="mt-1 text-xs leading-relaxed text-fg-muted text-pretty">
+                  <h2 className="text-sm font-medium leading-tight text-white">Photo quality too low for high-accuracy match</h2>
+                  <p className="mt-1 text-xs leading-relaxed text-white/70 text-pretty">
                     {(() => {
                       const q = result.quality as unknown as { sharpness?: number };
                       if (result.quality.faceCoverage < 0.03) return "Face is too small — move closer and fill the square.";
@@ -309,37 +332,37 @@ export function AppHome() {
             </div>
             <div className="px-5 py-5 sm:px-6 space-y-3">
               <div className="flex gap-2">
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-border bg-bg-subtle">
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-white/20 bg-black/40">
                   {previewUrl && <img src={previewUrl} alt="" className="h-full w-full object-cover" />}
                 </div>
                 <div className="flex-1 space-y-2.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-fg-subtle">Face coverage</span>
-                    <span className="tabular-nums text-fg-muted">{(result.quality.faceCoverage * 100).toFixed(1)}%</span>
+                    <span className="text-white/60">Face coverage</span>
+                    <span className="tabular-nums text-white/80">{(result.quality.faceCoverage * 100).toFixed(1)}%</span>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                     <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, result.quality.faceCoverage * 600)}%` }} />
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-fg-subtle">Overall score</span>
-                    <span className="tabular-nums text-fg-muted">{(result.quality.score * 100).toFixed(0)}%</span>
+                    <span className="text-white/60">Overall score</span>
+                    <span className="tabular-nums text-white/80">{(result.quality.score * 100).toFixed(0)}%</span>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                     <div className="h-full bg-warn transition-[width]" style={{ width: `${result.quality.score * 100}%` }} />
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-fg-subtle">Sharpness</span>
-                    <span className="tabular-nums text-fg-muted">{Math.round((result.quality as unknown as { sharpness: number }).sharpness ?? 0)}/100</span>
+                    <span className="text-white/60">Sharpness</span>
+                    <span className="tabular-nums text-white/80">{Math.round((result.quality as unknown as { sharpness: number }).sharpness ?? 0)}/100</span>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                     <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, ((result.quality as unknown as { sharpness: number }).sharpness ?? 0) * 1.2)}%` }} />
                   </div>
                 </div>
               </div>
               {result.quality.issues.length > 0 && (
-                <ul className="space-y-1.5 rounded-[var(--radius-md)] bg-bg-subtle px-3 py-2.5">
+                <ul className="space-y-1.5 rounded-[var(--radius-md)] bg-white/5 px-3 py-2.5">
                   {result.quality.issues.map((issue, i) => (
-                    <li key={i} className="flex gap-2 text-xs leading-snug text-fg-muted">
+                    <li key={i} className="flex gap-2 text-xs leading-snug text-white/80">
                       <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-warn" />
                       {issue}
                     </li>
@@ -354,15 +377,15 @@ export function AppHome() {
                   See low-confidence matches
                 </Button>
               </div>
-              <p className="text-center text-[11px] text-fg-subtle">Low-confidence matches may be inaccurate — use for fun only.</p>
+              <p className="text-center text-[11px] text-white/50">Low-confidence matches may be inaccurate — use for fun only.</p>
             </div>
           </section>
         )}
 
         {phase === "error" && (
-          <section className="animate-fade-up space-y-4 rounded-[var(--radius-xl)] border border-border bg-bg-elevated p-6 text-center">
+          <section className="animate-fade-up space-y-4 rounded-[var(--radius-xl)] border border-white/10 bg-white/5 p-6 text-center text-white">
             <h2 className="text-lg font-medium">Couldn't analyze that photo</h2>
-            <p className="text-sm text-fg-muted text-pretty">{error}</p>
+            <p className="text-sm text-white/70 text-pretty">{error}</p>
             <Button variant="secondary" onClick={reset}>
               Try again
             </Button>
@@ -370,10 +393,16 @@ export function AppHome() {
         )}
 
         {showHero && (
-          <footer className="mt-10 border-t border-border pt-5 text-center">
-            <p className="text-[11px] leading-relaxed text-fg-subtle text-pretty">
-              Twinframe compares face embeddings for entertainment — not identity
-              verification. Gallery: {gallerySize} celebrities.
+          <footer className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-white/50 space-y-2">
+            <p>
+              Twinframe. On-device processing. No images uploaded.{" "}
+              <button
+                type="button"
+                onClick={() => setGalleryModalOpen(true)}
+                className="underline underline-offset-4 text-white/80 hover:text-white transition-colors font-medium"
+              >
+                Explore Star Gallery ({gallerySize.toLocaleString()}+ stars)
+              </button>
             </p>
           </footer>
         )}
@@ -384,6 +413,12 @@ export function AppHome() {
         onClose={() => setCameraOpen(false)}
         onCapture={onCapture}
       />
+
+      <StarGalleryModal
+        open={galleryModalOpen}
+        onClose={() => setGalleryModalOpen(false)}
+      />
     </div>
   );
 }
+

@@ -1,26 +1,29 @@
 import { Progress } from "@/components/ui/progress";
-
-const STEPS = [
-  { label: "Loading face recognition model", detail: "FaceNet + gallery" },
-  { label: "Detecting & cropping face", detail: "SSD MobileNet · 68 landmarks" },
-  { label: "Extracting face embedding", detail: "128-d descriptor" },
-  { label: "Ranking celebrity gallery", detail: "792 age-bucketed stars" },
-];
+import { FaceScanningHud } from "@/components/scanning/face-scanning-hud";
 
 export function AnalyzingState({
   stepIndex,
   previewUrl,
   progress,
+  gallerySize = 1000,
 }: {
   stepIndex: number;
   previewUrl?: string | null;
   progress?: number;
+  gallerySize?: number;
 }) {
-  const pct = progress ?? Math.min(92, 18 + stepIndex * 24);
+  const STEPS = [
+    { label: "Loading face recognition model", detail: "FaceNet + gallery" },
+    { label: "Detecting & cropping face", detail: "SSD MobileNet · 68 landmarks" },
+    { label: "Extracting face embedding", detail: "128-d descriptor" },
+    { label: "Ranking celebrity gallery", detail: `${gallerySize.toLocaleString()} age-bucketed stars` },
+  ];
+
+  const pct = Math.min(100, Math.max(0, Math.round(progress ?? Math.min(92, 18 + stepIndex * 24))));
   const active = STEPS[Math.min(stepIndex, STEPS.length - 1)]!;
   return (
     <section
-      className="animate-fade-up overflow-hidden rounded-[var(--radius-xl)] border border-border bg-bg-elevated"
+      className="animate-fade-up overflow-hidden rounded-[var(--radius-xl)] border border-white/10 bg-[#121420]/95 text-white"
       aria-live="polite"
       aria-busy="true"
     >
@@ -54,22 +57,8 @@ export function AnalyzingState({
 
       <div className="p-6 sm:p-7">
         <div className="flex flex-col items-center gap-5 text-center">
-          {/* Orbital animation */}
-          <div className="relative h-[84px] w-[84px]">
-            <div className="absolute inset-0 rounded-full border border-border" />
-            <div className="absolute inset-[10px] rounded-full border border-dashed border-border-strong opacity-60" style={{ animation: "spin 4s linear infinite" }} />
-            <div className="absolute inset-3 rounded-full border border-border-strong animate-pulse-soft" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-2 w-2 rounded-full bg-fg shadow-[0_0_12px_color-mix(in_oklab,var(--color-fg)_50%,transparent)]" />
-            </div>
-            {/* orbiting dot */}
-            <div
-              className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2"
-              style={{ animation: "spin 1.6s linear infinite" }}
-            >
-              <div className="h-2 w-2 -translate-y-[36px] rounded-full bg-match shadow-[0_0_8px_var(--color-match)]" />
-            </div>
-          </div>
+          {/* Face scanning HUD overlay */}
+          <FaceScanningHud previewUrl={previewUrl} stepIndex={stepIndex} />
 
           <ol className="w-full max-w-xs space-y-2.5 text-left">
             {STEPS.map((s, i) => {
@@ -125,8 +114,7 @@ export function AnalyzingState({
           </p>
         </div>
       </div>
-
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </section>
   );
 }
+

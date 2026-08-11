@@ -20,13 +20,14 @@ export function CelebrityPortrait({
   className?: string;
   alt?: string;
 }) {
-  const [failed, setFailed] = useState(false);
-  const [useFallback, setUseFallback] = useState(false);
-  const currentSrc = useFallback && fallbackUrl ? fallbackUrl : photoUrl;
-  const currentSrcSet =
-    !useFallback && photoUrl192
-      ? `${photoUrl} 96w, ${photoUrl192} 192w`
-      : undefined;
+  // Image fallback order: path192 -> path -> initials avatar
+  const [stage, setStage] = useState<"192" | "96" | "failed">(() =>
+    photoUrl192 ? "192" : photoUrl ? "96" : "failed",
+  );
+
+  const currentSrc =
+    stage === "192" ? photoUrl192 : stage === "96" ? photoUrl : undefined;
+
   const dims = {
     sm: "h-11 w-11 text-xs",
     md: "h-14 w-14 text-sm",
@@ -34,7 +35,15 @@ export function CelebrityPortrait({
     xl: "h-28 w-28 text-2xl sm:h-32 sm:w-32",
   }[size];
 
-  const showPhoto = Boolean(currentSrc) && !failed;
+  const showPhoto = Boolean(currentSrc) && stage !== "failed";
+
+  const handleImageError = () => {
+    if (stage === "192" && photoUrl) {
+      setStage("96");
+    } else {
+      setStage("failed");
+    }
+  };
 
   return (
     <div
@@ -56,28 +65,12 @@ export function CelebrityPortrait({
             }
       }
     >
-      {showPhoto ? (
+      {showPhoto && currentSrc ? (
         <img
           src={currentSrc}
-          srcSet={currentSrcSet}
-          sizes={
-            size === "xl"
-              ? "128px"
-              : size === "lg"
-                ? "80px"
-                : size === "md"
-                  ? "56px"
-                  : "44px"
-          }
           alt={alt || initials}
           className="h-full w-full object-cover object-top"
-          onError={() => {
-            if (!useFallback && fallbackUrl && currentSrc !== fallbackUrl) {
-              setUseFallback(true);
-              return;
-            }
-            setFailed(true);
-          }}
+          onError={handleImageError}
           loading="lazy"
           decoding="async"
         />

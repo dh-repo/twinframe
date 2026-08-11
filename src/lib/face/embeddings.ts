@@ -264,16 +264,15 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
 }
 
 /**
- * Convert FaceNet L2 distance to an honest match percentage.
- * Recalibrated for normalized + ensemble distances and tighter high-accuracy curve.
+ * Convert FaceNet L2 distance to a calibrated match percentage using the Hill Equation curve:
+ * P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^3.2)
+ * rounded to 1 decimal place. distanceToMatchPercent(0) returns 100.0.
  */
 export function distanceToMatchPercent(distance: number): number {
-  const d = Math.max(0, Math.min(1.35, distance));
-  // High-accuracy sigmoid: steeper around 0.42-0.62, 0.50 center
-  const t = (0.50 - d) / 0.13;
-  const sig = 1 / (1 + Math.exp(-t));
-  const pct = 16 + sig * 80;
-  return Math.round(Math.max(16, Math.min(96, pct)) * 10) / 10;
+  const d = Math.max(0, distance);
+  const hill = 15.0 + 85.0 / (1 + Math.pow(d / 0.58, 3.2));
+  const pct = Math.max(15.0, Math.min(100.0, hill));
+  return Math.round(pct * 10) / 10;
 }
 
 /** Relative ranking percents from absolute distances (preserves order). */
@@ -284,7 +283,7 @@ export function rankPercentsFromDistances(distances: number[]): number[] {
     .map((p, i) => ({ p, i, d: distances[i]! }))
     .sort((a, b) => a.d - b.d || b.p - a.p);
   const out = new Array<number>(raw.length);
-  let last = 100;
+  let last = Infinity;
   for (const item of sortedIdx) {
     const v = Math.min(item.p, last - 0.1);
     out[item.i] = Math.round(Math.max(15, v) * 10) / 10;
@@ -298,21 +297,35 @@ export function genderAffinity(
   userProb: number,
   celeb: CelebrityEmbedding,
 ): number {
-  if (userGender === "unknown" || userProb < 0.58) return 1;
+  if (userGender === "unknown") return 1;
   if (userGender === celeb.gender) return 1;
-  // High-accuracy: softer penalty, never dominate face distance
-  const base = 0.78 + (1 - userProb) * 0.16;
-  return Math.max(0.78, Math.min(1, base));
+  const prob = Math.max(0, Math.min(1, userProb));
+  return Math.max(0.75, Math.min(1, 1 - 0.22 * prob));
 }
 
+/** Continuous Gaussian age affinity: ageAffinity(userAge, celebAge) = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2)) */
 export function ageAffinity(userAge: number, celebAge: number): number {
-  // Gaussian-like falloff for high accuracy: precise near age, gentle far
-  const diff = Math.abs(userAge - celebAge);
-  if (diff <= 6) return 1;
-  if (diff <= 12) return 0.97;
-  if (diff <= 20) return 0.91;
-  if (diff <= 30) return 0.84;
-  return 0.76;
+  return Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2));
+}
+
+/**
+ * Compute overall match confidence rating in [10, 100] based on face detection and quality metrics.
+ */
+export function computeMatchConfidence(
+  detConfidence: number,
+  sharpness: number,
+  faceCoverage: number,
+  genderProb: number,
+): number {
+  const det = Math.max(0, Math.min(1, detConfidence > 1 ? detConfidence / 100 : detConfidence));
+  const sharp = Math.max(0, Math.min(1, sharpness > 1 ? sharpness / 100 : sharpness));
+  const covRaw = faceCoverage > 1 ? faceCoverage / 100 : faceCoverage;
+  const cov = Math.max(0, Math.min(1, covRaw / 0.25));
+  const gProb = Math.max(0, Math.min(1, genderProb > 1 ? genderProb / 100 : genderProb));
+
+  const weighted = 0.35 * det + 0.25 * sharp + 0.20 * cov + 0.20 * gProb;
+  const score = 10.0 + 90.0 * weighted;
+  return Math.round(Math.max(10.0, Math.min(100.0, score)) * 10) / 10;
 }
 
 export function mergeWithProfile(
