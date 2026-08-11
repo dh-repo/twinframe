@@ -24,7 +24,7 @@ export function AppHome() {
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [gallerySize, setGallerySize] = useState(267);
+  const [gallerySize, setGallerySize] = useState(1000);
   const previewRef = useRef<string | null>(null);
   // review state
   const [reviewSrc, setReviewSrc] = useState<string | null>(null);
