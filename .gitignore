@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.pnpm-store/
+.node_modules.lock
+
+# build / framework
+dist/
+.output/
+.vercel/
+.tanstack/
+.nitro/
+.waku/
+
+# env & local
+.env
+.env.*
+!.env.example
+*.local
+
+# logs & OS
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# agent / sandbox noise
+artifacts/
+screenshots/
+attachments/
+.grok/
+tmp/
+/tmp/
+
+# enroll helper (dev only)
+public/enroll.html
+
+# editor
+.idea/
+.vscode/
+*.swp
