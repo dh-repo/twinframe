@@ -3,7 +3,7 @@ import { initials } from "../celebrities/types.ts";
 import type { CelebrityMatch, TraitInsight } from "./types.ts";
 import {
   type CelebrityEmbedding,
-  euclideanDistance,
+  ensembleDistance,
   rankPercentsFromDistances,
   genderAffinity,
   ageAffinity,
@@ -19,6 +19,9 @@ export interface UserFaceQuery {
 
 /**
  * Rank celebrities by FaceNet L2 distance (primary), with soft age/gender priors.
+ * Gallery may contain multiple age-buckets per celeb id (e.g. 46/58/72).
+ * We score every bucket, then keep only the best bucket per celeb id
+ * (lowest adjusted distance), so results are diverse and age-aware.
  */
 export function rankByDescriptor(
   user: UserFaceQuery,
@@ -26,16 +29,25 @@ export function rankByDescriptor(
   topK = 5,
 ): CelebrityMatch[] {
   const scored = gallery.map((celeb) => {
-    const dist = euclideanDistance(user.descriptor, celeb.descriptor);
+    // High-accuracy ensemble: euclidean + cosine, normalized descriptors
+    const dist = ensembleDistance(user.descriptor, celeb.descriptor);
     const g = genderAffinity(user.gender, user.genderProbability, celeb);
     const a = ageAffinity(user.age, celeb.age);
-    // Soft priors: nudge distance down (better) for compatible age/gender
-    const adjusted = dist / (0.55 + 0.3 * g + 0.15 * a);
+    // High-accuracy: age/gender are gentle priors (don't dominate face)
+    // denominator 0.72 + 0.18*g + 0.10*a => max 12% shift for age/gender
+    const adjusted = dist / (0.72 + 0.18 * g + 0.10 * a);
     return { celeb, dist, adjusted };
   });
 
-  scored.sort((a, b) => a.adjusted - b.adjusted);
-  const top = scored.slice(0, topK);
+  // Deduplicate by celeb id: keep best bucket per id
+  const bestById = new Map<string, (typeof scored)[number]>();
+  for (const s of scored) {
+    const prev = bestById.get(s.celeb.id);
+    if (!prev || s.adjusted < prev.adjusted) bestById.set(s.celeb.id, s);
+  }
+  const deduped = Array.from(bestById.values());
+  deduped.sort((a, b) => a.adjusted - b.adjusted);
+  const top = deduped.slice(0, topK);
   const percents = rankPercentsFromDistances(top.map((t) => t.adjusted));
 
   return top.map((t, i) => {
@@ -44,6 +56,7 @@ export function rankByDescriptor(
       CELEBRITIES.find((c) => c.id === t.celeb.id)?.name ||
       t.celeb.name ||
       t.celeb.id;
+    const anyPath = t.celeb as CelebrityEmbedding & { path192?: string; fallbackPath?: string };
     return {
       celebrityId: t.celeb.id,
       name: displayName,
@@ -55,6 +68,8 @@ export function rankByDescriptor(
       initials: initials(displayName),
       tags: meta.tags,
       photoUrl: t.celeb.path,
+      photoUrl192: anyPath.path192,
+      fallbackPhotoUrl: anyPath.fallbackPath,
       distance: t.dist,
     };
   });

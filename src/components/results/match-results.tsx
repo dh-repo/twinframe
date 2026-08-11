@@ -110,6 +110,8 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
               initials={top.initials}
               accentHue={top.accentHue}
               photoUrl={top.photoUrl}
+              photoUrl192={top.photoUrl192}
+              fallbackUrl={top.fallbackPhotoUrl}
               size="xl"
               alt={top.name}
             />
@@ -184,6 +186,8 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
                   initials={m.initials}
                   accentHue={m.accentHue}
                   photoUrl={m.photoUrl}
+                  photoUrl192={m.photoUrl192}
+                  fallbackUrl={m.fallbackPhotoUrl}
                   size="sm"
                   alt={m.name}
                 />

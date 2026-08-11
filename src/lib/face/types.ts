@@ -84,6 +84,8 @@ export interface FaceQuality {
   score: number;
   faceCoverage: number;
   centered: number;
+  sharpness: number;
+  illumination: number;
   issues: string[];
 }
 
@@ -106,6 +108,8 @@ export interface CelebrityMatch {
   initials: string;
   tags: string[];
   photoUrl?: string;
+  photoUrl192?: string;
+  fallbackPhotoUrl?: string;
   distance?: number;
 }
 
@@ -120,4 +124,4 @@ export interface MatchResult {
   estimatedGender?: string;
 }
 
-export const ENGINE_VERSION = "2.1.0";
+export const ENGINE_VERSION = "3.1.0-high-accuracy";

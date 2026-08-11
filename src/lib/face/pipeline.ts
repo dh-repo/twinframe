@@ -3,7 +3,7 @@ import { ENGINE_VERSION } from "./types";
 import { emptyFeatures } from "./math";
 import { rankByDescriptor } from "./match";
 import {
-  detectAndDescribe,
+  detectAndDescribeWithTTA,
   prefetchFaceApi,
   assessDetectionQuality,
 } from "./faceapi-engine";
@@ -39,7 +39,7 @@ export async function analyzeFaceSource(
   const topK = options.topK ?? 5;
 
   const [det, gallery] = await Promise.all([
-    detectAndDescribe(source),
+    detectAndDescribeWithTTA(source),
     loadCelebrityEmbeddings(),
   ]);
 
@@ -51,6 +51,8 @@ export async function analyzeFaceSource(
         score: 0,
         faceCoverage: 0,
         centered: 0,
+        sharpness: 0,
+        illumination: 0,
         issues: [
           "No face found. Use a clear photo with your face visible — front-facing works best.",
         ],

@@ -616,3 +616,21 @@ prompt:    often one line — expand into a full product
 never:     ask the user to run commands, open localhost, or QA your environment
 never:     delete or abandon /workspace/startup.sh
 ```
+
+---
+
+## Commands
+
+- `npm run dev` — run the development task
+- `npm run build` — build the project
+- `npm test` — run the full test suite
+
+## Code Map
+
+- `src` — application source
+
+## Conventions
+
+- Use ESM `import` and `export` syntax with `@/*` alias for source imports.
+- Use `.ts` and `.tsx` extensions for source files and `.mjs` for scripts.
+- Name test files as `*.test.ts` and `*.test.mjs`.

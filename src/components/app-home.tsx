@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, Shield, Zap, ScanFace } from "lucide-react";
 import { PhotoUploader } from "@/components/capture/photo-uploader";
 import { WebcamCapture } from "@/components/capture/webcam-capture";
+import { CropReview } from "@/components/capture/crop-review";
 import { MatchResults } from "@/components/results/match-results";
 import { AnalyzingState } from "@/components/analyzing-state";
 import { Button } from "@/components/ui/button";
@@ -10,10 +11,10 @@ import {
   loadImageFromBlob,
   prefetchModel,
 } from "@/lib/face/pipeline";
-import type { MatchResult } from "@/lib/face/types";
+import type { FaceQuality, MatchResult } from "@/lib/face/types";
 import { loadCelebrityEmbeddings } from "@/lib/face/embeddings";
 
-type Phase = "capture" | "analyzing" | "results" | "error";
+type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
 
 export function AppHome() {
   const [phase, setPhase] = useState<Phase>("capture");
@@ -22,19 +23,25 @@ export function AppHome() {
   const [result, setResult] = useState<MatchResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [gallerySize, setGallerySize] = useState(267);
   const previewRef = useRef<string | null>(null);
+  // review state
+  const [reviewSrc, setReviewSrc] = useState<string | null>(null);
+  const [reviewFileName, setReviewFileName] = useState<string | undefined>(undefined);
+  const reviewSrcRef = useRef<string | null>(null);
 
   useEffect(() => {
     prefetchModel();
     void loadCelebrityEmbeddings()
-      .then((g) => setGallerySize(g.length))
+      .then((g) => setGallerySize(new Set(g.map((c) => c.id)).size))
       .catch(() => {});
   }, []);
 
   useEffect(() => {
     return () => {
       if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+      if (reviewSrcRef.current) URL.revokeObjectURL(reviewSrcRef.current);
     };
   }, []);
 
@@ -44,30 +51,80 @@ export function AppHome() {
     setPreviewUrl(url);
   }, []);
 
+  const setReview = useCallback((url: string | null, fileName?: string) => {
+    if (reviewSrcRef.current) URL.revokeObjectURL(reviewSrcRef.current);
+    reviewSrcRef.current = url;
+    setReviewSrc(url);
+    setReviewFileName(fileName);
+  }, []);
+
+  const clearReview = useCallback(() => {
+    if (reviewSrcRef.current) URL.revokeObjectURL(reviewSrcRef.current);
+    reviewSrcRef.current = null;
+    setReviewSrc(null);
+    setReviewFileName(undefined);
+  }, []);
+
   const runAnalysis = useCallback(
     async (blob: Blob) => {
       setError(null);
       setResult(null);
       setPhase("analyzing");
       setStepIndex(0);
+      setProgress(8);
 
       const url = URL.createObjectURL(blob);
       setPreview(url);
 
-      const timers = [
-        window.setTimeout(() => setStepIndex(1), 500),
-        window.setTimeout(() => setStepIndex(2), 1200),
-        window.setTimeout(() => setStepIndex(3), 2200),
-      ];
+      // polished timed progress
+      const timers: number[] = [];
+      timers.push(window.setTimeout(() => { setStepIndex(1); setProgress(28); }, 600));
+      timers.push(window.setTimeout(() => { setStepIndex(2); setProgress(56); }, 1400));
+      timers.push(window.setTimeout(() => { setStepIndex(3); setProgress(82); }, 2300));
 
       try {
         const img = await loadImageFromBlob(blob);
         setStepIndex(1);
+        setProgress(32);
         const matchResult = await analyzeFaceSource(img, { topK: 6 });
         setStepIndex(3);
-        await new Promise((r) => setTimeout(r, 200));
+        setProgress(96);
+
+        // --- High-accuracy quality gate: stricter than before ---
+        const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
+        const sharpness = (q as unknown as { sharpness: number }).sharpness ?? 60;
+        const isLowQuality =
+          !matchResult.matches.length ||
+          !matchResult.quality.ok ||
+          matchResult.quality.score < 0.45 ||
+          matchResult.quality.faceCoverage < 0.035 ||
+          sharpness < 42 ||
+          matchResult.quality.issues.some(
+            (i) => i.includes("blurry") || i.includes("Low face confidence") || i.includes("Dim lighting"),
+          );
+
+        // Keep a short beat for polish before showing results
+        await new Promise((r) => setTimeout(r, 260));
+        setProgress(100);
         setResult(matchResult);
-        setPhase("results");
+
+        if (isLowQuality && matchResult.matches.length === 0) {
+          setPhase("quality-blocked");
+        } else if (isLowQuality) {
+          // High-accuracy mode: any quality issue blocks to force retake, unless user overrides
+          if (
+            !matchResult.quality.ok ||
+            matchResult.quality.score < 0.48 ||
+            matchResult.quality.faceCoverage < 0.04 ||
+            sharpness < 45
+          ) {
+            setPhase("quality-blocked");
+          } else {
+            setPhase("results");
+          }
+        } else {
+          setPhase("results");
+        }
       } catch (e) {
         const msg =
           e instanceof Error
@@ -84,27 +141,49 @@ export function AppHome() {
 
   const onFile = useCallback(
     (file: File) => {
-      void runAnalysis(file);
+      // go to crop/approve review instead of immediate analysis
+      const url = URL.createObjectURL(file);
+      setReview(url, file.name);
+      setPhase("review");
     },
-    [runAnalysis],
+    [setReview],
   );
 
   const onCapture = useCallback(
     (blob: Blob) => {
-      void runAnalysis(blob);
+      // camera capture also goes through review for consistency, but with quick approve
+      const url = URL.createObjectURL(blob);
+      setReview(url, "camera.jpg");
+      setPhase("review");
+      setCameraOpen(false);
     },
-    [runAnalysis],
+    [setReview],
   );
+
+  const onApproveCrop = useCallback(
+    (croppedBlob: Blob) => {
+      clearReview();
+      void runAnalysis(croppedBlob);
+    },
+    [clearReview, runAnalysis],
+  );
+
+  const onRetake = useCallback(() => {
+    clearReview();
+    setPhase("capture");
+  }, [clearReview]);
 
   const reset = useCallback(() => {
     setPhase("capture");
     setResult(null);
     setError(null);
     setStepIndex(0);
+    setProgress(0);
     setPreview(null);
-  }, [setPreview]);
+    clearReview();
+  }, [setPreview, clearReview]);
 
-  const showHero = phase === "capture";
+  const showHero = phase === "capture" || phase === "review";
 
   return (
     <div className="app-shell">
@@ -117,7 +196,7 @@ export function AppHome() {
               </div>
               <span className="text-sm font-medium tracking-tight">Twinframe</span>
             </div>
-            {phase === "results" && (
+            {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") && (
               <button
                 type="button"
                 onClick={reset}
@@ -184,7 +263,18 @@ export function AppHome() {
           </div>
         )}
 
-        {phase === "analyzing" && <AnalyzingState stepIndex={stepIndex} />}
+        {phase === "review" && reviewSrc && (
+          <CropReview
+            imageSrc={reviewSrc}
+            fileName={reviewFileName}
+            onApprove={onApproveCrop}
+            onRetake={onRetake}
+          />
+        )}
+
+        {phase === "analyzing" && (
+          <AnalyzingState stepIndex={stepIndex} previewUrl={previewUrl} progress={progress} />
+        )}
 
         {phase === "results" && result && (
           <MatchResults
@@ -192,6 +282,81 @@ export function AppHome() {
             previewUrl={previewUrl}
             onReset={reset}
           />
+        )}
+
+        {phase === "quality-blocked" && result && (
+          <section className="animate-fade-up overflow-hidden rounded-[var(--radius-xl)] border border-warn/40 bg-bg-elevated">
+            <div className="bg-warn/10 px-5 py-4 sm:px-6">
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warn/20 text-warn">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                    <path d="M8 5.2V8.2M8 10.2H8.01M14 13.2L8.6 3.8C8.3 3.3 7.7 3.3 7.4 3.8L2 13.2C1.7 13.7 2 14.4 2.6 14.4H13.4C14 14.4 14.3 13.7 14 13.2Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-sm font-medium leading-tight">Photo quality too low for high-accuracy match</h2>
+                  <p className="mt-1 text-xs leading-relaxed text-fg-muted text-pretty">
+                    {(() => {
+                      const q = result.quality as unknown as { sharpness?: number };
+                      if (result.quality.faceCoverage < 0.03) return "Face is too small — move closer and fill the square.";
+                      if ((q.sharpness ?? 60) < 42) return "Photo is blurry — hold steady and tap to focus.";
+                      if (result.quality.score < 0.45) return "Low confidence — use front-facing, even lighting.";
+                      return "Soft quality — a sharper, centered selfie gives the most accurate match.";
+                    })()} High-accuracy mode requires crisp focus and 4%+ face coverage.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="px-5 py-5 sm:px-6 space-y-3">
+              <div className="flex gap-2">
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-border bg-bg-subtle">
+                  {previewUrl && <img src={previewUrl} alt="" className="h-full w-full object-cover" />}
+                </div>
+                <div className="flex-1 space-y-2.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-fg-subtle">Face coverage</span>
+                    <span className="tabular-nums text-fg-muted">{(result.quality.faceCoverage * 100).toFixed(1)}%</span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle">
+                    <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, result.quality.faceCoverage * 600)}%` }} />
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-fg-subtle">Overall score</span>
+                    <span className="tabular-nums text-fg-muted">{(result.quality.score * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle">
+                    <div className="h-full bg-warn transition-[width]" style={{ width: `${result.quality.score * 100}%` }} />
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-fg-subtle">Sharpness</span>
+                    <span className="tabular-nums text-fg-muted">{Math.round((result.quality as unknown as { sharpness: number }).sharpness ?? 0)}/100</span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-subtle">
+                    <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, ((result.quality as unknown as { sharpness: number }).sharpness ?? 0) * 1.2)}%` }} />
+                  </div>
+                </div>
+              </div>
+              {result.quality.issues.length > 0 && (
+                <ul className="space-y-1.5 rounded-[var(--radius-md)] bg-bg-subtle px-3 py-2.5">
+                  {result.quality.issues.map((issue, i) => (
+                    <li key={i} className="flex gap-2 text-xs leading-snug text-fg-muted">
+                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-warn" />
+                      {issue}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="flex gap-2 pt-1">
+                <Button variant="secondary" size="md" onClick={reset} className="flex-1">
+                  Retake photo
+                </Button>
+                <Button variant="primary" size="md" onClick={() => setPhase("results")} className="flex-1">
+                  See low-confidence matches
+                </Button>
+              </div>
+              <p className="text-center text-[11px] text-fg-subtle">Low-confidence matches may be inaccurate — use for fun only.</p>
+            </div>
+          </section>
         )}
 
         {phase === "error" && (

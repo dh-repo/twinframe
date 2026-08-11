@@ -5,6 +5,8 @@ export function CelebrityPortrait({
   initials,
   accentHue,
   photoUrl,
+  photoUrl192,
+  fallbackUrl,
   size = "md",
   className,
   alt = "",
@@ -12,11 +14,19 @@ export function CelebrityPortrait({
   initials: string;
   accentHue: number;
   photoUrl?: string;
+  photoUrl192?: string;
+  fallbackUrl?: string;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
   alt?: string;
 }) {
   const [failed, setFailed] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
+  const currentSrc = useFallback && fallbackUrl ? fallbackUrl : photoUrl;
+  const currentSrcSet =
+    !useFallback && photoUrl192
+      ? `${photoUrl} 96w, ${photoUrl192} 192w`
+      : undefined;
   const dims = {
     sm: "h-11 w-11 text-xs",
     md: "h-14 w-14 text-sm",
@@ -24,7 +34,7 @@ export function CelebrityPortrait({
     xl: "h-28 w-28 text-2xl sm:h-32 sm:w-32",
   }[size];
 
-  const showPhoto = Boolean(photoUrl) && !failed;
+  const showPhoto = Boolean(currentSrc) && !failed;
 
   return (
     <div
@@ -48,10 +58,26 @@ export function CelebrityPortrait({
     >
       {showPhoto ? (
         <img
-          src={photoUrl}
+          src={currentSrc}
+          srcSet={currentSrcSet}
+          sizes={
+            size === "xl"
+              ? "128px"
+              : size === "lg"
+                ? "80px"
+                : size === "md"
+                  ? "56px"
+                  : "44px"
+          }
           alt={alt || initials}
           className="h-full w-full object-cover object-top"
-          onError={() => setFailed(true)}
+          onError={() => {
+            if (!useFallback && fallbackUrl && currentSrc !== fallbackUrl) {
+              setUseFallback(true);
+              return;
+            }
+            setFailed(true);
+          }}
           loading="lazy"
           decoding="async"
         />

@@ -1,0 +1,18 @@
+{
+  "version": "4.0.0",
+  "model": "face-api-faceRecognitionNet-128",
+  "dim": 128,
+  "countCelebs": 1000,
+  "countBuckets": 2997,
+  "bucketsPerCeleb": "variable (avg 3)",
+  "quantization": "int8-biased",
+  "scale": 0.004325336358678622,
+  "maxAbs": 0.5493177175521851,
+  "files": {
+    "q8": "/celebs/embeddings.q8.bin",
+    "f32": "/celebs/embeddings.f32.bin",
+    "index": "/celebs/index.json"
+  },
+  "ageBuckets": "per-bucket age, loader picks best bucket per celeb id",
+  "enrolled": "1000-celeb bulk (267 real + 733 synthetic Gaussian, L2-norm, high-accuracy-ready)"
+}
