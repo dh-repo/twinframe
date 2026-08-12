@@ -79,6 +79,17 @@
   .text-pretty {
     text-wrap: pretty;
   }
+  .touch-target-min {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* Subtle grain for depth without loud gradients */

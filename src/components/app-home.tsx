@@ -102,12 +102,12 @@ export function AppHome() {
         setProgress((prev) => Math.max(prev, currentProgress));
       }, 100);
 
-      // Safety timeout (20s) in case device WASM/WebGL stalls
+      // Safety timeout (45s) in case device WASM/WebGL stalls on initial model download
       const timeoutId = window.setTimeout(() => {
         cancelled = true;
         setError("Analysis timed out. Please try a clearer front-facing photo.");
         setPhase("error");
-      }, 20000);
+      }, 45000);
 
       try {
         const img = await loadImageFromBlob(blob);
@@ -236,8 +236,8 @@ export function AppHome() {
   const showHero = phase === "capture" || phase === "review";
 
   return (
-    <div className="app-shell min-h-screen bg-[#090a0f] text-white">
-      <div className="app-content mx-auto w-full max-w-xl px-4 pb-16 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-6">
+    <div className="app-shell min-h-screen w-full overflow-x-hidden bg-[#090a0f] text-white">
+      <div className="app-content mx-auto w-full max-w-xl px-4 pb-[max(4rem,calc(3rem+env(safe-area-inset-bottom)))] pt-[max(calc(1.25rem+var(--grok-banner-h,0px)),env(safe-area-inset-top))] sm:px-6">
         <header className={showHero ? "mb-8 sm:mb-10" : "mb-5"}>
           <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
             <div className="flex items-center gap-2.5">
@@ -415,14 +415,10 @@ export function AppHome() {
                 </ul>
               )}
               <div className="flex gap-2 pt-1">
-                <Button variant="secondary" size="md" onClick={reset} className="flex-1">
+                <Button variant="primary" size="md" onClick={reset} className="w-full">
                   Retake photo
                 </Button>
-                <Button variant="primary" size="md" onClick={() => setPhase("results")} className="flex-1">
-                  See low-confidence matches
-                </Button>
               </div>
-              <p className="text-center text-[11px] text-white/50">Low-confidence matches may be inaccurate — use for fun only.</p>
             </div>
           </section>
         )}

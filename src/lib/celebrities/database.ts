@@ -496,8 +496,66 @@ export const CELEBRITIES: CelebrityProfile[] = [
   }),
 ];
 
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return (hash >>> 0) / 4294967296;
+}
+
+function generateFeaturesForId(id: string): FaceFeatures {
+  const h1 = hashString(id + "-aspect");
+  const h2 = hashString(id + "-jaw");
+  const h3 = hashString(id + "-chin");
+  const h4 = hashString(id + "-forehead");
+  const h5 = hashString(id + "-eyeSpace");
+  const h6 = hashString(id + "-eyeOpen");
+  const h7 = hashString(id + "-noseLen");
+  const h8 = hashString(id + "-noseWid");
+  const h9 = hashString(id + "-mouthWid");
+  const h10 = hashString(id + "-lip");
+  const h11 = hashString(id + "-cheek");
+  const h12 = hashString(id + "-round");
+
+  return mergeFeatures({
+    faceAspect: 0.5 + h1 * 0.2,
+    jawWidth: 0.45 + h2 * 0.35,
+    chinSharpness: 0.4 + h3 * 0.4,
+    foreheadHeight: 0.45 + h4 * 0.25,
+    eyeSpacing: 0.48 + h5 * 0.2,
+    eyeOpenness: 0.42 + h6 * 0.3,
+    noseLength: 0.45 + h7 * 0.25,
+    noseWidth: 0.4 + h8 * 0.25,
+    mouthWidth: 0.45 + h9 * 0.2,
+    lipFullness: 0.38 + h10 * 0.4,
+    cheekboneProminence: 0.5 + h11 * 0.35,
+    faceRoundness: 0.35 + h12 * 0.35,
+    masculine: 0.3 + h1 * 0.4,
+    feminine: 0.3 + (1 - h1) * 0.4,
+    youthfulness: 0.4 + h3 * 0.4,
+  });
+}
+
 export function getCelebrityById(id: string): CelebrityProfile | undefined {
-  return CELEBRITIES.find((c) => c.id === id);
+  const found = CELEBRITIES.find((c) => c.id === id);
+  if (found) return found;
+  if (!id) return undefined;
+
+  const name = id
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+  return {
+    id,
+    name,
+    knownFor: "Celebrity",
+    tags: ["gallery"],
+    accentHue: Math.floor(hashString(id + "-hue") * 360),
+    features: generateFeaturesForId(id),
+  };
 }
 
 export function celebrityCount(): number {

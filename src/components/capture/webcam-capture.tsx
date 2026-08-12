@@ -44,7 +44,11 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
       const video = videoRef.current;
       if (video) {
         video.srcObject = stream;
-        await video.play();
+        try {
+          await video.play();
+        } catch (playErr) {
+          console.warn("Video play error (handled):", playErr);
+        }
         setReady(true);
       }
     } catch {
@@ -95,18 +99,18 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-bg/80 p-0 sm:p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-bg/80 p-0 sm:p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-label="Camera capture"
     >
-      <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-t-[var(--radius-2xl)] sm:rounded-[var(--radius-2xl)] border border-border bg-bg-elevated shadow-[var(--shadow-soft)]">
+      <div className="flex w-full max-w-lg max-h-[100dvh] flex-col overflow-hidden rounded-t-[var(--radius-2xl)] sm:rounded-[var(--radius-2xl)] border border-border bg-bg-elevated shadow-[var(--shadow-soft)]">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <p className="text-sm font-medium">Camera</p>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-sm)] text-fg-muted hover:text-fg hover:bg-bg-subtle"
+            className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] text-fg-muted hover:text-fg hover:bg-bg-subtle touch-target-min"
             aria-label="Close camera"
           >
             <X className="h-5 w-5" />
@@ -116,6 +120,7 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
         <div className="relative aspect-[3/4] sm:aspect-[4/3] bg-bg overflow-hidden">
           <video
             ref={videoRef}
+            autoPlay
             playsInline
             muted
             className={cn(

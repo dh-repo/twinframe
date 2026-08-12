@@ -162,6 +162,8 @@ export interface MatchResult {
   estimatedAge?: number;
   estimatedGender?: string;
   telemetry?: FaceTelemetry;
+  candidates?: import("./faceapi-engine").FaceCandidate[];
+  candidateBoxes?: Array<{ x: number; y: number; width: number; height: number; isPrimary: boolean }>;
 }
 
 export const ENGINE_VERSION = "3.1.0-high-accuracy";

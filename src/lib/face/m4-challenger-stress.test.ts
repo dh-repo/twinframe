@@ -21,10 +21,10 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.equal(res, 100.0, `Expected 100.0 at d=0, got ${res}`);
     });
 
-    it("evaluates Hill Equation exact value at half-saturation threshold d = 0.58", () => {
-      // P(0.58) = 15.0 + 85.0 / (1 + (0.58/0.58)^3.2) = 15.0 + 85.0 / 2 = 57.5
-      const res = distanceToMatchPercent(0.58);
-      assert.equal(res, 57.5, `Expected 57.5 at d=0.58, got ${res}`);
+    it("evaluates Hill Equation exact value at half-saturation threshold d = 0.32", () => {
+      // P(0.32) = 15.0 + 85.0 / (1 + (0.32/0.32)^3.5) = 15.0 + 85.0 / 2 = 57.5
+      const res = distanceToMatchPercent(0.32);
+      assert.equal(res, 57.5, `Expected 57.5 at d=0.32, got ${res}`);
     });
 
     it("verifies strict monotonicity for fine distance steps across [0, 3.0]", () => {
@@ -40,17 +40,17 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
     });
 
     it("verifies unrounded Hill curve continuous derivative is strictly negative for d > 0", () => {
-      // hill(d) = 15 + 85 / (1 + (d/0.58)^3.2)
+      // hill(d) = 15 + 85 / (1 + (d/0.32)^3.5)
       for (let d = 0.01; d <= 2.0; d += 0.05) {
-        const hill1 = 15.0 + 85.0 / (1 + Math.pow(d / 0.58, 3.2));
-        const hill2 = 15.0 + 85.0 / (1 + Math.pow((d + 1e-5) / 0.58, 3.2));
+        const hill1 = 15.0 + 85.0 / (1 + Math.pow(d / 0.32, 3.5));
+        const hill2 = 15.0 + 85.0 / (1 + Math.pow((d + 1e-5) / 0.32, 3.5));
         assert.ok(hill2 < hill1, `Hill curve derivative not strictly negative at d=${d}`);
       }
     });
 
     it("enforces strict lower and upper percentage boundaries [15.0, 100.0]", () => {
       const distancesToTest = [
-        0, 1e-10, 0.1, 0.3, 0.58, 0.8, 1.0, 1.5, 2.0, 5.0, 100.0, 1e6, Infinity,
+        0, 1e-10, 0.1, 0.3, 0.32, 0.8, 1.0, 1.5, 2.0, 5.0, 100.0, 1e6, Infinity,
       ];
       for (const d of distancesToTest) {
         const pct = distanceToMatchPercent(d);
@@ -278,12 +278,12 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.equal(cosineDistance(v1, v4), 2); // Opposite
     });
 
-    it("computes ensembleDistance as weighted sum 0.72*euc + 0.28*cos*0.85", () => {
+    it("computes ensembleDistance as weighted sum 0.90*euc + 0.42*cos", () => {
       const v1 = [1, 0, 0];
       const v2 = [0, 1, 0];
       const euc = Math.sqrt(2); // ≈ 1.41421356
       const cos = 1.0;
-      const expected = 0.72 * euc + 0.28 * (cos * 0.85);
+      const expected = 0.90 * euc + 0.42 * cos;
 
       const actual = ensembleDistance(v1, v2);
       assert.ok(Math.abs(actual - expected) < 1e-6, `Expected ${expected}, got ${actual}`);

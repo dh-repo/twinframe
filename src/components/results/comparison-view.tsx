@@ -73,17 +73,17 @@ export function ComparisonView({
   return (
     <div className={cn("space-y-4", className)}>
       {/* Mode Switcher Tabs */}
-      <div className="flex items-center justify-center">
-        <div className="inline-flex rounded-lg border border-border bg-bg-subtle p-1" role="tablist" aria-label="Comparison modes">
+      <div className="flex items-center justify-center w-full overflow-x-auto no-scrollbar">
+        <div className="inline-flex rounded-lg border border-border bg-bg-subtle p-1 max-w-full overflow-x-auto no-scrollbar" role="tablist" aria-label="Comparison modes">
           <button
             type="button"
             role="tab"
             aria-selected={mode === "side-by-side"}
             onClick={() => setMode("side-by-side")}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+              "flex items-center gap-1.5 rounded-md px-2.5 sm:px-3 py-2 text-xs font-medium transition-all shrink-0 touch-target-min",
               mode === "side-by-side"
-                ? "bg-bg-elevated text-fg shadow-sm"
+                ? "bg-bg-elevated text-fg shadow-sm font-semibold"
                 : "text-fg-subtle hover:text-fg-muted"
             )}
           >
@@ -96,9 +96,9 @@ export function ComparisonView({
             aria-selected={mode === "split-slider"}
             onClick={() => setMode("split-slider")}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+              "flex items-center gap-1.5 rounded-md px-2.5 sm:px-3 py-2 text-xs font-medium transition-all shrink-0 touch-target-min",
               mode === "split-slider"
-                ? "bg-bg-elevated text-fg shadow-sm"
+                ? "bg-bg-elevated text-fg shadow-sm font-semibold"
                 : "text-fg-subtle hover:text-fg-muted"
             )}
           >
@@ -111,9 +111,9 @@ export function ComparisonView({
             aria-selected={mode === "landmarks"}
             onClick={() => setMode("landmarks")}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+              "flex items-center gap-1.5 rounded-md px-2.5 sm:px-3 py-2 text-xs font-medium transition-all shrink-0 touch-target-min",
               mode === "landmarks"
-                ? "bg-bg-elevated text-fg shadow-sm"
+                ? "bg-bg-elevated text-fg shadow-sm font-semibold"
                 : "text-fg-subtle hover:text-fg-muted"
             )}
           >
@@ -190,7 +190,7 @@ export function ComparisonView({
             }}
             onTouchMove={onTouchMove}
             onTouchEnd={() => setIsDragging(false)}
-            className="relative aspect-[4/3] w-full max-w-md mx-auto overflow-hidden rounded-2xl border border-match/30 bg-bg-subtle select-none cursor-ew-resize shadow-lg"
+            className="relative aspect-[4/3] w-full max-w-md mx-auto overflow-hidden rounded-2xl border border-match/30 bg-bg-subtle select-none touch-none cursor-ew-resize shadow-lg"
           >
             {/* Background Layer: Celebrity Face */}
             <div className="absolute inset-0 h-full w-full">

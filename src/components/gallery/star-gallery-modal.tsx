@@ -64,15 +64,15 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
       />
 
       {/* Modal Card */}
-      <div className="relative z-10 flex h-[85vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/15 bg-[#121420]/95 text-white shadow-2xl backdrop-blur-2xl">
+      <div className="relative z-10 flex h-[90dvh] max-h-[850px] w-full max-w-4xl flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/15 bg-[#121420]/95 text-white shadow-2xl backdrop-blur-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-400/30 bg-gradient-to-b from-indigo-500/20 to-purple-600/20 text-indigo-400">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-white sm:text-xl">
+              <h2 className="text-base sm:text-xl font-bold tracking-tight text-white">
                 Twinframe Star Index
               </h2>
               <p className="text-xs text-white/60">
@@ -83,19 +83,19 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white touch-target-min"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Filter Controls */}
-        <div className="space-y-3 border-b border-white/10 bg-white/[0.02] px-6 py-4">
+        <div className="space-y-3 border-b border-white/10 bg-white/[0.02] px-4 sm:px-6 py-3.5 sm:py-4">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
             <input
               type="text"
-              placeholder="Search star by name (e.g., Leonardo DiCaprio, Zendaya, Messi)..."
+              placeholder="Search star by name (e.g., Leonardo DiCaprio, Zendaya)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-2xl border border-white/15 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder-white/40 outline-none transition-all focus:border-indigo-500/60 focus:bg-white/10 focus:ring-1 focus:ring-indigo-500/50"
@@ -111,13 +111,13 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {categories.map((cat) => (
               <button
                 key={cat}
                 type="button"
                 onClick={() => setCategory(cat)}
-                className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all shrink-0 ${
                   category === cat
                     ? "bg-white text-black font-semibold shadow-md"
                     : "border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"

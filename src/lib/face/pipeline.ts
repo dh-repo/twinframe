@@ -1,14 +1,18 @@
 import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types";
 import { ENGINE_VERSION } from "./types";
 import { emptyFeatures } from "./math";
+import { extractGeometryFeatures68 } from "./geometry";
 import { rankByDescriptor } from "./match";
 import {
   detectAndDescribeWithTTA,
   prefetchFaceApi,
+  loadFaceApi,
   assessDetectionQuality,
   logFaceTelemetry,
 } from "./faceapi-engine";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings";
+import { estimateHeadPose68 } from "./pose";
+import { analyzeImageQuality } from "./quality";
 
 export type PipelineStatus =
   | "idle"
@@ -22,6 +26,7 @@ export function prefetchModel(): void {
   if (typeof window === "undefined") return;
   prefetchFaceApi();
   prefetchEmbeddings();
+  void loadFaceApi().catch(() => {});
 }
 
 export interface AnalyzeOptions {
@@ -46,7 +51,7 @@ export interface AnalyzeOptions {
 
 /**
  * Full pipeline v2:
- * FaceNet 128-d descriptor → rank against enrolled celebrity embeddings.
+ * FaceNet 128-d descriptor + 68-point Landmark Fusion → rank against enrolled celebrity embeddings.
  * Auto-handles small faces in full-body photos via detector + crop.
  */
 export async function analyzeFaceSource(
@@ -58,6 +63,47 @@ export async function analyzeFaceSource(
 
   onProgress?.(0, 15);
   const galleryPromise = loadCelebrityEmbeddings();
+
+  // Pre-detection image quality gate: reject solid dark, bright, or featureless images
+  try {
+    const sw = (source as any).videoWidth || (source as any).naturalWidth || source.width || 0;
+    const sh = (source as any).videoHeight || (source as any).naturalHeight || source.height || 0;
+    if (sw > 0 && sh > 0 && typeof document !== "undefined") {
+      const qCanvas = document.createElement("canvas");
+      const sampleSize = 128;
+      qCanvas.width = sampleSize;
+      qCanvas.height = sampleSize;
+      const qCtx = qCanvas.getContext("2d", { willReadFrequently: true });
+      if (qCtx) {
+        qCtx.drawImage(source as CanvasImageSource, 0, 0, sampleSize, sampleSize);
+        const imgData = qCtx.getImageData(0, 0, sampleSize, sampleSize);
+        const qMetrics = analyzeImageQuality(imgData);
+        if (qMetrics.illuminationBalance < 0.05 || qMetrics.overallQuality < 0.12) {
+          onProgress?.(3, 100);
+          return {
+            features: emptyFeatures(),
+            quality: {
+              ok: false,
+              score: qMetrics.overallQuality,
+              faceCoverage: 0,
+              centered: 0,
+              sharpness: qMetrics.sharpnessScore * 100,
+              illumination: qMetrics.illuminationBalance,
+              issues: [
+                "No face found. Image is featureless, dark, or overexposed.",
+                ...qMetrics.issues,
+              ],
+            },
+            matches: [],
+            analyzedAt: Date.now(),
+            engineVersion: ENGINE_VERSION,
+          };
+        }
+      }
+    }
+  } catch {
+    /* quality check optional */
+  }
 
   onProgress?.(1, 35);
   const det = await detectAndDescribeWithTTA(source, options);
@@ -117,26 +163,39 @@ export async function analyzeFaceSource(
   const faceCoverage =
     (det.box.width * det.box.height) /
     Math.max(1, det.imageWidth * det.imageHeight);
+
+  const landmarkPoints = det.croppedLandmarks?.length
+    ? det.croppedLandmarks
+    : det.normalizedLandmarks;
+  const features: FaceFeatures =
+    landmarkPoints && landmarkPoints.length >= 68
+      ? extractGeometryFeatures68(landmarkPoints)
+      : emptyFeatures();
+
+  // Live pose estimate damps geom fusion under large yaw (POS wired into ranking).
+  const headPose =
+    landmarkPoints && landmarkPoints.length >= 68
+      ? estimateHeadPose68(landmarkPoints)
+      : undefined;
+
   const matches = rankByDescriptor(
     {
       descriptor: det.descriptor,
       age: det.age,
       gender: det.gender,
       genderProbability: det.genderProbability,
-      // Feed real detection quality into match confidence (was defaulting to optimistic values)
       detConfidence: det.confidence,
       sharpness: det.sharpness,
       faceCoverage,
       qualityScore: quality.score,
+      features,
+      headPose,
     },
     gallery,
     topK,
   );
 
   onProgress?.(3, 98);
-
-  // Geometry features left empty for embedding path (traits come from age/gender/embedding)
-  const features: FaceFeatures = emptyFeatures();
 
   return {
     features,
@@ -148,6 +207,8 @@ export async function analyzeFaceSource(
     estimatedAge: Math.round(det.age),
     estimatedGender: det.gender,
     telemetry: det.telemetry,
+    candidates: det.allFaces,
+    candidateBoxes: det.candidateBoxes,
   };
 }
 

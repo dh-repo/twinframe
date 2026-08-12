@@ -88,10 +88,13 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       // Offset in container px so face center lands on viewfinder center
       const ox = (icx - fcx) * drawScale;
       const oy = (icy - fcy) * drawScale;
-      const max = Math.max(80, 120 * zoom);
+      const drawW = iw * drawScale;
+      const drawH = ih * drawScale;
+      const maxPanX = Math.max(120, (drawW - 100) / 2);
+      const maxPanY = Math.max(120, (drawH - 100) / 2);
       setOffset({
-        x: Math.max(-max, Math.min(max, ox)),
-        y: Math.max(-max, Math.min(max, oy)),
+        x: Math.max(-maxPanX, Math.min(maxPanX, ox)),
+        y: Math.max(-maxPanY, Math.min(maxPanY, oy)),
       });
     },
     [scale],
@@ -111,17 +114,21 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
     setDetectError(null);
     setDetectStatus("Loading face model…");
 
-    // Hard stop so the UI never spins forever (models + detect)
+    // Warm full recognition models in background while user reviews crop
+    void import("@/lib/face/pipeline").then(({ prefetchModel }) => prefetchModel()).catch(() => {});
+
+    const img = new Image();
+    img.src = imageSrc;
+
+    // Hard stop safeguard after 10s
     const safetyTimer = setTimeout(() => {
       if (!isMounted || finished) return;
       finished = true;
       setIsDetectingFaces(false);
-      setDetectStatus("Timed out — drag to frame a face, then Approve");
-      setDetectError("Detection took too long. You can still crop manually.");
-    }, 20000);
+      setDetectStatus("Drag & zoom to adjust face frame");
+      setDetectError(null);
+    }, 10000);
 
-    const img = new Image();
-    img.src = imageSrc;
     img.onload = async () => {
       if (!isMounted || finished) return;
       const iw = img.naturalWidth;
@@ -174,16 +181,27 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
               : `${list.length} faces found — tap who to match`,
           );
         } else {
+          // No faces detected — keep candidates empty (no fake face boxes)
+          setCandidates([]);
+          setSelectedFaceId(null);
           setDetectStatus("No face locked — drag & zoom, then Approve");
           setDetectError(null);
+          // Position viewfinder over upper-middle of photo where heads usually are in portrait shots
+          if (ih > iw) {
+            const containerSize = 320;
+            const drawScale = Math.max(containerSize / iw, containerSize / ih);
+            const targetY = ih * 0.28; // 28% down from top
+            const icy = ih / 2;
+            const oy = (icy - targetY) * drawScale;
+            setOffset({ x: 0, y: Math.max(-100, Math.min(100, oy)) });
+          }
         }
+
       } catch (e) {
         console.warn("Face candidate detection in CropReview failed:", e);
         if (isMounted && !finished) {
-          setDetectError(
-            e instanceof Error ? e.message : "Face model failed to load",
-          );
-          setDetectStatus("Detection failed — crop manually, then Approve");
+          setDetectError(null);
+          setDetectStatus("Crop manually, then Approve");
         }
       } finally {
         finished = true;
@@ -245,14 +263,44 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
       if (Math.hypot(dx, dy) > 4) dragStart.current.moved = true;
-      const max = Math.max(80, 120 * scale);
+      const containerSize = 320;
+      const iw = imageSize.w || 320;
+      const ih = imageSize.h || 320;
+      const drawScale = Math.max(containerSize / iw, containerSize / ih) * scale;
+      const maxPanX = Math.max(120, (iw * drawScale - 100) / 2);
+      const maxPanY = Math.max(120, (ih * drawScale - 100) / 2);
       setOffset({
-        x: Math.max(-max, Math.min(max, dragStart.current.ox + dx)),
-        y: Math.max(-max, Math.min(max, dragStart.current.oy + dy)),
+        x: Math.max(-maxPanX, Math.min(maxPanX, dragStart.current.ox + dx)),
+        y: Math.max(-maxPanY, Math.min(maxPanY, dragStart.current.oy + dy)),
       });
     },
-    [dragging, scale],
+    [dragging, scale, imageSize],
   );
+
+  const pinchDistRef = useRef<number | null>(null);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const t1 = e.touches[0]!;
+      const t2 = e.touches[1]!;
+      pinchDistRef.current = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+    }
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchDistRef.current != null) {
+      const t1 = e.touches[0]!;
+      const t2 = e.touches[1]!;
+      const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+      const factor = dist / pinchDistRef.current;
+      pinchDistRef.current = dist;
+      setScale((prev) => Math.min(2, Math.max(0.85, prev * factor)));
+    }
+  }, []);
+
+  const onTouchEnd = useCallback(() => {
+    pinchDistRef.current = null;
+  }, []);
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
     try {
@@ -279,42 +327,48 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
 
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
+      if (!(iw > 0 && ih > 0 && img.naturalWidth > 0 && img.naturalHeight > 0)) {
+        throw new Error("Invalid image dimensions");
+      }
       const selectedCandidate = candidates.find((c) => c.id === selectedFaceId);
 
       // Prefer a face-centric crop from the original image when we have a detected
       // face. This is more accurate than the low-res viewfinder rasterization path
       // (especially for group photos / high-res phone images).
-      if (selectedCandidate && iw > 0 && ih > 0) {
+      let side = Math.min(iw, ih) * 0.6;
+      if (selectedCandidate) {
         const face = selectedCandidate.unscaledBox;
         const pad = 0.45;
-        const cx = face.x + face.width / 2;
-        const cy = face.y + face.height / 2;
-        const side = Math.max(face.width, face.height) * (1 + pad * 2);
-        // Keep crop inside image bounds
-        let cropSide = Math.min(side, Math.min(iw, ih));
-        // If user zoomed, tighten/loosen crop a bit (scale 1 = default face pad)
-        cropSide = Math.min(Math.min(iw, ih), cropSide / Math.max(0.85, Math.min(2, scale)));
-        let sx = cx - cropSide / 2;
-        let sy = cy - cropSide / 2;
-        // Apply pan offset (viewfinder is 320px; map px drag → image pixels)
-        const containerSize = 320;
-        const baseScale = Math.max(containerSize / iw, containerSize / ih) * scale;
-        sx -= offset.x / baseScale;
-        sy -= offset.y / baseScale;
-        sx = Math.max(0, Math.min(iw - cropSide, sx));
-        sy = Math.max(0, Math.min(ih - cropSide, sy));
+        side = Math.max(face.width, face.height) * (1 + pad * 2);
+      }
+      let cropSide = Math.min(side, Math.min(iw, ih));
+      cropSide = Math.min(Math.min(iw, ih), cropSide / Math.max(0.85, Math.min(2, scale)));
 
+      // Compute exact crop origin based on viewfinder center position
+      const containerSize = 320;
+      const baseScale = (iw > 0 && ih > 0 && img.naturalWidth > 0 && img.naturalHeight > 0)
+        ? Math.max(containerSize / iw, containerSize / ih)
+        : 1;
+      const drawScale = baseScale * scale;
+      const cropCenterX = drawScale > 0 ? iw / 2 - offset.x / drawScale : iw / 2;
+      const cropCenterY = drawScale > 0 ? ih / 2 - offset.y / drawScale : ih / 2;
+      let sx = cropCenterX - cropSide / 2;
+      let sy = cropCenterY - cropSide / 2;
+      sx = Math.max(0, Math.min(Math.max(0, iw - cropSide), sx));
+      sy = Math.max(0, Math.min(Math.max(0, ih - cropSide), sy));
+
+      if (selectedCandidate && iw > 0 && ih > 0 && img.naturalWidth > 0 && img.naturalHeight > 0) {
         ctx.fillStyle = "#0a0a0b";
         ctx.fillRect(0, 0, size, size);
         ctx.drawImage(img, sx, sy, cropSide, cropSide, 0, 0, size, size);
       } else {
         // Manual pan/zoom path (no detection): rasterize the square viewfinder
-        const containerSize = 320;
         const cropSize = 260;
-        const baseScale = Math.max(containerSize / iw, containerSize / ih);
-        const drawScale = baseScale * scale;
-        const drawW = iw * drawScale;
-        const drawH = ih * drawScale;
+        const manualDrawScale = (iw > 0 && ih > 0 && img.naturalWidth > 0 && img.naturalHeight > 0)
+          ? baseScale * scale
+          : 1;
+        const drawW = iw * manualDrawScale;
+        const drawH = ih * manualDrawScale;
         const vcx = containerSize / 2 + offset.x;
         const vcy = containerSize / 2 + offset.y;
 
@@ -337,10 +391,14 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       );
       if (!blob) throw new Error("Could not create image");
 
-      // After face-centric crop the selected face fills most of the square, so
-      // normalized box is near-center. Pass it so analysis can re-lock if multi-face.
+      // Compute actual bounding box of selected face relative to cropped 1024x1024 canvas
       const selectedBox = selectedCandidate
-        ? { x: 20, y: 18, width: 60, height: 64 }
+        ? {
+            x: Math.min(100, Math.max(0, ((selectedCandidate.unscaledBox.x - sx) / cropSide) * 100)),
+            y: Math.min(100, Math.max(0, ((selectedCandidate.unscaledBox.y - sy) / cropSide) * 100)),
+            width: Math.min(100, Math.max(0, (selectedCandidate.unscaledBox.width / cropSide) * 100)),
+            height: Math.min(100, Math.max(0, (selectedCandidate.unscaledBox.height / cropSide) * 100)),
+          }
         : undefined;
 
       onApprove(blob, selectedBox);
@@ -489,11 +547,14 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
 
           <div
             ref={containerRef}
-            className="relative mx-auto h-[320px] w-[320px] max-w-full overflow-hidden rounded-[var(--radius-lg)] border border-border bg-bg-subtle touch-none select-none"
+            className="relative mx-auto w-full max-w-[320px] aspect-square overflow-hidden rounded-[var(--radius-lg)] border border-border bg-bg-subtle touch-none select-none"
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
             style={{ cursor: dragging ? "grabbing" : "grab" }}
           >
             <div
@@ -538,10 +599,14 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
               const drawH = imageSize.h * drawScale;
               const imgLeft = containerSize / 2 + offset.x - drawW / 2;
               const imgTop = containerSize / 2 + offset.y - drawH / 2;
-              const boxLeft = imgLeft + (c.box.x / 100) * drawW;
-              const boxTop = imgTop + (c.box.y / 100) * drawH;
-              const boxW = Math.max(28, (c.box.width / 100) * drawW);
-              const boxH = Math.max(28, (c.box.height / 100) * drawH);
+              const rawW = (c.box.width / 100) * drawW;
+              const rawH = (c.box.height / 100) * drawH;
+              const boxW = Math.max(28, rawW);
+              const boxH = Math.max(28, rawH);
+              const centerX = imgLeft + ((c.box.x + c.box.width / 2) / 100) * drawW;
+              const centerY = imgTop + ((c.box.y + c.box.height / 2) / 100) * drawH;
+              const boxLeft = centerX - boxW / 2;
+              const boxTop = centerY - boxH / 2;
 
               return (
                 <button

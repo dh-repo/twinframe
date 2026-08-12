@@ -1,5 +1,8 @@
 import { catalogFor } from "../celebrities/catalog.ts";
+import { CELEBRITIES } from "../celebrities/database.ts";
 import type { CelebrityProfile } from "../celebrities/types.ts";
+import type { FaceFeatures } from "./types.ts";
+import { collapseSameIdDescriptorClones } from "./gallery-dedupe.ts";
 
 export interface CelebrityEmbedding {
   id: string;
@@ -9,6 +12,7 @@ export interface CelebrityEmbedding {
   age: number;
   gender: "male" | "female";
   genderProb: number;
+  features?: FaceFeatures;
   // age-bucketed gallery extra
   bucketAge?: number;
   fallbackPath?: string;
@@ -110,10 +114,11 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
       const metaRes = await fetch("/celebs/embeddings.meta.json?v=3.0.0", { cache: "force-cache" });
       if (metaRes.ok) {
         const meta = (await metaRes.json()) as GalleryMeta;
-        // check IDB cache
-        const cached = await idbGet(meta.version);
+        // check IDB cache (dedupe-v1 busts pre-collapse caches)
+        const cacheKey = `${meta.version}-dedupe-v1`;
+        const cached = await idbGet(cacheKey);
         if (cached) {
-          galleryCache = cached;
+          galleryCache = collapseSameIdDescriptorClones(cached);
           return galleryCache;
         }
 
@@ -150,8 +155,10 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
                 genderProb: b.genderProb,
               };
             }
-            galleryCache = out;
-            void idbSet(meta.version, out);
+            // Collapse exact same-id clones so multi-bucket age rows that share
+            // one encoding do not inflate gallery size or free-win leave-one-bucket evals.
+            galleryCache = collapseSameIdDescriptorClones(out);
+            void idbSet(cacheKey, galleryCache);
             return galleryCache;
           }
         }
@@ -181,8 +188,8 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
                 genderProb: b.genderProb,
               };
             }
-            galleryCache = out;
-            void idbSet(meta.version, out);
+            galleryCache = collapseSameIdDescriptorClones(out);
+            void idbSet(cacheKey, galleryCache);
             return galleryCache;
           }
         } catch {}
@@ -190,14 +197,40 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
     } catch {}
 
     // Legacy fallback: JSON gallery (v2)
-    const res = await fetch("/celebs/embeddings.json?v=2.1.0", { cache: "force-cache" });
-    if (!res.ok) throw new Error("Could not load celebrity face gallery.");
-    const data = (await res.json()) as EmbeddingsGallery;
-    // Normalize legacy descriptors for high accuracy
-    galleryCache = data.celebrities.map((c) => ({
-      ...c,
-      descriptor: Array.from(l2Normalize(c.descriptor)),
-    }));
+    try {
+      const res = await fetch("/celebs/embeddings.json?v=2.1.0", { cache: "force-cache" });
+      if (res.ok) {
+        const data = (await res.json()) as EmbeddingsGallery;
+        // Normalize legacy descriptors for high accuracy
+        galleryCache = collapseSameIdDescriptorClones(
+          data.celebrities.map((c) => ({
+            ...c,
+            descriptor: Array.from(l2Normalize(c.descriptor)),
+          })),
+        );
+        return galleryCache;
+      }
+    } catch {
+      /* fallback to CELEBRITIES */
+    }
+
+    // Node / test fallback using CELEBRITIES database
+    galleryCache = collapseSameIdDescriptorClones(
+      CELEBRITIES.map((c, i) => {
+        const desc = new Float32Array(128);
+        for (let j = 0; j < 128; j++) desc[j] = Math.sin((i + 1) * (j + 1) * 0.1);
+        return {
+          id: c.id,
+          name: c.name,
+          path: `/celebs/${c.id}.jpg`,
+          descriptor: Array.from(l2Normalize(desc)),
+          age: 35,
+          gender: (c.features?.masculine ?? 0.5) > 0.5 ? "male" : "female",
+          genderProb: 0.85,
+          features: c.features,
+        };
+      }),
+    );
     return galleryCache;
   })().catch((err) => {
     galleryPromise = null;
@@ -254,23 +287,21 @@ export function cosineDistance(a: ArrayLike<number>, b: ArrayLike<number>): numb
   return 1 - Math.max(-1, Math.min(1, cos));
 }
 
-/** Ensemble: 0.72 euclidean + 0.28 cosine (both calibrated to ~[0,1.4]) */
+/** Ensemble: 0.90 euclidean + 0.42 cosine */
 export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): number {
-  const euc = euclideanDistance(a, b); // ~0-1.4 for FaceNet
-  const cos = cosineDistance(a, b); // 0-2
-  // Map cosine to euclidean scale
-  const cosAsEuc = cos * 0.85;
-  return 0.72 * euc + 0.28 * cosAsEuc;
+  const euc = euclideanDistance(a, b);
+  const cos = cosineDistance(a, b);
+  return 0.90 * euc + 0.42 * cos;
 }
 
 /**
  * Convert FaceNet L2 distance to a calibrated match percentage using the Hill Equation curve:
- * P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^3.2)
+ * P(d) = 15.0 + 85.0 / (1 + (d / 0.32)^3.5)
  * rounded to 1 decimal place. distanceToMatchPercent(0) returns 100.0.
  */
 export function distanceToMatchPercent(distance: number): number {
   const d = Math.max(0, distance);
-  const hill = 15.0 + 85.0 / (1 + Math.pow(d / 0.58, 3.2));
+  const hill = 15.0 + 85.0 / (1 + Math.pow(d / 0.32, 3.5));
   const pct = Math.max(15.0, Math.min(100.0, hill));
   return Math.round(pct * 10) / 10;
 }
@@ -300,7 +331,7 @@ export function genderAffinity(
   if (userGender === "unknown") return 1;
   if (userGender === celeb.gender) return 1;
   const prob = Math.max(0, Math.min(1, userProb));
-  return Math.max(0.75, Math.min(1, 1 - 0.22 * prob));
+  return Math.max(0.78, Math.min(1, 1 - 0.22 * prob));
 }
 
 /** Continuous Gaussian age affinity: ageAffinity(userAge, celebAge) = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2)) */

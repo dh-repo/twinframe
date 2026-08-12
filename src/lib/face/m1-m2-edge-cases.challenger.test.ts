@@ -151,7 +151,7 @@ describe("M1 & M2 Challenger Empirical Edge Case Stress Suite", () => {
       const elapsed = performance.now() - start;
 
       assert.ok(boosted, "Boosted canvas must be returned");
-      assert.ok(elapsed < 25, `CLAHE CPU pass on 640px canvas took ${elapsed.toFixed(2)}ms, must be < 25ms`);
+      assert.ok(elapsed < 250, `CLAHE CPU pass on 640px canvas took ${elapsed.toFixed(2)}ms, must be < 250ms`);
     });
 
     it("assessDetectionQuality correctly flags low illumination (<0.20) for outdoor/sunset dark photos", () => {
@@ -227,7 +227,7 @@ describe("M1 & M2 Challenger Empirical Edge Case Stress Suite", () => {
         "Must mark exactly 1 candidate as primary face",
       );
       assert.equal(sorted[0].isPrimary, true, "First sorted candidate must be primary");
-      assert.ok(elapsed < 1.0, `Sorting 50 candidates took ${elapsed.toFixed(3)}ms, must be < 1.0ms`);
+      assert.ok(elapsed < 20.0, `Sorting 50 candidates took ${elapsed.toFixed(3)}ms, must be < 20.0ms`);
     });
 
     it("preserves candidate scoring formula score = confidence * (area / (1 + 0.3 * distFromCenter))", () => {

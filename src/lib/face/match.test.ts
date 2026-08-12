@@ -32,10 +32,10 @@ describe("euclideanDistance / calibration", () => {
   });
 
   it("calibrates Hill Equation curve at key sample points", () => {
-    assert.equal(distanceToMatchPercent(0.35), 85.9);
-    assert.equal(distanceToMatchPercent(0.45), 73.9);
-    assert.equal(distanceToMatchPercent(0.55), 61.1);
-    assert.equal(distanceToMatchPercent(0.65), 49.8);
+    assert.equal(distanceToMatchPercent(0.35), 50.9);
+    assert.equal(distanceToMatchPercent(0.45), 34.8);
+    assert.equal(distanceToMatchPercent(0.55), 26.1);
+    assert.equal(distanceToMatchPercent(0.65), 21.6);
   });
 
   it("maintains strict non-increasing monotonicity across d in [0, 1.5]", () => {
@@ -73,9 +73,12 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
     assert.ok(ageAffinity(25, 26) > ageAffinity(25, 30));
     assert.ok(ageAffinity(25, 30) > ageAffinity(25, 40));
     assert.ok(ageAffinity(25, 40) > ageAffinity(25, 60));
+
+    // Non-filtering: age affinity remains strictly positive even for large age gaps
+    assert.ok(ageAffinity(20, 95) > 0, "Age affinity must be non-zero for large age gap");
   });
 
-  it("weights gender affinity smoothly without step function discontinuities", () => {
+  it("weights gender affinity smoothly without step function discontinuities and within [0.78, 1.0]", () => {
     const maleCeleb: CelebrityEmbedding = {
       id: "test-male",
       name: "Test Male",
@@ -88,10 +91,87 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
     const g1 = genderAffinity("female", 0.5, maleCeleb);
     const g2 = genderAffinity("female", 0.7, maleCeleb);
     const g3 = genderAffinity("female", 0.95, maleCeleb);
+    const gMaxProb = genderAffinity("female", 1.0, maleCeleb);
 
     assert.ok(g1 >= g2);
     assert.ok(g2 >= g3);
-    assert.ok(g3 >= 0.75 && g3 <= 1.0);
+    assert.equal(gMaxProb, 0.78);
+    assert.ok(g3 >= 0.78 && g3 <= 1.0);
+    assert.equal(genderAffinity("unknown", 0.99, maleCeleb), 1.0);
+    assert.equal(genderAffinity("male", 0.99, maleCeleb), 1.0);
+  });
+
+  it("ensures demographic priors act as soft priors without hard filtering in rankByDescriptor", () => {
+    const user: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 25,
+      gender: "female",
+      genderProbability: 0.95,
+    };
+
+    // Candidate A has excellent facial descriptor match (0.12) but different demographics (male, age 65)
+    // Candidate B has poor facial descriptor match (0.50) but matching demographics (female, age 25)
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "celeb-a-diff-demo",
+        name: "Celeb A",
+        path: "/a.webp",
+        descriptor: new Array(128).fill(0.12),
+        age: 65,
+        gender: "male",
+        genderProb: 0.95,
+      },
+      {
+        id: "celeb-b-same-demo",
+        name: "Celeb B",
+        path: "/b.webp",
+        descriptor: new Array(128).fill(0.50),
+        age: 25,
+        gender: "female",
+        genderProb: 0.95,
+      },
+    ];
+
+    const matches = rankByDescriptor(user, mockGallery, 2);
+    assert.equal(matches.length, 2, "Both candidates should be returned without hard filtering");
+    // Candidate A must rank #1 because facial feature match (descriptor distance) dominates soft demographic priors
+    assert.equal(matches[0]!.celebrityId, "celeb-a-diff-demo");
+  });
+
+  it("uses soft demographic priors for candidate tie-breaking when descriptor distances are equal", () => {
+    const user: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 25,
+      gender: "female",
+      genderProbability: 0.95,
+    };
+
+    // Candidate A and B have identical facial descriptors (distance 0.12)
+    // Candidate A matches demographics (female, 26)
+    // Candidate B differs in demographics (male, 60)
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "celeb-match-demo",
+        name: "Match Demo",
+        path: "/match.webp",
+        descriptor: new Array(128).fill(0.12),
+        age: 26,
+        gender: "female",
+        genderProb: 0.95,
+      },
+      {
+        id: "celeb-diff-demo",
+        name: "Diff Demo",
+        path: "/diff.webp",
+        descriptor: new Array(128).fill(0.12),
+        age: 60,
+        gender: "male",
+        genderProb: 0.95,
+      },
+    ];
+
+    const matches = rankByDescriptor(user, mockGallery, 2);
+    assert.equal(matches[0]!.celebrityId, "celeb-match-demo");
   });
 });
 
@@ -316,6 +396,73 @@ describe("curated catalog expansion", () => {
 
     const adrianaLima = catalogFor("adriana-lima");
     assert.equal(adrianaLima.knownFor, "Model");
+  });
+});
+
+describe("Landmark Fusion & Candidate Tie-Breaking in rankByDescriptor", () => {
+  it("breaks candidate descriptor ties (|d1 - d2| < 0.02) using landmark geometric affinity", () => {
+    const userFeatures: FaceFeatures = {
+      ...emptyFeatures(),
+      jawWidth: 0.85,
+      faceAspect: 0.65,
+      eyeSpacing: 0.5,
+      noseLength: 0.6,
+      masculine: 0.85,
+    };
+
+    // Candidate A descriptor has raw distance slightly higher than candidate B (|0.380 - 0.375| = 0.005 < 0.02)
+    const descA = new Float32Array(128).fill(0.1);
+    const descB = new Float32Array(128).fill(0.1);
+    descA[0] = 0.22;
+    descB[0] = 0.218;
+
+    const user: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+      features: userFeatures,
+    };
+
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "candidate-a",
+        name: "Candidate A",
+        path: "/cand_a.webp",
+        descriptor: Array.from(descA),
+        age: 30,
+        gender: "male",
+        genderProb: 0.95,
+        features: userFeatures, // High geometric affinity (~1.0)
+      },
+      {
+        id: "candidate-b",
+        name: "Candidate B",
+        path: "/cand_b.webp",
+        descriptor: Array.from(descB),
+        age: 30,
+        gender: "male",
+        genderProb: 0.95,
+        features: {
+          ...emptyFeatures(),
+          jawWidth: 0.1,
+          faceAspect: 0.1,
+          eyeSpacing: 0.1,
+          noseLength: 0.1,
+          mouthWidth: 0.1,
+          lipFullness: 0.9,
+          masculine: 0.1,
+          feminine: 0.9,
+          youthfulness: 0.1,
+        }, // Low geometric affinity
+      },
+    ];
+
+    const matches = rankByDescriptor(user, mockGallery, 2);
+    assert.equal(matches.length, 2);
+    // Candidate A should rank #1 despite slightly higher raw distance because landmark fusion breaks the tie
+    assert.equal(matches[0]!.celebrityId, "candidate-a");
+    assert.equal(matches[1]!.celebrityId, "candidate-b");
   });
 });
 
