@@ -12,16 +12,27 @@ interface WebcamCaptureProps {
 export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const countdownTimerRef = useRef<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [capturing, setCapturing] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+
+  const clearCountdown = useCallback(() => {
+    if (countdownTimerRef.current != null) {
+      window.clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
+    setCountdown(null);
+  }, []);
 
   const stop = useCallback(() => {
+    clearCountdown();
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
     setReady(false);
-  }, []);
+  }, [clearCountdown]);
 
   const start = useCallback(async () => {
     setError(null);
@@ -64,7 +75,7 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
     return () => stop();
   }, [open, start, stop]);
 
-  const capture = useCallback(async () => {
+  const takePhoto = useCallback(async () => {
     const video = videoRef.current;
     if (!video || !ready || capturing) return;
     setCapturing(true);
@@ -76,7 +87,6 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
       canvas.height = h;
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas unavailable");
-      // Mirror selfie for natural look
       if (facingMode === "user") {
         ctx.translate(w, 0);
         ctx.scale(-1, 1);
@@ -92,10 +102,37 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
       setError("Capture failed. Try again or upload a photo.");
     } finally {
       setCapturing(false);
+      setCountdown(null);
     }
   }, [ready, capturing, facingMode, onCapture, onClose]);
 
+  const beginCountdown = useCallback(() => {
+    if (!ready || !!error || capturing || countdown != null) return;
+    setCountdown(3);
+    let remaining = 3;
+    countdownTimerRef.current = window.setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        if (countdownTimerRef.current != null) {
+          window.clearInterval(countdownTimerRef.current);
+          countdownTimerRef.current = null;
+        }
+        setCountdown(null);
+        void takePhoto();
+      } else {
+        setCountdown(remaining);
+      }
+    }, 1000);
+  }, [ready, error, capturing, countdown, takePhoto]);
+
+  const handleClose = useCallback(() => {
+    clearCountdown();
+    onClose();
+  }, [clearCountdown, onClose]);
+
   if (!open) return null;
+
+  const snapBusy = !ready || !!error || capturing || countdown != null;
 
   return (
     <div
@@ -109,7 +146,7 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
           <p className="text-sm font-medium">Camera</p>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] text-fg-muted hover:text-fg hover:bg-bg-subtle touch-target-min"
             aria-label="Close camera"
           >
@@ -129,10 +166,25 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
               !ready && "opacity-0",
             )}
           />
-          {/* Face guide */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3">
             <div className="h-[58%] w-[62%] max-w-[280px] rounded-full border border-border-strong/80 shadow-[inset_0_0_0_9999px_color-mix(in_oklab,var(--color-bg)_35%,transparent)]" />
+            {ready && !error && countdown == null && (
+              <p className="px-4 text-center text-xs font-medium text-white/85 drop-shadow-md sm:text-sm">
+                Face the light, fill the oval
+              </p>
+            )}
           </div>
+          {countdown != null && (
+            <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-black/35">
+              <span
+                key={countdown}
+                className="text-7xl font-bold tabular-nums text-white drop-shadow-lg animate-pulse sm:text-8xl"
+                aria-live="assertive"
+              >
+                {countdown}
+              </span>
+            </div>
+          )}
           {!ready && !error && (
             <div className="absolute inset-0 flex items-center justify-center">
               <p className="text-sm text-fg-muted shimmer-text">Starting camera…</p>
@@ -152,6 +204,7 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
             variant="ghost"
             size="icon"
             aria-label="Flip camera"
+            disabled={countdown != null || capturing}
             onClick={() =>
               setFacingMode((m) => (m === "user" ? "environment" : "user"))
             }
@@ -161,12 +214,12 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
           <Button
             type="button"
             size="lg"
-            disabled={!ready || !!error || capturing}
-            onClick={() => void capture()}
+            disabled={snapBusy}
+            onClick={beginCountdown}
             className="flex-1 max-w-[14rem]"
           >
             <Camera className="h-5 w-5" />
-            {capturing ? "Capturing…" : "Snap"}
+            {capturing ? "Capturing…" : countdown != null ? countdown : "Snap"}
           </Button>
           <div className="w-12" aria-hidden />
         </div>

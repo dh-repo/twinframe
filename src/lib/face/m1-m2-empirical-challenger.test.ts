@@ -142,6 +142,9 @@ describe("M1 & M2 Empirical Challenger Verification Suite", () => {
         confidence: 0.5 + (i % 5) * 0.1,
       }));
 
+      // CPU warmup pass
+      sortFaceCandidates(candidates, { width: 1920, height: 1080 });
+
       const start = performance.now();
       const sorted = sortFaceCandidates(candidates, { width: 1920, height: 1080 });
       const elapsed = performance.now() - start;

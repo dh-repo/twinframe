@@ -1,0 +1,151 @@
+{
+  "version": "1.0.0",
+  "description": "Clean single-face control queries",
+  "count": 24,
+  "cases": [
+    {
+      "id": "brad-pitt",
+      "name": "Brad Pitt",
+      "imagePath": "/celebs/control/brad-pitt/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/db/BradPittBAR08.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "denzel-washington",
+      "name": "Denzel Washington",
+      "imagePath": "/celebs/control/denzel-washington/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/26/DenzelWashingtonMay05.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "idris-elba",
+      "name": "Idris Elba",
+      "imagePath": "/celebs/control/idris-elba/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Idris_Elba-5272.jpg/960px-Idris_Elba-5272.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "scarlett-johansson",
+      "name": "Scarlett Johansson",
+      "imagePath": "/celebs/control/scarlett-johansson/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Ghost_In_The_Shell_World_Premiere_Red_Carpet%2C_Scarlett_Johansson_%28cropped%29.JPG/960px-Ghost_In_The_Shell_World_Premiere_Red_Carpet%2C_Scarlett_Johansson_%28cropped%29.JPG?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "margot-robbie",
+      "name": "Margot Robbie",
+      "imagePath": "/celebs/control/margot-robbie/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Margot_Robbie_%2828601016915%29_%28cropped_3%29.jpg/960px-Margot_Robbie_%2828601016915%29_%28cropped_3%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "zendaya",
+      "name": "Zendaya",
+      "imagePath": "/celebs/control/zendaya/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Zendaya-byPhilipRomano.jpg/960px-Zendaya-byPhilipRomano.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "taylor-swift",
+      "name": "Taylor Swift",
+      "imagePath": "/celebs/control/taylor-swift/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d9/191125_Taylor_Swift_at_the_2019_American_Music_Awards.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "leonardo-dicaprio",
+      "name": "Leonardo DiCaprio",
+      "imagePath": "/celebs/control/leonardo-dicaprio/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Lasse_Hallstr%C3%B6m_at_2013_MIFF_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "tom-hanks",
+      "name": "Tom Hanks",
+      "imagePath": "/celebs/control/tom-hanks/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Kevin_Kline_%26_Tom_Hanks_%28252967475%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "viola-davis",
+      "name": "Viola Davis",
+      "imagePath": "/celebs/control/viola-davis/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Viola_Davis_%2852358893246%29_%28cropped%29.jpg/960px-Viola_Davis_%2852358893246%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "angela-bassett",
+      "name": "Angela Bassett",
+      "imagePath": "/celebs/control/angela-bassett/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Angela_Basset_at_the_2025_Cannes_Film_Festival_04_%28cropped%29.jpg/960px-Angela_Basset_at_the_2025_Cannes_Film_Festival_04_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "ryan-gosling",
+      "name": "Ryan Gosling",
+      "imagePath": "/celebs/control/ryan-gosling/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/GoslingBFI081223_%2822_of_30%29_%2853388157347%29_%28cropped%29.jpg/960px-GoslingBFI081223_%2822_of_30%29_%2853388157347%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "timothee-chalamet",
+      "name": "Timothée Chalamet",
+      "imagePath": "/celebs/control/timothee-chalamet/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Men_Women_and_Children_16_%2815250911126%29.jpg/960px-Men_Women_and_Children_16_%2815250911126%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "ana-de-armas",
+      "name": "Ana de Armas",
+      "imagePath": "/celebs/control/ana-de-armas/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/Ana_de_Armas%2C_March_2018%2C_GQ_Mexico_04_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "florence-pugh",
+      "name": "Florence Pugh",
+      "imagePath": "/celebs/control/florence-pugh/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Florence_Pugh_%2848471906272%29_%28cropped%29.jpg/960px-Florence_Pugh_%2848471906272%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "keanu-reeves",
+      "name": "Keanu Reeves",
+      "imagePath": "/celebs/control/keanu-reeves/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Alexandra_Grant_2014.jpg/960px-Alexandra_Grant_2014.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "jennifer-lawrence",
+      "name": "Jennifer Lawrence",
+      "imagePath": "/celebs/control/jennifer-lawrence/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Causeway_02_%2852359107768%29_%28cropped%29.jpg/960px-Causeway_02_%2852359107768%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "emma-stone",
+      "name": "Emma Stone",
+      "imagePath": "/celebs/control/emma-stone/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Emma-Stone-Photo-Call.jpg/960px-Emma-Stone-Photo-Call.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "chris-hemsworth",
+      "name": "Chris Hemsworth",
+      "imagePath": "/celebs/control/chris-hemsworth/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Chris_Hemsworth_%288492541282%29.jpg/960px-Chris_Hemsworth_%288492541282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "henry-cavill",
+      "name": "Henry Cavill",
+      "imagePath": "/celebs/control/henry-cavill/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Henry_Cavill_%2828487498052%29_%28cropped%29.jpg/960px-Henry_Cavill_%2828487498052%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "gal-gadot",
+      "name": "Gal Gadot",
+      "imagePath": "/celebs/control/gal-gadot/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Gal_Gadot_SDCC_2014.jpg/960px-Gal_Gadot_SDCC_2014.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "id": "will-smith",
+      "name": "Will Smith",
+      "imagePath": "/celebs/control/will-smith/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Nobel_Peace_Price_Concert_2009_Will_Smith_and_Jada_Pinkett_Smith_with_children1.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "adele",
+      "name": "Adele",
+      "imagePath": "/celebs/control/adele/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/2013_GGA_Adele_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "id": "the-weeknd",
+      "name": "The Weeknd",
+      "imagePath": "/celebs/control/the-weeknd/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/FEQ_July_2018_The_Weeknd_%2844778856382%29_%28cropped%29.jpg/960px-FEQ_July_2018_The_Weeknd_%2844778856382%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    }
+  ]
+}

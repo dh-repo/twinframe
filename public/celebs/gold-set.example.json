@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "description": "Human-labeled look-alike gold set. Copy to gold-set.json and fill paths + acceptable celebrity ids.",
+  "cases": [
+    {
+      "id": "example-elder-female-01",
+      "imagePath": "fixtures/gold/elder-female-01.jpg",
+      "notes": "Older woman, curly grey hair — acceptable twins by human judgment",
+      "acceptableTopIds": ["nonnie-griffin", "beth-broderick"],
+      "acceptableTopK": 5,
+      "expectedGender": "female",
+      "expectedAgeRange": [60, 85]
+    },
+    {
+      "id": "example-mid-male-01",
+      "imagePath": "fixtures/gold/mid-male-01.jpg",
+      "notes": "Mid-30s male — face structure must dominate age/gender",
+      "acceptableTopIds": [],
+      "acceptableTopK": 5,
+      "expectedGender": "male",
+      "expectedAgeRange": [30, 50]
+    }
+  ]
+}

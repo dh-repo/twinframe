@@ -190,6 +190,9 @@ describe("M1 Empirical Challenger Stress Suite - Face Candidate & Pipeline Edge 
         confidence: 0.8,
       }));
 
+      // CPU warmup pass
+      sortFaceCandidates(candidates, { width: 1920, height: 1080 });
+
       const start = performance.now();
       for (let run = 0; run < 10; run++) {
         sortFaceCandidates(candidates, { width: 1920, height: 1080 });

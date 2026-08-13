@@ -181,6 +181,8 @@ export async function analyzeFaceSource(
   const matches = rankByDescriptor(
     {
       descriptor: det.descriptor,
+      // Phase 0: min-distance over primary / flip / avg templates when TTA ran
+      descriptors: det.descriptors,
       age: det.age,
       gender: det.gender,
       genderProbability: det.genderProbability,

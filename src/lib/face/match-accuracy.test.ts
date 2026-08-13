@@ -1,8 +1,10 @@
 import { describe, it, before } from "node:test";
 import assert from "node:assert/strict";
 import { evaluateMatchAccuracy, type EvaluationReport } from "../../../scripts/evaluate-match-accuracy.ts";
+import { distanceToMatchPercent } from "./embeddings.ts";
+import { rankByDescriptor, type UserFaceQuery } from "./match.ts";
 
-describe("Face Match Accuracy Automated Evaluation (M1)", () => {
+describe("Face Match Accuracy & Cross-Demographic Automated Evaluation (M4)", () => {
   let report: EvaluationReport;
   let duration: number;
 
@@ -12,7 +14,8 @@ describe("Face Match Accuracy Automated Evaluation (M1)", () => {
       fastMode: true,
       verbose: false,
       protocol: "perturbed-query",
-      targetRank1Pct: 90.0,
+      targetRank1Pct: 95.0,
+      evaluateCrossDemographic: true,
     });
     duration = performance.now() - start;
   });
@@ -28,34 +31,74 @@ describe("Face Match Accuracy Automated Evaluation (M1)", () => {
     );
   });
 
-  it("verifies honest perturbed-query Rank-1 meets or exceeds 90.0% floor", () => {
+  it("verifies Top-1 celebrity match accuracy on ground-truth benchmark pairs exceeds 95.0%", () => {
     assert.equal(report.protocol, "perturbed-query");
     assert.ok(
       report.metrics.meanPositiveDistance > 0.01,
       `d_pos must be > 0.01 under honest protocol (got ${report.metrics.meanPositiveDistance})`,
     );
     assert.ok(
-      report.metrics.rank1Accuracy >= 90.0,
-      `Rank-1 accuracy (${report.metrics.rank1Accuracy.toFixed(2)}%) below honest 90.0% floor`
+      report.metrics.rank1Accuracy >= 95.0,
+      `Rank-1 accuracy (${report.metrics.rank1Accuracy.toFixed(2)}%) below required 95.0% threshold`
     );
     assert.ok(
-      report.metrics.rank1AccuracyPct >= 90.0,
-      `Rank-1 accuracy pct (${report.metrics.rank1AccuracyPct.toFixed(2)}%) below honest 90.0% floor`
+      report.metrics.rank1AccuracyPct >= 95.0,
+      `Rank-1 accuracy pct (${report.metrics.rank1AccuracyPct.toFixed(2)}%) below required 95.0% threshold`
     );
   });
 
-  it("verifies distance separation gap is positive (d_neg > d_pos)", () => {
+  it("verifies 0 top-3 false matches across distinct ethnic clusters (crossDemographicTop3FalseMatches === 0)", () => {
+    assert.equal(
+      report.metrics.crossDemographicTop3FalseMatches,
+      0,
+      `Found ${report.metrics.crossDemographicTop3FalseMatches} cross-demographic false matches in top-3 rankings`
+    );
+    assert.equal(
+      report.metrics.crossDemographicPass,
+      true,
+      "crossDemographicPass gate must be true"
+    );
+  });
+
+  it("verifies true positive match separation gap meets or exceeds target threshold (Delta >= 0.2309)", () => {
     assert.ok(
-      report.metrics.separationGap > 0,
-      `Separation gap Delta (${report.metrics.separationGap.toFixed(4)}) must be strictly positive`
+      report.metrics.separationGap >= 0.2309,
+      `Separation gap Delta (${report.metrics.separationGap.toFixed(4)}) below required 0.2309 threshold`
     );
     assert.ok(
       report.metrics.meanNegativeDistance > report.metrics.meanPositiveDistance,
       `d_neg (${report.metrics.meanNegativeDistance.toFixed(4)}) must exceed d_pos (${report.metrics.meanPositiveDistance.toFixed(4)})`
     );
-    assert.ok(
-      report.metrics.meanNegDistance > report.metrics.meanPosDistance,
-      `meanNegDistance (${report.metrics.meanNegDistance.toFixed(4)}) must exceed meanPosDistance (${report.metrics.meanPosDistance.toFixed(4)})`
+  });
+
+  it("verifies poor match pairs (d > 0.40) yield < 25% similarity or return No Close Match", () => {
+    const poorUser: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.88),
+      age: 35,
+      gender: "unknown",
+      genderProbability: 0.5,
+    };
+
+    const matches = rankByDescriptor(
+      poorUser,
+      [
+        {
+          id: "test-celeb",
+          name: "Test Celeb",
+          path: "/celebs/test.jpg",
+          descriptor: Array.from(new Float32Array(128).fill(0.1)),
+          age: 35,
+          gender: "male",
+          genderProb: 0.9,
+        },
+      ],
+      5,
+    );
+
+    assert.equal(
+      matches.length,
+      0,
+      "rankByDescriptor must return empty array [] (No Close Match) when candidate d > 0.40"
     );
   });
 

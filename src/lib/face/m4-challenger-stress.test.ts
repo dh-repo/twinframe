@@ -148,23 +148,23 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       }
     });
 
-    it("decays smoothly as Gaussian exp(-(|delta|/28)^2)", () => {
+    it("decays smoothly as Gaussian exp(-(|delta|/18)^2)", () => {
       const a0 = ageAffinity(30, 30);
       const a5 = ageAffinity(30, 35);
       const a10 = ageAffinity(30, 40);
+      const a18 = ageAffinity(30, 48); // delta = 18 -> exp(-1) ≈ 0.367879
       const a20 = ageAffinity(30, 50);
-      const a28 = ageAffinity(30, 58); // delta = 28 -> exp(-1) ≈ 0.367879
-      const a56 = ageAffinity(30, 86); // delta = 56 -> exp(-4) ≈ 0.018315
+      const a36 = ageAffinity(30, 66); // delta = 36 -> exp(-4) ≈ 0.018315
 
       assert.equal(a0, 1.0);
       assert.ok(a0 > a5);
       assert.ok(a5 > a10);
-      assert.ok(a10 > a20);
-      assert.ok(a20 > a28);
-      assert.ok(a28 > a56);
+      assert.ok(a10 > a18);
+      assert.ok(a18 > a20);
+      assert.ok(a20 > a36);
 
-      assert.ok(Math.abs(a28 - Math.exp(-1)) < 1e-6, `Expected ~exp(-1) at delta=28, got ${a28}`);
-      assert.ok(Math.abs(a56 - Math.exp(-4)) < 1e-6, `Expected ~exp(-4) at delta=56, got ${a56}`);
+      assert.ok(Math.abs(a18 - Math.exp(-1)) < 1e-6, `Expected ~exp(-1) at delta=18, got ${a18}`);
+      assert.ok(Math.abs(a36 - Math.exp(-4)) < 1e-6, `Expected ~exp(-4) at delta=36, got ${a36}`);
     });
 
     it("remains bounded in (0.0, 1.0] even for extreme age differences", () => {
@@ -205,12 +205,12 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.equal(genderAffinity("female", 0.95, mockFemaleCeleb), 1.0);
     });
 
-    it("applies smooth linear penalty 1 - 0.22*prob bounded in [0.75, 1.0] when genders differ", () => {
-      const gLowConf = genderAffinity("female", 0.50, mockMaleCeleb); // 1 - 0.22*0.5 = 0.89
-      const gHighConf = genderAffinity("female", 1.00, mockMaleCeleb); // 1 - 0.22*1.0 = 0.78
+    it("applies strong linear penalty 1 - 0.80*prob (floor 0.20) when genders differ", () => {
+      const gLowConf = genderAffinity("female", 0.50, mockMaleCeleb); // 1 - 0.80*0.5 = 0.60
+      const gHighConf = genderAffinity("female", 1.00, mockMaleCeleb); // floor 0.20
 
-      assert.equal(gLowConf, 0.89);
-      assert.equal(gHighConf, 0.78);
+      assert.ok(Math.abs(gLowConf - 0.60) < 1e-9);
+      assert.ok(Math.abs(gHighConf - 0.20) < 1e-9);
       assert.ok(gLowConf > gHighConf, "Higher gender probability on cross-gender should result in lower affinity factor");
     });
 
@@ -218,7 +218,7 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       const gOver = genderAffinity("female", 1.5, mockMaleCeleb);
       const gUnder = genderAffinity("female", -0.5, mockMaleCeleb);
 
-      assert.equal(gOver, 0.78);
+      assert.ok(Math.abs(gOver - 0.20) < 1e-9);
       assert.equal(gUnder, 1.0);
     });
   });

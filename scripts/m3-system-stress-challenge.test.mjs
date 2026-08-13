@@ -290,17 +290,17 @@ describe("M3 System Stress Test Challenge - Empirical Validation Suite", () => {
     });
 
     test("Age & Gender affinity continuity", () => {
-      // Age affinity: delta = 0 -> 1.0; delta = 28 -> exp(-1) = 0.36788
+      // Age affinity (sigma=18): delta = 0 -> 1.0; delta = 18 -> exp(-1) ≈ 0.36788
       const age0 = ageAffinity(30, 30);
-      const age28 = ageAffinity(30, 58);
+      const age18 = ageAffinity(30, 48);
       assert.equal(age0, 1.0);
-      assert.ok(Math.abs(age28 - 0.36788) < 0.01);
+      assert.ok(Math.abs(age18 - 0.36788) < 0.01, `ageAffinity(delta=18) ≈ exp(-1), got ${age18}`);
 
-      // Gender affinity: same gender -> 1.0; different gender with prob 1.0 -> 0.78
+      // Gender affinity: same gender -> 1.0; different gender with prob 1.0 -> floor 0.20
       const gSame = genderAffinity("female", 0.95, { gender: "female" });
       const gDiff = genderAffinity("male", 1.0, { gender: "female" });
       assert.equal(gSame, 1.0);
-      assert.equal(gDiff, 0.78);
+      assert.ok(Math.abs(gDiff - 0.20) < 1e-9, `cross-gender floor 0.20, got ${gDiff}`);
     });
   });
 });

@@ -10,7 +10,7 @@ import {
   computeMatchConfidence,
   type CelebrityEmbedding,
 } from "./embeddings.ts";
-import { rankByDescriptor, type UserFaceQuery } from "./match.ts";
+import { rankByDescriptor, minTemplateDistance, isPrimaryGalleryEntry, householdFame, type UserFaceQuery } from "./match.ts";
 import { mergeFeatures, emptyFeatures } from "./math.ts";
 import { CELEBRITIES, getCelebrityById } from "../celebrities/database.ts";
 import { catalogFor } from "../celebrities/catalog.ts";
@@ -63,10 +63,10 @@ describe("euclideanDistance / calibration", () => {
 });
 
 describe("Continuous Gaussian Age & Gender Affinity", () => {
-  it("computes continuous Gaussian age affinity smoothly", () => {
+  it("computes continuous Gaussian age affinity smoothly (sigma=18)", () => {
     assert.equal(ageAffinity(25, 25), 1.0);
     const a10 = ageAffinity(25, 35);
-    const expected10 = Math.exp(-Math.pow(10 / 28, 2));
+    const expected10 = Math.exp(-Math.pow(10 / 18, 2));
     assert.ok(Math.abs(a10 - expected10) < 1e-6);
 
     // Strict monotonicity with increasing age delta
@@ -74,11 +74,14 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
     assert.ok(ageAffinity(25, 30) > ageAffinity(25, 40));
     assert.ok(ageAffinity(25, 40) > ageAffinity(25, 60));
 
+    // Tighter than old sigma=28: 70 vs 40 should score lower than with wide prior
+    assert.ok(ageAffinity(70, 40) < Math.exp(-Math.pow(30 / 28, 2)));
+
     // Non-filtering: age affinity remains strictly positive even for large age gaps
     assert.ok(ageAffinity(20, 95) > 0, "Age affinity must be non-zero for large age gap");
   });
 
-  it("weights gender affinity smoothly without step function discontinuities and within [0.78, 1.0]", () => {
+  it("weights gender affinity smoothly with strong opposite-gender penalty when confident", () => {
     const maleCeleb: CelebrityEmbedding = {
       id: "test-male",
       name: "Test Male",
@@ -95,50 +98,387 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
 
     assert.ok(g1 >= g2);
     assert.ok(g2 >= g3);
-    assert.equal(gMaxProb, 0.78);
-    assert.ok(g3 >= 0.78 && g3 <= 1.0);
+    assert.ok(Math.abs(gMaxProb - 0.20) < 1e-9);
+    assert.ok(g3 >= 0.20 && g3 < 0.40, `High-conf opposite gender should be strongly penalized (got ${g3})`);
     assert.equal(genderAffinity("unknown", 0.99, maleCeleb), 1.0);
     assert.equal(genderAffinity("male", 0.99, maleCeleb), 1.0);
   });
 
-  it("ensures demographic priors act as soft priors without hard filtering in rankByDescriptor", () => {
+  it("weak-regime re-rank prefers closer age only when face distances are near-tied", () => {
+    const userDesc = new Array(128).fill(0);
+    userDesc[0] = 1;
+    const youngCloser = new Array(128).fill(0);
+    youngCloser[0] = Math.cos(0.392);
+    youngCloser[1] = Math.sin(0.392);
+    const peerFarther = new Array(128).fill(0);
+    peerFarther[0] = Math.cos(0.400);
+    peerFarther[1] = Math.sin(0.400);
+
     const user: UserFaceQuery = {
-      descriptor: new Float32Array(128).fill(0.1),
-      age: 25,
+      descriptor: userDesc,
+      age: 34,
       gender: "female",
       genderProbability: 0.95,
     };
-
-    // Candidate A has excellent facial descriptor match (0.12) but different demographics (male, age 65)
-    // Candidate B has poor facial descriptor match (0.50) but matching demographics (female, age 25)
-    const mockGallery: CelebrityEmbedding[] = [
+    const gallery: CelebrityEmbedding[] = [
       {
-        id: "celeb-a-diff-demo",
-        name: "Celeb A",
-        path: "/a.webp",
-        descriptor: new Array(128).fill(0.12),
-        age: 65,
-        gender: "male",
+        id: "young-idol",
+        name: "Young Idol",
+        path: "/y.webp",
+        descriptor: youngCloser,
+        age: 20,
+        gender: "female",
         genderProb: 0.95,
       },
       {
-        id: "celeb-b-same-demo",
-        name: "Celeb B",
-        path: "/b.webp",
-        descriptor: new Array(128).fill(0.50),
-        age: 25,
+        id: "age-peer",
+        name: "Age Peer",
+        path: "/p.webp",
+        descriptor: peerFarther,
+        age: 32,
         gender: "female",
         genderProb: 0.95,
       },
     ];
-
-    const matches = rankByDescriptor(user, mockGallery, 2);
-    assert.equal(matches.length, 2, "Both candidates should be returned without hard filtering");
-    // Candidate A must rank #1 because facial feature match (descriptor distance) dominates soft demographic priors
-    assert.equal(matches[0]!.celebrityId, "celeb-a-diff-demo");
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.ok(matches.length >= 1);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "young-idol",
+      "Age prior must not overturn a closer face (Δd ≈ 0.008)",
+    );
   });
 
-  it("uses soft demographic priors for candidate tie-breaking when descriptor distances are equal", () => {
+  it("drops 96px extra-scrape portraits so they cannot beat a real jpg star", () => {
+    const userDesc = new Array(128).fill(0);
+    userDesc[0] = 1;
+    const extra = new Array(128).fill(0);
+    extra[0] = Math.cos(0.28);
+    extra[1] = Math.sin(0.28);
+    const star = new Array(128).fill(0);
+    star[0] = Math.cos(0.33);
+    star[1] = Math.sin(0.33);
+    const user: UserFaceQuery = {
+      descriptor: userDesc,
+      age: 35,
+      gender: "female",
+      genderProbability: 0.95,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "anna-van-hooft",
+        name: "Anna Van Hooft",
+        path: "/celebs/thumbs/96/anna-van-hooft.webp",
+        fallbackPath: "/celebs/thumbs/96/anna-van-hooft.webp",
+        descriptor: extra,
+        age: 20,
+        gender: "female",
+        genderProb: 0.9,
+      },
+      {
+        id: "emma-stone",
+        name: "Emma Stone",
+        path: "/celebs/thumbs/96/emma-stone.webp",
+        fallbackPath: "/celebs/emma-stone.jpg",
+        descriptor: star,
+        age: 31,
+        gender: "female",
+        genderProb: 0.95,
+      },
+    ];
+    assert.equal(isPrimaryGalleryEntry(gallery[0]!), false);
+    assert.equal(isPrimaryGalleryEntry(gallery[1]!), true);
+    const matches = rankByDescriptor(user, gallery, 3);
+    assert.equal(matches[0]!.celebrityId, "emma-stone");
+    assert.equal(matches.some((m) => m.celebrityId === "anna-van-hooft"), false);
+  });
+
+  it("does not let age rescue overturn a clearly closer face (Florence-style)", () => {
+    const userDesc = new Array(128).fill(0);
+    userDesc[0] = 1;
+    const trueId = new Array(128).fill(0);
+    trueId[0] = Math.cos(0.31);
+    trueId[1] = Math.sin(0.31);
+    const distractor = new Array(128).fill(0);
+    distractor[0] = Math.cos(0.36);
+    distractor[1] = Math.sin(0.36);
+    const user: UserFaceQuery = {
+      descriptor: userDesc,
+      age: 35,
+      gender: "female",
+      genderProbability: 0.95,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "florence",
+        name: "Florence",
+        path: "/celebs/florence.jpg",
+        fallbackPath: "/celebs/florence.jpg",
+        descriptor: trueId,
+        age: 24,
+        gender: "female",
+        genderProb: 0.95,
+      },
+      {
+        id: "alba",
+        name: "Alba",
+        path: "/celebs/alba.jpg",
+        descriptor: distractor,
+        age: 41,
+        gender: "female",
+        genderProb: 0.95,
+      },
+    ];
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(matches[0]!.celebrityId, "florence");
+    assert.ok(matches[0]!.matchPercent > (matches[1]?.matchPercent ?? 0));
+  });
+
+  it("does not promote a household name over a closer face", () => {
+    assert.ok(householdFame("tom-hanks") > householdFame("josh-hutcherson"));
+    assert.ok(householdFame("emma-stone") > householdFame("kendall-jenner"));
+    const userDesc = new Array(128).fill(0);
+    userDesc[0] = 1;
+    const hutch = new Array(128).fill(0);
+    hutch[0] = Math.cos(0.390);
+    hutch[1] = Math.sin(0.390);
+    const hanks = new Array(128).fill(0);
+    hanks[0] = Math.cos(0.398);
+    hanks[1] = Math.sin(0.398);
+    const user: UserFaceQuery = {
+      descriptor: userDesc,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.9,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "josh-hutcherson",
+        name: "Josh Hutcherson",
+        path: "/celebs/josh-hutcherson.jpg",
+        fallbackPath: "/celebs/josh-hutcherson.jpg",
+        descriptor: hutch,
+        age: 37,
+        gender: "male",
+        genderProb: 0.95,
+      },
+      {
+        id: "tom-hanks",
+        name: "Tom Hanks",
+        path: "/celebs/tom-hanks.jpg",
+        fallbackPath: "/celebs/tom-hanks.jpg",
+        descriptor: hanks,
+        age: 66,
+        gender: "male",
+        genderProb: 0.95,
+      },
+    ];
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "josh-hutcherson",
+      "Fame prior must not invert a closer face (Δd ≈ 0.008)",
+    );
+  });
+
+  it("does not let household fame overturn a clearly closer face", () => {
+    const userDesc = new Array(128).fill(0);
+    userDesc[0] = 1;
+    const close = new Array(128).fill(0);
+    close[0] = Math.cos(0.28);
+    close[1] = Math.sin(0.28);
+    const famous = new Array(128).fill(0);
+    famous[0] = Math.cos(0.40);
+    famous[1] = Math.sin(0.40);
+    const user: UserFaceQuery = {
+      descriptor: userDesc,
+      age: 35,
+      gender: "male",
+      genderProbability: 0.95,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "josh-hutcherson",
+        name: "Josh Hutcherson",
+        path: "/celebs/josh-hutcherson.jpg",
+        fallbackPath: "/celebs/josh-hutcherson.jpg",
+        descriptor: close,
+        age: 37,
+        gender: "male",
+        genderProb: 0.95,
+      },
+      {
+        id: "tom-hanks",
+        name: "Tom Hanks",
+        path: "/celebs/tom-hanks.jpg",
+        fallbackPath: "/celebs/tom-hanks.jpg",
+        descriptor: famous,
+        age: 66,
+        gender: "male",
+        genderProb: 0.95,
+      },
+    ];
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(matches[0]!.celebrityId, "josh-hutcherson");
+  });
+
+  it("minTemplateDistance uses the closest query template", () => {
+    const target = new Array(128).fill(0.2);
+    const far = new Array(128).fill(0.5);
+    const near = new Array(128).fill(0.21);
+    const q: UserFaceQuery = {
+      descriptor: far,
+      descriptors: [far, near],
+      age: 30,
+      gender: "female",
+      genderProbability: 0.9,
+    };
+    const dMulti = minTemplateDistance(q, target);
+    const dFarOnly = minTemplateDistance({ ...q, descriptors: [far] }, target);
+    assert.ok(dMulti < dFarOnly, "multi-template min should beat single far template");
+  });
+
+  it("rankByDescriptor min-distance over query templates can promote better match", () => {
+    // Orthogonal unit axes: twin=e0, distractor=e1
+    const twin = new Array(128).fill(0);
+    twin[0] = 1;
+    const distractor = new Array(128).fill(0);
+    distractor[1] = 1;
+    // Primary ≈ distractor; flip ≈ twin — min over templates should pick twin
+    const primary = new Array(128).fill(0);
+    primary[1] = 1;
+    const flip = new Array(128).fill(0);
+    flip[0] = 1;
+
+    const user: UserFaceQuery = {
+      descriptor: primary,
+      descriptors: [primary, flip],
+      age: 30,
+      gender: "unknown",
+      genderProbability: 0.5,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "twin",
+        name: "Twin",
+        path: "/t.webp",
+        descriptor: twin,
+        age: 30,
+        gender: "female",
+        genderProb: 0.9,
+      },
+      {
+        id: "distractor",
+        name: "Distractor",
+        path: "/d.webp",
+        descriptor: distractor,
+        age: 30,
+        gender: "female",
+        genderProb: 0.9,
+      },
+    ];
+    // Single-template (primary only) ranks distractor first
+    const single = rankByDescriptor({ ...user, descriptors: [primary] }, gallery, 2);
+    assert.equal(single[0]!.celebrityId, "distractor");
+    // Multi-template min-distance promotes twin via the flip template
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.ok(matches.length >= 1);
+    assert.equal(matches[0]!.celebrityId, "twin");
+  });
+
+  it("prefers same-gender list when gender is confident, but face distance wins within gender", () => {
+    const user: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 70,
+      gender: "female",
+      genderProbability: 0.95,
+    };
+
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "celeb-male-close-face",
+        name: "Male Close Face",
+        path: "/a.webp",
+        descriptor: new Array(128).fill(0.11),
+        age: 40,
+        gender: "male",
+        genderProb: 0.95,
+      },
+      {
+        id: "celeb-female-older",
+        name: "Female Older",
+        path: "/b.webp",
+        descriptor: new Array(128).fill(0.13),
+        age: 68,
+        gender: "female",
+        genderProb: 0.95,
+      },
+      {
+        id: "celeb-female-better-face",
+        name: "Female Better Face",
+        path: "/d.webp",
+        // Closer embedding than female-older, younger age — face must win over age prior
+        descriptor: new Array(128).fill(0.105),
+        age: 45,
+        gender: "female",
+        genderProb: 0.95,
+      },
+      {
+        id: "celeb-male-2",
+        name: "Male 2",
+        path: "/c.webp",
+        descriptor: new Array(128).fill(0.12),
+        age: 55,
+        gender: "male",
+        genderProb: 0.9,
+      },
+    ];
+
+    const matches = rankByDescriptor(user, mockGallery, 3);
+    assert.ok(matches.length >= 1);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "celeb-female-better-face",
+      "Closer same-gender face must still win Rank-1",
+    );
+  });
+
+  it("does not let perfect age match beat a clearly better face (face-first)", () => {
+    const user: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 39,
+      gender: "male",
+      genderProbability: 0.95,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "same-age-worse-face",
+        name: "Same Age Worse",
+        path: "/w.webp",
+        descriptor: new Array(128).fill(0.25),
+        age: 39,
+        gender: "male",
+        genderProb: 0.9,
+      },
+      {
+        id: "diff-age-better-face",
+        name: "Diff Age Better",
+        path: "/b.webp",
+        descriptor: new Array(128).fill(0.12),
+        age: 55,
+        gender: "male",
+        genderProb: 0.9,
+      },
+    ];
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "diff-age-better-face",
+      "Better face structure must beat demographically perfect weaker face",
+    );
+  });
+
+  it("uses demographic priors for candidate tie-breaking when descriptor distances are equal", () => {
     const user: UserFaceQuery = {
       descriptor: new Float32Array(128).fill(0.1),
       age: 25,
@@ -146,9 +486,6 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
       genderProbability: 0.95,
     };
 
-    // Candidate A and B have identical facial descriptors (distance 0.12)
-    // Candidate A matches demographics (female, 26)
-    // Candidate B differs in demographics (male, 60)
     const mockGallery: CelebrityEmbedding[] = [
       {
         id: "celeb-match-demo",

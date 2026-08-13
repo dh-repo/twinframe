@@ -214,6 +214,7 @@ const CURATED: Record<string, CatalogEntry> = {
   "ken-watanabe": { knownFor: ACTOR, tags: ["commanding", "classic"], accentHue: 15 },
   "kendall-jenner": { knownFor: MODEL, tags: ["high cheekbones", "defined"], accentHue: 350 },
   "kendrick-lamar": { knownFor: ARTIST, tags: ["focused", "expressive"], accentHue: 18 },
+  "travis-scott": { knownFor: ARTIST, tags: ["defined", "angular"], accentHue: 18 },
   "kerry-washington": { knownFor: ACTOR, tags: ["expressive", "radiant"], accentHue: 340 },
   "kit-harington": { knownFor: ACTOR, tags: ["intense", "defined jaw"], accentHue: 220 },
   "kylian-mbappe": { knownFor: ATHLETE, tags: ["athletic", "radiant"], accentHue: 210 },

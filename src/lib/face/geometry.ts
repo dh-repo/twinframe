@@ -1,5 +1,5 @@
-import type { FaceFeatures } from "./types.ts";
-import { clamp, dist, mid, emptyFeatures, rgbToApproxLab, ensembleScore } from "./math.ts";
+import type { FaceFeatures, FeatureKey } from "./types.ts";
+import { clamp, dist, mid, emptyFeatures, rgbToApproxLab } from "./math.ts";
 
 /** MediaPipe Face Landmarker landmark (normalized image coords). */
 export interface Landmark {
@@ -271,16 +271,210 @@ export function extractGeometryFeatures68(
   return f;
 }
 
+/** Specialized feature weights for morphological distance D_morph calculation. */
+export const MORPH_FEATURE_WEIGHTS: Record<FeatureKey, number> = {
+  // Facial Structural Shape (Skull & Aspect)
+  faceAspect: 1.5,
+  jawWidth: 1.2,
+  chinSharpness: 1.0,
+  foreheadHeight: 0.8,
+  cheekboneProminence: 1.4,
+  faceRoundness: 1.3,
+
+  // Eye Morphology
+  eyeSpacing: 3.0,
+  eyeSlant: 5.0,
+  eyeOpenness: 1.1,
+  browHeight: 0.7,
+
+  // Nose Contour
+  noseLength: 1.3,
+  noseWidth: 2.5,
+
+  // Mouth & Lips
+  mouthWidth: 0.8,
+  lipFullness: 1.2,
+
+  // Complexion & Skin CIELAB
+  skinL: 3.5,
+  skinA: 1.5,
+  skinB: 1.5,
+
+  // Hair CIELAB
+  hairL: 0.5,
+  hairA: 0.5,
+  hairB: 0.5,
+
+  // Demographic Attributes
+  masculine: 1.8,
+  feminine: 1.8,
+  youthfulness: 1.1,
+};
+
+/**
+ * Sanitize feature object, ensuring all feature properties are finite numbers in [0.0, 1.0].
+ * Replaces NaN, Infinity, or missing/invalid numbers with default fallback (0.50).
+ */
+export function sanitizeFeatures(f?: FaceFeatures | null): FaceFeatures | null {
+  if (!f) return null;
+  const keys: FeatureKey[] = [
+    "faceAspect", "jawWidth", "chinSharpness", "foreheadHeight",
+    "eyeSpacing", "eyeOpenness", "eyeSlant", "browHeight",
+    "noseLength", "noseWidth", "mouthWidth", "lipFullness",
+    "cheekboneProminence", "faceRoundness",
+    "skinL", "skinA", "skinB", "hairL", "hairA", "hairB",
+    "masculine", "feminine", "youthfulness",
+  ];
+  const sanitized = { ...f };
+  for (const k of keys) {
+    const val = f[k];
+    sanitized[k] = typeof val === "number" && Number.isFinite(val)
+      ? Math.max(0.0, Math.min(1.0, val))
+      : 0.50;
+  }
+  return sanitized;
+}
+
+/**
+ * Calculate structural morphological distance D_morph between two facial feature sets.
+ * Returns normalized distance in [0, 1]. Returns 0.50 if either feature set is missing.
+ */
+export function morphologicalDistance(
+  uFeatRaw?: FaceFeatures | null,
+  cFeatRaw?: FaceFeatures | null,
+): number {
+  if (!uFeatRaw || !cFeatRaw) return 0.50;
+
+  const uFeat = sanitizeFeatures(uFeatRaw);
+  const cFeat = sanitizeFeatures(cFeatRaw);
+  if (!uFeat || !cFeat) return 0.50;
+
+  const scaleFactor = 4.50;
+
+  // 1. Eye shape & slant (weight sum = 9.1)
+  const dEyes = Math.min(1.0, (
+    5.0 * Math.abs(uFeat.eyeSlant - cFeat.eyeSlant) +
+    3.0 * Math.abs(uFeat.eyeSpacing - cFeat.eyeSpacing) +
+    1.1 * Math.abs(uFeat.eyeOpenness - cFeat.eyeOpenness)
+  ) * (scaleFactor / 9.1));
+
+  // 2. Cheekbones & face shape (weight sum = 5.0)
+  const dShape = Math.min(1.0, (
+    1.4 * Math.abs(uFeat.cheekboneProminence - cFeat.cheekboneProminence) +
+    1.3 * Math.abs(uFeat.faceRoundness - cFeat.faceRoundness) +
+    1.5 * Math.abs(uFeat.faceAspect - cFeat.faceAspect) +
+    0.8 * Math.abs(uFeat.foreheadHeight - cFeat.foreheadHeight)
+  ) * (scaleFactor / 5.0));
+
+  // 3. Nose bridge & contour (weight sum = 3.8)
+  const dNose = Math.min(1.0, (
+    1.3 * Math.abs(uFeat.noseLength - cFeat.noseLength) +
+    2.5 * Math.abs(uFeat.noseWidth - cFeat.noseWidth)
+  ) * (scaleFactor / 3.8));
+
+  // 4. Jawline & chin (weight sum = 4.9)
+  const dJaw = Math.min(1.0, (
+    1.2 * Math.abs(uFeat.jawWidth - cFeat.jawWidth) +
+    1.0 * Math.abs(uFeat.chinSharpness - cFeat.chinSharpness) +
+    0.8 * Math.abs(uFeat.mouthWidth - cFeat.mouthWidth) +
+    1.2 * Math.abs(uFeat.lipFullness - cFeat.lipFullness) +
+    0.7 * Math.abs(uFeat.browHeight - cFeat.browHeight)
+  ) * (scaleFactor / 4.9));
+
+  // 5. Complexion & Hair (CIELAB 3D Euclidean distance normalized)
+  const dSkinRaw = Math.hypot(
+    uFeat.skinL - cFeat.skinL,
+    uFeat.skinA - cFeat.skinA,
+    uFeat.skinB - cFeat.skinB,
+  );
+  const dSkin = Math.min(1.0, (dSkinRaw / 0.48) * 3.50);
+
+  const dHairRaw = Math.hypot(
+    uFeat.hairL - cFeat.hairL,
+    uFeat.hairA - cFeat.hairA,
+    uFeat.hairB - cFeat.hairB,
+  );
+  const dHair = Math.min(1.0, (dHairRaw / 0.48) * 0.50);
+
+  const dColor = 0.85 * dSkin + 0.15 * dHair;
+
+  // 6. Demographic traits (weight sum = 4.7)
+  const dDemo = Math.min(1.0, (
+    1.8 * Math.abs(uFeat.masculine - cFeat.masculine) +
+    1.8 * Math.abs(uFeat.feminine - cFeat.feminine) +
+    1.1 * Math.abs(uFeat.youthfulness - cFeat.youthfulness)
+  ) * (scaleFactor / 4.7));
+
+  // Master morphological distance
+  const rem = (1.0 - 0.20 - 0.05) / 4; // 0.1875
+  const dMorph =
+    rem * dEyes +
+    rem * dShape +
+    rem * dNose +
+    rem * dJaw +
+    0.20 * dColor +
+    0.05 * dDemo;
+
+  const res = Math.min(1.0, Math.max(0.0, dMorph));
+  return Number.isFinite(res) ? res : 0.50;
+}
+
+/**
+ * Calculate additive cross-demographic mismatch penalty when D_morph > 0.35 or ethnic clusters differ.
+ * Returns 0.0 for D_morph <= 0.35 within same cluster, and min(0.25, max(0.15, 0.50 * (D_morph - 0.35))) for cross-demographic mismatch.
+ * Accepts either pre-calculated D_morph scalar or user/celeb feature objects and optional cluster labels.
+ */
+export function crossDemographicMismatchPenalty(
+  uFeatOrDistance?: FaceFeatures | number | null,
+  cFeat?: FaceFeatures | null,
+  uCluster?: string | null,
+  cCluster?: string | null,
+): number {
+  if (uFeatOrDistance === null || uFeatOrDistance === undefined) return 0.0;
+  let dMorph: number;
+  if (typeof uFeatOrDistance === "number") {
+    if (!Number.isFinite(uFeatOrDistance)) return 0.0;
+    dMorph = uFeatOrDistance;
+  } else {
+    if (cFeat === null || cFeat === undefined) return 0.0;
+    dMorph = morphologicalDistance(uFeatOrDistance, cFeat);
+  }
+
+  if (uCluster && cCluster && uCluster !== cCluster) {
+    const penaltyFromCluster = !Number.isFinite(dMorph) || dMorph <= 0.35
+      ? 0.22
+      : Math.min(0.25, Math.max(0.22, 0.50 * (dMorph - 0.35)));
+    return Math.round(penaltyFromCluster * 1e6) / 1e6;
+  }
+
+  if (!Number.isFinite(dMorph) || dMorph <= 0.35) return 0.0;
+  const rawPenalty = Math.min(0.25, Math.max(0.0, 0.50 * (dMorph - 0.35)));
+  return Math.round(rawPenalty * 1e6) / 1e6;
+}
+
+/**
+ * Structural morphological affinity score in [0.0, 1.0].
+ * Returns clamp(1.0 - D_morph, 0, 1). Returns 0.50 if either feature vector is missing.
+ */
+export function morphologicalAffinity(
+  userFeatures?: FaceFeatures | null,
+  celebFeatures?: FaceFeatures | null,
+): number {
+  if (!userFeatures || !celebFeatures) return 0.5;
+  const dMorph = morphologicalDistance(userFeatures, celebFeatures);
+  return Math.min(1.0, Math.max(0.0, 1.0 - dMorph));
+}
+
 /**
  * Calculate landmark geometric affinity score between user and celebrity face features.
+ * Legacy geomAffinity alias mapping directly to morphologicalAffinity.
  * Returns normalized score in [0, 1]. Returns 0.5 if either feature vector is missing.
  */
 export function geomAffinity(
-  userFeatures?: FaceFeatures,
-  celebFeatures?: FaceFeatures,
+  userFeatures?: FaceFeatures | null,
+  celebFeatures?: FaceFeatures | null,
 ): number {
-  if (!userFeatures || !celebFeatures) return 0.5;
-  return ensembleScore(userFeatures, celebFeatures);
+  return morphologicalAffinity(userFeatures, celebFeatures);
 }
 
 /**

@@ -1,18 +1,23 @@
 {
-  "version": "4.1.1",
+  "version": "4.3.8-adriana-extra",
   "model": "face-api-faceRecognitionNet-128",
+  "alignment": "dlib-eye-mouth-150",
   "dim": 128,
-  "countCelebs": 1000,
-  "countBuckets": 2972,
-  "bucketsPerCeleb": "variable (avg 3)",
+  "countCelebs": 804,
+  "countBuckets": 804,
+  "bucketsPerCeleb": 1,
   "quantization": "int8-biased",
-  "scale": 0.002933561078628388,
-  "maxAbs": 0.37256225698580525,
+  "scale": 0.002994624206289185,
+  "maxAbs": 0.38031727419872646,
   "files": {
     "q8": "/celebs/embeddings.q8.bin",
     "f32": "/celebs/embeddings.f32.bin",
     "index": "/celebs/index.json"
   },
-  "ageBuckets": "per-bucket age, loader picks best bucket per celeb id",
-  "enrolled": "1000 real celebs re-encoded with face-api via browser (success 993/1000, TTA+L2, 192→512 upscale)"
+  "ageBuckets": "single age label per celeb (real multi-age requires multi-photo encodes)",
+  "excludedCount": 0,
+  "reencodeTagged": 804,
+  "lastRunSuccesses": 89,
+  "lastRunTotal": 89,
+  "enrolled": "804 celebs; tagged reencode 804; last run 89/89 real; excluded 0; 1 bucket/id; merge"
 }

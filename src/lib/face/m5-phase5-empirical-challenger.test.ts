@@ -84,8 +84,8 @@ describe("Phase 5: Empirical Challenger Stress & Verification Suite (M5 R3)", ()
       );
       assert.ok(report.passedBenchmark, "passedBenchmark must pass honest gate");
       assert.ok(
-        report.metrics.sameIdCloneRate > 0.5,
-        "Pre-collapse same-id clone rate documents residual encoding debt",
+        report.metrics.sameIdCloneRate < 0.05,
+        `Post re-encode: same-id multi-bucket clones should be gone (got ${(report.metrics.sameIdCloneRate * 100).toFixed(1)}%)`,
       );
     });
   });

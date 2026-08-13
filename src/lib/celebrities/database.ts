@@ -505,37 +505,95 @@ function hashString(str: string): number {
   return (hash >>> 0) / 4294967296;
 }
 
-function generateFeaturesForId(id: string): FaceFeatures {
-  const h1 = hashString(id + "-aspect");
-  const h2 = hashString(id + "-jaw");
-  const h3 = hashString(id + "-chin");
-  const h4 = hashString(id + "-forehead");
-  const h5 = hashString(id + "-eyeSpace");
-  const h6 = hashString(id + "-eyeOpen");
-  const h7 = hashString(id + "-noseLen");
-  const h8 = hashString(id + "-noseWid");
-  const h9 = hashString(id + "-mouthWid");
-  const h10 = hashString(id + "-lip");
-  const h11 = hashString(id + "-cheek");
-  const h12 = hashString(id + "-round");
+const FEMALE_NAME_PATTERNS = [
+  "aanya", "ada", "adele", "adriana", "aishwarya", "alia", "alicia", "ali", "amy", "ana", "angelina",
+  "anna", "anya", "ariana", "awkwafina", "bella", "beyonce", "blake", "brie", "britney", "cara",
+  "cardi", "cate", "charlize", "chloe", "dakota", "deepika", "doja", "drew", "dua", "elizabeth",
+  "emily", "emma", "eva", "fan", "florence", "gal", "gemma", "gigi", "gong", "gwyneth", "hailee",
+  "heidi", "helen", "helena", "hunter", "iu", "jennie", "jennifer", "jenna", "jessica", "jisoo",
+  "julia", "kate", "keira", "kendall", "kerry", "kim", "kristen", "kylie", "lady", "lana", "liu",
+  "lupita", "margot", "meryl", "michelle", "millie", "natalie", "nicole", "oprah", "priyanka",
+  "rihanna", "salma", "sandra", "scarlett", "selena", "serena", "sydney", "taylor", "tiffany",
+  "uzo", "viola", "yara", "zendaya", "zoe", "camila", "olivia", "sabrina", "chloe", "halle",
+];
+
+function inferFemaleFromId(id: string): boolean {
+  const lower = id.toLowerCase();
+  return FEMALE_NAME_PATTERNS.some((p) => lower.includes(p));
+}
+
+export function generateDemographicFeatures(
+  gender: "male" | "female" | string = "male",
+  genderProb = 0.85,
+  age = 35,
+  id = "",
+): FaceFeatures {
+  const isFemale = gender === "female" || (gender !== "male" && inferFemaleFromId(id));
+  const p = Math.max(0.5, Math.min(1, genderProb));
+  const h = (s: string) => hashString(id + s);
+
+  const faceAspect = 0.52 + h("-aspect") * 0.12;
+  const jawWidth = isFemale ? 0.46 + h("-jaw") * 0.10 : 0.64 + p * 0.12 + h("-jaw") * 0.08;
+  const chinSharpness = isFemale ? 0.58 + h("-chin") * 0.12 : 0.62 + h("-chin") * 0.12;
+  const foreheadHeight = 0.50 + h("-forehead") * 0.10;
+  const eyeSpacing = 0.52 + h("-eyespace") * 0.08;
+  const eyeOpenness = isFemale ? 0.56 + h("-eyeopen") * 0.12 : 0.48 + h("-eyeopen") * 0.10;
+  const eyeSlant = 0.50 + h("-eyeslant") * 0.08;
+  const browHeight = isFemale ? 0.50 + h("-brow") * 0.08 : 0.54 + h("-brow") * 0.08;
+  const noseLength = 0.50 + h("-noselen") * 0.10;
+  const noseWidth = isFemale ? 0.44 + h("-nosewid") * 0.08 : 0.52 + h("-nosewid") * 0.10;
+  const mouthWidth = 0.50 + h("-mouthwid") * 0.10;
+  const lipFullness = isFemale ? 0.58 + h("-lip") * 0.16 : 0.44 + h("-lip") * 0.10;
+  const cheekboneProminence = isFemale ? 0.68 + h("-cheek") * 0.14 : 0.60 + h("-cheek") * 0.12;
+  const faceRoundness = isFemale ? 0.48 + h("-round") * 0.12 : 0.42 + h("-round") * 0.10;
+
+  const skinL = 0.55 + h("-skinL") * 0.22;
+  const skinA = 0.52 + h("-skinA") * 0.05;
+  const skinB = 0.54 + h("-skinB") * 0.05;
+  const hairL = 0.20 + h("-hairL") * 0.40;
+  const hairA = 0.50 + h("-hairA") * 0.04;
+  const hairB = 0.48 + h("-hairB") * 0.08;
+
+  const masculine = isFemale
+    ? 0.18 + (1 - p) * 0.10 + h("-masc") * 0.08
+    : 0.72 + p * 0.15 + h("-masc") * 0.08;
+  const feminine = isFemale
+    ? 0.72 + p * 0.18 + h("-fem") * 0.08
+    : 0.18 + (1 - p) * 0.10 + h("-fem") * 0.08;
+
+  const ageFactor = Math.max(0, Math.min(1, (60 - age) / 50));
+  const youthfulness = Math.max(0.2, Math.min(0.9, 0.35 + ageFactor * 0.45 + h("-youth") * 0.10));
 
   return mergeFeatures({
-    faceAspect: 0.5 + h1 * 0.2,
-    jawWidth: 0.45 + h2 * 0.35,
-    chinSharpness: 0.4 + h3 * 0.4,
-    foreheadHeight: 0.45 + h4 * 0.25,
-    eyeSpacing: 0.48 + h5 * 0.2,
-    eyeOpenness: 0.42 + h6 * 0.3,
-    noseLength: 0.45 + h7 * 0.25,
-    noseWidth: 0.4 + h8 * 0.25,
-    mouthWidth: 0.45 + h9 * 0.2,
-    lipFullness: 0.38 + h10 * 0.4,
-    cheekboneProminence: 0.5 + h11 * 0.35,
-    faceRoundness: 0.35 + h12 * 0.35,
-    masculine: 0.3 + h1 * 0.4,
-    feminine: 0.3 + (1 - h1) * 0.4,
-    youthfulness: 0.4 + h3 * 0.4,
+    faceAspect,
+    jawWidth,
+    chinSharpness,
+    foreheadHeight,
+    eyeSpacing,
+    eyeOpenness,
+    eyeSlant,
+    browHeight,
+    noseLength,
+    noseWidth,
+    mouthWidth,
+    lipFullness,
+    cheekboneProminence,
+    faceRoundness,
+    skinL,
+    skinA,
+    skinB,
+    hairL,
+    hairA,
+    hairB,
+    masculine,
+    feminine,
+    youthfulness,
   });
+}
+
+function generateFeaturesForId(id: string): FaceFeatures {
+  const isFemale = inferFemaleFromId(id);
+  return generateDemographicFeatures(isFemale ? "female" : "male", 0.85, 35, id);
 }
 
 export function getCelebrityById(id: string): CelebrityProfile | undefined {
@@ -561,3 +619,4 @@ export function getCelebrityById(id: string): CelebrityProfile | undefined {
 export function celebrityCount(): number {
   return CELEBRITIES.length;
 }
+

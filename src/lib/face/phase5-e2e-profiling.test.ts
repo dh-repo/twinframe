@@ -38,8 +38,8 @@ describe("Phase 5: E2E Golden Path & TF.js Memory Profiling Suite", () => {
       `passedBenchmark should be true under honest protocol (summary: ${report.summary})`,
     );
     assert.ok(
-      report.metrics.sameIdCloneRate > 0.5,
-      "Gallery integrity: pre-collapse same-id clone rate documents residual encoding debt",
+      report.metrics.sameIdCloneRate < 0.05,
+      `Post re-encode: same-id multi-bucket clones should be gone (got ${(report.metrics.sameIdCloneRate * 100).toFixed(1)}%)`,
     );
     assert.ok(
       report.dataset.totalBuckets <= 1100,
@@ -140,6 +140,10 @@ describe("Phase 5: E2E Golden Path & TF.js Memory Profiling Suite", () => {
 
   it("E2E-03: asserts CLAHE + detect 100-batch execution SLA stays under 5,000ms", async () => {
     const canvas = generateSunsetCanvas(640, 480);
+
+    // CPU warmup pass
+    const boostedWarm = applyLocalContrastBoost(canvas as any, 2.5, 6, 384);
+    await detectFacesOnly(boostedWarm as any, { enableContrastBoost: true, maxSide: 640 });
 
     const start = performance.now();
     for (let i = 0; i < 100; i++) {

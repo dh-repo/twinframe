@@ -3,11 +3,13 @@
 ## Pipeline
 
 1. **Detect** — SSD MobileNet face detector (auto-finds small faces in full-body shots)
-2. **Crop** — expand bounding box → square face portrait
+2. **Crop** — padded 320×320 portrait for preview; **Dlib eye/mouth align → 150×150** for FaceNet
 3. **Describe** — FaceNet 128-d embedding (`faceRecognitionNet`) + age/gender
 4. **Rank** — Euclidean distance vs pre-enrolled celebrity embeddings
 5. **Calibrate** — distance → honest match % (≈0.40 strong, ≈0.55 borderline)
 6. **Explain** — facial structure / age / presentation signals
+
+Re-encode the gallery after this align change (`node scripts/re-encode-browser.mjs`) so query and enroll share the same crop. Do not treat live quality as improved until that pack is rebuilt.
 
 ## Gallery
 

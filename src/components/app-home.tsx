@@ -12,10 +12,18 @@ import {
   loadImageFromBlob,
   prefetchModel,
 } from "@/lib/face/pipeline";
-import type { FaceQuality, FaceTelemetry, MatchResult } from "@/lib/face/types";
+import type { FaceTelemetry, MatchResult } from "@/lib/face/types";
 import { loadCelebrityEmbeddings } from "@/lib/face/embeddings";
+import { loadFaceApi } from "@/lib/face/faceapi-engine";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
+
+const EXAMPLE_FACES = [
+  { src: "/celebs/sample_user.jpg", alt: "Sample portrait" },
+  { src: "/celebs/leonardo-dicaprio.jpg", alt: "Leonardo DiCaprio" },
+  { src: "/celebs/zendaya.jpg", alt: "Zendaya" },
+  { src: "/celebs/rihanna.jpg", alt: "Rihanna" },
+] as const;
 
 export function AppHome() {
   const [phase, setPhase] = useState<Phase>("capture");
@@ -27,6 +35,7 @@ export function AppHome() {
   const [stepIndex, setStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [gallerySize, setGallerySize] = useState(1000);
+  const [modelsWarm, setModelsWarm] = useState(false);
   const previewRef = useRef<string | null>(null);
   // review state
   const [reviewSrc, setReviewSrc] = useState<string | null>(null);
@@ -35,9 +44,20 @@ export function AppHome() {
 
   useEffect(() => {
     prefetchModel();
-    void loadCelebrityEmbeddings()
-      .then((g) => setGallerySize(new Set(g.map((c) => c.id)).size))
-      .catch(() => {});
+    let cancelled = false;
+    void Promise.all([
+      loadCelebrityEmbeddings()
+        .then((g) => {
+          if (!cancelled) setGallerySize(new Set(g.map((c) => c.id)).size);
+        })
+        .catch(() => {}),
+      loadFaceApi().catch(() => {}),
+    ]).finally(() => {
+      if (!cancelled) setModelsWarm(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -137,27 +157,6 @@ export function AppHome() {
         setStepIndex(3);
         setResult(matchResult);
 
-        // --- High-accuracy quality gate ---
-        const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
-        const sharpness = (q as unknown as { sharpness: number }).sharpness ?? 60;
-        const noFace =
-          !matchResult.matches.length &&
-          (!matchResult.quality.ok || matchResult.quality.faceCoverage <= 0);
-
-        const isLowQuality =
-          !matchResult.matches.length ||
-          !matchResult.quality.ok ||
-          matchResult.quality.score < 0.45 ||
-          matchResult.quality.faceCoverage < 0.035 ||
-          sharpness < 42 ||
-          matchResult.quality.issues.some(
-            (i) =>
-              i.includes("blurry") ||
-              i.includes("Low face confidence") ||
-              i.includes("Dim lighting") ||
-              i.includes("No face"),
-          );
-
         // Keep a short beat for polish before showing results
         await new Promise((r) => setTimeout(r, 260));
         if (cancelled) return;
@@ -165,10 +164,34 @@ export function AppHome() {
         setProgress(100);
         setResult(matchResult);
 
-        if (!matchResult.matches || matchResult.matches.length === 0) {
+        // Only hard-block when we cannot analyze a usable face.
+        // Soft quality (slight blur, small face advice) must NOT block results —
+        // that path used to dump "photo quality too low" for empty match lists too.
+        const q = matchResult.quality;
+        const sharpness = q.sharpness ?? 60;
+        const coverage = q.faceCoverage ?? 0;
+        const noFace =
+          coverage <= 0 ||
+          q.issues.some(
+            (i) =>
+              i.includes("No face") ||
+              i.includes("No valid human face") ||
+              i.includes("No human face"),
+          );
+        const unusablePhoto =
+          noFace ||
+          coverage < 0.02 ||
+          sharpness < 28 ||
+          (q.score < 0.22 && !matchResult.matches.length);
+
+        if (matchResult.matches.length > 0) {
+          // Always show matches when the ranker returned any — weak matches use honest UI copy
+          setPhase("results");
+        } else if (unusablePhoto || noFace) {
           setPhase("quality-blocked");
         } else {
-          setPhase("results");
+          // Face OK but gallery has no neighbor that passed the match gate
+          setPhase("quality-blocked");
         }
       } catch (e) {
         if (cancelled) return;
@@ -233,7 +256,12 @@ export function AppHome() {
     clearReview();
   }, [setPreview, clearReview]);
 
-  const showHero = phase === "capture" || phase === "review";
+  const showHero = phase === "capture";
+  const showNewPhoto =
+    phase === "results" ||
+    phase === "quality-blocked" ||
+    phase === "review" ||
+    phase === "analyzing";
 
   return (
     <div className="app-shell min-h-screen w-full overflow-x-hidden bg-[#090a0f] text-white">
@@ -246,15 +274,24 @@ export function AppHome() {
               </div>
               <span className="text-base font-bold tracking-tight text-white">Twinframe</span>
             </div>
-            {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") && (
+            <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={reset}
+                onClick={() => setGalleryModalOpen(true)}
                 className="text-xs text-white/60 transition-colors hover:text-white"
               >
-                New photo
+                Gallery
               </button>
-            )}
+              {showNewPhoto && (
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="text-xs text-white/60 transition-colors hover:text-white"
+                >
+                  New photo
+                </button>
+              )}
+            </div>
           </div>
 
           {showHero && (
@@ -267,7 +304,6 @@ export function AppHome() {
                 <span className="font-semibold text-white">{gallerySize.toLocaleString()}+ stars</span>.
               </p>
 
-              {/* 3 Horizontal Pill Badges */}
               <div className="pt-2 flex flex-wrap items-center justify-center gap-2.5">
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
                   <Brain className="h-4 w-4 text-indigo-300" />
@@ -282,6 +318,14 @@ export function AppHome() {
                   Instant Results
                 </span>
               </div>
+
+              {!modelsWarm && (
+                <div className="flex justify-center pt-0.5">
+                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/45">
+                    Warming face model…
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </header>
@@ -293,27 +337,31 @@ export function AppHome() {
               onCameraClick={() => setCameraOpen(true)}
             />
 
-            {/* Teaser Sample Match Preview Showcase */}
-            <div className="flex flex-col items-center justify-center space-y-2 pt-2">
-              <div className="flex items-center gap-2.5">
-                <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
-                  <img
-                    src="/celebs/sample_user.jpg"
-                    alt="User portrait sample"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
-                  <img
-                    src="/celebs/leonardo-dicaprio.jpg"
-                    alt="Leonardo DiCaprio sample match"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+            <div className="flex flex-col items-center justify-center space-y-3 pt-2">
+              <p className="text-xs font-medium text-white/50">
+                Example faces in the gallery
+              </p>
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                {EXAMPLE_FACES.map((face) => (
+                  <div
+                    key={face.src}
+                    className="h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900"
+                  >
+                    <img
+                      src={face.src}
+                      alt={face.alt}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                ))}
               </div>
-              <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-[#161824]/90 px-4 py-1.5 text-xs font-bold text-white shadow-xl backdrop-blur-md">
-                Match Found! 94% Similarity
-              </div>
+              <button
+                type="button"
+                onClick={() => setGalleryModalOpen(true)}
+                className="text-xs font-medium text-white/60 underline underline-offset-4 transition-colors hover:text-white"
+              >
+                Browse the set
+              </button>
             </div>
           </div>
         )}
@@ -354,72 +402,101 @@ export function AppHome() {
 
         {phase === "quality-blocked" && result && (
           <section className="animate-fade-up overflow-hidden rounded-[var(--radius-xl)] border border-warn/40 bg-bg-elevated">
-            <div className="bg-warn/10 px-5 py-4 sm:px-6">
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warn/20 text-warn">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-                    <path d="M8 5.2V8.2M8 10.2H8.01M14 13.2L8.6 3.8C8.3 3.3 7.7 3.3 7.4 3.8L2 13.2C1.7 13.7 2 14.4 2.6 14.4H13.4C14 14.4 14.3 13.7 14 13.2Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-sm font-medium leading-tight text-white">Photo quality too low for high-accuracy match</h2>
-                  <p className="mt-1 text-xs leading-relaxed text-white/70 text-pretty">
-                    {(() => {
-                      const q = result.quality as unknown as { sharpness?: number };
-                      if (result.quality.faceCoverage < 0.03) return "Face is too small — move closer and fill the square.";
-                      if ((q.sharpness ?? 60) < 42) return "Photo is blurry — hold steady and tap to focus.";
-                      if (result.quality.score < 0.45) return "Low confidence — use front-facing, even lighting.";
-                      return "Soft quality — a sharper, centered selfie gives the most accurate match.";
-                    })()} High-accuracy mode requires crisp focus and 4%+ face coverage.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="px-5 py-5 sm:px-6 space-y-3">
-              <div className="flex gap-2">
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-white/20 bg-black/40">
-                  {previewUrl && <img src={previewUrl} alt="" className="h-full w-full object-cover" />}
-                </div>
-                <div className="flex-1 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/60">Face coverage</span>
-                    <span className="tabular-nums text-white/80">{(result.quality.faceCoverage * 100).toFixed(1)}%</span>
+            {(() => {
+              const q = result.quality;
+              const sharpness = q.sharpness ?? 60;
+              const coverage = q.faceCoverage ?? 0;
+              const noFace =
+                coverage <= 0 ||
+                q.issues.some(
+                  (i) =>
+                    i.includes("No face") ||
+                    i.includes("No valid human face") ||
+                    i.includes("No human face"),
+                );
+              const hardQuality =
+                coverage < 0.02 || sharpness < 28 || (q.score < 0.22 && noFace);
+              // Empty matches with a usable face → gallery/match gate, not "bad photo"
+              const noStrongMatch = !noFace && !hardQuality && result.matches.length === 0;
+
+              const title = noFace
+                ? "No face detected"
+                : hardQuality
+                  ? "Photo quality too low to match"
+                  : "No strong doppelgänger found";
+              const body = noFace
+                ? "We couldn't find a clear face. Use a front-facing photo with your face visible."
+                : hardQuality
+                  ? coverage < 0.02
+                    ? "Face is too small — move closer so your face fills more of the frame."
+                    : sharpness < 28
+                      ? "Photo is too blurry — hold steady, tap to focus, and use better light."
+                      : "Low confidence capture — front-facing, even lighting works best."
+                  : "Your photo analyzed fine, but nothing in the gallery was a close enough face match. Try another angle or lighting — or the set may not include a strong look-alike yet.";
+
+              return (
+                <>
+                  <div className="bg-warn/10 px-5 py-4 sm:px-6">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warn/20 text-warn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                          <path d="M8 5.2V8.2M8 10.2H8.01M14 13.2L8.6 3.8C8.3 3.3 7.7 3.3 7.4 3.8L2 13.2C1.7 13.7 2 14.4 2.6 14.4H13.4C14 14.4 14.3 13.7 14 13.2Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-medium leading-tight text-white">{title}</h2>
+                        <p className="mt-1 text-xs leading-relaxed text-white/70 text-pretty">{body}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, result.quality.faceCoverage * 600)}%` }} />
+                  <div className="px-5 py-5 sm:px-6 space-y-3">
+                    {!noStrongMatch && (
+                      <div className="flex gap-2">
+                        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-white/20 bg-black/40">
+                          {previewUrl && <img src={previewUrl} alt="" className="h-full w-full object-cover" />}
+                        </div>
+                        <div className="flex-1 space-y-2.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-white/60">Face coverage</span>
+                            <span className="tabular-nums text-white/80">{(coverage * 100).toFixed(1)}%</span>
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                            <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, coverage * 600)}%` }} />
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-white/60">Sharpness</span>
+                            <span className="tabular-nums text-white/80">{Math.round(sharpness)}/100</span>
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                            <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, sharpness * 1.2)}%` }} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {noStrongMatch && previewUrl && (
+                      <div className="h-20 w-20 overflow-hidden rounded-[var(--radius-md)] border border-white/20 bg-black/40">
+                        <img src={previewUrl} alt="" className="h-full w-full object-cover" />
+                      </div>
+                    )}
+                    {!noStrongMatch && result.quality.issues.length > 0 && (
+                      <ul className="space-y-1.5 rounded-[var(--radius-md)] bg-white/5 px-3 py-2.5">
+                        {result.quality.issues.map((issue, i) => (
+                          <li key={i} className="flex gap-2 text-xs leading-snug text-white/80">
+                            <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-warn" />
+                            {issue}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="flex gap-2 pt-1">
+                      <Button variant="primary" size="md" onClick={reset} className="w-full">
+                        {noStrongMatch ? "Try another photo" : "Retake photo"}
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/60">Overall score</span>
-                    <span className="tabular-nums text-white/80">{(result.quality.score * 100).toFixed(0)}%</span>
-                  </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full bg-warn transition-[width]" style={{ width: `${result.quality.score * 100}%` }} />
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/60">Sharpness</span>
-                    <span className="tabular-nums text-white/80">{Math.round((result.quality as unknown as { sharpness: number }).sharpness ?? 0)}/100</span>
-                  </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full bg-warn transition-[width]" style={{ width: `${Math.min(100, ((result.quality as unknown as { sharpness: number }).sharpness ?? 0) * 1.2)}%` }} />
-                  </div>
-                </div>
-              </div>
-              {result.quality.issues.length > 0 && (
-                <ul className="space-y-1.5 rounded-[var(--radius-md)] bg-white/5 px-3 py-2.5">
-                  {result.quality.issues.map((issue, i) => (
-                    <li key={i} className="flex gap-2 text-xs leading-snug text-white/80">
-                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-warn" />
-                      {issue}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="flex gap-2 pt-1">
-                <Button variant="primary" size="md" onClick={reset} className="w-full">
-                  Retake photo
-                </Button>
-              </div>
-            </div>
+                </>
+              );
+            })()}
           </section>
         )}
 

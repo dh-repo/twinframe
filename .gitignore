@@ -38,3 +38,15 @@ public/enroll.html
 .idea/
 .vscode/
 *.swp
+
+# local encode / fetch scratch
+downloads/
+public/celebs/*-descriptors.json
+public/celebs/*-encode-manifest.json
+public/celebs/*-remain-manifest.json
+public/celebs/*-remain-descriptors.json
+public/celebs/reencode-*.json
+public/celebs/*.bak-*
+public/celebs/*-new.jpg
+public/celebs/**/*-norm.jpg
+public/celebs/**/*-new.jpg

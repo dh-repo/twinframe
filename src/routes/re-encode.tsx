@@ -11,6 +11,7 @@ declare global {
     __reencodeProgress?: { done: number; total: number; lastId?: string; lastOk?: boolean };
     __reencodeTotal?: number;
     __reencodeError?: string;
+    __reencodePartial?: boolean;
   }
 }
 
@@ -25,15 +26,17 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-function upscaleIfNeeded(img: HTMLImageElement): HTMLImageElement | HTMLCanvasElement {
+function upscaleIfNeeded(
+  img: HTMLImageElement,
+  target = 640,
+): HTMLImageElement | HTMLCanvasElement {
   const w = img.naturalWidth || img.width;
   const h = img.naturalHeight || img.height;
-  // Upscale small thumbs (96/192) to 512 for better Ssd detection
-  if (w >= 320 && h >= 320) return img;
-  const target = 512;
-  const scale = target / Math.max(w, h);
-  const cw = Math.round(w * scale);
-  const ch = Math.round(h * scale);
+  // Upscale small thumbs; also pad transparent WebP edges onto white
+  if (w >= target && h >= target) return img;
+  const scale = target / Math.max(w, h, 1);
+  const cw = Math.max(1, Math.round(w * scale));
+  const ch = Math.max(1, Math.round(h * scale));
   const c = document.createElement("canvas");
   c.width = cw;
   c.height = ch;
@@ -45,6 +48,24 @@ function upscaleIfNeeded(img: HTMLImageElement): HTMLImageElement | HTMLCanvasEl
   ctx.fillRect(0, 0, cw, ch);
   ctx.drawImage(img, 0, 0, cw, ch);
   return c;
+}
+
+/** Prefer largest source first (full JPG before 192/96 thumbs). */
+function sourceRank(src: string): number {
+  if (src.includes("/thumbs/96/")) return 2;
+  if (src.includes("/thumbs/192/")) return 1;
+  return 0;
+}
+
+function orderedSources(entry: {
+  path?: string;
+  path192?: string;
+  fallbackPath?: string;
+}): string[] {
+  const ranked = [entry.fallbackPath, entry.path192, entry.path]
+    .filter((p): p is string => Boolean(p))
+    .sort((a, b) => sourceRank(a) - sourceRank(b));
+  return [...new Set(ranked)];
 }
 
 function ReEncodePage() {
@@ -81,7 +102,7 @@ function ReEncodePage() {
         void api;
         appendLog(`models loaded from /models/face-api — engine: ${engineLabel}`);
 
-        const idx: Array<{
+        type CelebIndexEntry = {
           id: string;
           name: string;
           path: string;
@@ -90,20 +111,63 @@ function ReEncodePage() {
           gender: string;
           genderProb: number;
           baseAge?: number;
-        }> = await fetch("/celebs/index.json", { cache: "no-store" }).then((r) => {
+          source?: string;
+        };
+        const fullIdx: CelebIndexEntry[] = await fetch("/celebs/index.json", {
+          cache: "no-store",
+        }).then((r) => {
           if (!r.ok) throw new Error(`index fetch ${r.status}`);
           return r.json();
         });
+
+        // Optional filters:
+        //   ?ids=a,b,c              — comma-separated id list
+        //   ?targets=1              — load /celebs/reencode-miss-targets.json
+        //   ?only=legacy            — only entries with source === "legacy-json"
+        const params = new URLSearchParams(window.location.search);
+        let idx = fullIdx;
+        const idsParam = params.get("ids");
+        if (idsParam) {
+          const want = new Set(
+            idsParam
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+          );
+          idx = fullIdx.filter((e) => want.has(e.id));
+          appendLog(`filter ids=: ${idx.length}/${fullIdx.length}`);
+        } else if (params.has("targets")) {
+          const targets = await fetch("/celebs/reencode-miss-targets.json", {
+            cache: "no-store",
+          }).then((r) => {
+            if (!r.ok) throw new Error(`targets fetch ${r.status}`);
+            return r.json() as Promise<{ ids?: string[] }>;
+          });
+          const want = new Set(targets.ids ?? []);
+          idx = fullIdx.filter((e) => want.has(e.id));
+          appendLog(`filter targets=: ${idx.length}/${fullIdx.length}`);
+        } else if (params.get("only") === "legacy") {
+          idx = fullIdx.filter((e) => e.source === "legacy-json");
+          appendLog(`filter only=legacy: ${idx.length}/${fullIdx.length}`);
+        }
+
+        if (idx.length === 0) {
+          throw new Error("re-encode filter matched 0 celebrities");
+        }
+
         setTotal(idx.length);
         (window as unknown as Record<string, unknown>).__reencodeTotal = idx.length;
         (window as unknown as Record<string, unknown>).__reencodeDone = null;
-        appendLog(`index: ${idx.length} celebs`);
+        (window as unknown as Record<string, unknown>).__reencodePartial =
+          idx.length < fullIdx.length;
+        appendLog(`index: ${idx.length} celebs${idx.length < fullIdx.length ? " (partial)" : ""}`);
 
         setStatus("running");
         const out: Array<{
           id: string;
           name: string;
           descriptor: number[];
+          templates?: number[][];
           age: number;
           gender: "male" | "female";
           genderProb: number;
@@ -112,46 +176,66 @@ function ReEncodePage() {
         }> = new Array(idx.length) as unknown as typeof out;
         let successes = 0;
 
-        // helper: single celeb detection (tries 192 → fallback → 96, with upscale)
+        // helper: single celeb detection (full JPG first, then thumbs; upscale + CLAHE)
         async function processOne(entry: (typeof idx)[number], index: number) {
           const label = `${index + 1}/${idx.length} ${entry.id}`;
-          const candidates = [entry.path192, entry.fallbackPath, entry.path].filter(
-            Boolean,
-          ) as string[];
-          const uniq = [...new Set(candidates)];
+          const uniq = orderedSources(entry);
+          const FACE_MS = 20_000;
           let det: Awaited<ReturnType<typeof detectAndDescribe>> | null = null;
           let usedSrc = "";
           let lastErr = "";
+          const detectOpts = {
+            enableContrastBoost: true,
+            maxSide: 960,
+            // re-encode is offline: never fast-exit TTA for higher quality
+            fastExitConfidence: 1.01,
+          };
           for (const src of uniq) {
             try {
               const img = await loadImage(src);
-              const source = upscaleIfNeeded(img);
-              // In fast mode use single detection; otherwise use TTA via detectAndDescribe then flip manually if needed
-              // For simplicity, fast = single, slow = single + manual TTA (reuse same function but with flip)
-              if (fast) {
-                det = await detectAndDescribe(source as unknown as HTMLImageElement);
-              } else {
-                // Dynamic import TTA only when needed to avoid extra bundle in fast path
-                const { detectAndDescribeWithTTA: withTTA } = await import(
-                  "@/lib/face/faceapi-engine"
-                );
-                det = await withTTA(source as unknown as HTMLImageElement);
+              // try native size, then forced upscale for tiny thumbs
+              const sources: Array<HTMLImageElement | HTMLCanvasElement> = [img];
+              const w = img.naturalWidth || img.width;
+              const h = img.naturalHeight || img.height;
+              if (Math.max(w, h) < 640) sources.push(upscaleIfNeeded(img, 640));
+              if (Math.max(w, h) < 320) sources.push(upscaleIfNeeded(img, 800));
+
+              for (const source of sources) {
+                const run = fast
+                  ? detectAndDescribe(source as unknown as HTMLImageElement, detectOpts)
+                  : (async () => {
+                      const { detectAndDescribeWithTTA: withTTA } = await import(
+                        "@/lib/face/faceapi-engine"
+                      );
+                      return withTTA(source as unknown as HTMLImageElement, detectOpts);
+                    })();
+                det = await Promise.race([
+                  run,
+                  new Promise<null>((resolve) =>
+                    setTimeout(() => resolve(null), FACE_MS),
+                  ),
+                ]);
+                if (det) {
+                  usedSrc = src;
+                  break;
+                }
+                lastErr = `timeout or no face in ${src}`;
               }
-              if (det) {
-                usedSrc = src;
-                break;
-              } else {
-                lastErr = `no face in ${src}`;
-              }
+              if (det) break;
+              lastErr = `no face in ${src}`;
             } catch (e) {
               lastErr = e instanceof Error ? e.message : String(e);
             }
           }
           if (det) {
+            const templates = (det.descriptors ?? [det.descriptor]).map((d) =>
+              Array.from(d as unknown as number[]),
+            );
             return {
               id: entry.id,
               name: entry.name,
               descriptor: Array.from(det.descriptor as unknown as number[]),
+              templates,
               age: Math.round(det.age),
               gender: det.gender,
               genderProb: det.genderProbability,
@@ -195,6 +279,7 @@ function ReEncodePage() {
                   id: r.id,
                   name: r.name,
                   descriptor: r.descriptor,
+                  templates: (r as { templates?: number[][] }).templates,
                   age: r.age,
                   gender: r.gender,
                   genderProb: r.genderProb,
@@ -230,6 +315,7 @@ function ReEncodePage() {
               lastId: batch[batch.length - 1]!.id,
               lastOk: results[results.length - 1]!.ok,
             };
+            (window as unknown as Record<string, unknown>).__reencodeSnapshot = out.filter(Boolean);
             // yield
             await new Promise((r) => setTimeout(r, 0));
           }
@@ -243,6 +329,7 @@ function ReEncodePage() {
                 id: r.id,
                 name: r.name,
                 descriptor: r.descriptor,
+                templates: (r as { templates?: number[][] }).templates,
                 age: r.age,
                 gender: r.gender,
                 genderProb: r.genderProb,
@@ -276,6 +363,7 @@ function ReEncodePage() {
               lastId: entry.id,
               lastOk: r.ok,
             };
+            (window as unknown as Record<string, unknown>).__reencodeSnapshot = out.filter(Boolean);
             if (i % 6 === 0) await new Promise((r) => setTimeout(r, 0));
             if (i % 50 === 0) await new Promise((r) => setTimeout(r, 20));
           }

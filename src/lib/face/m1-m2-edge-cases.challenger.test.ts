@@ -216,6 +216,9 @@ describe("M1 & M2 Challenger Empirical Edge Case Stress Suite", () => {
         confidence: 0.4 + (i % 10) * 0.05,
       }));
 
+      // CPU warmup pass
+      sortFaceCandidates(candidates, { width: 1920, height: 1080 });
+
       const start = performance.now();
       const sorted = sortFaceCandidates(candidates, { width: 1920, height: 1080 });
       const elapsed = performance.now() - start;

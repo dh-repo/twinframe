@@ -210,10 +210,21 @@ export interface SortedFaceCandidate extends FaceCandidateInput {
 
 export interface FaceDetectionResult {
   descriptor: Float32Array | number[];
+  /**
+   * Optional multi-template query descriptors (e.g. primary + horizontal flip).
+   * Rankers should take min distance across templates for better pose robustness.
+   */
+  descriptors?: Array<Float32Array | number[]>;
   age: number;
   gender: "male" | "female";
   genderProbability: number;
   faceCanvas: HTMLCanvasElement;
+  /**
+   * Canvas actually passed to FaceNet. Dlib-aligned 150×150 when landmarks
+   * support `align({ useDlibAlignment: true })`; otherwise the padded preview crop.
+   */
+  embedCanvas?: HTMLCanvasElement;
+  alignment?: "dlib" | "padded-box";
   confidence: number;
   sharpness: number;
   blurScore: number;
@@ -718,6 +729,56 @@ export function createHorizontalFlipCanvas(source: HTMLCanvasElement): HTMLCanva
   return canvas;
 }
 
+/** FaceNet nn4.small2 native input. Prefer this over the padded 320 preview crop. */
+export const FACENET_EMBED_SIZE = 150;
+
+export type FaceAlignBox = { x: number; y: number; width: number; height: number };
+
+/**
+ * Dlib eye–mouth alignment box in the same pixel space as `landmarks`.
+ * Returns null when the face-api landmark object is missing or stubbed.
+ */
+export function dlibAlignBoxFromLandmarks(landmarks: unknown): FaceAlignBox | null {
+  const lm = landmarks as { align?: (det: null, opts: { useDlibAlignment: boolean }) => any } | null;
+  if (!lm || typeof lm.align !== "function") return null;
+  try {
+    const box = lm.align(null, { useDlibAlignment: true });
+    if (!box) return null;
+    const x = Number(box.x ?? box._x ?? 0);
+    const y = Number(box.y ?? box._y ?? 0);
+    const width = Number(box.width ?? box._width ?? 0);
+    const height = Number(box.height ?? box._height ?? 0);
+    if (!Number.isFinite(x) || !Number.isFinite(y) || width < 8 || height < 8) return null;
+    return { x, y, width, height };
+  } catch {
+    return null;
+  }
+}
+
+/** Draw a source-space box into a square canvas (FaceNet embed input). */
+export function extractRegionToCanvas(
+  source: CanvasImageSource,
+  box: FaceAlignBox,
+  srcW: number,
+  srcH: number,
+  outSize = FACENET_EMBED_SIZE,
+): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = outSize;
+  canvas.height = outSize;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
+  (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+  const sx = Math.max(0, box.x);
+  const sy = Math.max(0, box.y);
+  const sw = Math.max(1, Math.min(srcW - sx, box.width));
+  const sh = Math.max(1, Math.min(srcH - sy, box.height));
+  if (sw >= 2 && sh >= 2 && srcW > 0 && srcH > 0) {
+    ctx.drawImage(source, sx, sy, sw, sh, 0, 0, outSize, outSize);
+  }
+  return canvas;
+}
+
 export function extractCenterFaceCanvas(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
   outSize = 320,
@@ -943,7 +1004,8 @@ export async function detectFacesOnly(
       };
       if (box.width < 10 || box.height < 10) continue;
       const areaFrac = (box.width * box.height) / Math.max(1, w * h);
-      if (areaFrac < 0.0003 || areaFrac > 0.98) continue;
+      // Allow near-full-frame close-ups (Hemsworth/Cavill). 0.98 was dropping them.
+      if (areaFrac < 0.0003 || areaFrac > 1.05) continue;
       const aspect = box.width / Math.max(1, box.height);
       if (aspect < 0.5 || aspect > 2.0) continue;
       collected.push({ box, confidence: conf });
@@ -989,13 +1051,31 @@ export async function detectFacesOnly(
       }
     }
 
+    // Padded SSD recovery — faces flush to image edges / tight crops
+    if (collected.length === 0 && performance.now() - tDetect < maxDetectBudgetMs - 1200) {
+      await yieldToUi();
+      try {
+        const padded = createPaddedCanvas(source, maxSide, 0.35);
+        pushRaw(
+          await runSsd(padded.canvas, 0.18),
+          padded.scale,
+          padded.padX,
+          padded.padY,
+          0.18,
+          "ssd",
+        );
+      } catch {
+        /* optional */
+      }
+    }
+
     // Pass 3 — TinyFace
     if (collected.length === 0 && api.nets.tinyFaceDetector?.isLoaded && performance.now() - tDetect < maxDetectBudgetMs - 800) {
       await yieldToUi();
       try {
         const tiny = await api.detectAllFaces(
           primaryCanvas,
-          new api.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.20 }),
+          new api.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.15 }),
         );
         pushRaw(tiny, primaryScale, 0, 0, 0.20, "tiny");
       } catch {
@@ -1004,7 +1084,7 @@ export async function detectFacesOnly(
     }
 
     // Pass 4 — 3 column tiles only if still empty (group / outdoor miss)
-    if (collected.length === 0 && Math.max(w, h) >= 900 && performance.now() - tDetect < maxDetectBudgetMs - 500) {
+    if (collected.length === 0 && Math.max(w, h) >= 480 && performance.now() - tDetect < maxDetectBudgetMs - 500) {
       await yieldToUi();
       const pcW = primaryCanvas.width;
       const pcH = primaryCanvas.height;
@@ -1298,27 +1378,49 @@ export async function detectAndDescribe(
   const outSize = 320;
   faceCanvas.width = outSize;
   faceCanvas.height = outSize;
+  let hiRaster: { canvas: HTMLCanvasElement; scale: number } | null = null;
   const fctx = faceCanvas.getContext("2d");
   if (fctx) {
     (fctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
-    // Always crop from EXIF-oriented detection canvas so phone JPEGs stay correct
-    const sx = cropX * detectionScale;
-    const sy = cropY * detectionScale;
-    const ss = cropSide * detectionScale;
-    if (ss >= 2) {
-      fctx.drawImage(detectionCanvas, sx, sy, ss, ss, 0, 0, outSize, outSize);
-    } else {
-      fctx.drawImage(
-        source as CanvasImageSource,
-        cropX,
-        cropY,
-        cropSide,
-        cropSide,
-        0,
-        0,
-        outSize,
-        outSize,
-      );
+    // Prefer a higher-res EXIF-oriented raster for embedding when detect ran on a downscale.
+    // Detection boxes are in original (w,h) space; scale maps original → raster pixels.
+    let drew = false;
+    if (detectionScale < 0.95 && cropSide >= 48) {
+      try {
+        // High-res oriented raster for embedding only (detect may use ≤800)
+        const hi = await rasterizeSource(source, 1600);
+        hiRaster = hi;
+        const sx = cropX * hi.scale;
+        const sy = cropY * hi.scale;
+        const ss = cropSide * hi.scale;
+        if (ss >= 8 && hi.canvas.width >= 8) {
+          fctx.drawImage(hi.canvas, sx, sy, ss, ss, 0, 0, outSize, outSize);
+          drew = true;
+        }
+      } catch {
+        /* fall through to detection canvas */
+      }
+    }
+    if (!drew) {
+      // EXIF-oriented detection canvas (correct for phone JPEGs; may be downscaled)
+      const sx = cropX * detectionScale;
+      const sy = cropY * detectionScale;
+      const ss = cropSide * detectionScale;
+      if (ss >= 2) {
+        fctx.drawImage(detectionCanvas, sx, sy, ss, ss, 0, 0, outSize, outSize);
+      } else {
+        fctx.drawImage(
+          source as CanvasImageSource,
+          cropX,
+          cropY,
+          cropSide,
+          cropSide,
+          0,
+          0,
+          outSize,
+          outSize,
+        );
+      }
     }
   }
 
@@ -1327,6 +1429,34 @@ export async function detectAndDescribe(
   let croppedLandmarks: { x: number; y: number }[] = [];
   let landmarks: unknown;
   let isLandmarksValid = false;
+
+  const applyCropLandmarks = (rawPts: { x: number; y: number }[], lmObj?: unknown) => {
+    isLandmarksValid = isValidHumanFaceLandmarks68(rawPts, outSize, outSize);
+    if (!isLandmarksValid) return;
+    if (lmObj !== undefined) landmarks = lmObj;
+    croppedLandmarks = [];
+    normalizedLandmarks = [];
+    for (const pt of rawPts) {
+      croppedLandmarks.push({
+        x: Math.min(100, Math.max(0, (pt.x / outSize) * 100)),
+        y: Math.min(100, Math.max(0, (pt.y / outSize) * 100)),
+      });
+      // Map crop-space landmark → original image %
+      const ox = cropX + (pt.x / outSize) * cropSide;
+      const oy = cropY + (pt.y / outSize) * cropSide;
+      normalizedLandmarks.push({
+        x: Math.min(100, Math.max(0, (ox / w) * 100)),
+        y: Math.min(100, Math.max(0, (oy / h) * 100)),
+      });
+    }
+    if (normalizedLandmarks.length) {
+      allFaces[primaryIdx] = {
+        ...primary,
+        normalizedLandmarks,
+      };
+    }
+  };
+
   try {
     const withLm = await api
       .detectSingleFace(faceCanvas, new api.SsdMobilenetv1Options({ minConfidence: 0.08 }))
@@ -1338,32 +1468,30 @@ export async function detectAndDescribe(
       }));
 
       // Strict validation: Reject hallucinated non-human face landmarks (e.g. sunset, clouds, trees)
-      isLandmarksValid = isValidHumanFaceLandmarks68(rawPts, outSize, outSize);
-      if (isLandmarksValid) {
-        landmarks = withLm.landmarks;
-        for (const pt of rawPts) {
-          croppedLandmarks.push({
-            x: Math.min(100, Math.max(0, (pt.x / outSize) * 100)),
-            y: Math.min(100, Math.max(0, (pt.y / outSize) * 100)),
-          });
-          // Map crop-space landmark → original image %
-          const ox = cropX + (pt.x / outSize) * cropSide;
-          const oy = cropY + (pt.y / outSize) * cropSide;
-          normalizedLandmarks.push({
-            x: Math.min(100, Math.max(0, (ox / w) * 100)),
-            y: Math.min(100, Math.max(0, (oy / h) * 100)),
-          });
-        }
-        if (normalizedLandmarks.length) {
-          allFaces[primaryIdx] = {
-            ...primary,
-            normalizedLandmarks,
-          };
-        }
-      }
+      applyCropLandmarks(rawPts, withLm.landmarks);
     }
   } catch {
     /* landmarks optional */
+  }
+
+  // Direct landmark-net recovery when detectSingleFace misses the crop
+  if (!isLandmarksValid) {
+    try {
+      const detectLm = api.nets?.faceLandmark68Net?.detectLandmarks;
+      if (typeof detectLm === "function") {
+        const lmResult = await detectLm.call(api.nets.faceLandmark68Net, faceCanvas);
+        const positions = lmResult?.positions ?? lmResult?.landmarks?.positions;
+        if (positions && Array.isArray(positions) && positions.length >= 68) {
+          const rawPts = positions.map((pt: any) => ({
+            x: (pt._x ?? pt.x) as number,
+            y: (pt._y ?? pt.y) as number,
+          }));
+          applyCropLandmarks(rawPts, lmResult);
+        }
+      }
+    } catch {
+      /* landmarks optional */
+    }
   }
 
   // Fallback for synthetic face fixtures when landmark net is stubs/unloaded (test-only)
@@ -1388,24 +1516,65 @@ export async function detectAndDescribe(
     }
   }
 
-  // Strict Non-Face Reject: Require valid 68-point human facial landmarks
+  // Landmark reject is for clouds/texture false-boxes. A confident SSD hit
+  // (profile, tight crop, mid-shot) still embeds via padded-box.
   if (!normalizedLandmarks.length || !isLandmarksValid) {
-    return null;
+    if (primary.confidence < 0.28) {
+      return null;
+    }
   }
 
 
-  // FaceNet descriptor
+  // FaceNet descriptor — Dlib eye/mouth align when landmarks support it.
+  // Preview `faceCanvas` stays the padded 320 portrait; embed uses 150×150 aligned.
+  let embedCanvas = faceCanvas;
+  let alignment: "dlib" | "padded-box" = "padded-box";
+  const alignBox = dlibAlignBoxFromLandmarks(landmarks);
+  if (alignBox) {
+    const scale = cropSide / outSize;
+    const origAlign = {
+      x: cropX + alignBox.x * scale,
+      y: cropY + alignBox.y * scale,
+      width: alignBox.width * scale,
+      height: alignBox.height * scale,
+    };
+    if (hiRaster && origAlign.width >= 8) {
+      embedCanvas = extractRegionToCanvas(
+        hiRaster.canvas,
+        {
+          x: origAlign.x * hiRaster.scale,
+          y: origAlign.y * hiRaster.scale,
+          width: origAlign.width * hiRaster.scale,
+          height: origAlign.height * hiRaster.scale,
+        },
+        hiRaster.canvas.width,
+        hiRaster.canvas.height,
+        FACENET_EMBED_SIZE,
+      );
+      alignment = "dlib";
+    } else {
+      embedCanvas = extractRegionToCanvas(
+        faceCanvas,
+        alignBox,
+        outSize,
+        outSize,
+        FACENET_EMBED_SIZE,
+      );
+      alignment = "dlib";
+    }
+  }
+
   let rawDesc: Float32Array;
   try {
     if (typeof api.computeFaceDescriptor === "function") {
-      rawDesc = await api.computeFaceDescriptor(faceCanvas);
+      rawDesc = await api.computeFaceDescriptor(embedCanvas);
     } else if (api.nets.faceRecognitionNet?.isLoaded) {
-      rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(faceCanvas);
+      rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(embedCanvas);
     } else {
-      rawDesc = generateImageRegionDescriptor(faceCanvas);
+      rawDesc = generateImageRegionDescriptor(embedCanvas);
     }
   } catch {
-    rawDesc = generateImageRegionDescriptor(faceCanvas);
+    rawDesc = generateImageRegionDescriptor(embedCanvas);
   }
   const descriptor = l2NormalizeVec(rawDesc);
 
@@ -1414,7 +1583,7 @@ export async function detectAndDescribe(
   let genderProbability = 0.85;
   if (api.nets.ageGenderNet?.isLoaded) {
     try {
-      const ag = await api.nets.ageGenderNet.predictAgeAndGender(faceCanvas);
+      const ag = await api.nets.ageGenderNet.predictAgeAndGender(embedCanvas);
       if (ag) {
         age = Math.round(ag.age ?? 30);
         gender = (ag.gender ?? "male") as "male" | "female";
@@ -1470,6 +1639,8 @@ export async function detectAndDescribe(
     gender,
     genderProbability,
     faceCanvas,
+    embedCanvas,
+    alignment,
     confidence: primary.confidence,
     sharpness,
     blurScore: Math.min(1, sharpness / 65),
@@ -1489,8 +1660,12 @@ export async function detectAndDescribe(
 }
 
 /**
- * Fast-exit Crop-Level TTA Embedding Extraction (<300ms SLA).
- * High-accuracy TTA: averaged descriptor from original + crop-level horizontally flipped view.
+ * Crop-level TTA: average original + horizontal flip descriptors.
+ * Also exposes both templates on `descriptors` for min-distance ranking.
+ *
+ * Defaults favor accuracy (Phase 0): flip is almost always applied.
+ * Set `fastExitConfidence` < 1 to skip TTA on high-confidence detections.
+ * Soft time budget: skip flip only if detect+describe already exceeded 1500ms.
  */
 export async function detectAndDescribeWithTTA(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
@@ -1500,20 +1675,32 @@ export async function detectAndDescribeWithTTA(
   const primary = await detectAndDescribe(source, options);
   if (!primary) return null;
 
-  // Fast exit: if primary has confidence >= fastExitConfidence (default 0.70), skip TTA
-  const fastExitThreshold = options.fastExitConfidence ?? 0.70;
-  if (primary.confidence >= fastExitThreshold) return primary;
+  // Default 1.01 = never skip on confidence (accuracy-first). Opt into old 0.70 via options.
+  const fastExitThreshold = options.fastExitConfidence ?? 1.01;
+  if (primary.confidence >= fastExitThreshold) {
+    return {
+      ...primary,
+      descriptors: [primary.descriptor],
+    };
+  }
 
-  // Safeguard: if primary detection took > 220ms, exit fast to respect <300ms budget
-  if (performance.now() - t0 > 220) return primary;
+  // Soft budget — allow TTA in normal interactive analyze (~1.5s already spent is rare)
+  if (performance.now() - t0 > 1500) {
+    return {
+      ...primary,
+      descriptors: [primary.descriptor],
+    };
+  }
 
   try {
     const api = (await getFaceApi()) as any;
-    const cropCanvas = primary.faceCanvas;
-    if (!cropCanvas) return primary;
+    const cropCanvas = primary.embedCanvas ?? primary.faceCanvas;
+    if (!cropCanvas) {
+      return { ...primary, descriptors: [primary.descriptor] };
+    }
 
     const tTtaStart = performance.now();
-    // High-speed crop-level horizontal flip (320x320)
+    // Flip the FaceNet input (Dlib-aligned 150 when available, else padded 320)
     const flipCanvas = createHorizontalFlipCanvas(cropCanvas);
 
     let flippedRaw: Float32Array;
@@ -1525,9 +1712,12 @@ export async function detectAndDescribeWithTTA(
       flippedRaw = generateImageRegionDescriptor(flipCanvas);
     }
 
-    if (!flippedRaw || flippedRaw.length === 0) return primary;
+    if (!flippedRaw || flippedRaw.length === 0) {
+      return { ...primary, descriptors: [primary.descriptor] };
+    }
     const flippedDesc = l2NormalizeVec(flippedRaw);
-    const avg = averageDescriptors(primary.descriptor, flippedDesc);
+    const primaryDesc = primary.descriptor;
+    const avg = averageDescriptors(primaryDesc, flippedDesc);
 
     const ttaMs = Math.round(performance.now() - tTtaStart);
     let updatedTelemetry = primary.telemetry;
@@ -1550,11 +1740,13 @@ export async function detectAndDescribeWithTTA(
     return {
       ...primary,
       descriptor: avg,
+      // Multi-template: ranker takes min distance across primary, flip, and average
+      descriptors: [primaryDesc, flippedDesc, avg],
       telemetry: updatedTelemetry,
       stageLatencies: updatedLatencies,
     };
   } catch {
-    return primary;
+    return { ...primary, descriptors: [primary.descriptor] };
   }
 }
 
@@ -1603,13 +1795,14 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
   }
 
   // High-accuracy: blur gate
-  if (det.sharpness < 35) {
+  // Hard blur only — soft photos still match; advice stays advisory in issues.
+  if (det.sharpness < 28) {
     issues.push(
       "Photo looks soft or blurry — hold steady, tap to focus, and use good light.",
     );
-  } else if (det.sharpness < 52) {
+  } else if (det.sharpness < 42) {
     issues.push(
-      "Slightly blurry — a sharper, well-lit selfie gives a more accurate match.",
+      "Slightly soft focus — a sharper selfie can improve accuracy (match still runs).",
     );
   }
 
@@ -1639,13 +1832,15 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
       Math.min(1, illumQuality) * 0.06,
   );
 
+  // "ok" = hard-usable for matching. Soft-focus / small-face advice can still
+  // appear in issues without failing the capture.
   const ok =
-    issues.length === 0 &&
-    det.confidence >= 0.45 &&
-    det.sharpness >= 42 &&
+    det.confidence >= 0.35 &&
+    det.sharpness >= 28 &&
     faceCoverage >= minFaceCoverageThreshold &&
-    det.illumination >= 0.20 &&
-    det.illumination <= 0.90;
+    det.illumination >= 0.15 &&
+    det.illumination <= 0.95 &&
+    !issues.some((i) => i.includes("No valid human face"));
 
   return {
     ok,
