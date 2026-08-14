@@ -1,37 +1,15 @@
-## 2026-08-11T04:02:25Z
-You are Worker M3 for Twinframe.
-Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m3
-Original User Request: /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-Project Scope Document: /Users/damian/GitHub/twinframe/PROJECT.md
+## 2026-08-11T19:09:53Z
+Implement Milestone 3 (EdgeFace-M 256-d Feature Extraction & Metric Recalibration) for Twinframe AccuFace v4.0 architecture.
+Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m3.
+Read /Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md, /Volumes/LaCie/GitHub/twinframe/PROJECT.md, and exploration handoffs in /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_explorer_m3_1/handoff.md, teamwork_preview_explorer_m3_2/handoff.md, and teamwork_preview_explorer_m3_3/handoff.md.
 
-Your mission (Milestone M3 - Visual Design & Micro-Animations):
-1. Read /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Users/damian/GitHub/twinframe/PROJECT.md. Refer to /Users/damian/GitHub/twinframe/.agents/teamwork_preview_explorer_survey_1/handoff.md for component blueprints.
-2. Extend `src/styles.css`:
-   - Add keyframes: `scan-laser-sweep`, `reticle-pulse`, `card-flip-in`, `telemetry-fade`, `glow-aura`, `sparkle-float`.
-   - Add helper classes for 3D perspective (`.perspective-1000`, `.transform-style-3d`, `.backface-hidden`).
-3. Build `src/components/scanning/face-scanning-hud.tsx`:
-   - High-fidelity face scanning HUD viewport displaying user face photo (`previewUrl`).
-   - 4 Corner tech reticle L-brackets.
-   - Glowing vertical laser scan line sweeping up and down.
-   - Simulated/real landmark node points over key facial features.
-   - Cybernetic real-time telemetry text stream ("ALIGNING LANDMARKS", "EXTRACTING EMBEDDINGS", "MATCHING GALAXIES").
-   - Integrate into `src/components/analyzing-state.tsx`.
-4. Build `src/components/ui/number-counter.tsx`:
-   - Smooth animated count-up component (0 to target `matchPercent` over ~1.2s).
-5. Build `src/components/results/match-reveal-card.tsx`:
-   - Active 3D card flip / scale-up reveal animation when top match mounts.
-   - Displays match percentage using `NumberCounter`.
-   - Displays match confidence score badge and 4 descriptor traits.
-   - Staggered entry animation for contender cards list.
-6. Build `src/components/results/comparison-view.tsx`:
-   - Sleek rounded-rectangle cards framing cropped user face and target celebrity portrait.
-   - Mode switcher tabs: "Side-by-Side", "Interactive Split Slider" (draggable central divider morphing between faces), and "Landmark Alignment" (feature callout badges).
-   - Integrate into `src/components/results/match-results.tsx`.
-7. Verification:
-   - Ensure all animations respect `prefers-reduced-motion`.
-   - Run `npm run typecheck` and `npm test`.
-   - Run `node scripts/browser-smoke.mjs http://127.0.0.1:8080/`.
+Requirements:
+1. EdgeFace-M 256-d Feature Extraction (src/lib/face/edgeface.ts): ONNX model loading via onnx-engine.ts, NCHW [1, 3, 112, 112] Float32 preprocessing, 256-d embedding extraction, L2 normalization (v_hat = v / ||v||_2) with zero-vector fallback.
+2. Cosine Distance Recalibration (src/lib/face/match.ts): Pure L2-normalized Cosine distance (d = 1 - a_hat^T * b_hat) replacing legacy ensemble distance, 8-way loop unrolling for 256-d dot products, bounds clamping (d in [0.0, 2.0]).
+3. Hill Curve Parameter Recalibration & Pipeline Integration (src/lib/face/embeddings.ts, src/lib/face/pipeline.ts, src/lib/face/types.ts): Update Hill curve probability mapping P(d) = 100 / (1 + (d / 0.38)^4.5) with d0 = 0.38, n = 4.5. Integrate into pipeline.ts. Update FaceStageLatencies (embeddingPassMs) and FaceTelemetry.
+4. Testing & Build Verification: Create unit test suites, run npm run typecheck, npm test, npm run build.
 
-MANDATORY INTEGRITY WARNING: DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+MANDATORY INTEGRITY WARNING:
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
 
-Write your handoff report to /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m3/handoff.md detailing all changes, build/test execution results, and files created/modified. Send a summary message when finished.
+Write your handoff report in /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m3/handoff.md.

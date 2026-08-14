@@ -1,57 +1,58 @@
-# BRIEFING — 2026-08-11T00:01:00Z
+# BRIEFING — 2026-08-11T19:05:40Z
 
 ## Mission
-Milestone M2 - Matching Algorithm & Scoring Calibration for Twinframe
+Implement Milestone 2 (SCRFD-2.5G Detection & Expression-Aware 3D UV Frontalization) for Twinframe AccuFace v4.0 architecture.
 
 ## 🔒 My Identity
-- Archetype: implementer, qa, specialist
+- Archetype: worker
 - Roles: implementer, qa, specialist
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m2
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: M2
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m2
+- Original parent: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Milestone: Milestone 2 (SCRFD-2.5G & WGSL Frontalization)
 
 ## 🔒 Key Constraints
-- Hill Equation curve: P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^3.2) rounded to 1 decimal place.
-- distanceToMatchPercent(0) === 100 (or 100.0).
-- Continuous Gaussian age affinity: ageAffinity(userAge, celebAge) = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2)).
-- Smooth gender prior using user.genderProbability.
-- computeMatchConfidence(detConfidence, sharpness, faceCoverage, genderProb) -> [10, 100].
-- 4 granular traits in buildDescriptorTraits (Facial Structure, Age Affinity, Gender Presentation, Lighting & Quality).
-- Unit tests in src/lib/face/match.test.ts.
+- All implementations must be genuine — NO HARDCODED test results, fake outputs, or dummy facades.
+- Must execute SCRFD-2.5G ONNX detection via onnx-engine.ts, anchor decoding, score filtering (>= 0.40), NMS, landmark extraction, and head pose estimation.
+- Must execute ExpNorm 3D UV WGSL frontalization with 10-basis blendshape residual subtraction, 3D UV mapping, bilinear texture sampling for |yaw| > 25° with WebGPU buffer bindings and safe CPU/5-point fallback.
+- Must execute 5-Point Similarity Fallback (Umeyama transform) for |yaw| <= 25° mapping to canonical 112x112 InsightFace landmarks.
+- Must update pipeline.ts, FaceStageLatencies, and FaceTelemetry.
+- Build and tests (`npm run typecheck`, `npm test`, `npm run build`) must pass.
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-11T00:01:00Z
+- Conversation ID: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Updated: 2026-08-11T19:05:40Z
 
 ## Task Summary
-- **What to build**: Refine distance-to-percentage calibration curve, continuous Gaussian age affinity, smooth gender prior weighting, computeMatchConfidence function, 4 granular descriptor traits, and expanded unit test suite.
-- **Success criteria**: All requirements implemented genuinely, all tests pass (64/64), typecheck passes.
-- **Interface contracts**: PROJECT.md Interface Contracts.
-- **Code layout**: src/lib/face/embeddings.ts, src/lib/face/match.ts, src/lib/face/types.ts, src/lib/face/match.test.ts.
+- **What to build**: SCRFD-2.5G Detection, ExpNorm 3D UV WGSL Frontalization, 5-Point Umeyama Fallback, and Pipeline Integration.
+- **Success criteria**: All requirements met with genuine algorithms and verified by unit tests, typecheck, build.
+- **Interface contracts**: PROJECT.md and architectural roadmap / exploration handoffs.
+- **Code layout**: src/lib/face/
 
 ## Key Decisions Made
-- Replaced sigmoid distance mapping with calibrated Hill Equation curve $P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^{3.2})$.
-- Implemented continuous Gaussian age affinity without step boundaries.
-- Added smooth gender prior calculation dependent on confidence probability.
-- Added computeMatchConfidence producing scores in range [10, 100].
-- Expanded buildDescriptorTraits to output 4 granular traits (Facial Structure, Age Affinity, Gender Presentation, Lighting & Quality).
+- Implemented SCRFD-2.5G multi-stride anchor generation (16,800 anchors across strides 8, 16, 32), score filtering (>= 0.40), NMS (0.40 IoU threshold), 5-point landmark extraction, and head pose estimation math (roll, yaw, pitch).
+- Implemented ExpNorm 3D UV WGSL compute shader with 10-basis blendshape residual subtraction, 3D rotation, and bilinear texture sampling into NCHW planar Float32 tensor buffer.
+- Implemented 5-point Umeyama similarity transform solver mapping to canonical 112x112 / 160x160 InsightFace landmarks with closed-form normal equations.
+- Integrated SCRFD detection and routing logic in `src/lib/face/pipeline.ts` with stage latency tracking (`scrfdPassMs`, `frontalizationMs`) and telemetry metadata (`frontalizationMethod`, `estimatedYaw`, `estimatedPitch`, `estimatedRoll`).
 
 ## Change Tracker
 - **Files modified**:
-  - `src/lib/face/embeddings.ts`: Hill equation calibration, continuous age/gender affinity, computeMatchConfidence.
-  - `src/lib/face/match.ts`: UserFaceQuery expansion, 4 granular traits in buildDescriptorTraits, confidenceScore calculation, re-exported computeMatchConfidence.
-  - `src/lib/face/types.ts`: Added confidenceScore property to CelebrityMatch interface.
-  - `src/lib/face/match.test.ts`: Unit tests for d=0, calibration curve, monotonicity, age/gender affinity, match confidence, 4 granular traits.
-- **Build status**: PASS (`npm run typecheck` & `npm test` 64/64 pass)
+  - `src/lib/face/types.ts`: Extended FaceTelemetry, FaceStageLatencies, SCRFD and ExpNorm types.
+  - `src/lib/face/scrfd.ts`: Created SCRFD-2.5G detection engine, anchor generator, NMS, and pose estimator.
+  - `src/lib/face/exp-norm-wgsl.ts`: Created WGSL compute shader and ExpNorm frontalization pipeline.
+  - `src/lib/face/similarity-transform.ts`: Created 5-point Umeyama similarity transform solver and canvas/tensor aligners.
+  - `src/lib/face/pipeline.ts`: Integrated SCRFD and ExpNorm / 5-point routing into analyzeFaceSource.
+  - `src/lib/face/scrfd.test.ts`: Created SCRFD detection unit tests.
+  - `src/lib/face/similarity-transform.test.ts`: Created 5-point Umeyama alignment unit tests.
+  - `src/lib/face/exp-norm-wgsl.test.ts`: Created WGSL & CPU ExpNorm frontalization unit tests.
+  - `src/lib/face/m2-pipeline-integration.test.ts`: Created M2 pipeline routing and telemetry unit tests.
+  - `vite.config.ts`: Updated server host/port configuration to allow env overrides.
+- **Build status**: PASS (`npm run typecheck`, `npm test`, `npm run build` all passing cleanly)
 - **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: PASS (64/64 tests passed in 168ms)
-- **Lint status**: PASS (typecheck passes cleanly with zero errors)
-- **Tests added/modified**: 6 new unit test suites/cases added to `src/lib/face/match.test.ts`
+- **Build/test result**: PASS (273 unit tests pass)
+- **Lint status**: PASS (0 TypeScript errors)
+- **Tests added/modified**: 17 new unit tests across 4 test suites
 
 ## Loaded Skills
 - None
-
-## Artifact Index
-- handoff.md — Final handoff report

@@ -99,6 +99,7 @@ export function rankCelebrities(
     accentHue: t.celeb.accentHue,
     initials: initials(t.celeb.name),
     tags: t.celeb.tags,
+    gender: t.celeb.tags?.includes("female") ? "female" : t.celeb.tags?.includes("male") ? "male" : undefined,
   }));
 }
 

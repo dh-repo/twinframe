@@ -3,7 +3,8 @@ import { initials } from "../celebrities/types.ts";
 import type { CelebrityMatch, TraitInsight } from "./types.ts";
 import {
   type CelebrityEmbedding,
-  ensembleDistance,
+  l2Normalize,
+  cosineDistance256,
   rankPercentsFromDistances,
   genderAffinity,
   ageAffinity,
@@ -25,7 +26,7 @@ export interface UserFaceQuery {
 }
 
 /**
- * Rank celebrities by FaceNet L2 distance (primary), with soft age/gender priors.
+ * Rank celebrities by EdgeFace-M 256-d Cosine distance (primary), with soft age/gender priors.
  * Gallery may contain multiple age-buckets per celeb id (e.g. 46/58/72).
  * We score every bucket, then keep only the best bucket per celeb id
  * (lowest adjusted distance), so results are diverse and age-aware.
@@ -35,14 +36,21 @@ export function rankByDescriptor(
   gallery: CelebrityEmbedding[],
   topK = 5,
 ): CelebrityMatch[] {
+  if (!gallery || gallery.length === 0) return [];
+  const userDesc = l2Normalize(user.descriptor);
+  const userAge = Number.isFinite(user.age) ? user.age : undefined;
+  const userGender = user.gender;
+  const userGenderProb = Number.isFinite(user.genderProbability) ? user.genderProbability : 0.9;
+
   const scored = gallery.map((celeb) => {
-    // High-accuracy ensemble: euclidean + cosine, normalized descriptors
-    const dist = ensembleDistance(user.descriptor, celeb.descriptor);
-    const g = genderAffinity(user.gender, user.genderProbability, celeb);
-    const a = ageAffinity(user.age, celeb.age);
+    // AccuFace v4.0 Metric Recalibration: Pure L2-normalized Cosine distance (d = 1 - a_hat^T * b_hat)
+    const dist = cosineDistance256(userDesc, celeb.descriptor);
+    const g = genderAffinity(userGender, userGenderProb, celeb);
+    const a = userAge !== undefined ? ageAffinity(userAge, celeb.age) : 1.0;
     // High-accuracy: age/gender are gentle priors (don't dominate face)
-    // denominator 0.72 + 0.18*g + 0.10*a => max 12% shift for age/gender
-    const adjusted = dist / (0.72 + 0.18 * g + 0.10 * a);
+    // denominator 0.72 + 0.18*g + 0.10*a => max 12-16% shift for age/gender
+    const denom = 0.72 + 0.18 * g + 0.10 * a;
+    const adjusted = dist / denom;
     return { celeb, dist, adjusted };
   });
 
@@ -60,7 +68,7 @@ export function rankByDescriptor(
     user.detConfidence ?? 0.92,
     user.sharpness ?? 0.85,
     user.faceCoverage ?? 0.25,
-    user.genderProbability,
+    userGenderProb,
   );
 
   return top.map((t, i) => {
@@ -81,6 +89,7 @@ export function rankByDescriptor(
       accentHue: meta.accentHue,
       initials: initials(displayName),
       tags: meta.tags,
+      gender: t.celeb.gender as "male" | "female" | "unknown" | undefined,
       photoUrl: t.celeb.path,
       photoUrl192: anyPath.path192,
       fallbackPhotoUrl: anyPath.fallbackPath,
@@ -95,21 +104,28 @@ function buildDescriptorTraits(
   distance: number,
 ): TraitInsight[] {
   const faceSim = Math.max(0, Math.min(1, 1 - distance / 0.85));
-  const ageSim = ageAffinity(user.age, celeb.age);
+  const userAge = Number.isFinite(user.age) ? user.age : (celeb.age ?? 40);
+  const ageSim = ageAffinity(userAge, celeb.age);
+  const gProb = Number.isFinite(user.genderProbability)
+    ? (user.genderProbability > 1 ? user.genderProbability / 100 : user.genderProbability)
+    : 0.9;
   const genderSim =
-    user.gender === "unknown"
+    user.gender === "unknown" || !user.gender
       ? 0.7
       : user.gender === celeb.gender
-        ? Math.min(1, 0.85 + 0.15 * user.genderProbability)
-        : Math.max(0.2, 1 - user.genderProbability * 0.7);
+        ? Math.min(1, 0.85 + 0.15 * gProb)
+        : Math.max(0.2, 1 - gProb * 0.7);
 
   const confidence = computeMatchConfidence(
     user.detConfidence ?? 0.92,
     user.sharpness ?? 0.85,
     user.faceCoverage ?? 0.25,
-    user.genderProbability,
+    gProb,
   );
   const qualitySim = confidence / 100;
+  const userQualityScore = typeof user.qualityScore === "number" && Number.isFinite(user.qualityScore)
+    ? (user.qualityScore > 1 ? user.qualityScore / 100 : user.qualityScore)
+    : qualitySim;
 
   return [
     {
@@ -121,21 +137,21 @@ function buildDescriptorTraits(
     },
     {
       trait: "ageAffinity",
-      userValue: Math.min(1, user.age / 100),
-      celebValue: Math.min(1, celeb.age / 100),
+      userValue: Math.min(1, Math.max(0, userAge / 100)),
+      celebValue: Math.min(1, Math.max(0, (celeb.age ?? 40) / 100)),
       similarity: ageSim,
       label: "Age Affinity",
     },
     {
       trait: "genderPresentation",
-      userValue: user.genderProbability,
-      celebValue: celeb.genderProb,
+      userValue: gProb,
+      celebValue: celeb.genderProb ?? 0.9,
       similarity: genderSim,
       label: "Gender Presentation",
     },
     {
       trait: "lightingQuality",
-      userValue: user.qualityScore ?? qualitySim,
+      userValue: userQualityScore,
       celebValue: 0.92,
       similarity: qualitySim,
       label: "Lighting & Quality",

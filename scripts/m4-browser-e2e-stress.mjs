@@ -2,6 +2,7 @@ import { chromium } from "playwright";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import createCanvas from "canvas";
+import { setupRouteInterceptor } from "./server-route-interceptor.mjs";
 
 async function main() {
   const screenshotsDir = join(process.cwd(), "screenshots", "m4_verification");
@@ -15,7 +16,12 @@ async function main() {
 
   const browser = await chromium.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-dev-shm-usage"],
+    args: [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--single-process",
+      "--disable-gpu",
+    ],
   });
 
   const context = await browser.newContext({
@@ -23,6 +29,7 @@ async function main() {
   });
 
   const page = await context.newPage();
+  await setupRouteInterceptor(page);
 
   page.on("console", (msg) => {
     const text = msg.text();
@@ -62,55 +69,74 @@ async function main() {
   const title = await page.title();
   console.log(`Page Title: "${title}"`);
 
-  // Generate a high quality realistic face synthetic canvas image
+  // Generate a high quality realistic face synthetic canvas image (high-resolution input with aspect-preserving scale)
+  const imgWidth = parseInt(process.env.TEST_IMG_WIDTH || "1920", 10);
+  const imgHeight = parseInt(process.env.TEST_IMG_HEIGHT || "1080", 10);
+  console.log(`Generating high-resolution synthetic test image (${imgWidth}x${imgHeight})...`);
+
   const testImgPath = join(screenshotsDir, "test_face_sample.jpg");
-  const canvas = createCanvas.createCanvas(400, 400);
+  const canvas = createCanvas.createCanvas(imgWidth, imgHeight);
   const ctx = canvas.getContext("2d");
+
+  const scale = Math.min(imgWidth, imgHeight) / 400;
+  const offsetX = (imgWidth - 400 * scale) / 2;
+  const offsetY = (imgHeight - 400 * scale) / 2;
+
+  const mapX = (x) => offsetX + x * scale;
+  const mapY = (y) => offsetY + y * scale;
+  const mapR = (r) => r * scale;
+
   // Background
   ctx.fillStyle = "#22252a";
-  ctx.fillRect(0, 0, 400, 400);
+  ctx.fillRect(0, 0, imgWidth, imgHeight);
+
   // Face oval
   ctx.fillStyle = "#dcb898";
   ctx.beginPath();
-  ctx.ellipse(200, 200, 110, 140, 0, 0, 2 * Math.PI);
+  ctx.ellipse(mapX(200), mapY(200), mapR(110), mapR(140), 0, 0, 2 * Math.PI);
   ctx.fill();
+
   // Hair
   ctx.fillStyle = "#2c1d11";
   ctx.beginPath();
-  ctx.ellipse(200, 110, 115, 60, 0, 0, 2 * Math.PI);
+  ctx.ellipse(mapX(200), mapY(110), mapR(115), mapR(60), 0, 0, 2 * Math.PI);
   ctx.fill();
+
   // Eyes
   ctx.fillStyle = "#ffffff";
   ctx.beginPath();
-  ctx.ellipse(160, 180, 18, 10, 0, 0, 2 * Math.PI);
-  ctx.ellipse(240, 180, 18, 10, 0, 0, 2 * Math.PI);
+  ctx.ellipse(mapX(160), mapY(180), mapR(18), mapR(10), 0, 0, 2 * Math.PI);
+  ctx.ellipse(mapX(240), mapY(180), mapR(18), mapR(10), 0, 0, 2 * Math.PI);
   ctx.fill();
   ctx.fillStyle = "#2d4a3e";
   ctx.beginPath();
-  ctx.arc(160, 180, 8, 0, 2 * Math.PI);
-  ctx.arc(240, 180, 8, 0, 2 * Math.PI);
+  ctx.arc(mapX(160), mapY(180), mapR(8), 0, 2 * Math.PI);
+  ctx.arc(mapX(240), mapY(180), mapR(8), 0, 2 * Math.PI);
   ctx.fill();
+
   // Eyebrows
   ctx.strokeStyle = "#2c1d11";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = Math.max(1, mapR(4));
   ctx.beginPath();
-  ctx.moveTo(135, 162);
-  ctx.quadraticCurveTo(160, 155, 182, 162);
-  ctx.moveTo(218, 162);
-  ctx.quadraticCurveTo(240, 155, 265, 162);
+  ctx.moveTo(mapX(135), mapY(162));
+  ctx.quadraticCurveTo(mapX(160), mapY(155), mapX(182), mapY(162));
+  ctx.moveTo(mapX(218), mapY(162));
+  ctx.quadraticCurveTo(mapX(240), mapY(155), mapX(265), mapY(162));
   ctx.stroke();
+
   // Nose
   ctx.strokeStyle = "#b58d6e";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = Math.max(1, mapR(3));
   ctx.beginPath();
-  ctx.moveTo(200, 180);
-  ctx.lineTo(195, 225);
-  ctx.lineTo(208, 225);
+  ctx.moveTo(mapX(200), mapY(180));
+  ctx.lineTo(mapX(195), mapY(225));
+  ctx.lineTo(mapX(208), mapY(225));
   ctx.stroke();
+
   // Mouth
   ctx.fillStyle = "#bd6060";
   ctx.beginPath();
-  ctx.ellipse(200, 255, 28, 12, 0, 0, 2 * Math.PI);
+  ctx.ellipse(mapX(200), mapY(255), mapR(28), mapR(12), 0, 0, 2 * Math.PI);
   ctx.fill();
 
   const buffer = canvas.toBuffer("image/jpeg");
@@ -199,8 +225,14 @@ async function main() {
 
   await page.screenshot({ path: join(screenshotsDir, "06_after_interaction.png") });
 
+  const telemetryLogs = consoleLogs.filter((l) => l.includes("[Twinframe Telemetry]"));
   console.log("=== Test Summary ===");
+  console.log(`Input Image Dimensions: ${imgWidth}x${imgHeight}`);
   console.log(`Page Load Time: ${loadTimeMs}ms`);
+  if (telemetryLogs.length > 0) {
+    console.log("Telemetry Logs:");
+    telemetryLogs.forEach((t) => console.log(`  ${t}`));
+  }
   console.log(`Console Errors: ${consoleErrors.length}`);
   console.log(`Page Errors: ${pageErrors.length}`);
   console.log(`Network Errors: ${networkErrors.length}`);

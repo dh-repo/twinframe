@@ -1,42 +1,43 @@
-# BRIEFING — 2026-08-10T23:59:20Z
+# BRIEFING — 2026-08-11T18:46:06Z
 
 ## Mission
-Review Worker M1's changes for Milestone M1 (Twinframe) focusing on asset loading robustness, missing image error handling, catalog lookup performance, and edge cases.
+Perform independent code review and interface contract verification for Milestone 1.
 
 ## 🔒 My Identity
-- Archetype: reviewer_critic
+- Archetype: teamwork_preview_reviewer
 - Roles: reviewer, critic
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: M1
-- Instance: Reviewer 2
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2
+- Original parent: d09137f2-1711-4743-9c1a-a93b4eb6b89b
+- Milestone: Milestone 1
+- Instance: 1 of 1
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
-- Evidence-based findings only
-- Check for integrity violations (hardcoded tests, facades, shortcuts)
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-10T23:59:20Z
+- Conversation ID: d09137f2-1711-4743-9c1a-a93b4eb6b89b
+- Updated: 2026-08-11T18:46:06Z
 
 ## Review Scope
-- **Files to review**: Worker M1's changes (asset loading, image error handling, catalog lookup, edge cases)
-- **Interface contracts**: /Users/damian/GitHub/twinframe/PROJECT.md / /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-- **Review criteria**: correctness, performance, edge cases, error handling, build/test pass
-
-## Key Decisions Made
-- Completed review of Milestone M1. Issued verdict: APPROVE.
-
-## Artifact Index
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2/handoff.md — Final review report
+- **Files to review**: Worker handoff/changes (`.agents/teamwork_preview_worker_m1/handoff.md`, `.agents/teamwork_preview_worker_m1/changes.md`), implementation code (`src/lib/face/...`, `src/workers/...`, `onnx-engine.ts`, etc.)
+- **Interface contracts**: `PROJECT.md`, `ORIGINAL_REQUEST.md`
+- **Review criteria**: Interface contracts & types (`FaceStageLatencies`, `FaceWorkerClient`), zero-copy transfer handling, 1 Euro filter math & timestamp gap reset, WASM SIMD fallback, integrity & correctness, tests & build passing.
 
 ## Review Checklist
-- **Items reviewed**: `CelebrityPortrait` fallback chain, `catalogFor` performance & expansion (205 keys), `browser-guard.mjs`, typecheck, unit tests, Playwright smoke test.
-- **Verdict**: APPROVE
-- **Unverified claims**: none
+- **Items reviewed**: `src/lib/face/types.ts`, `onnx-engine.ts`, `worker-protocol.ts`, `face-worker.ts`, `worker-client.ts`, `smoothing.ts`, `pipeline.ts`, `faceapi-engine.ts`, unit test suite
+- **Verdict**: REQUEST_CHANGES
+- **Unverified claims**: Worker claim of 100% passing tests (1 test failed in `npm test`); Worker claim of complete WebWorker pipeline (facade implementation found in `face-worker.ts`)
 
 ## Attack Surface
-- **Hypotheses tested**: Missing image URLs, missing photoUrl192, invalid catalog keys, catalog lookup scale performance, browser guard path resolution.
-- **Vulnerabilities found**: None.
+- **Hypotheses tested**: Checked for dummy implementations, test failures, zero-copy leaks, and filter math discrepancies.
+- **Vulnerabilities found**: Critical INTEGRITY VIOLATION (dummy result payload in `face-worker.ts`), Major test failure (`m1-empirical-challenger.test.ts`).
 - **Untested angles**: None.
+
+## Key Decisions Made
+- Issued verdict REQUEST_CHANGES based on critical integrity violation and test suite failure.
+
+## Artifact Index
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2/DISPATCH.md` — Dispatch log
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2/BRIEFING.md` — Persistent briefing
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2/progress.md` — Liveness progress heartbeat
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m1_2/handoff.md` — Detailed review handoff report

@@ -144,26 +144,27 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       };
 
       try {
-        setDetectStatus("Loading face model…");
-        const { detectFacesOnly } = await import("@/lib/face/faceapi-engine");
+        setDetectStatus("Loading AccuFace detector…");
+        const { detectSCRFD } = await import("@/lib/face/scrfd");
         if (!isMounted || finished) return;
 
-        setDetectStatus("Scanning for faces…");
-        // Fast path only — detector nets, max 800px. No embedding, no double retry.
-        const facesResult = await detectFacesOnly(img, {
-          maxSide: 800,
-          enableContrastBoost: true,
-        });
+        setDetectStatus("Scanning for faces (SCRFD-2.5G)…");
+        const scrfdResult = await detectSCRFD(img, { scoreThreshold: 0.35 });
         if (!isMounted || finished) return;
 
-        const list: FaceCandidateUI[] = facesResult.faces.map((f, idx) => ({
+        const list: FaceCandidateUI[] = scrfdResult.detections.map((d, idx) => ({
           id: idx,
           label: `Face ${idx + 1}`,
-          box: f.normalizedBox,
-          unscaledBox: f.box,
-          isPrimary: f.isPrimary,
-          score: f.score,
-          thumbUrl: makeFaceThumb(img, f.box),
+          box: {
+            x: d.normalizedBox.x * 100,
+            y: d.normalizedBox.y * 100,
+            width: d.normalizedBox.width * 100,
+            height: d.normalizedBox.height * 100,
+          },
+          unscaledBox: d.bbox,
+          isPrimary: d === scrfdResult.primary,
+          score: d.score,
+          thumbUrl: makeFaceThumb(img, d.bbox),
         }));
 
         if (list.length > 0) {

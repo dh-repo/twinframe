@@ -1,48 +1,48 @@
-# BRIEFING — 2026-08-11T00:01:50Z
+# BRIEFING — 2026-08-11T19:06:42Z
 
 ## Mission
-Review Worker M2's implementation for Milestone M2 (Twinframe matching algorithm and calibration) and perform an adversarial review & forensic integrity audit.
+Conduct code review & adversarial challenge for Milestone 2 (SCRFD-2.5G Detection & ExpNorm 3D UV Frontalization).
 
 ## 🔒 My Identity
-- Archetype: reviewer & critic
+- Archetype: reviewer / critic
 - Roles: reviewer, critic
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m2_1
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: M2
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m2_1
+- Original parent: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Milestone: Milestone 2
 - Instance: 1 of 1
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
-- Integrity Check: Verify no hardcoded test results, facade implementations, or self-certifying shortcuts.
-- Report verdict explicitly as APPROVE or REQUEST_CHANGES in handoff.md.
+- Actively check for integrity violations (hardcoded tests, facade implementations, shortcuts, fabricated verification, self-certifying work)
+- Verify src/lib/face/scrfd.ts, exp-norm-wgsl.ts, similarity-transform.ts, pipeline.ts, types.ts
+- Verify multi-stride anchor parsing, NMS, pose estimation (|yaw| > 25°), WGSL blendshape subtraction, 5-point Umeyama fallback, npm run typecheck, npm test, npm run build
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-11T00:01:50Z
+- Conversation ID: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Updated: 2026-08-11T19:06:42Z
 
 ## Review Scope
-- **Files to review**:
-  - `src/lib/face/embeddings.ts`
-  - `src/lib/face/match.ts`
-  - `src/lib/face/match.test.ts`
-- **Interface contracts**: PROJECT.md
-- **Review criteria**: Hill Equation calibration formula ($P(0) = 100$), continuous age Gaussian affinity, gender prior weighting, `computeMatchConfidence`, 4 descriptor traits, type safety (`npm run typecheck`), unit tests (`npm test`), and integrity check.
+- **Files to review**: src/lib/face/scrfd.ts, exp-norm-wgsl.ts, similarity-transform.ts, pipeline.ts, types.ts
+- **Interface contracts**: PROJECT.md, ORIGINAL_REQUEST.md
+- **Review criteria**: correctness, completeness, quality, performance, risk, integrity
 
 ## Review Checklist
-- **Items reviewed**: `src/lib/face/embeddings.ts`, `src/lib/face/match.ts`, `src/lib/face/match.test.ts`
+- **Items reviewed**: src/lib/face/scrfd.ts, exp-norm-wgsl.ts, similarity-transform.ts, pipeline.ts, types.ts, test suite
 - **Verdict**: APPROVE
-- **Unverified claims**: None. All claims verified by direct execution of typecheck & test suite and code inspection.
+- **Unverified claims**: none
 
 ## Attack Surface
-- **Hypotheses tested**: Hill equation boundary values ($d=0 \to 100\%$, monotonicity $d \in [0, 1.5]$), Gaussian age decay smoothness, gender prior bounds, `computeMatchConfidence` scale normalization, 4 trait generation, zero division safety.
-- **Vulnerabilities found**: None.
-- **Untested angles**: Full WebGL camera streaming pipeline (covered in M4 integration stage).
+- **Hypotheses tested**: multi-stride anchors, NMS, pose estimation yaw calculation, WGSL shader math, 5pt Umeyama transform, test suite execution, build execution, code integrity
+- **Vulnerabilities found**: none
+- **Untested angles**: none
 
 ## Key Decisions Made
-- Confirmed full compliance with M2 requirements and issued explicit APPROVE verdict.
+- Confirmed all M2 requirements met with high code quality and zero integrity violations.
+- Verdict: APPROVE.
+- Generated comprehensive handoff.md.
 
 ## Artifact Index
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m2_1/DISPATCH.md — Task dispatch record
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m2_1/BRIEFING.md — Working memory index
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m2_1/progress.md — Liveness heartbeat
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m2_1/handoff.md — Final review and handoff report
+- DISPATCH.md — record of incoming instructions
+- BRIEFING.md — persistent working memory
+- progress.md — liveness heartbeat log
+- handoff.md — self-contained handoff report with verdict APPROVE

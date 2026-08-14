@@ -246,13 +246,21 @@ export function AppHome() {
               </div>
               <span className="text-base font-bold tracking-tight text-white">Twinframe</span>
             </div>
-            {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") && (
+            {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") ? (
               <button
                 type="button"
                 onClick={reset}
                 className="text-xs text-white/60 transition-colors hover:text-white"
               >
                 New photo
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setGalleryModalOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 transition-all hover:bg-white/10 hover:text-white"
+              >
+                <span>Explore {gallerySize.toLocaleString()}+ Stars</span>
               </button>
             )}
           </div>
@@ -263,8 +271,14 @@ export function AppHome() {
                 Find Your Celebrity Doppelgänger
               </h1>
               <p className="max-w-lg mx-auto text-sm sm:text-base leading-relaxed text-white/70">
-                Upload a selfie or use your camera. Instant, on-device matching with FaceNet against{" "}
-                <span className="font-semibold text-white">{gallerySize.toLocaleString()}+ stars</span>.
+                Upload a selfie or use your camera. Instant, on-device matching with EdgeFace-M 256-d & SCRFD-2.5G against{" "}
+                <button
+                  type="button"
+                  onClick={() => setGalleryModalOpen(true)}
+                  className="font-semibold text-white underline underline-offset-4 hover:text-indigo-300 transition-colors"
+                >
+                  {gallerySize.toLocaleString()}+ stars
+                </button>.
               </p>
 
               {/* 3 Horizontal Pill Badges */}
@@ -294,7 +308,7 @@ export function AppHome() {
             />
 
             {/* Teaser Sample Match Preview Showcase */}
-            <div className="flex flex-col items-center justify-center space-y-2 pt-2">
+            <div className="flex flex-col items-center justify-center space-y-2.5 pt-2">
               <div className="flex items-center gap-2.5">
                 <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
                   <img
@@ -313,6 +327,17 @@ export function AppHome() {
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-[#161824]/90 px-4 py-1.5 text-xs font-bold text-white shadow-xl backdrop-blur-md">
                 Match Found! 94% Similarity
+              </div>
+
+              {/* Star Preview Row */}
+              <div className="pt-2 text-center">
+                <button
+                  type="button"
+                  onClick={() => setGalleryModalOpen(true)}
+                  className="text-xs text-white/60 hover:text-white transition-colors"
+                >
+                  Browse our full index of 1,000+ Hollywood, Music & Sports Icons →
+                </button>
               </div>
             </div>
           </div>

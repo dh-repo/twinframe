@@ -1,65 +1,69 @@
-# BRIEFING — 2026-08-10T23:58:30Z
+# BRIEFING — 2026-08-11T18:45:59Z
 
 ## Mission
-Milestone M1 - Celebrity Gallery Catalog & Asset Polish for Twinframe.
+Implement Milestone 1 (ONNX Runtime WebGPU/WASM Client Execution Engine, WebWorker Zero-Copy Architecture, 1 Euro Filter Smoothing & Stage Latency Instrumentation) for Twinframe AccuFace v4.0.
 
 ## 🔒 My Identity
-- Archetype: implementer / qa / specialist
+- Archetype: worker_m1
 - Roles: implementer, qa, specialist
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m1
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: M1 (Celebrity Gallery Catalog & Asset Polish)
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m1
+- Original parent: d09137f2-1711-4743-9c1a-a93b4eb6b89b
+- Milestone: Milestone 1
 
 ## 🔒 Key Constraints
-- Minimal change principle: edit only what is needed.
-- No integrity violations: genuine logic and implementations only. No hardcoded outputs or tests.
-- Deliver M1 requirements:
-  1. Fix asset fallback chain (`path192` -> `path` -> initials avatar/fallback; no `.jpg` fallback 404s for entries without JPG).
-  2. Expand curated metadata in `src/lib/celebrities/catalog.ts` for 80+ additional diverse international figures (`knownFor`, `tags`, `accentHue`).
-  3. Fix browser guard in `scripts/browser-guard.mjs` for screenshot output path.
-  4. Pass typecheck, unit tests (`npm test`), and browser smoke test.
+- Pure client-side ONNX Runtime Web execution (WebGPU with WASM SIMD fallback).
+- Dynamic crossOriginIsolated check (`self.crossOriginIsolated ? 4 : 1`).
+- Zero-copy transfers with mandatory `bitmap.close()`.
+- 1 Euro Filter smoothing with exact parameters ($f_{c,\min}=1.0\text{ Hz}, \beta=0.007, f_{c,\text{der}}=1.0\text{ Hz}$).
+- Extended `FaceStageLatencies` timing telemetry.
+- Full typecheck, test, and build passing without facade/hardcoded test shortcuts.
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-10T23:58:30Z
+- Conversation ID: d09137f2-1711-4743-9c1a-a93b4eb6b89b
+- Updated: 2026-08-11T18:45:59Z
 
 ## Task Summary
-- **What to build**: Asset fallback chain fixes, 119 curated catalog entries expansion, browser-guard script update, test verification.
-- **Success criteria**:
-  - Components use `path192` -> `path` -> initials/fallback avatar.
-  - Zero 404 attempts for nonexistent `/celebs/<id>.jpg` files.
-  - Curated entries count increased by 119 diverse international entries in `catalog.ts` (total 205 entries).
-  - `scripts/browser-guard.mjs` supports screenshots in `process.cwd()`.
-  - `npm run typecheck` (0 errors), `npm test` (58 tests pass), and `node scripts/browser-smoke.mjs http://127.0.0.1:8080/` (status 200, 0 console/page errors) succeed cleanly.
-- **Interface contracts**: PROJECT.md
-- **Code layout**: PROJECT.md § Code Layout
-
-## Key Decisions Made
-- Implemented state machine in `CelebrityPortrait` for `path192` -> `path` -> initials avatar fallback.
-- Added re-export file `src/components/ui/celebrity-portrait.tsx`.
-- Expanded `CURATED` in `catalog.ts` with 119 entries matching gallery IDs.
-- Updated `checkedOutputPath` in `browser-guard.mjs` to include `process.cwd()` alongside `/workspace`.
+- **What to build**: Milestone 1 execution engine, worker client/worker architecture, 1 Euro filter smoothing, and extended stage latency telemetry.
+- **Success criteria**: All code implemented with high fidelity, tests created and passing, typecheck & build passing.
+- **Interface contracts**: PROJECT.md and ORIGINAL_REQUEST.md
+- **Code layout**: src/lib/face/*
 
 ## Change Tracker
 - **Files modified**:
-  - `src/components/celebrity-portrait.tsx`: image fallback state machine.
-  - `src/components/ui/celebrity-portrait.tsx`: re-export file created.
-  - `src/lib/celebrities/catalog.ts`: added 119 curated entries.
-  - `src/lib/face/match.test.ts`: added curated catalog expansion test.
-  - `scripts/browser-guard.mjs`: added `process.cwd()` to allowed screenshot dirs.
-  - `scripts/browser-smoke.mjs`: updated default path for non-`/workspace` environments.
-- **Build status**: `npm run typecheck` PASS (0 errors), `npm test` PASS (58 tests), `browser-smoke` PASS (status 200).
-- **Pending issues**: none.
+  - `package.json`: Added `onnxruntime-web` dependency and `copy:ort` script.
+  - `scripts/copy-ort-assets.mjs`: Synchronizes ORT WASM assets to `public/models/ort/`.
+  - `src/types/onnxruntime-web.d.ts`: Ambient module declaration for ONNX Runtime Web.
+  - `src/lib/face/onnx-engine.ts`: Execution engine & hardware capabilities probe.
+  - `src/lib/face/onnx-engine.test.ts`: Unit tests for ONNX engine.
+  - `src/lib/face/worker-protocol.ts`: WebWorker request/response protocol discriminators.
+  - `src/lib/face/face-worker.ts`: WebWorker thread loop with zero-copy cleanup.
+  - `src/lib/face/worker-client.ts`: Main thread client manager with correlation map.
+  - `src/lib/face/face-worker.test.ts`: Unit tests for worker protocol & client.
+  - `src/lib/face/smoothing.ts`: 1 Euro Filter scalar and LandmarkSmoother.
+  - `src/lib/face/smoothing.test.ts`: Unit tests for 1 Euro Filter.
+  - `src/lib/face/types.ts`: Extended `FaceStageLatencies`.
+  - `src/lib/face/pipeline.ts`: Instrumented stage boundary timers.
+  - `src/lib/face/faceapi-engine.ts`: Updated telemetry logging formatting.
+  - `src/lib/face/m1-m2-empirical-challenger.test.ts`: Handled optional stage latencies.
+- **Build status**: PASS (Vercel Nitro build succeeds cleanly)
+- **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: PASS
-- **Lint status**: 0 errors
-- **Tests added/modified**: `curated catalog expansion` test suite added to `match.test.ts`.
+- **Build/test result**: 233/233 tests passing (0 failures), typecheck 0 errors.
+- **Lint status**: Clean
+- **Tests added/modified**: `onnx-engine.test.ts`, `face-worker.test.ts`, `smoothing.test.ts`.
 
 ## Loaded Skills
-- None explicitly loaded via skill paths in prompt.
+- None
+
+## Key Decisions Made
+- Implemented zero-copy transfers with `bitmap.close()` resource cleanup.
+- Added ambient type definitions for `onnxruntime-web` to support compilation and execution in isolated sandbox.
+- Maintained backward compatibility with legacy `ssdPassMs`/`claheMs` latency fields.
 
 ## Artifact Index
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m1/BRIEFING.md` — persistent memory
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m1/progress.md` — heartbeat & subtask tracking
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m1/handoff.md` — final handoff report
+- DISPATCH.md — Task assignment from orchestrator
+- BRIEFING.md — Persistent context briefing
+- progress.md — Task execution progress log
+- changes.md — Detailed summary of file modifications
+- handoff.md — Structured 5-component handoff report

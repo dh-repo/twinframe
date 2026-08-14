@@ -1,12 +1,14 @@
-# Progress Log - Worker M1
+# Progress Log
 
-Last visited: 2026-08-10T23:58:32Z
+Last visited: 2026-08-11T18:45:58Z
 
-## Tasks
-- [x] Initialized DISPATCH.md and BRIEFING.md
-- [x] Subtask 1: Investigate asset fallback chain and inspect components (`src/lib/face/match.ts`, `src/components/celebrity-portrait.tsx`, `src/components/results/match-results.tsx`, `src/lib/face/embeddings.ts`, etc.)
-- [x] Subtask 2: Fix asset loading fallback chain (`path192` -> `path` -> initials fallback) and remove invalid `.jpg` fallback attempts
-- [x] Subtask 3: Expand curated metadata in `src/lib/celebrities/catalog.ts` by 119 international figures (exceeding 80+ requirement)
-- [x] Subtask 4: Update `scripts/browser-guard.mjs` to allow `process.cwd()` screenshot output path
-- [x] Subtask 5: Run typecheck (0 errors), unit tests (58 passed), browser smoke test (200 OK)
-- [x] Subtask 6: Write handoff.md and report completion
+- [x] Initialized workspace and briefing.
+- [x] Read ORIGINAL_REQUEST.md, PROJECT.md, and Explorer analysis/handoff files.
+- [x] Package & Assets: Add `onnxruntime-web` to package.json and create `scripts/copy-ort-assets.mjs` to copy ORT WASM assets to `public/models/ort/`.
+- [x] Implement `src/lib/face/onnx-engine.ts` (WebGPU / WASM SIMD, session manager, hardware probe).
+- [x] Implement `src/lib/face/face-worker.ts` and `src/lib/face/worker-client.ts` (Zero-copy transfers, correlation map, bitmap cleanup, timeout/error handling).
+- [x] Implement `src/lib/face/smoothing.ts` (OneEuroFilter & LandmarkSmoother).
+- [x] Extend `src/lib/face/types.ts` and instrument `src/lib/face/pipeline.ts` with telemetry timers.
+- [x] Implement unit tests in `onnx-engine.test.ts`, `face-worker.test.ts`, `smoothing.test.ts`.
+- [x] Verify `npm run typecheck` (0 errors), `npm test` (233/233 pass), `npm run build` (Vercel Nitro build succeeds).
+- [x] Write handoff.md and changes.md.

@@ -1,12 +1,17 @@
-## 2026-08-11T00:03:38Z
-You are Forensic Auditor for Milestone M3 (Twinframe).
-Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_auditor_m3_1
-Original User Request: /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-Project Scope Document: /Users/damian/GitHub/twinframe/PROJECT.md
+# Dispatch — Milestone 3 Forensic Auditor
 
-Your task:
-1. Read /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Users/damian/GitHub/twinframe/PROJECT.md.
-2. Perform an independent forensic integrity audit on Worker M3's code changes across `src/styles.css`, `src/components/scanning/face-scanning-hud.tsx`, `src/components/ui/number-counter.tsx`, `src/components/results/match-reveal-card.tsx`, `src/components/results/comparison-view.tsx`, `src/components/analyzing-state.tsx`, and `src/components/results/match-results.tsx`.
-3. Verify that changes are authentic, with no hardcoded test shortcuts, fake outputs, or suppressed assertions.
-4. Run `npm run typecheck` and `npm test` independently.
-5. Write your full report and explicit verdict (`CLEAN` or `INTEGRITY_VIOLATION`) in /Users/damian/GitHub/twinframe/.agents/teamwork_preview_auditor_m3_1/handoff.md following the Handoff Protocol. Send a summary message when finished.
+Your working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_auditor_m3_1
+Target project: /Volumes/LaCie/GitHub/twinframe
+Original request: /Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
+Project plan: /Volumes/LaCie/GitHub/twinframe/PROJECT.md
+
+Task:
+Perform forensic integrity audit of Milestone 3 code changes. Verify that all implementation code in `src/lib/face/edgeface.ts`, `match.ts`, `embeddings.ts`, `pipeline.ts` is authentic, non-facade, non-hardcoded, and properly implements EdgeFace-M 256-d feature extraction, Cosine distance recalibration, Hill curve parameters, and pipeline integration.
+Write handoff.md with explicit verdict CLEAN or INTEGRITY VIOLATION.
+
+## 2026-08-11T19:12:00Z
+Perform forensic integrity audit of Milestone 3 code changes.
+Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_auditor_m3_1.
+Read /Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Volumes/LaCie/GitHub/twinframe/PROJECT.md.
+Verify that all implementation code in src/lib/face/edgeface.ts, match.ts, embeddings.ts, pipeline.ts is authentic, non-facade, non-hardcoded, and properly implements EdgeFace-M 256-d feature extraction, Cosine distance recalibration, Hill curve parameters, and pipeline integration. Confirm zero integrity violations or cheating.
+Write handoff.md in /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_auditor_m3_1 with explicit verdict CLEAN or INTEGRITY VIOLATION.

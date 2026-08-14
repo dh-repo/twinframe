@@ -31,11 +31,12 @@ describe("euclideanDistance / calibration", () => {
     assert.equal(distanceToMatchPercent(0), 100);
   });
 
-  it("calibrates Hill Equation curve at key sample points", () => {
-    assert.equal(distanceToMatchPercent(0.35), 85.9);
-    assert.equal(distanceToMatchPercent(0.45), 73.9);
-    assert.equal(distanceToMatchPercent(0.55), 61.1);
-    assert.equal(distanceToMatchPercent(0.65), 49.8);
+  it("calibrates AccuFace v4.0 Hill Equation curve at key sample points", () => {
+    assert.equal(distanceToMatchPercent(0.38), 50.0);
+    assert.equal(distanceToMatchPercent(0.20), 94.7);
+    assert.equal(distanceToMatchPercent(0.30), 74.3);
+    assert.equal(distanceToMatchPercent(0.45), 31.8);
+    assert.equal(distanceToMatchPercent(0.50), 22.5);
   });
 
   it("maintains strict non-increasing monotonicity across d in [0, 1.5]", () => {
@@ -316,6 +317,139 @@ describe("curated catalog expansion", () => {
 
     const adrianaLima = catalogFor("adriana-lima");
     assert.equal(adrianaLima.knownFor, "Model");
+  });
+});
+
+describe("Demographic Prior Softening & Uncertainty Scaling (R3 Recalibration)", () => {
+  it("ensures visual facial geometry dominates over demographic mismatch", () => {
+    // True biometric match: d = 0.10, but cross-gender (female vs male) and 30-year age gap
+    // Distractor: d = 0.40, but perfect gender & age match
+    const queryVec = new Float32Array(256);
+    queryVec[0] = 1.0;
+
+    const trueMatchVec = new Float32Array(256);
+    // Vector with cosine distance ~0.10: cos(theta) = 0.90
+    trueMatchVec[0] = 0.90;
+    trueMatchVec[1] = Math.sqrt(1 - 0.90 * 0.90);
+
+    const distractorVec = new Float32Array(256);
+    // Vector with cosine distance ~0.40: cos(theta) = 0.60
+    distractorVec[0] = 0.60;
+    distractorVec[2] = Math.sqrt(1 - 0.60 * 0.60);
+
+    const user: UserFaceQuery = {
+      descriptor: queryVec,
+      age: 22,
+      gender: "female",
+      genderProbability: 0.99,
+    };
+
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "visual-twin-cross-demo",
+        name: "Visual Twin Cross Demo",
+        path: "/twin.webp",
+        descriptor: Array.from(trueMatchVec),
+        age: 55, // 33-year age gap
+        gender: "male", // opposite gender
+        genderProb: 0.99,
+      },
+      {
+        id: "visual-distractor-same-demo",
+        name: "Visual Distractor Same Demo",
+        path: "/distractor.webp",
+        descriptor: Array.from(distractorVec),
+        age: 22, // exact age match
+        gender: "female", // same gender
+        genderProb: 0.99,
+      },
+    ];
+
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(matches.length, 2);
+    assert.equal(
+      matches[0]?.celebrityId,
+      "visual-twin-cross-demo",
+      "Visual geometry must outrank demographic match",
+    );
+    assert.ok(
+      matches[0]!.matchPercent > matches[1]!.matchPercent,
+      "True visual match percent must be higher than distractor",
+    );
+  });
+
+  it("degrades gracefully without penalties on unknown or missing demographics", () => {
+    const queryVec = new Float32Array(256);
+    queryVec[0] = 1.0;
+
+    const userUnknown: UserFaceQuery = {
+      descriptor: queryVec,
+      age: NaN,
+      gender: "unknown",
+      genderProbability: 0.5,
+    };
+
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "celeb-a",
+        name: "Celeb A",
+        path: "/a.webp",
+        descriptor: Array.from(queryVec),
+        age: 35,
+        gender: "female",
+        genderProb: 0.9,
+      },
+    ];
+
+    const matches = rankByDescriptor(userUnknown, gallery, 1);
+    assert.equal(matches.length, 1);
+    assert.equal(matches[0]?.celebrityId, "celeb-a");
+    assert.equal(matches[0]?.matchPercent, 100.0);
+  });
+
+  it("deduplicates multiple age-buckets by selecting lowest adjusted distance", () => {
+    const queryVec = new Float32Array(256);
+    queryVec[0] = 1.0;
+
+    const nearVec = new Float32Array(256);
+    nearVec[0] = 0.95;
+    nearVec[1] = Math.sqrt(1 - 0.95 * 0.95);
+
+    const farVec = new Float32Array(256);
+    farVec[0] = 0.50;
+    farVec[1] = Math.sqrt(1 - 0.50 * 0.50);
+
+    const user: UserFaceQuery = {
+      descriptor: queryVec,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+    };
+
+    const multiBucketGallery: CelebrityEmbedding[] = [
+      {
+        id: "actor-multi",
+        name: "Actor Multi",
+        path: "/actor_old.webp",
+        descriptor: Array.from(farVec),
+        age: 65,
+        gender: "male",
+        genderProb: 0.95,
+      },
+      {
+        id: "actor-multi",
+        name: "Actor Multi",
+        path: "/actor_young.webp",
+        descriptor: Array.from(nearVec),
+        age: 28,
+        gender: "male",
+        genderProb: 0.95,
+      },
+    ];
+
+    const matches = rankByDescriptor(user, multiBucketGallery, 5);
+    assert.equal(matches.length, 1, "Should deduplicate to 1 entry per celebrity ID");
+    assert.equal(matches[0]?.photoUrl, "/actor_young.webp", "Should select the younger/closer bucket");
   });
 });
 

@@ -21,10 +21,10 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.equal(res, 100.0, `Expected 100.0 at d=0, got ${res}`);
     });
 
-    it("evaluates Hill Equation exact value at half-saturation threshold d = 0.58", () => {
-      // P(0.58) = 15.0 + 85.0 / (1 + (0.58/0.58)^3.2) = 15.0 + 85.0 / 2 = 57.5
-      const res = distanceToMatchPercent(0.58);
-      assert.equal(res, 57.5, `Expected 57.5 at d=0.58, got ${res}`);
+    it("evaluates Hill Equation exact value at half-saturation threshold d = 0.38", () => {
+      // P(0.38) = 100.0 / (1 + (0.38/0.38)^4.5) = 100.0 / 2 = 50.0
+      const res = distanceToMatchPercent(0.38);
+      assert.equal(res, 50.0, `Expected 50.0 at d=0.38, got ${res}`);
     });
 
     it("verifies strict monotonicity for fine distance steps across [0, 3.0]", () => {
@@ -40,23 +40,23 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
     });
 
     it("verifies unrounded Hill curve continuous derivative is strictly negative for d > 0", () => {
-      // hill(d) = 15 + 85 / (1 + (d/0.58)^3.2)
+      // hill(d) = 100 / (1 + (d/0.38)^4.5)
       for (let d = 0.01; d <= 2.0; d += 0.05) {
-        const hill1 = 15.0 + 85.0 / (1 + Math.pow(d / 0.58, 3.2));
-        const hill2 = 15.0 + 85.0 / (1 + Math.pow((d + 1e-5) / 0.58, 3.2));
+        const hill1 = 100.0 / (1 + Math.pow(d / 0.38, 4.5));
+        const hill2 = 100.0 / (1 + Math.pow((d + 1e-5) / 0.38, 4.5));
         assert.ok(hill2 < hill1, `Hill curve derivative not strictly negative at d=${d}`);
       }
     });
 
-    it("enforces strict lower and upper percentage boundaries [15.0, 100.0]", () => {
+    it("enforces strict lower and upper percentage boundaries [0.0, 100.0]", () => {
       const distancesToTest = [
-        0, 1e-10, 0.1, 0.3, 0.58, 0.8, 1.0, 1.5, 2.0, 5.0, 100.0, 1e6, Infinity,
+        0, 1e-10, 0.1, 0.3, 0.38, 0.58, 0.8, 1.0, 1.5, 2.0, 5.0, 100.0, 1e6, Infinity,
       ];
       for (const d of distancesToTest) {
         const pct = distanceToMatchPercent(d);
         assert.ok(!Number.isNaN(pct), `Returned NaN for d=${d}`);
         assert.ok(Number.isFinite(pct), `Returned non-finite for d=${d}`);
-        assert.ok(pct >= 15.0, `Percentage ${pct} below 15.0 minimum boundary for d=${d}`);
+        assert.ok(pct >= 0.0, `Percentage ${pct} below 0.0 minimum boundary for d=${d}`);
         assert.ok(pct <= 100.0, `Percentage ${pct} above 100.0 maximum boundary for d=${d}`);
       }
     });
@@ -64,8 +64,8 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
     it("handles negative and extreme input distances gracefully", () => {
       assert.equal(distanceToMatchPercent(-1.0), 100.0);
       assert.equal(distanceToMatchPercent(-Infinity), 100.0);
-      assert.equal(distanceToMatchPercent(Infinity), 15.0);
-      assert.equal(distanceToMatchPercent(Number.MAX_VALUE), 15.0);
+      assert.equal(distanceToMatchPercent(Infinity), 0.0);
+      assert.equal(distanceToMatchPercent(Number.MAX_VALUE), 0.0);
       assert.equal(distanceToMatchPercent(Number.MIN_VALUE), 100.0);
     });
 
@@ -239,11 +239,11 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.ok(pcts[2]! > pcts[0]!, `Expected p[2] (${pcts[2]}) > p[0] (${pcts[0]})`);
     });
 
-    it("ensures no percentage is below 15.0 or above 100.0", () => {
+    it("ensures no percentage is below 0.0 or above 100.0", () => {
       const dists = [0.0, 0.2, 0.5, 1.0, 2.0, 10.0];
       const pcts = rankPercentsFromDistances(dists);
       for (const p of pcts) {
-        assert.ok(p >= 15.0 && p <= 100.0, `Percent out of bounds: ${p}`);
+        assert.ok(p >= 0.0 && p <= 100.0, `Percent out of bounds: ${p}`);
       }
     });
   });

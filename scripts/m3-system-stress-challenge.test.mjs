@@ -268,12 +268,12 @@ describe("M3 System Stress Test Challenge - Empirical Validation Suite", () => {
     test("distanceToMatchPercent non-linear Hill curve exact values", () => {
       // Distance = 0 -> 100%
       assert.equal(distanceToMatchPercent(0), 100);
-      // Distance = 0.58 -> 57.5% (Hill curve half-saturation point 15 + 85/2 = 57.5%)
-      const scoreHalf = distanceToMatchPercent(0.58);
-      assert.equal(scoreHalf, 57.5, `0.58 distance must evaluate to 57.5%, got ${scoreHalf}`);
+      // Distance = 0.38 -> 50.0% (AccuFace v4.0 Hill curve half-saturation point 100 / (1 + 1^4.5) = 50.0%)
+      const scoreHalf = distanceToMatchPercent(0.38);
+      assert.equal(scoreHalf, 50.0, `0.38 distance must evaluate to 50.0%, got ${scoreHalf}`);
       // Distance = 1.5 -> lower bound
       const scoreHighDist = distanceToMatchPercent(1.5);
-      assert.ok(scoreHighDist >= 15.0);
+      assert.ok(scoreHighDist >= 0.0);
     });
 
     test("Vector metrics stability on NaN and zero-vectors", () => {

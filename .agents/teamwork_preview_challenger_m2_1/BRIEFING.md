@@ -1,50 +1,37 @@
-# BRIEFING — 2026-08-11T00:01:53Z
+# BRIEFING — 2026-08-11T15:06:45Z
 
 ## Mission
-Empirically challenge and stress-test the M2 matching algorithm and verify M2 implementation.
+Conduct empirical challenge and verification of Milestone 2 (SCRFD-2.5G Detection & ExpNorm 3D UV Frontalization) and produce handoff.md with verdict.
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: M2
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1
+- Original parent: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Milestone: M2 (SCRFD-2.5G Detection & ExpNorm 3D UV Frontalization)
 - Instance: 1 of 1
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
-- Write ONLY to workspace folder /Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1
+- Must execute tests and verification scripts empirically
+- Must write handoff.md with explicit verdict APPROVE or REJECT
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-11T00:01:53Z
+- Conversation ID: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Updated: 2026-08-11T15:06:45Z
 
 ## Review Scope
-- **Files to review**: M2 matching algorithm (`src/lib/face/embeddings.ts`, `src/lib/face/match.ts`, `src/lib/face/match.test.ts`)
-- **Interface contracts**: /Users/damian/GitHub/twinframe/PROJECT.md and /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-- **Review criteria**: Monotonicity across 1,000 fine evaluation steps in d in [0, 2.0], edge case inputs (d=0, d<0, d=Infinity), age affinity smoothness, ranking order, typecheck, tests.
+- **Files to review**: `src/lib/face/scrfd.ts`, `src/lib/face/exp-norm-wgsl.ts`, `src/lib/face/similarity-transform.ts`, `src/lib/face/pipeline.ts`
+- **Interface contracts**: PROJECT.md, ORIGINAL_REQUEST.md
+- **Review criteria**: typecheck, unit tests, build, SCRFD detection accuracy, pose estimation correctness, WGSL compute shader execution
 
 ## Key Decisions Made
-- Executed full empirical stress test suite (`stress_test.ts`) covering 21 rigorous test assertions across 4 core dimensions.
-- Confirmed strict monotonicity across 1,000 steps ($d \in [0, 2.0]$).
-- Verified edge cases ($d=0, d<0, d=\infty, d=-\infty, \text{NaN}$).
-- Verified continuous Gaussian age affinity smoothness ($C^\infty$) and gender prior bounds.
-- Verified ranking order, tie-breaking, and multi-bucket age deduplication.
-- Verified `npm run typecheck` and `npm test` (64 tests passing).
+- Initialized briefing and reviewed M2 implementation files.
+- Executed `npm run typecheck` (0 errors), `npm test` (277/277 passed), `npm run build` (Vercel Nitro build succeeded).
+- Authored custom empirical challenger test harness `src/lib/face/m2-empirical-challenger.test.ts` verifying anchor counts (16,800), head pose estimation math, 5-point Umeyama similarity solver, and ExpNorm WGSL shader layout.
+- Finalized verdict: **APPROVE** and wrote handoff.md report.
 
 ## Artifact Index
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1/DISPATCH.md — Dispatch prompt log
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1/stress_test.ts — Empirical stress test runner
-- /Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1/handoff.md — Handoff report and final verdict
-
-## Attack Surface
-- **Hypotheses tested**:
-  1. Monotonicity of Hill Equation calibration curve $P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^{3.2})$ across 1,000 steps ($d \in [0, 2.0]$) -> PASSED (0 violations).
-  2. Edge cases ($d=0 \to 100\%$, $d<0 \to 100\%$, $d=\infty \to 15\%$, $d=-\infty \to 100\%$, NaN safety) -> PASSED.
-  3. Age affinity smoothness and continuity ($ageAffinity(userAge, celebAge) = \exp(-\Delta^2/28^2)$) -> PASSED ($C^\infty$ smooth).
-  4. Ranking order, distance-to-percentage order preservation, tied distance tie-breaking, age-bucket deduplication -> PASSED.
-- **Vulnerabilities found**: None. Formulae and pipeline behave safely under all stress parameters.
-- **Untested angles**: None within scope of M2 matching algorithm.
-
-## Loaded Skills
-- None loaded.
+- /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1/DISPATCH.md — Initial message log
+- /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1/BRIEFING.md — Working memory state
+- /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_challenger_m2_1/handoff.md — Final handoff report with explicit verdict APPROVE

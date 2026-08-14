@@ -1,51 +1,62 @@
-# BRIEFING — 2026-08-11T00:03:30Z
+# BRIEFING — 2026-08-11T15:11:45Z
 
 ## Mission
-Milestone M3 - Visual Design & Micro-Animations for Twinframe: extend styles.css, build FaceScanningHUD, NumberCounter, MatchRevealCard, ComparisonView, integrate into analyzing & results components, test and verify. (COMPLETE)
+Implement Milestone 3 (EdgeFace-M 256-d Feature Extraction & Metric Recalibration) for Twinframe AccuFace v4.0 architecture.
 
 ## 🔒 My Identity
 - Archetype: implementer/qa/specialist
 - Roles: implementer, qa, specialist
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m3
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: Milestone M3
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m3
+- Original parent: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Milestone: Milestone 3
 
 ## 🔒 Key Constraints
-- Minimal change principle. Genuine implementations only (no cheating, no hardcoding test results/facades).
-- Respect `prefers-reduced-motion` in all micro-animations.
-- Pass `npm run typecheck`, `npm test`, and `node scripts/browser-smoke.mjs http://127.0.0.1:8080/`.
+- Pure L2-normalized Cosine distance (d = 1 - a_hat^T * b_hat) with 8-way loop unrolling for 256-d vector.
+- Bounds clamping d in [0.0, 2.0].
+- Hill curve parameters d0 = 0.38, n = 4.5.
+- EdgeFace-M 256-d feature extraction with float32 NCHW [1, 3, 112, 112] input and L2 normalization with zero-vector fallback.
+- Pipeline integration: update FaceStageLatencies (embeddingPassMs) and FaceTelemetry.
+- Genuine implementation with thorough tests. Pass typecheck, test, and build.
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-11T00:03:30Z
+- Conversation ID: ab7bcd0d-e331-4270-9a14-e74692ec119d
+- Updated: 2026-08-11T15:11:45Z
 
 ## Task Summary
-- **What to build**: Keyframe animations & 3D CSS utilities, `face-scanning-hud.tsx`, `number-counter.tsx`, `match-reveal-card.tsx`, `comparison-view.tsx`, integration into `analyzing-state.tsx` and `match-results.tsx`.
-- **Success criteria**: Genuine animated components with reduced motion support, smooth user experience, valid TS & passing tests.
-- **Interface contracts**: PROJECT.md & explorer survey handoff.
-- **Code layout**: Twinframe app under `/Users/damian/GitHub/twinframe/src`.
+- **What to build**: EdgeFace-M feature extractor, metric recalibration, hill curve parameter updates, pipeline integration.
+- **Success criteria**: All requirements implemented, tests passing, zero build or type errors.
+
+## Key Decisions Made
+- Created `src/lib/face/edgeface.ts` with `extractEdgeFaceEmbedding`, `normalizeL2` ($v\_hat = v / ||v||_2$), `decodeFloat16`, and zero-vector/non-finite fallback handling.
+- Implemented `dotProduct256` using 8-way loop unrolling with 8 accumulators for modern CPU instruction-level parallelism.
+- Implemented `cosineDistance256` with strict bounds clamping $d \in [0.0, 2.0]$ and zero-vector safeguards.
+- Updated `distanceToMatchPercent` to recalibrated Hill curve $P(d) = 100.0 / (1 + (d / 0.38)^{4.5})$ with $d_0 = 0.38, n = 4.5$.
+- Added `embeddingPassMs?: number` to `FaceStageLatencies` and integrated EdgeFace-M extraction into `pipeline.ts`.
+- Created `src/lib/face/edgeface.test.ts` and `src/lib/face/m3-pipeline-integration.test.ts`.
 
 ## Change Tracker
 - **Files modified**:
-  - `src/styles.css` — added keyframes, 3D perspective utilities, and reduced motion safety
-  - `src/components/ui/number-counter.tsx` — new animated count-up component
-  - `src/components/scanning/face-scanning-hud.tsx` — new high-fidelity face scanning HUD overlay
-  - `src/components/results/comparison-view.tsx` — new multi-mode comparison component (Side-by-Side, Split Slider, Landmarks)
-  - `src/components/results/match-reveal-card.tsx` — new 3D match reveal card component
-  - `src/components/analyzing-state.tsx` — integrated FaceScanningHud
-  - `src/components/results/match-results.tsx` — integrated MatchRevealCard & staggered contender cards list
-- **Build status**: PASS (tsc --noEmit clean)
+  - `src/lib/face/edgeface.ts` (created)
+  - `src/lib/face/edgeface.test.ts` (created)
+  - `src/lib/face/embeddings.ts` (modified: added `dotProduct256`, `cosineDistance256`, updated `cosineDistance`, recalibrated `distanceToMatchPercent`, updated `CelebrityEmbedding`)
+  - `src/lib/face/match.ts` (modified: updated `rankByDescriptor` to use `cosineDistance256`)
+  - `src/lib/face/types.ts` (modified: added `embeddingPassMs?: number` to `FaceStageLatencies`)
+  - `src/lib/face/pipeline.ts` (modified: integrated `extractEdgeFaceEmbedding` into `analyzeFaceSource` and updated latencies)
+  - `src/lib/face/faceapi-engine.ts` (modified: updated `logFaceTelemetry` to support `embeddingPassMs`)
+  - `src/lib/face/match.test.ts` (modified: updated Hill curve sample point assertions)
+  - `src/lib/face/m4-challenger-stress.test.ts` (modified: updated Hill curve parameters and bounds assertions)
+  - `scripts/m3-system-stress-challenge.test.mjs` (modified: updated Hill curve test assertion)
+  - `src/lib/face/m3-pipeline-integration.test.ts` (created)
+- **Build status**: `npm run typecheck` passed (0 errors), `npm test` passed (298/298 tests), `npm run build` passed.
 - **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: PASS (64/64 tests passing)
-- **Lint status**: Clean
-- **Tests added/modified**: Verified against test suite & Playwright smoke test
+- **Build/test result**: PASS (298/298 tests passing)
+- **Lint status**: PASS (0 type errors)
+- **Tests added/modified**: 2 new test suites (`edgeface.test.ts`, `m3-pipeline-integration.test.ts`), 3 existing test suites updated for recalibrated parameters.
 
 ## Loaded Skills
 - None
 
 ## Artifact Index
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m3/DISPATCH.md` — Dispatch prompt
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m3/progress.md` — Liveness heartbeat
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m3/handoff.md` — Final handoff report
+- handoff.md — Final handoff report (writing now)

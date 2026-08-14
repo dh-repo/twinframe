@@ -122,10 +122,11 @@ const faceApiEsm = path.resolve(
 // opens a second dev-server port, which breaks the single-port preview.
 export default defineConfig(({ command }) => ({
   server: {
-    host: "0.0.0.0",
-    port: 8080,
+    host: process.env.HOST || "0.0.0.0",
+    port: Number(process.env.PORT || 8080),
     strictPort: true,
   },
+
   resolve: {
     tsconfigPaths: true,
     alias: {

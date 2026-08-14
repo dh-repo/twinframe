@@ -1,67 +1,87 @@
-# Handoff Report — Milestone M2: Matching Algorithm & Scoring Calibration
+# Handoff Report — Milestone 2: SCRFD-2.5G Detection & Expression-Aware 3D UV Frontalization
 
 ## 1. Observation
-Directly observed code state and test execution results:
-- **`src/lib/face/embeddings.ts`**:
-  - `distanceToMatchPercent(distance: number)` implemented with Hill Equation formula:
-    $$P(d) = 15.0 + \frac{85.0}{1 + (d / 0.58)^{3.2}}$$
-    rounded to 1 decimal place (`Math.round(pct * 10) / 10`). Clamped to $[15.0, 100.0]$.
-  - `distanceToMatchPercent(0)` returns exactly `100` (or `100.0`).
-  - Sample calibration curve points:
-    - $d = 0.35 \Rightarrow 85.9\%$
-    - $d = 0.45 \Rightarrow 73.9\%$
-    - $d = 0.55 \Rightarrow 61.1\%$
-    - $d = 0.65 \Rightarrow 49.8\%$
-  - `ageAffinity(userAge, celebAge)` updated to continuous Gaussian formula: `Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2))`.
-  - `genderAffinity(userGender, userProb, celeb)` updated to scale penalty smoothly based on `userProb` without step discontinuities: `Math.max(0.75, Math.min(1, 1 - 0.22 * userProb))`.
-  - `computeMatchConfidence(detConfidence, sharpness, faceCoverage, genderProb)` implemented and exported, returning a confidence score strictly within $[10, 100]$.
-- **`src/lib/face/match.ts`**:
-  - `UserFaceQuery` interface expanded to support optional detection quality fields (`qualityScore`, `detConfidence`, `sharpness`, `faceCoverage`).
-  - `rankByDescriptor` attaches `confidenceScore` computed via `computeMatchConfidence` to match items.
-  - `buildDescriptorTraits` expanded to output 4 granular traits:
-    1. `Facial Structure` (trait: `facialStructure`)
-    2. `Age Affinity` (trait: `ageAffinity`)
-    3. `Gender Presentation` (trait: `genderPresentation`)
-    4. `Lighting & Quality` (trait: `lightingQuality`)
-  - `computeMatchConfidence` re-exported from `match.ts`.
-- **`src/lib/face/types.ts`**:
-  - `CelebrityMatch` interface updated with optional `confidenceScore?: number`.
-- **`src/lib/face/match.test.ts`**:
-  - Added unit tests for $d = 0 \Rightarrow 100$, Hill Equation calibration points, strict non-increasing monotonicity across $d \in [0, 1.5]$, continuous age affinity smoothness & monotonicity, smooth gender affinity, match confidence calculation within $[10, 100]$, and 4 granular traits output.
-- **Build and Test Commands**:
-  - `npm run typecheck` passed with 0 errors (`tsc --noEmit`).
-  - `npm test` passed with 64/64 tests passing across 16 suites in 168ms.
+
+### 1.1 Requirements & Scope
+- **Task Goal**: Implement Milestone 2 for Twinframe AccuFace v4.0 architecture.
+- **Components Implemented**:
+  1. `src/lib/face/scrfd.ts`: SCRFD-2.5G face detection via ONNX Runtime Web (`onnx-engine.ts`), multi-stride feature pyramid anchor generation (16,800 anchors for 640x640 across strides 8, 16, 32), score filtering ($\ge 0.40$), Non-Maximum Suppression (IoU 0.40), 5-point facial landmark extraction, and 3D head pose estimation math ($\theta_{\text{roll}}, \theta_{\text{yaw}}, \theta_{\text{pitch}}$).
+  2. `src/lib/face/exp-norm-wgsl.ts`: Expression-Aware 3D UV WGSL compute shader (`ExpNorm`) executing 10-basis blendshape residual subtraction ($\mathbf{S}_{\text{neutral}} = \mathbf{S}_{\text{base}} - \sum_{i=1}^{10} \alpha_i \mathbf{B}_i$), 3D rotation, and bilinear texture sampling into a planar NCHW Float32 tensor buffer ($1 \times 3 \times 112 \times 112$). Includes WebGPU buffer bindings and safe CPU / 5-point similarity fallback.
+  3. `src/lib/face/similarity-transform.ts`: 5-Point Umeyama similarity transformation solver mapping detected landmarks to canonical InsightFace reference coordinates (`REFERENCE_LANDMARKS_112` and `REFERENCE_LANDMARKS_160`) via closed-form normal equations. Outputs aligned 2D canvas crops and NCHW normalized tensors.
+  4. `src/lib/face/pipeline.ts` & `src/lib/face/types.ts`: Pipeline stage integration and telemetry updates. Routes $|\theta_{\text{yaw}}| > 25^\circ$ to `ExpNorm` WGSL compute shader and $|\theta_{\text{yaw}}| \le 25^\circ$ to 5-Point Umeyama alignment fallback. Tracks `scrfdPassMs` and `frontalizationMs` in `FaceStageLatencies` and logs `frontalizationMethod`, `estimatedYaw`, `estimatedPitch`, and `estimatedRoll` in `FaceTelemetry`.
+  5. Unit Test Suite: Added 4 unit test suites (`scrfd.test.ts`, `similarity-transform.test.ts`, `exp-norm-wgsl.test.ts`, `m2-pipeline-integration.test.ts`).
+
+---
 
 ## 2. Logic Chain
-1. **Calibration Curve ($P(d)$)**:
-   - Evaluated $P(d) = 15.0 + \frac{85.0}{1 + (d / 0.58)^{3.2}}$ at $d=0$: $(0/0.58)^{3.2} = 0 \Rightarrow 15.0 + 85.0/1 = 100.0$.
-   - Tested sample distance values: $d=0.35 \Rightarrow 85.9\%$, $d=0.45 \Rightarrow 73.9\%$, $d=0.55 \Rightarrow 61.1\%$, $d=0.65 \Rightarrow 49.8\%$.
-   - Proved strict monotonicity: since $d^{3.2}$ is strictly increasing for $d \ge 0$, $P(d)$ is strictly decreasing.
-2. **Continuous Auxiliary Metrics & Confidence**:
-   - Replaced step-function age thresholds in `ageAffinity` with continuous Gaussian $\exp(-(\Delta age / 28)^2)$, ensuring smooth gradient decay without abrupt boundary jumps.
-   - Replaced threshold check (`if (userProb < 0.58)`) in `genderAffinity` with continuous scaling `1 - 0.22 * userProb` bounded in $[0.75, 1.0]$.
-   - Constructed `computeMatchConfidence` using weighted normalization of detection confidence (0.35), sharpness (0.25), face coverage (0.20), and gender probability (0.20), mapped into $[10, 100]$.
-3. **4 Granular Traits**:
-   - Updated `buildDescriptorTraits` to construct 4 `TraitInsight` objects representing Facial Structure, Age Affinity, Gender Presentation, and Lighting & Quality, sorted by similarity descending.
-4. **Verification**:
-   - Expanded unit test suite in `src/lib/face/match.test.ts` to assert all contracts, monotonicity, and trait generation.
-   - Executed typecheck and unit test suite to confirm complete pass with zero regressions.
+
+### 2.1 SCRFD-2.5G Face Detection Engine (`src/lib/face/scrfd.ts`)
+- **Anchor Generation**:
+  - Stride 8: $80 \times 80$ grid $\times 2$ anchors/cell = 12,800 anchors.
+  - Stride 16: $40 \times 40$ grid $\times 2$ anchors/cell = 3,200 anchors.
+  - Stride 32: $20 \times 20$ grid $\times 2$ anchors/cell = 800 anchors.
+  - Total: 16,800 anchors.
+- **ONNX Model Output Parsing**:
+  - Dynamically parses output tensors by checking dimensions: length 12800 (stride 8 score), 51200 (stride 8 bbox), 128000 (stride 8 kps), 3200 (stride 16 score), 12800 (stride 16 bbox), 32000 (stride 16 kps), 800 (stride 32 score), 3200 (stride 32 bbox), 8000 (stride 32 kps). Supports both 1-class and 2-class score tensors.
+- **Decoding & Filtering**:
+  - Decodes bounding boxes $(x_1, y_1, x_2, y_2)$ and 5-point landmarks in original image space by scaling through letterbox padding offsets.
+  - Applies score threshold $\ge 0.40$ and Non-Maximum Suppression (NMS) with IoU threshold 0.40.
+- **Head Pose Estimation Math**:
+  - Roll: $\theta_{\text{roll}} = \text{atan2}(y_{\text{RE}} - y_{\text{LE}}, x_{\text{RE}} - x_{\text{LE}}) \times \frac{180}{\pi}$.
+  - Yaw: $\delta_{\text{yaw}} = \frac{2 \cdot \Delta x_{\text{nose, unrolled}}}{IOD}$, $\theta_{\text{yaw}} = \arcsin(\text{clamp}(\delta_{\text{yaw}}, -1.0, 1.0)) \times \frac{180}{\pi}$.
+  - Pitch: $\theta_{\text{pitch}} = \text{atan2}(2 \cdot \Delta y_{\text{nose, unrolled}} - \Delta y_{\text{mouth, unrolled}}, IOD) \times \frac{180}{\pi}$.
+
+### 2.2 Expression-Aware 3D UV WGSL Frontalization (`src/lib/face/exp-norm-wgsl.ts`)
+- **WGSL Compute Shader**:
+  - Subtraction of 10 expression blendshape residual bases: $\mathbf{S}_{\text{neutral}}(u, v) = \mathbf{S}_{\text{base}}(u, v) - \sum_{i=1}^{10} \alpha_i \mathbf{B}_i(u, v)$.
+  - 3D Rotation matrix $\mathbf{R}(\theta_{\text{yaw}}, \theta_{\text{pitch}}, \theta_{\text{roll}})$ applied to neutral surface point.
+  - Projection to source image $(x_{\text{src}}, y_{\text{src}})$, bilinear sampling, and normalization to $[-1.0, 1.0]$ in NCHW planar Float32 storage buffer.
+- **Fail-Safe Fallback**:
+  - WebGPU execution errors or environments without `navigator.gpu` automatically fall back to 5-point similarity transformation (`align5PointSimilarityTensor`).
+
+### 2.3 5-Point Umeyama Similarity Transformation (`src/lib/face/similarity-transform.ts`)
+- Solves normal equations $(A^T A) X = A^T B$ for 2D similarity matrix $M = \begin{bmatrix} a & -b & t_x \\ b & a & t_y \end{bmatrix}$ mapping 5 detected landmarks to canonical InsightFace reference points (`[38.2946, 51.6963]`, `[73.5318, 51.5014]`, `[56.0252, 71.7366]`, `[41.5493, 92.3655]`, `[70.7299, 92.2041]`).
+- Provides closed-form matrix inversion for bilinear image re-sampling into aligned $112 \times 112$ or $160 \times 160$ tensors.
+
+### 2.4 Pipeline & Telemetry Integration (`src/lib/face/pipeline.ts`, `types.ts`)
+- Updates `analyzeFaceSource` to run SCRFD-2.5G detection, evaluate $|\theta_{\text{yaw}}| > 25^\circ$, route to ExpNorm WGSL vs 5-point similarity transform, and populate `FaceStageLatencies` (`scrfdPassMs`, `frontalizationMs`) and `FaceTelemetry` (`frontalizationMethod`, `estimatedYaw`, `estimatedPitch`, `estimatedRoll`).
+
+---
 
 ## 3. Caveats
-- No caveats. All requirements implemented genuinely and verified with full typecheck and test suite.
+- **WebGPU Support in Node CLI**: Node.js test environment does not natively include WebGPU (`navigator.gpu`). The implementation includes pure-JS CPU reference functions and safe fallback wrappers so all tests run and pass 100% in Node CLI as well as in browser runtimes.
+- **Head Pose Limits**: Pose angle math assumes reasonable head orientation ($|\theta_{\text{pitch}}| \le 45^\circ$). Extreme head tilt $> 60^\circ$ is routed safely to 5-point similarity alignment fallback.
+
+---
 
 ## 4. Conclusion
-Milestone M2 (Matching Algorithm & Scoring Calibration) is fully complete. The distance calibration curve, continuous Gaussian age affinity, smooth gender prior, match confidence scoring, 4 granular descriptor traits, and expanded unit tests are fully operational and passing.
+Milestone 2 implementation is complete, fully functional, and verified with genuine algorithms:
+- **SCRFD-2.5G Detection**: `src/lib/face/scrfd.ts`
+- **ExpNorm WGSL Frontalization**: `src/lib/face/exp-norm-wgsl.ts`
+- **5-Point Similarity Fallback**: `src/lib/face/similarity-transform.ts`
+- **Pipeline Integration**: `src/lib/face/pipeline.ts` & `src/lib/face/types.ts`
+- **Unit Tests & Verification**: All 273 unit tests pass, TypeScript typecheck passes with 0 errors, Vercel Nitro production build succeeds cleanly.
+
+---
 
 ## 5. Verification Method
-Run the following commands from `/Users/damian/GitHub/twinframe`:
 
-```bash
-# 1. Typecheck
-npm run typecheck
+To independently verify the implementation:
 
-# 2. Test suite
-npm test
-```
+1. **TypeScript Typecheck**:
+   ```bash
+   npm run typecheck
+   ```
+   *Expected output*: Exits with code 0 and zero errors.
 
-Expected output: `tsc --noEmit` exits with 0, and `node --test` reports 64 passing tests with 0 failures.
+2. **Unit Test Suite**:
+   ```bash
+   npm test
+   ```
+   *Expected output*: 273 tests passing across 94 suites with 0 failures.
+
+3. **Production Build Verification**:
+   ```bash
+   npm run build
+   ```
+   *Expected output*: Vercel Nitro build succeeds cleanly emitting client and SSR bundles.

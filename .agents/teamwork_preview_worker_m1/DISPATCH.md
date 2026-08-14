@@ -1,25 +1,27 @@
-## 2026-08-10T23:56:54Z
-You are Worker M1 for Twinframe.
-Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m1
-Original User Request: /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-Project Scope Document: /Users/damian/GitHub/twinframe/PROJECT.md
+## 2026-08-11T18:39:27Z
+You are worker_m1 (teamwork_preview_worker).
+Your working directory is `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m1`.
+Create your working directory if it does not exist.
 
-Your mission (Milestone M1 - Celebrity Gallery Catalog & Asset Polish):
-1. Read /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Users/damian/GitHub/twinframe/PROJECT.md.
-2. Fix asset loading fallback chain:
-   - Inspect `src/lib/face/match.ts`, `src/components/ui/celebrity-portrait.tsx`, `src/components/results/match-results.tsx`, and any other component rendering celebrity photos.
-   - Ensure image fallback order is `path192` -> `path` -> initials avatar/fallback.
-   - Ensure components do not attempt to load `fallbackPath` (`/celebs/<id>.jpg`) when `.jpg` files do not exist, eliminating HTTP 404 errors for the 733 catalog entries that lack JPG files.
-3. Expand Curated Metadata:
-   - Open `src/lib/celebrities/catalog.ts`.
-   - Add rich curated entries (`knownFor`, `tags`, `accentHue`) for at least 80+ additional diverse international figures (actors, artists, athletes, scientists, public figures across global regions).
-4. Fix Browser Guard for Smoke Testing:
-   - Open `scripts/browser-guard.mjs`.
-   - Update `checkedOutputPath` so `process.cwd()` (and subdirectories under current working directory) is accepted as a valid screenshot destination alongside `/workspace`.
-5. Verify Build & Tests:
-   - Run `npm run typecheck` and `npm test`.
-   - Verify `node scripts/browser-smoke.mjs http://127.0.0.1:8080/` succeeds without path errors.
+Your mission: Implement Milestone 1 (ONNX Runtime WebGPU/WASM Client Execution Engine, WebWorker Zero-Copy Architecture, 1 Euro Filter Smoothing & Stage Latency Instrumentation) for Twinframe AccuFace v4.0.
 
-MANDATORY INTEGRITY WARNING: DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+Read the authoritative user request at `/Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md` and project spec at `/Volumes/LaCie/GitHub/twinframe/PROJECT.md`.
+Read the Explorer strategy reports at:
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_explorer_m1_1/handoff.md` (and `analysis.md`)
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_explorer_m1_2/handoff.md` (and `analysis.md`)
+- `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_explorer_m1_3/handoff.md` (and `analysis.md`)
 
-Write your handoff report to /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m1/handoff.md detailing all changes, build/test execution results, and files modified. Send a summary message when finished.
+MANDATORY INTEGRITY WARNING:
+DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.
+
+Tasks to implement:
+1. Package & Assets: Update `package.json` to add `"onnxruntime-web": "^1.20.1"`, create `scripts/copy-ort-assets.mjs` (or npm postinstall/build script) to copy ONNX Runtime WASM assets (`ort-wasm*.wasm`) into `public/models/ort/`.
+2. ONNX Execution Engine (`src/lib/face/onnx-engine.ts`): Implement `onnxruntime-web` loader with WebGPU WGSL compute shader provider (`executionProviders: ["webgpu", "wasm"]`), multi-threaded WASM SIMD fallback with dynamic COOP/COEP isolation check (`self.crossOriginIsolated ? 4 : 1`), singleton session manager, and hardware diagnostic micro-benchmarking probe (`probeHardwareCapabilities()`).
+3. WebWorker Architecture & Zero-Copy Transfers (`src/lib/face/face-worker.ts`, `src/lib/face/worker-client.ts`): Implement WebWorker message protocol, zero-copy `OffscreenCanvas` / `ImageBitmap` transfers using `postMessage(data, [transferable])`, mandatory `bitmap.close()` cleanup, correlation map request-response tracking, frame dropping, and timeout/error handling.
+4. 1 Euro Filter Smoothing (`src/lib/face/smoothing.ts`): Implement `OneEuroFilter` scalar and `LandmarkSmoother` multi-dimensional landmark temporal smoothing with adaptive cutoff parameters ($f_{c,\min} = 1.0\text{ Hz}$, $\beta = 0.007$, $f_{c,\text{der}} = 1.0\text{ Hz}$).
+5. Types & Telemetry (`src/lib/face/types.ts`, `src/lib/face/pipeline.ts`): Extend `FaceStageLatencies` interface to record `modelLoadMs`, `downscaleMs`, `scrfdPassMs`, `frontalizationMs`, `embeddingMs`, `biohashMs`, and `totalMs`. Instrument `analyzeFaceSource()` stage boundary high-resolution timers (`performance.now()`).
+6. Unit Tests: Implement unit tests in `src/lib/face/onnx-engine.test.ts`, `src/lib/face/face-worker.test.ts`, and `src/lib/face/smoothing.test.ts`.
+
+Verification requirements:
+Run `npm run typecheck`, `npm test`, and `npm run build` after completing changes. Document all commands and results in your handoff report `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m1/handoff.md` and changes summary `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m1/changes.md`.
+When done, send a message to parent with your completion status and report paths.

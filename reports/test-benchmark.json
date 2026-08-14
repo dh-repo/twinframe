@@ -1,0 +1,423 @@
+{
+  "metadata": {
+    "timestamp": "2026-08-14T14:43:20.645Z",
+    "platform": "darwin-arm64",
+    "nodeVersion": "v25.8.0",
+    "gallerySize": 1000,
+    "groundTruthCatalogSize": 268,
+    "options": {
+      "tier": "all",
+      "limit": 5,
+      "tier2Count": 40,
+      "json": "reports/test-benchmark.json",
+      "markdown": "reports/test-benchmark.md",
+      "verbose": true,
+      "quiet": false,
+      "help": false
+    }
+  },
+  "tier1": {
+    "tier": "Tier 1: Clear Frontal Portraits",
+    "totalProbes": 5,
+    "detectedProbes": 5,
+    "detectionRatePct": 100,
+    "top1Count": 5,
+    "top1AccuracyPct": 100,
+    "top5Count": 5,
+    "top5AccuracyPct": 100,
+    "mrr": 1,
+    "positiveMarginCount": 4,
+    "positiveMarginPct": 80,
+    "cosineMarginStats": {
+      "mean": 0.04795535063866589,
+      "std": 0.024171686861571447,
+      "min": 0,
+      "max": 0.06441935769284934,
+      "p10": 0,
+      "p25": 0.05529043947586476,
+      "p50": 0.058451201874223147,
+      "p75": 0.06161575415039222,
+      "p90": 0.06441935769284934,
+      "p99": 0.06441935769284934
+    },
+    "sTrueStats": {
+      "mean": 0.9877891462845605,
+      "std": 0.008171248661101959,
+      "min": 0.9724330325324052,
+      "max": 0.9949816193122694,
+      "p10": 0.9724330325324052,
+      "p25": 0.9884162576877504,
+      "p50": 0.9885983807183019,
+      "p75": 0.9945164411720756,
+      "p90": 0.9949816193122694,
+      "p99": 0.9949816193122694
+    },
+    "sDistractorStats": {
+      "mean": 0.9398337956458945,
+      "std": 0.0168022949314794,
+      "min": 0.9269826265679096,
+      "max": 0.9724330325324052,
+      "p10": 0.9269826265679096,
+      "p25": 0.9299650558135273,
+      "p50": 0.93056226161942,
+      "p75": 0.9392260016962108,
+      "p90": 0.9724330325324052,
+      "p99": 0.9724330325324052
+    },
+    "records": [
+      {
+        "probeId": "aaron-taylor-johnson",
+        "name": "Aaron Taylor Johnson",
+        "groundTruthId": "aaron-taylor-johnson",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9949816193122694,
+        "sDistractor": 0.93056226161942,
+        "margin": 0.06441935769284934,
+        "topCandidateId": "aaron-taylor-johnson",
+        "topCandidateDist": 0.005018380687730639,
+        "trueMatchDist": 0.005018380687730639,
+        "latencies": {
+          "tDet": 3447.200833,
+          "tAlign": 876.69970652,
+          "tEmb": 3108.29895948,
+          "tMatch": 0.8244169999998121,
+          "tTotal": 7433.023916
+        }
+      },
+      {
+        "probeId": "adam-driver",
+        "name": "Adam Driver",
+        "groundTruthId": "adam-driver",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9885983807183019,
+        "sDistractor": 0.9269826265679096,
+        "margin": 0.06161575415039222,
+        "topCandidateId": "adam-driver",
+        "topCandidateDist": 0.011401619281698139,
+        "trueMatchDist": 0.011401619281698139,
+        "latencies": {
+          "tDet": 2979.860166999999,
+          "tAlign": 746.7007807599999,
+          "tEmb": 2647.3936772399998,
+          "tMatch": 0.5259169999990263,
+          "tTotal": 6374.4805419999975
+        }
+      },
+      {
+        "probeId": "adam-sandler",
+        "name": "Adam Sandler",
+        "groundTruthId": "adam-sandler",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9724330325324052,
+        "sDistractor": 0.9724330325324052,
+        "margin": 0,
+        "topCandidateId": "adam-sandler",
+        "topCandidateDist": 0.027566967467594794,
+        "trueMatchDist": 0.027566967467594794,
+        "latencies": {
+          "tDet": 2983.579416999999,
+          "tAlign": 750.8362217400002,
+          "tEmb": 2662.055695260001,
+          "tMatch": 0.49708299999838346,
+          "tTotal": 6396.968416999998
+        }
+      },
+      {
+        "probeId": "adele",
+        "name": "Adele",
+        "groundTruthId": "adele",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9945164411720756,
+        "sDistractor": 0.9392260016962108,
+        "margin": 0.05529043947586476,
+        "topCandidateId": "adele",
+        "topCandidateDist": 0.005483558827924395,
+        "trueMatchDist": 0.005483558827924395,
+        "latencies": {
+          "tDet": 2982.056916999998,
+          "tAlign": 747.71363326,
+          "tEmb": 2650.9846997400005,
+          "tMatch": 0.5621659999997064,
+          "tTotal": 6381.317415999998
+        }
+      },
+      {
+        "probeId": "adriana-lima",
+        "name": "Adriana Lima",
+        "groundTruthId": "adriana-lima",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9884162576877504,
+        "sDistractor": 0.9299650558135273,
+        "margin": 0.058451201874223147,
+        "topCandidateId": "adriana-lima",
+        "topCandidateDist": 0.011583742312249568,
+        "trueMatchDist": 0.011583742312249568,
+        "latencies": {
+          "tDet": 2987.241249999999,
+          "tAlign": 745.6717307599996,
+          "tEmb": 2643.7452272399987,
+          "tMatch": 0.5812090000035823,
+          "tTotal": 6377.239417000001
+        }
+      }
+    ]
+  },
+  "tier2": {
+    "tier": "Tier 2: Moderate Variations",
+    "totalProbes": 5,
+    "detectedProbes": 5,
+    "detectionRatePct": 100,
+    "top1Count": 5,
+    "top1AccuracyPct": 100,
+    "top5Count": 5,
+    "top5AccuracyPct": 100,
+    "mrr": 1,
+    "positiveMarginCount": 4,
+    "positiveMarginPct": 80,
+    "cosineMarginStats": {
+      "mean": 0.04379535062541902,
+      "std": 0.02193801885228078,
+      "min": 0,
+      "max": 0.05661947845583404,
+      "p10": 0,
+      "p25": 0.05256510239356882,
+      "p50": 0.054380741182613046,
+      "p75": 0.05541143109507918,
+      "p90": 0.05661947845583404,
+      "p99": 0.05661947845583404
+    },
+    "records": [
+      {
+        "probeId": "aaron-taylor-johnson__rotate_12_roll_",
+        "transform": "Rotate +12° (Roll)",
+        "groundTruthId": "aaron-taylor-johnson",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9839580517863004,
+        "sDistractor": 0.9313929493927315,
+        "margin": 0.05256510239356882,
+        "topCandidateId": "aaron-taylor-johnson",
+        "latencies": {
+          "tDet": 3735.750208999998,
+          "tAlign": 858.2576749999998,
+          "tEmb": 3042.9135749999996,
+          "tMatch": 0.47891600000002654,
+          "tTotal": 7637.400374999997
+        }
+      },
+      {
+        "probeId": "adam-driver__rotate_12_roll_",
+        "transform": "Rotate -12° (Roll)",
+        "groundTruthId": "adam-driver",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9836553832822461,
+        "sDistractor": 0.9270359048264121,
+        "margin": 0.05661947845583404,
+        "topCandidateId": "adam-driver",
+        "latencies": {
+          "tDet": 3417.754084,
+          "tAlign": 854.0014909799995,
+          "tEmb": 3027.8234680199985,
+          "tMatch": 0.49145900000439724,
+          "tTotal": 7300.070502000002
+        }
+      },
+      {
+        "probeId": "adam-sandler__bright_illumination_1_35x_",
+        "transform": "Bright Illumination (1.35x)",
+        "groundTruthId": "adam-sandler",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9700945158754505,
+        "sDistractor": 0.9700945158754505,
+        "margin": 0,
+        "topCandidateId": "adam-sandler",
+        "latencies": {
+          "tDet": 3422.8588339999988,
+          "tAlign": 849.1698692399993,
+          "tEmb": 3010.693172759998,
+          "tMatch": 0.5102909999986878,
+          "tTotal": 7283.232166999995
+        }
+      },
+      {
+        "probeId": "adele__low_illumination_0_70x_",
+        "transform": "Low Illumination (0.70x)",
+        "groundTruthId": "adele",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9944846502357293,
+        "sDistractor": 0.9401039090531162,
+        "margin": 0.054380741182613046,
+        "topCandidateId": "adele",
+        "latencies": {
+          "tDet": 3380.3386249999967,
+          "tAlign": 856.6557174999991,
+          "tEmb": 3037.2339074999973,
+          "tMatch": 0.49904200000310084,
+          "tTotal": 7274.727291999996
+        }
+      },
+      {
+        "probeId": "adriana-lima__high_contrast_1_30x_",
+        "transform": "High Contrast (1.30x)",
+        "groundTruthId": "adriana-lima",
+        "detected": true,
+        "rank": 1,
+        "isTop1": true,
+        "isTop5": true,
+        "reciprocalRank": 1,
+        "sTrue": 0.9871334135837697,
+        "sDistractor": 0.9317219824886905,
+        "margin": 0.05541143109507918,
+        "topCandidateId": "adriana-lima",
+        "latencies": {
+          "tDet": 3024.4910420000087,
+          "tAlign": 743.5776975000003,
+          "tEmb": 2636.3209275000013,
+          "tMatch": 0.4889170000096783,
+          "tTotal": 6404.87858400002
+        }
+      }
+    ]
+  },
+  "tier3Margins": {
+    "totalProbesAnalyzed": 10,
+    "positiveMarginCount": 8,
+    "positiveMarginPct": 80,
+    "zeroMarginCount": 2,
+    "zeroMarginPct": 20,
+    "negativeMarginCount": 0,
+    "marginStats": {
+      "mean": 0.045875350632042455,
+      "std": 0.023175417115469565,
+      "min": 0,
+      "max": 0.06441935769284934,
+      "p10": 0,
+      "p25": 0.05256510239356882,
+      "p50": 0.05541143109507918,
+      "p75": 0.058451201874223147,
+      "p90": 0.06441935769284934,
+      "p99": 0.06441935769284934
+    },
+    "zeroMarginPairsSample": [
+      {
+        "probeId": "adam-sandler",
+        "topCandidateId": "adam-sandler",
+        "margin": 0
+      },
+      {
+        "probeId": "adam-sandler",
+        "topCandidateId": "adam-sandler",
+        "margin": 0
+      }
+    ]
+  },
+  "latency": {
+    "totalProbesMeasured": 10,
+    "tDet": {
+      "mean": 3236.1131377999995,
+      "std": 261.45136335576933,
+      "min": 2979.860166999999,
+      "max": 3735.750208999998,
+      "p10": 2982.056916999998,
+      "p25": 2983.579416999999,
+      "p50": 3380.3386249999967,
+      "p75": 3422.8588339999988,
+      "p90": 3735.750208999998,
+      "p99": 3735.750208999998
+    },
+    "tAlign": {
+      "mean": 802.9284523259997,
+      "std": 56.44602360685981,
+      "min": 743.5776975000003,
+      "max": 876.69970652,
+      "p10": 745.6717307599996,
+      "p25": 746.7007807599999,
+      "p50": 849.1698692399993,
+      "p75": 856.6557174999991,
+      "p90": 876.69970652,
+      "p99": 876.69970652
+    },
+    "tEmb": {
+      "mean": 2846.746330973999,
+      "std": 200.12681096977576,
+      "min": 2636.3209275000013,
+      "max": 3108.29895948,
+      "p10": 2643.7452272399987,
+      "p25": 2647.3936772399998,
+      "p50": 3010.693172759998,
+      "p75": 3037.2339074999973,
+      "p90": 3108.29895948,
+      "p99": 3108.29895948
+    },
+    "tMatch": {
+      "mean": 0.5459417000016401,
+      "std": 0.09799328751738645,
+      "min": 0.47891600000002654,
+      "max": 0.8244169999998121,
+      "p10": 0.4889170000096783,
+      "p25": 0.49145900000439724,
+      "p50": 0.5102909999986878,
+      "p75": 0.5621659999997064,
+      "p90": 0.8244169999998121,
+      "p99": 0.8244169999998121
+    },
+    "tTotal": {
+      "mean": 6886.3338628,
+      "std": 508.92209223804224,
+      "min": 6374.4805419999975,
+      "max": 7637.400374999997,
+      "p10": 6377.239417000001,
+      "p25": 6381.317415999998,
+      "p50": 7274.727291999996,
+      "p75": 7300.070502000002,
+      "p90": 7637.400374999997,
+      "p99": 7637.400374999997
+    }
+  },
+  "overall": {
+    "totalEvaluated": 10,
+    "totalDetected": 10,
+    "detectionRatePct": 100,
+    "top1Count": 10,
+    "top1AccuracyPct": 100,
+    "top5Count": 10,
+    "top5AccuracyPct": 100,
+    "mrr": 1,
+    "elapsedMs": 69047.135042
+  }
+}

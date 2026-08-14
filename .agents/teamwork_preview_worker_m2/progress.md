@@ -1,21 +1,15 @@
-# Progress Log
+# Progress Log — teamwork_preview_worker_m2
 
-Last visited: 2026-08-11T00:01:00Z
+Last visited: 2026-08-11T19:05:42Z
 
-- Initialized DISPATCH.md and BRIEFING.md
-- Refined Distance-to-Percentage Calibration (`src/lib/face/embeddings.ts`):
-  - Replaced `distanceToMatchPercent` with Hill Equation curve $P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^{3.2})$ rounded to 1 decimal place.
-  - Verified `distanceToMatchPercent(0) === 100`.
-  - Verified sample points ($d=0.35 \Rightarrow 85.9\%$, $d=0.45 \Rightarrow 73.9\%$, $d=0.55 \Rightarrow 61.1\%$, $d=0.65 \Rightarrow 49.8\%$).
-- Enhanced Auxiliary Metrics & Match Confidence (`src/lib/face/embeddings.ts`, `match.ts`, `types.ts`):
-  - Implemented continuous Gaussian age affinity `ageAffinity(userAge, celebAge) = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2))`.
-  - Implemented smooth gender affinity penalty based on `user.genderProbability`.
-  - Implemented `computeMatchConfidence(detConfidence, sharpness, faceCoverage, genderProb)` returning [10, 100].
-  - Expanded `buildDescriptorTraits` to output 4 granular traits (Facial Structure, Age Affinity, Gender Presentation, Lighting & Quality).
-- Expanded Unit Test Suite (`src/lib/face/match.test.ts`):
-  - Added tests for `distanceToMatchPercent(0) === 100`.
-  - Added strict non-increasing monotonicity tests for $d \in [0, 1.5]$.
-  - Added continuous age affinity smoothness & gender affinity tests.
-  - Added match confidence score tests.
-  - Added 4 granular trait output tests.
-- Verified `npm run typecheck` and `npm test` pass cleanly (64/64 tests pass).
+## Status
+- [x] Initialized workspace and briefing
+- [x] Read ORIGINAL_REQUEST.md, PROJECT.md, and explorer handoffs (m2_1, m2_2, m2_3)
+- [x] Examine existing codebase in src/lib/face/
+- [x] Create detailed implementation plan
+- [x] Implement SCRFD-2.5G Face Detection (src/lib/face/scrfd.ts)
+- [x] Implement ExpNorm 3D UV WGSL Frontalization (src/lib/face/exp-norm-wgsl.ts)
+- [x] Implement 5-Point Similarity Fallback & Pipeline Integration (src/lib/face/similarity-transform.ts, src/lib/face/pipeline.ts, src/lib/face/types.ts)
+- [x] Write unit tests for M2 components (scrfd.test.ts, similarity-transform.test.ts, exp-norm-wgsl.test.ts, m2-pipeline-integration.test.ts)
+- [x] Run typecheck, tests, and build verification (All pass: 273 tests passing, 0 TS errors, Vercel Nitro build succeeded)
+- [x] Finalize handoff report

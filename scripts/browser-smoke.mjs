@@ -34,13 +34,26 @@ const pageErrors = [];
 
 const browser = await chromium.launch({
   headless: true,
-  args: ["--no-sandbox", "--disable-dev-shm-usage"],
+  args: [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--single-process",
+    "--disable-gpu",
+  ],
 });
+
+import { setupRouteInterceptor } from "./server-route-interceptor.mjs";
 
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await setupRouteInterceptor(page);
   page.on("console", (msg) => {
-    if (msg.type() === "error") consoleErrors.push(msg.text());
+    if (msg.type() === "error") consoleErrors.push(`${msg.text()} (${msg.location()?.url})`);
+  });
+  page.on("response", (res) => {
+    if (res.status() >= 400) {
+      console.warn("FAILED RESP:", res.status(), res.url());
+    }
   });
   page.on("pageerror", (err) => pageErrors.push(String(err?.message || err)));
 

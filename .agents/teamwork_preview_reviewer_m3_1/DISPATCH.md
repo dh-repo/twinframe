@@ -1,11 +1,6 @@
-## 2026-08-11T04:03:38Z
-You are Reviewer 1 for Milestone M3 (Twinframe).
-Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m3_1
-Original User Request: /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-Project Scope Document: /Users/damian/GitHub/twinframe/PROJECT.md
-
-Your task:
-1. Read /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Users/damian/GitHub/twinframe/PROJECT.md.
-2. Review Worker M3's changes in `src/styles.css`, `src/components/scanning/face-scanning-hud.tsx`, `src/components/ui/number-counter.tsx`, `src/components/results/match-reveal-card.tsx`, `src/components/results/comparison-view.tsx`, `src/components/analyzing-state.tsx`, and `src/components/results/match-results.tsx`.
-3. Verify component architecture, prop contracts, React 19 safety, type safety (`npm run typecheck`), and unit tests (`npm test`).
-4. Write your full review and explicit verdict (`APPROVE` or `REQUEST_CHANGES`) in /Users/damian/GitHub/twinframe/.agents/teamwork_preview_reviewer_m3_1/handoff.md following the Handoff Protocol. Send a summary message when finished.
+## 2026-08-11T19:12:00Z
+Conduct code review for Milestone 3 (EdgeFace-M 256-d Feature Extraction & Metric Recalibration).
+Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m3_1.
+Read /Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Volumes/LaCie/GitHub/twinframe/PROJECT.md.
+Verify src/lib/face/edgeface.ts, match.ts, embeddings.ts, pipeline.ts, types.ts. Verify ONNX model loading (/models/edgeface_m.onnx), L2 normalization (v_hat = v / ||v||_2), pure L2-normalized Cosine distance (d = 1 - a_hat^T * b_hat), 8-way loop unrolling, numerical bounds clamping (d in [0.0, 2.0]), Hill curve parameters (d0 = 0.38, n = 4.5), telemetry latency tracking (embeddingPassMs), npm run typecheck, npm test, npm run build.
+Write handoff.md in /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_reviewer_m3_1 with explicit verdict APPROVE or REQUEST_CHANGES.

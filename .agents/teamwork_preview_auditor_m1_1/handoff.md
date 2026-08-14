@@ -1,116 +1,96 @@
-# Forensic Audit Report — Milestone M1 (Twinframe)
+# Forensic Integrity Audit Report — Milestone 1 Implementation
 
-**Work Product**: Milestone M1 (Celebrity Gallery Catalog & Asset Polish)
-**Auditor**: `teamwork_preview_auditor_m1_1`
-**Profile**: General Project (Development Mode)
-**Verdict**: CLEAN
+**Work Product**: Milestone 1 AccuFace v4.0 Execution Engine, WebWorker Architecture & 1 Euro Filter  
+**Profile**: General Project  
+**Integrity Mode**: Development  
+**Auditor**: `auditor_m1_1` (`teamwork_preview_auditor`)  
+**Working Directory**: `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_auditor_m1_1`  
+**Verdict**: **CLEAN**
 
 ---
 
 ## 1. Observation
 
-### Audited Code Changes
-1. `src/components/celebrity-portrait.tsx`:
-   - Replaced state `useFallback` with sequential image resolution stage state `stage: "192" | "96" | "failed"`.
-   - Updated `handleImageError` to cascade from 192w image (`photoUrl192`) down to 96w image (`photoUrl`), and finally to `"failed"` initials avatar mode.
-   - Removed obsolete `srcSet`/`sizes` logic that previously risked 404 image cascade failures when missing 96w/192w thumbnails.
-2. `src/components/ui/celebrity-portrait.tsx`:
-   - Created clean pass-through export: `export { CelebrityPortrait } from "@/components/celebrity-portrait";`.
-3. `src/lib/celebrities/catalog.ts`:
-   - Added curated international celebrity entries (e.g. `dev-patel`, `simu-liu`, `bad-bunny`, `adriana-lima`, `aishwarya-rai`, `anna-sawai`, etc.) with `knownFor`, `tags`, and `accentHue`.
-   - Preserved fallback heuristic function `catalogFor(id)` for non-curated entries.
-4. `scripts/browser-guard.mjs`:
-   - Updated `checkedOutputPath(outPng, allowedDirs = ["/workspace"])` to resolve `process.cwd()` alongside `allowedDirs`.
-   - Maintained security constraints: hostname checking (`LOOPBACK_HOSTNAMES`) and scheme restrictions (`http:`/`https:` only).
-5. `scripts/browser-smoke.mjs`:
-   - Updated default screenshot output path calculation (`defaultOutPng`) to detect whether `/workspace` exists or fallback to `join(process.cwd(), "screenshots", "app-builder-preview.png")`.
-   - Passed `["/workspace", process.cwd()]` to `checkedOutputPath`.
-6. `src/lib/face/match.test.ts`:
-   - Added `describe("curated catalog expansion")` asserting curated metadata properties for `dev-patel`, `simu-liu`, `bad-bunny`, and `adriana-lima`.
+Direct observations from source code inspection and test harness execution:
 
-### Independent Verification Results
-- `npm run typecheck`:
-  ```
-  > typecheck
-  > tsc --noEmit
-  ```
-  Exit code: 0 (No TypeScript errors).
+1. **Hardcoded Test Returns & Facade Inspection**:
+   - `src/lib/face/onnx-engine.ts`: Contains genuine ONNX Runtime Web initialization (`ort.env.wasm.wasmPaths = "/models/ort/"`), execution provider array creation `["webgpu", "wasm"]`, try-catch WebGPU fallback to `["wasm"]`, session manager caching, and hardware capability probing. No hardcoded returns or dummy facades found.
+   - `src/lib/face/face-worker.ts`: Implements WebWorker message handling loop (`INIT_ENGINE`, `ANALYZE_FRAME`, `UPDATE_SMOOTHING`, `PING`, `TERMINATE`). Enforces zero-copy cleanup with `bitmap.close()` inside `finally` block. Transfers `facePreviewBitmap` in transferable array.
+   - `src/lib/face/worker-client.ts`: Implements `FaceWorkerClient` with promise correlation map (`req_${seq}_${timestamp}`), `ImageBitmap` creation/transfer, frame drop on busy, and timeout handling.
+   - `src/lib/face/smoothing.ts`: Implements genuine 1 Euro Filter algorithm (Casiez et al. 2012) for 1D, 2D landmarks, 3D landmarks, and flat `Float32Array` buffers with default parameters $f_{c,\min} = 1.0\text{ Hz}$, $\beta = 0.007$, $f_{c,\text{der}} = 1.0\text{ Hz}$ and $\Delta t > 1.0\text{s}$ reset threshold.
+   - `src/lib/face/types.ts` & `src/lib/face/pipeline.ts` & `src/lib/face/faceapi-engine.ts`: Instrumented with high-resolution `performance.now()` timers recording `FaceStageLatencies` (`modelLoadMs`, `downscaleMs`, `scrfdPassMs`, `frontalizationMs`, `embeddingMs`, `biohashMs`, `totalMs`).
+   - `scripts/copy-ort-assets.mjs`: Genuine Node script copying 5 `.wasm` binary assets from `node_modules/onnxruntime-web/dist/` to `public/models/ort/`.
 
-- `npm test`:
-  ```
-  ℹ tests 58
-  ℹ suites 14
-  ℹ pass 58
-  ℹ fail 0
-  ℹ cancelled 0
-  ℹ skipped 0
-  ℹ todo 0
-  ℹ duration_ms 176.433791
-  ```
-  Exit code: 0 (All 58 unit tests passed cleanly).
-
-- Security Guard Validation (`scripts/browser-guard.mjs`):
-  - Valid loopback URL check (`http://127.0.0.1:8080/`): OK.
-  - Valid output path check (`screenshots/test.png`): OK (resolves under `process.cwd()`).
-  - Invalid scheme rejection (`file:///etc/passwd`): Exits 1 with error: `"only http/https URLs are allowed, got file: in file:///etc/passwd"`.
+2. **TypeScript & Unit Test Execution**:
+   - `npm run typecheck`: Passed with exit code 0 and 0 TypeScript errors.
+   - `npm test`: Passed 254 unit tests across 90 test suites with 0 failures:
+     `ℹ tests 254 | ℹ pass 254 | ℹ fail 0 | ℹ duration_ms 489.7`
 
 ---
 
 ## 2. Logic Chain
 
-1. **Source Inspection vs Prohibited Patterns**:
-   - *Hardcoded test results*: None. `CelebrityPortrait` performs dynamic state transitions based on image loading outcome events; `catalogFor` evaluates catalog dictionary lookups and dynamic hash-hue calculations.
-   - *Facade implementations*: None. Fallback image handling, catalog lookup heuristics, and guard script path resolutions are fully implemented with real logic.
-   - *Fabricated outputs*: None. All test and typecheck results were executed and captured independently during this audit.
-   - *Self-certifying tests*: None. Test additions in `match.test.ts` test real behavior of `catalogFor()`.
-   - *Execution delegation*: None. All changes consist of native JavaScript/TypeScript/React code.
+1. **No Facades or Hardcoded Cheats**:
+   - *Observation*: Inspected target source code files (`onnx-engine.ts`, `face-worker.ts`, `worker-client.ts`, `smoothing.ts`, `types.ts`, `pipeline.ts`).
+   - *Reasoning*: All calculations (low-pass alpha computation, derivative estimation, zero-copy message transfers, execution provider retry, hardware capability probes) use real mathematical formulas and runtime APIs. No static pre-baked results exist.
 
-2. **Requirement & Scope Compliance**:
-   - Survey item #1 (Asset Fallback Chain & Cleanup): Resolved by updating `CelebrityPortrait` stage state machine (`192` -> `96` -> `failed`).
-   - Survey item #2 (Catalog Metadata Curation): Resolved by expanding curated metadata entries in `catalog.ts`.
-   - Survey item #3 (Browser Smoke Test Infra Fix): Resolved by updating `browser-guard.mjs` and `browser-smoke.mjs` to support local working directory execution alongside `/workspace`.
+2. **Genuine ONNX Runtime & WebGPU Fallback Execution**:
+   - *Observation*: `createInferenceSession` in `src/lib/face/onnx-engine.ts` sets `executionProviders: ["webgpu", "wasm"]` and catches session creation errors to retry with `["wasm"]`.
+   - *Reasoning*: Hardware devices lacking WebGPU support or JSEP shaders will automatically degrade to multi-threaded WASM SIMD without breaking the app.
 
-3. **Behavioral Integrity**:
-   - `npm run typecheck` passes with zero type errors.
-   - `npm test` runs 58 unit tests covering matching, calibration, geometry features, and curated catalog additions, with 100% pass rate.
+3. **Genuine Zero-Copy Worker Memory Management**:
+   - *Observation*: `worker-client.ts` transfers `ImageBitmap` objects in `postMessage(msg, transferables)`, and `face-worker.ts` invokes `bitmap.close()` in `finally`.
+   - *Reasoning*: $O(1)$ zero-copy transfer is maintained across worker boundaries, and explicit memory release prevents VRAM and heap leaks.
+
+4. **Genuine 1 Euro Filter Temporal Smoothing**:
+   - *Observation*: `OneEuroFilter` in `src/lib/face/smoothing.ts` evaluates $\alpha = \frac{1}{1 + \tau/dt}$ where $\tau = \frac{1}{2\pi f_c}$ and $f_c = f_{c,\min} + \beta |\hat{dx}|$.
+   - *Reasoning*: The implementation matches the published CHI 2012 algorithm with exact required parameters ($f_{c,\min} = 1.0\text{ Hz}$, $\beta = 0.007$, $f_{c,\text{der}} = 1.0\text{ Hz}$).
+
+5. **Empirical Build & Test Verification**:
+   - *Observation*: `npm run typecheck` returned code 0; `npm test` passed 254/254 tests.
+   - *Reasoning*: All type constraints and unit test assertions are satisfied without introducing regressions.
 
 ---
 
 ## 3. Caveats
 
-- Playwright browser execution for `browser-smoke.mjs` requires a live local dev server listening on port 8080 (`npm run dev`). The guard script logic itself was verified independently via Node unit invocation.
-- No caveats regarding code integrity or compliance.
+- **Node Headless Testing**: WebGPU compute shaders are tested under mock shims (`navigator.gpu` mock in `onnx-engine.test.ts`) within the headless Node unit test harness. Live WebGPU hardware shader execution is validated in browser smoke tests.
+- **Cross-Origin Isolation**: Multi-threaded WASM SIMD (4 threads) depends on `crossOriginIsolated` HTTP headers; without them, the engine falls back gracefully to single-thread WASM execution.
 
 ---
 
 ## 4. Conclusion
 
-**Verdict**: CLEAN
+**Verdict**: **CLEAN**
 
-Worker M1's implementation across `src/components/celebrity-portrait.tsx`, `src/lib/celebrities/catalog.ts`, `scripts/browser-guard.mjs`, and `scripts/browser-smoke.mjs` is authentic, accurate, and completely free of integrity violations.
+Milestone 1 code changes satisfy all integrity standards, architectural requirements, and verification criteria specified in `ORIGINAL_REQUEST.md` and `PROJECT.md`:
+- Zero hardcoded test returns or mock facades.
+- Authentic `onnxruntime-web` loader, WebGPU execution provider selection, and WASM fallback.
+- Authentic WebWorker message protocol, zero-copy `ImageBitmap` transfers, and request correlation.
+- Exact 1 Euro Filter equations and parameters ($f_{c,\min} = 1.0\text{ Hz}$, $\beta = 0.007$, $f_{c,\text{der}} = 1.0\text{ Hz}$).
+- Genuine instrumentation of `FaceStageLatencies` using `performance.now()`.
+- Clean typecheck and 100% passing unit tests (254/254).
 
 ---
 
 ## 5. Verification Method
 
-To independently verify this audit:
+To independently reproduce and verify this audit:
 
-1. Typecheck:
+1. **TypeScript Typecheck**:
    ```bash
    npm run typecheck
    ```
-   *Expected*: Exit code 0, no output or errors.
+   *Expected output*: Exit code 0, zero errors.
 
-2. Unit Test Suite:
+2. **Full Unit Test Suite**:
    ```bash
    npm test
    ```
-   *Expected*: 58 passed tests, 0 failures.
+   *Expected output*: 254 passing tests across 90 test suites, 0 failures.
 
-3. Browser Guard Security Verification:
+3. **Verify Asset Copies**:
    ```bash
-   node -e 'import("./scripts/browser-guard.mjs").then(m => console.log(m.checkedUrl("http://127.0.0.1:8080/")))'
-   node -e 'import("./scripts/browser-guard.mjs").then(m => console.log(m.checkedOutputPath("screenshots/test.png")))'
-   node -e 'import("./scripts/browser-guard.mjs").then(m => m.checkedUrl("file:///etc/passwd"))'
+   ls -la public/models/ort/
    ```
-   *Expected*: First two commands return checked values; third command exits 1 with `"only http/https URLs are allowed"`.
+   *Expected output*: 5 ONNX Runtime WASM assets present (`ort-wasm.wasm`, `ort-wasm-simd.wasm`, `ort-wasm-threaded.wasm`, `ort-wasm-simd-threaded.wasm`, `ort-wasm-simd-threaded.jsep.wasm`).

@@ -1,68 +1,74 @@
-# Handoff Report — M3 Reviewer
+# Handoff Report — Milestone 3 (EdgeFace-M 256-d Feature Extraction & Metric Recalibration)
 
 ## 1. Observation
 
-Direct inspection of files and command outputs:
+### File & Code Inspection
+- **`src/lib/face/edgeface.ts`**:
+  - ONNX Model Loading (lines 124 & 139): `const modelPath = options.modelPath ?? "/models/edgeface_m.onnx";` and `const session = await sessionManager.getSession("edgeface_m", modelPath);`.
+  - L2 Normalization (lines 21-45): Implements `normalizeL2(embedding)` where $\hat{v} = v / \|v\|_2$. Includes protection against near-zero/non-finite norms (`norm < 1e-12` returns zeroed Float32Array).
+  - IEEE 754 Float16 Decoding (lines 50-62): Implements `decodeFloat16(val)` to decode 16-bit half-precision values from WebGPU EP.
+  - Planar Tensor Extraction (lines 68-112): Converts canvas/image sources to NCHW Planar `[1, 3, 112, 112]` Float32Array tensor normalized with `(pixel - 127.5) / 128.0`.
+- **`src/lib/face/embeddings.ts`**:
+  - 8-Way Unrolled Dot Product (lines 243-265): `dotProduct256(a, b)` uses 8 accumulator variables (`sum0` through `sum7`) stepping by 8 (`i += 8`) to maximize parallel FMA execution.
+  - Pure L2-Normalized Cosine Distance & Clamping (lines 271-278): `cosineDistance256(a, b)` calculates $d = 1 - \hat{a}^T \hat{b}$, clamping dot product to $[-1.0, 1.0]$ and distance $d \in [0.0, 2.0]$.
+  - Recalibrated Hill Curve (lines 318-324): `distanceToMatchPercent(distance)` evaluates $P(d) = \frac{100.0}{1 + (d / 0.38)^{4.5}}$, yielding $P(0.0) = 100.0\%$ and $P(0.38) = 50.0\%$.
+- **`src/lib/face/match.ts`**:
+  - Recalibrated Metric Ranking (lines 38-47): Computes `dist = cosineDistance256(user.descriptor, celeb.descriptor)` with soft age/gender priors, deduplicating celebrity age-buckets and sorting by adjusted distance.
+- **`src/lib/face/pipeline.ts`**:
+  - Stage Latency & Telemetry (lines 116-147): Calls `extractEdgeFaceEmbedding`, sets `det.descriptor = edgeFaceEmbedding`, and records `det.telemetry.latencies.embeddingPassMs = embeddingPassMs`.
+- **`src/lib/face/types.ts`**:
+  - Telemetry Interface (line 132): `embeddingPassMs?: number` included in `FaceStageLatencies`.
 
-- **Command `npm run typecheck`**: Passed cleanly with exit code 0 (`tsc --noEmit`).
-- **Command `npm test`**: Executed 64 tests across 16 test suites (`src/lib/face/**/*.test.ts` and `scripts/**/*.test.mjs`), 64 passed, 0 failed, duration 196ms.
-- **`src/styles.css`**: Defines Tailwind v4 theme extensions, keyframe animations (`scan-laser-sweep`, `reticle-pulse`, `card-flip-in`, `telemetry-fade`, `glow-aura`, `sparkle-float`, `shimmer-text`), utility classes (`perspective-1000`, `transform-style-3d`, `backface-hidden`), and `@media (prefers-reduced-motion: reduce)` accessibility handling.
-- **`src/components/scanning/face-scanning-hud.tsx`**: Renders high-fidelity face scanning HUD with background image/placeholder, cybernetic radial vignette, 4 corner tech reticle L-brackets, sweeping laser line, landmark SVG wireframe, 30 animated landmark node points, status header, and telemetry footer bar.
-- **`src/components/ui/number-counter.tsx`**: Implements RAF-based smooth ease-out count-up animation for numbers with duration and decimals control, respecting `prefers-reduced-motion`.
-- **`src/components/results/match-reveal-card.tsx`**: Provides dramatic 3D card-flip reveal animation (`animate-card-flip-in`), glow aura, sparkle overlays, match confidence rating badge, count-up similarity percentage, progress bar, embedded `ComparisonView`, meta pills, and 4 granular descriptor trait similarity progress bars.
-- **`src/components/results/comparison-view.tsx`**: Implements 3 comparison modes (`side-by-side`, `split-slider`, and `landmarks`) with interactive mouse/touch clip-path slider for morphing between user face and celebrity portrait, and feature mesh alignment badges.
-- **`src/components/analyzing-state.tsx`**: Combines header progress bar, `FaceScanningHud`, and 4-step checklist (`Loading model`, `Detecting face`, `Extracting embedding`, `Ranking gallery`) with active bouncing indicators and checkmarks.
-- **`src/components/results/match-results.tsx`**: Wraps quality warning banner (if any), top match `MatchRevealCard`, staggered list of close doppelgänger contenders with `NumberCounter` similarity percentages, and action buttons.
+### Build & Test Commands Executed
+1. `npm run typecheck`
+   - Command output: `tsc --noEmit` exited with code 0 (zero errors).
+2. `npm test`
+   - Command output: 298 tests passed in 105 test suites (0 failures).
+3. `npm run build`
+   - Command output: Vite + Nitro Vercel build completed cleanly in 1.12s + 871ms + 173ms with zero errors.
+
+### Integrity & Adversarial Checks
+- Scanned for hardcoded test outputs, dummy facades, or shortcuts: None found.
+- All model extraction, normalization, vector math, and metric calculation steps execute real, mathematically sound algorithms.
+
+---
 
 ## 2. Logic Chain
 
-1. **Requirement R1 Conformance**: Requirements R1 mandate immersive visual design & micro-animations, a scanning HUD overlay, dramatic reveal animation for top match, and side-by-side visual comparison.
-   - `face-scanning-hud.tsx` and keyframes in `styles.css` fulfill the scanning HUD requirement.
-   - `match-reveal-card.tsx` and `number-counter.tsx` fulfill the dramatic reveal animation requirement with count-up effects and 3D card flip.
-   - `comparison-view.tsx` satisfies the side-by-side visual comparison with multiple interactive modes (side-by-side, split slider morph, landmark mesh).
-2. **Type Safety & Component Architecture**:
-   - `npm run typecheck` returned zero errors.
-   - Props and types strictly align with `CelebrityMatch`, `MatchResult`, `TraitInsight`, and interface contracts in `PROJECT.md`.
-3. **React 19 & Accessibility Compliance**:
-   - `useEffect` cleanup functions correctly handle timers and `requestAnimationFrame`.
-   - `prefers-reduced-motion` is handled in CSS and in JS animation controls (`NumberCounter`).
-   - Accessible roles (`role="progressbar"`, `role="tablist"`, `role="tab"`) and `aria-live` attributes are properly included.
-4. **Integrity Violations Check**:
-   - No hardcoded test outputs or dummy facades were detected in source files.
-   - All score rendering and image comparisons dynamically accept runtime inputs from pipeline results.
+1. **Model Path & ONNX Integration**:
+   - Inspection of `edgeface.ts` verifies that ONNX model loading references `/models/edgeface_m.onnx` via `OnnxSessionManager.getInstance().getSession("edgeface_m", modelPath)`.
+2. **Vector Math & Normalization**:
+   - `normalizeL2` in `edgeface.ts` and `l2Normalize` in `embeddings.ts` strictly compute $v / \|v\|_2$. Non-finite and zero vectors return valid zero arrays without NaN propagation.
+3. **8-Way Unrolling & Metric Bounds**:
+   - `dotProduct256` accumulates into 8 independent sum variables over 256 dimensions. `cosineDistance256` applies dot-product clamping in $[-1.0, 1.0]$ and distance clamping in $[0.0, 2.0]$.
+4. **Hill Curve Calibration**:
+   - `distanceToMatchPercent` uses half-saturation parameter $d_0 = 0.38$ and exponent $n = 4.5$. Unit tests confirm $P(0.0) = 100.0\%$ and $P(0.38) = 50.0\%$.
+5. **Telemetry & Pipeline Instrumentation**:
+   - `embeddingPassMs` is tracked in `FaceStageLatencies` and logged in `det.telemetry.latencies`.
+6. **Build & Test Verification**:
+   - `npm run typecheck`, `npm test` (298/298 passed), and `npm run build` all pass cleanly.
+
+---
 
 ## 3. Caveats
 
-- **Minor Code Quality Finding (`face-scanning-hud.tsx`)**:
-  In `src/components/scanning/face-scanning-hud.tsx:73`:
-  ```tsx
-  const currentTelemetry = TELEMETRY_MESSAGES[stepIndex % TELEMETRY_MESSAGES.length] || TELEMETRY_MESSAGES[telemetryIndex];
-  ```
-  Since `stepIndex` defaults to `0` in function signature (`stepIndex = 0`), `stepIndex % TELEMETRY_MESSAGES.length` is `0`, and `TELEMETRY_MESSAGES[0]` is `"ALIGNING LANDMARKS 68/68"` (truthy string). Consequently, `TELEMETRY_MESSAGES[telemetryIndex]` is never reached even if caller omits `stepIndex`. This does not cause runtime errors or breaks, but shadows the internal telemetry interval timer when `stepIndex` is omitted. Removing the `= 0` default parameter allows telemetry cycling fallback when `stepIndex` is `undefined`.
+- **WebGPU Hardware Runtime Dependency**: In browser environments lacking WebGPU support or WebAssembly SIMD (e.g. legacy browsers), `OnnxSessionManager` falls back gracefully to WASM SIMD execution.
+- **Model Asset Download**: Execution of ONNX inference requires `/models/edgeface_m.onnx` to be available at runtime on the static host. Fallback mechanisms in `pipeline.ts` prevent hard crashes if the file is unavailable.
+
+---
 
 ## 4. Conclusion
 
-The code changes implemented by Worker M3 for Milestone M3 meet all requirements of R1, pass type checking and unit test suites, adhere to React 19 safety practices, and contain no integrity violations.
+Milestone 3 (EdgeFace-M 256-d Feature Extraction & Metric Recalibration) strictly meets all architecture specifications, mathematical requirements, telemetry tracking contracts, and quality standards. No integrity violations or facade implementations were detected.
 
-**Explicit Verdict**: **`APPROVE`**
+**Verdict**: **APPROVE**
+
+---
 
 ## 5. Verification Method
 
-To independently verify this review:
-
-1. Run typecheck:
-   ```bash
-   npm run typecheck
-   ```
-2. Run unit test suite:
-   ```bash
-   npm test
-   ```
-3. Inspect component files:
-   - `src/styles.css`
-   - `src/components/scanning/face-scanning-hud.tsx`
-   - `src/components/ui/number-counter.tsx`
-   - `src/components/results/match-reveal-card.tsx`
-   - `src/components/results/comparison-view.tsx`
-   - `src/components/analyzing-state.tsx`
-   - `src/components/results/match-results.tsx`
+To independently verify this milestone review:
+1. Run `npm run typecheck` to confirm zero TypeScript compilation errors.
+2. Run `npm test` to execute all 298 unit and integration tests (specifically checking `src/lib/face/edgeface.test.ts`, `m3-pipeline-integration.test.ts`, `scripts/m3-empirical.test.mjs`, and `scripts/m3-system-stress-challenge.test.mjs`).
+3. Run `npm run build` to confirm production Vercel Nitro build succeeds.
+4. Inspect `src/lib/face/edgeface.ts`, `src/lib/face/embeddings.ts`, `src/lib/face/match.ts`, `src/lib/face/pipeline.ts`, and `src/lib/face/types.ts`.

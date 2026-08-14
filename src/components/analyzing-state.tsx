@@ -38,10 +38,10 @@ export function AnalyzingState({
   telemetry,
 }: AnalyzingStateProps) {
   const STEPS = [
-    { label: "Loading face recognition model", detail: "FaceNet + gallery" },
-    { label: "Detecting & cropping face", detail: "SSD MobileNet · 68 landmarks" },
-    { label: "Extracting face embedding", detail: "128-d descriptor" },
-    { label: "Ranking celebrity gallery", detail: `${gallerySize.toLocaleString()} age-bucketed stars` },
+    { label: "Initializing AccuFace engine", detail: "ONNX WebGPU / WASM SIMD execution" },
+    { label: "Detecting & aligning face", detail: "SCRFD-2.5G · 5-pt landmarks & 3D Pose" },
+    { label: "Extracting EdgeFace-M embedding", detail: "256-d Float16 & Anti-GAN Biohash" },
+    { label: "Ranking celebrity gallery", detail: `${gallerySize.toLocaleString()} stars · WASM Biohash & Cosine matching` },
   ];
 
   const pct = Math.min(100, Math.max(0, Math.round(progress ?? Math.min(92, 18 + stepIndex * 24))));

@@ -27,10 +27,10 @@ export interface FaceScanningHudProps {
 }
 
 const TELEMETRY_MESSAGES = [
-  "ALIGNING LANDMARKS 68/68",
-  "COMPUTING AFFINE MATRIX",
-  "EXTRACTING 128-D EMBEDDINGS",
-  "MATCHING GALAXIES & CELEBRITIES",
+  "SCRFD-2.5G FEATURE PYRAMID DETECT",
+  "EXPNORM 3D UV WGSL FRONTALIZATION",
+  "EXTRACTING 256-D EDGEFACE EMBEDDINGS",
+  "512-BIT BIOHASH & POPCOUNT MATCHING",
 ];
 
 // Fallback search nodes when model hasn't detected face yet
@@ -102,8 +102,10 @@ export function FaceScanningHud({
   const liveTelemetryMessages = telemetry
     ? [
         `CANVAS: ${telemetry.originalWidth}x${telemetry.originalHeight} -> ${telemetry.downscaledWidth}x${telemetry.downscaledHeight} (${telemetry.latencies.downscaleMs}ms)`,
-        `SSD PASS: ${telemetry.latencies.ssdPassMs}ms (${telemetry.faceCount} FACE${telemetry.faceCount === 1 ? "" : "s"}, ${Math.round(telemetry.primaryConfidence * 100)}% CONF)`,
-        `EMBEDDING: ${telemetry.latencies.embeddingMs}ms (128-D DESCRIPTOR)`,
+        `SCRFD-2.5G: ${telemetry.latencies.scrfdPassMs ?? telemetry.latencies.ssdPassMs ?? 0}ms (${telemetry.faceCount} FACE${telemetry.faceCount === 1 ? "" : "s"}, ${Math.round(telemetry.primaryConfidence * 100)}% CONF)`,
+        `FRONTAL: ${telemetry.latencies.frontalizationMs ?? 0}ms (${(telemetry.frontalizationMethod ?? "5pt-similarity").toUpperCase()}, YAW:${telemetry.estimatedYaw ?? 0}°)`,
+        `EDGEFACE-M: ${telemetry.latencies.embeddingPassMs ?? telemetry.latencies.embeddingMs}ms (256-D FLOAT16)`,
+        `BIOHASH: ${telemetry.latencies.biohashMs ?? 0}ms (512-BIT POPCOUNT XOR)`,
         `TOTAL LATENCY: ${telemetry.latencies.totalMs}ms`,
       ]
     : TELEMETRY_MESSAGES;
@@ -268,7 +270,11 @@ export function FaceScanningHud({
       <div className="pointer-events-none absolute top-3 left-1/2 z-30 -translate-x-1/2 rounded-full border border-match/30 bg-bg/85 px-3 py-0.5 backdrop-blur-md shadow-sm">
         <div className="flex items-center gap-1.5 text-[10px] font-mono font-medium tracking-wider text-match">
           <span className="h-1.5 w-1.5 rounded-full bg-match animate-ping" />
-          <span>FACE_SCAN::ACTIVE</span>
+          <span>
+            {telemetry?.frontalizationMethod
+              ? (telemetry.frontalizationMethod === "exp-norm-wgsl" ? "EXPNORM 3D UV" : "5PT SIMILARITY")
+              : "FACE_SCAN::ACTIVE"}
+          </span>
         </div>
       </div>
 

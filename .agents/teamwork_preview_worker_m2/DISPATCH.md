@@ -1,24 +1,10 @@
-## 2026-08-11T00:00:00Z
-You are Worker M2 for Twinframe.
-Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_worker_m2
-Original User Request: /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md
-Project Scope Document: /Users/damian/GitHub/twinframe/PROJECT.md
+## 2026-08-11T19:00:33Z
+Implement Milestone 2 (SCRFD-2.5G Detection & Expression-Aware 3D UV Frontalization) for Twinframe AccuFace v4.0 architecture.
+Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m2.
+Read /Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md, /Volumes/LaCie/GitHub/twinframe/PROJECT.md, and exploration reports in /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_explorer_m2_1/handoff.md, teamwork_preview_explorer_m2_2/handoff.md, and teamwork_preview_explorer_m2_3/handoff.md.
 
-Your mission (Milestone M2 - Matching Algorithm & Scoring Calibration):
-1. Read /Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md and /Users/damian/GitHub/twinframe/PROJECT.md.
-2. Refine Distance-to-Percentage Calibration (`src/lib/face/embeddings.ts`):
-   - Replace `distanceToMatchPercent` with the calibrated Hill Equation curve:
-     $$P(d) = 15.0 + \frac{85.0}{1 + (d / 0.58)^{3.2}}$$
-     rounded to 1 decimal place.
-   - Ensure `distanceToMatchPercent(0)` returns exactly `100.0` (or `100`).
-   - Ensure smooth non-linear monotonic scaling ($d=0.35 \Rightarrow ~86.0\%$, $d=0.45 \Rightarrow ~73.9\%$, $d=0.55 \Rightarrow ~61.1\%$, $d=0.65 \Rightarrow ~49.8\%$).
-3. Enhance Auxiliary Metrics & Match Confidence (`src/lib/face/embeddings.ts` and `match.ts`):
-   - Replace step functions with continuous Gaussian age affinity: `ageAffinity(userAge, celebAge) = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2))`.
-   - Weight gender prior smoothly using `user.genderProbability`.
-   - Implement `computeMatchConfidence(detConfidence, sharpness, faceCoverage, genderProb)` returning a confidence score [10, 100].
-   - Expand `buildDescriptorTraits` to output 4 granular traits (Facial Structure, Age Affinity, Gender Presentation, Lighting & Quality).
-4. Expand Unit Test Suite (`src/lib/face/match.test.ts`):
-   - Add unit tests verifying `distanceToMatchPercent(0) === 100` (or 100.0%).
-   - Add strict monotonicity tests across $d \in [0, 1.5]$.
-   - Add tests for continuous age affinity smoothness and match confidence computation.
-   - Verify `npm run typecheck` and `npm test` pass cleanly.
+Requirements:
+1. SCRFD-2.5G Face Detection (src/lib/face/scrfd.ts): ONNX model loading via onnx-engine.ts, multi-stride anchor parsing (strides 8, 16, 32), score filtering (>= 0.40), NMS, 5-point landmark extraction, pose estimation (yaw, pitch, roll).
+2. ExpNorm 3D UV WGSL Frontalization (src/lib/face/exp-norm-wgsl.ts): WGSL compute shader executing 10-basis blendshape residual subtraction, 3D UV mapping, and bilinear texture sampling for |yaw| > 25°. WebGPU buffer bindings and safe CPU/5-point fallback.
+3. 5-Point Similarity Fallback & Pipeline Integration (src/lib/face/pipeline.ts, src/lib/face/types.ts): 5-point Umeyama similarity transform for |yaw| <= 25° mapping to canonical 112x112 InsightFace landmarks. Update pipeline.ts, FaceStageLatencies, and FaceTelemetry.
+4. Testing & Verification: Create unit tests, run npm run typecheck, npm test, npm run build.

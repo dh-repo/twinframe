@@ -1,14 +1,19 @@
-import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types";
-import { ENGINE_VERSION } from "./types";
-import { emptyFeatures } from "./math";
-import { rankByDescriptor } from "./match";
+import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types.ts";
+import { ENGINE_VERSION } from "./types.ts";
+import { emptyFeatures } from "./math.ts";
+import { rankByDescriptor } from "./match.ts";
 import {
   detectAndDescribeWithTTA,
   prefetchFaceApi,
   assessDetectionQuality,
   logFaceTelemetry,
-} from "./faceapi-engine";
-import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings";
+} from "./faceapi-engine.ts";
+import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
+import { detectSCRFD } from "./scrfd.ts";
+import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
+import { align5PointSimilarityTensor } from "./similarity-transform.ts";
+import { extractEdgeFaceEmbedding } from "./edgeface.ts";
+import { computeBiohash } from "./biohash.ts";
 
 export type PipelineStatus =
   | "idle"
@@ -45,9 +50,9 @@ export interface AnalyzeOptions {
 }
 
 /**
- * Full pipeline v2:
- * FaceNet 128-d descriptor → rank against enrolled celebrity embeddings.
- * Auto-handles small faces in full-body photos via detector + crop.
+ * AccuFace v4.0 Pipeline:
+ * SCRFD-2.5G Face Detection -> Expression-Aware 3D UV WGSL Frontalization (|yaw| > 25°)
+ * / 5-Point Umeyama Similarity Transform (|yaw| <= 25°) -> Embedding Extraction & Matcher.
  */
 export async function analyzeFaceSource(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
@@ -60,7 +65,97 @@ export async function analyzeFaceSource(
   const galleryPromise = loadCelebrityEmbeddings();
 
   onProgress?.(1, 35);
+
+  // 1. Run SCRFD-2.5G face detection pass
+  const scrfdStart = performance.now();
+  const scrfdResult = await detectSCRFD(source).catch((err) => {
+    console.warn("[Pipeline] SCRFD-2.5G detection pass failed; proceeding to fallback:", err);
+    return null;
+  });
+  const scrfdPassMs = scrfdResult ? scrfdResult.latencyMs : Math.round(performance.now() - scrfdStart);
+
+  // 2. Expression-Aware 3D UV WGSL Frontalization vs 5-Point Similarity Fallback
+  let alignedTensor: Float32Array | null = null;
+  let frontalizationMethod: "exp-norm-wgsl" | "5pt-similarity" | "bbox-crop" = "5pt-similarity";
+  let frontalizationMs = 0;
+
+  if (scrfdResult && scrfdResult.primary) {
+    const primary = scrfdResult.primary;
+    const absYaw = Math.abs(primary.pose.yaw);
+    const tFrontStart = performance.now();
+
+    if (absYaw > 25) {
+      try {
+        alignedTensor = await runExpNormFrontalizationWGSL(
+          source,
+          primary.bbox,
+          primary.pose,
+          primary.landmarks,
+          undefined,
+          { outputSize: 112 }
+        );
+        frontalizationMethod = "exp-norm-wgsl";
+      } catch (err) {
+        console.warn("[Pipeline] ExpNorm WGSL failed; executing 5-point similarity fallback:", err);
+        alignedTensor = align5PointSimilarityTensor(source, primary.landmarks, 112);
+        frontalizationMethod = "5pt-similarity";
+      }
+    } else {
+      alignedTensor = align5PointSimilarityTensor(source, primary.landmarks, 112);
+      frontalizationMethod = "5pt-similarity";
+    }
+
+    frontalizationMs = Math.round(performance.now() - tFrontStart);
+  }
+
+  // 3. Execute EdgeFace-M 256-d feature extraction pass
+  const tEmbStart = performance.now();
+  let edgeFaceEmbedding: Float32Array | null = null;
+  let embeddingPassMs = 0;
+
+  try {
+    const efRes = await extractEdgeFaceEmbedding(
+      alignedTensor ?? source,
+      scrfdResult?.primary?.landmarks
+    );
+    edgeFaceEmbedding = efRes.embedding;
+    embeddingPassMs = efRes.latencyMs;
+  } catch (err) {
+    console.warn("[Pipeline] EdgeFace-M extraction failed; falling back:", err);
+    embeddingPassMs = Math.round(performance.now() - tEmbStart);
+  }
+
+  // 3b. Biohashing telemetry pass (bypassing destructive Anti-GAN subspace projection)
+  let biohashMs = 0;
+  if (edgeFaceEmbedding) {
+    const tBioStart = performance.now();
+    computeBiohash(edgeFaceEmbedding);
+    biohashMs = Math.round(performance.now() - tBioStart);
+  }
+
+  // 4. Execute detection & age/gender analysis pass
   const det = await detectAndDescribeWithTTA(source, options);
+
+  // 5. Update stage latencies and telemetry metadata
+  if (det) {
+    if (edgeFaceEmbedding) {
+      det.descriptor = edgeFaceEmbedding;
+    }
+    if (det.telemetry) {
+      det.telemetry.latencies.scrfdPassMs = scrfdPassMs;
+      det.telemetry.latencies.frontalizationMs = frontalizationMs;
+      det.telemetry.latencies.embeddingPassMs = embeddingPassMs;
+      det.telemetry.latencies.embeddingMs = embeddingPassMs;
+      det.telemetry.latencies.biohashMs = biohashMs;
+      det.telemetry.frontalizationMethod = frontalizationMethod;
+
+      if (scrfdResult?.primary) {
+        det.telemetry.estimatedYaw = scrfdResult.primary.pose.yaw;
+        det.telemetry.estimatedPitch = scrfdResult.primary.pose.pitch;
+        det.telemetry.estimatedRoll = scrfdResult.primary.pose.roll;
+      }
+    }
+  }
 
   let facePreviewUrl: string | undefined;
   if (det?.faceCanvas) {
@@ -169,3 +264,4 @@ export function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
     img.src = url;
   });
 }
+

@@ -1,18 +1,16 @@
 {
-  "version": "4.1.1",
-  "model": "face-api-faceRecognitionNet-128",
+  "version": "3.0.0",
+  "model": "facenet-128d",
   "dim": 128,
   "countCelebs": 1000,
-  "countBuckets": 2972,
-  "bucketsPerCeleb": "variable (avg 3)",
-  "quantization": "int8-biased",
-  "scale": 0.002933561078628388,
-  "maxAbs": 0.37256225698580525,
+  "countBuckets": 1000,
+  "scale": 0.0029561604101826827,
+  "maxAbs": 0.3754323720932007,
+  "quantization": "int8-biased-127",
   "files": {
     "q8": "/celebs/embeddings.q8.bin",
     "f32": "/celebs/embeddings.f32.bin",
     "index": "/celebs/index.json"
   },
-  "ageBuckets": "per-bucket age, loader picks best bucket per celeb id",
-  "enrolled": "1000 real celebs re-encoded with face-api via browser (success 993/1000, TTA+L2, 192→512 upscale)"
+  "enrolledAt": "2026-08-14T17:37:48.531Z"
 }

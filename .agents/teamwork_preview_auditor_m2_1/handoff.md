@@ -1,154 +1,69 @@
-# Forensic Audit Handoff Report — Milestone M2 (Twinframe)
+# Forensic Audit Handoff Report — Milestone 2 Code Changes
 
-## Forensic Audit Verdict: CLEAN
+## Forensic Audit Report
 
-**Work Product**: `src/lib/face/embeddings.ts`, `src/lib/face/match.ts`, `src/lib/face/match.test.ts`  
-**Profile**: General Project / Integrity Forensics (Development Mode)  
-**Verdict**: **CLEAN**
+**Work Product**: Milestone 2 Facial Processing Modules (`src/lib/face/scrfd.ts`, `exp-norm-wgsl.ts`, `similarity-transform.ts`, `pipeline.ts`)
+**Profile**: General Project (Development Mode)
+**Verdict**: CLEAN
+
+### Phase Results
+- **Hardcoded Output Detection**: PASS — No hardcoded test outputs or return values found in target files.
+- **Facade Detection**: PASS — All target modules implement real computational logic (ONNX inference, WGSL compute shaders, 4x4 Gaussian elimination, 3D pose math, NMS).
+- **Pre-populated Artifact Detection**: PASS — Workspace contain no pre-populated log or attestation files; `.agents/` contains only agent metadata.
+- **Behavioral Verification (`npm test`)**: PASS — 273/273 unit tests executed and passed cleanly in 445ms.
+- **TypeScript Typecheck (`npm run typecheck`)**: PASS — `tsc --noEmit` exited with code 0 and zero errors.
+- **Pipeline Routing Verification**: PASS — `pipeline.ts` accurately routes high-pose inputs ($|\text{yaw}| > 25^\circ$) to `ExpNorm` WGSL compute shader and low-pose inputs ($|\text{yaw}| \le 25^\circ$) to 5-point Umeyama similarity transform.
 
 ---
 
 ## 1. Observation
 
-Direct empirical observations from source code inspection, git diffs, and local command execution:
+1. **Target Files Inspected**:
+   - `src/lib/face/scrfd.ts`: Contains full implementation of `generateAnchors` (16,800 anchors generated across strides 8, 16, 32 for 640x640 input), `estimateHeadPose` (roll via `atan2(dyEye, dxEye)`, un-rolled nose tip delta for yaw, vertical offset for pitch), `computeIoU`, `nmsFaceBoxes`, and `detectSCRFD` (640x640 letterboxing, NCHW normalization `(pixel - 127.5) / 128.0`, ONNX Runtime Web session execution, tensor decoding by stride, un-letterboxing, pose estimation, and NMS).
+   - `src/lib/face/exp-norm-wgsl.ts`: Contains complete `EXP_NORM_WGSL_SHADER` compute shader (10-basis blendshape residual subtraction `neutralPos = baseVertex - sum(alpha_i * B_i)`, 3D rotation matrix $R(\text{yaw}, \text{pitch}, \text{roll})$, 2D projection, bilinear texture sampling, NCHW tensor output), `getCanonicalBlendshapeBases` (11 basis vectors per pixel for 112x112 or 160x160 target size), `runExpNormFrontalizationCPU` (CPU reference implementation), and `runExpNormFrontalizationWGSL` (WebGPU device setup, uniform buffer upload, texture creation, storage buffer binding, compute dispatch, mapped readback, and similarity fallback).
+   - `src/lib/face/similarity-transform.ts`: Contains canonical InsightFace reference landmarks (`REFERENCE_LANDMARKS_112` and `REFERENCE_LANDMARKS_160`), closed-form 2D Umeyama similarity transformation matrix solver (`compute5PointSimilarityMatrix`) constructing a 4x4 linear system $A^T A X = A^T B$ solved via Gaussian elimination with partial pivoting, and canvas/tensor rendering functions (`align5PointSimilarityCanvas`, `align5PointSimilarityTensor`).
+   - `src/lib/face/pipeline.ts`: Contains `analyzeFaceSource` orchestrator executing SCRFD-2.5G detection, pose evaluation, dynamic routing to `ExpNorm` WGSL when $|\text{yaw}| > 25^\circ$ or `5pt-similarity` when $|\text{yaw}| \le 25^\circ$, latency tracking (`scrfdPassMs`, `frontalizationMs`), telemetry logging, feature extraction, and celebrity match ranking.
 
-1. **Source File `src/lib/face/embeddings.ts`**:
-   - Lines 271–276: `distanceToMatchPercent` function implemented using Hill Equation non-linear Hill curve formula:
-     ```ts
-     export function distanceToMatchPercent(distance: number): number {
-       const d = Math.max(0, distance);
-       const hill = 15.0 + 85.0 / (1 + Math.pow(d / 0.58, 3.2));
-       const pct = Math.max(15.0, Math.min(100.0, hill));
-       return Math.round(pct * 10) / 10;
-     }
-     ```
-   - Lines 306–309: Continuous Gaussian age affinity function:
-     ```ts
-     export function ageAffinity(userAge: number, celebAge: number): number {
-       return Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2));
-     }
-     ```
-   - Lines 295–304: Smooth gender affinity calculation:
-     ```ts
-     export function genderAffinity(
-       userGender: "male" | "female" | "unknown",
-       userProb: number,
-       celeb: CelebrityEmbedding,
-     ): number {
-       if (userGender === "unknown") return 1;
-       if (userGender === celeb.gender) return 1;
-       const prob = Math.max(0, Math.min(1, userProb));
-       return Math.max(0.75, Math.min(1, 1 - 0.22 * prob));
-     }
-     ```
-   - Lines 314–329: Holistic match confidence rating function:
-     ```ts
-     export function computeMatchConfidence(
-       detConfidence: number,
-       sharpness: number,
-       faceCoverage: number,
-       genderProb: number,
-     ): number {
-       const det = Math.max(0, Math.min(1, detConfidence > 1 ? detConfidence / 100 : detConfidence));
-       const sharp = Math.max(0, Math.min(1, sharpness > 1 ? sharpness / 100 : sharpness));
-       const covRaw = faceCoverage > 1 ? faceCoverage / 100 : faceCoverage;
-       const cov = Math.max(0, Math.min(1, covRaw / 0.25));
-       const gProb = Math.max(0, Math.min(1, genderProb > 1 ? genderProb / 100 : genderProb));
-
-       const weighted = 0.35 * det + 0.25 * sharp + 0.20 * cov + 0.20 * gProb;
-       const score = 10.0 + 90.0 * weighted;
-       return Math.round(Math.max(10.0, Math.min(100.0, score)) * 10) / 10;
-     }
-     ```
-
-2. **Source File `src/lib/face/match.ts`**:
-   - Lines 59–64: Integrates `computeMatchConfidence` in `rankByDescriptor`.
-   - Lines 92–144: Extends trait breakdown to output 4 granular traits (`facialStructure`, `ageAffinity`, `genderPresentation`, `lightingQuality`).
-
-3. **Source File `src/lib/face/match.test.ts`**:
-   - Lines 24–63: Unit tests for Euclidean distance, Hill Equation calibration, `distanceToMatchPercent(0) === 100`, monotonicity over `d in [0, 1.5]`, and relative rank order.
-   - Lines 65–96: Tests for Gaussian age affinity & gender affinity.
-   - Lines 98–141: Tests for match confidence score range `[10, 100]` and 4 descriptor traits.
-
-4. **Independent Command Outputs**:
-   - `npm run typecheck`: Executed `tsc --noEmit` cleanly with exit code 0 and 0 errors.
-   - `npm test`: Executed `node --experimental-strip-types --test ...` with 64/64 tests passing, 0 failures, 0 skipped, 0 cancelled.
-   - Node empirical formula check: Verified `distanceToMatchPercent(0) === 100`, `distanceToMatchPercent(0.35) === 85.9`, `distanceToMatchPercent(0.45) === 73.9`, `distanceToMatchPercent(0.55) === 61.1`, `distanceToMatchPercent(0.65) === 49.8`.
+2. **Test & Build Commands Executed**:
+   - `npm test`: Passed 273 out of 273 tests across 94 test suites in 445.26ms.
+   - `npm run typecheck`: Exited with code 0 (zero TypeScript errors).
 
 ---
 
 ## 2. Logic Chain
 
-1. **Requirement Check against `ORIGINAL_REQUEST.md` (R2 & Acceptance Criteria)**:
-   - R2 requires refining the Euclidean-to-percentage mapping into a user-friendly, calibrated similarity percentage where `d=0` maps to `100%`, with honest scaling across realistic distance ranges. Observation 1 shows the Hill Equation non-linear mapping `P(d) = 15.0 + 85.0 / (1 + (d / 0.58)^3.2)`. Evaluating this formula at `d=0` yields `15.0 + 85.0 / (1 + 0) = 100.0` naturally without hardcoding.
-   - R2 requires incorporating continuous age affinity and gender priors. Observations 1 & 2 confirm that continuous Gaussian decay `Math.exp(-(|userAge - celebAge|/28)^2)` and linear gender probability weighting are implemented and integrated into match scoring.
-   - R2 requires holistic confidence scoring. Observation 1 & 2 show `computeMatchConfidence` combining detection confidence, sharpness, face coverage, and gender probability into a rating in `[10, 100]`.
+1. **Verification of Non-Facade & Non-Hardcoded Properties**:
+   - `scrfd.ts` performs genuine tensor preprocessing, passes tensors to ONNX sessions via `OnnxSessionManager`, parses multi-stride feature pyramid output tensors dynamically, and applies actual 3D trigonometry for head pose estimation and NMS for bounding box filtering.
+   - `exp-norm-wgsl.ts` embeds a authentic WGSL compute shader with 10-basis blendshape residual subtraction and 3D rotation matrix multiplication. The CPU reference implementation provides exact mathematical equivalence for fallback execution.
+   - `similarity-transform.ts` calculates exact closed-form Umeyama similarity matrices using row-reduction Gaussian elimination over 5 landmark pairs, converting pixel data to normalized NCHW tensors.
+   - `pipeline.ts` enforces the specified routing contract: high pose ($|\text{yaw}| > 25^\circ$) triggers `ExpNorm` WGSL, low pose ($|\text{yaw}| \le 25^\circ$) triggers 5-point Umeyama transform.
 
-2. **Forensic Integrity Check (Prohibited Pattern Detection)**:
-   - **Pattern 1 (Hardcoded test results)**: None found. `distanceToMatchPercent(0)` evaluates to `100.0` through the mathematical formula itself rather than an `if (d === 0) return 100` branch.
-   - **Pattern 2 (Facade implementations)**: None found. All functions implement authentic mathematical calculations (Hill equation, Gaussian exponential falloff, weighted linear combinations).
-   - **Pattern 3 (Fabricated outputs / pre-populated logs)**: None found. All verification tests were executed dynamically during audit.
-   - **Pattern 4 (Self-certifying / suppressed tests)**: None found. All assertions in `src/lib/face/match.test.ts` perform strict comparisons (`assert.equal`, `assert.ok`) across continuous ranges (e.g., looping `d` from `0` to `1.5` by `0.02`).
-   - **Pattern 5 (Execution delegation)**: None found. Core logic is pure TypeScript without delegating to prohibited third-party services.
+2. **Compliance with User Constraints**:
+   - `ORIGINAL_REQUEST.md` specifies `Integrity mode: development` and R2 requirement for SCRFD-2.5G and ExpNorm 3D UV WGSL frontalization.
+   - All implemented code directly fulfills R2 requirements without relying on pre-baked or hardcoded outputs.
 
-3. **Compilation & Behavioral Verification**:
-   - `npm run typecheck` passed cleanly (Observation 4).
-   - `npm test` passed 64 out of 64 test cases without errors (Observation 4).
+3. **Conclusion Generation**:
+   - Since all tests pass, the build is clean, all target modules contain authentic implementation logic, and zero cheating or facade patterns exist, the work product is rated **CLEAN**.
 
 ---
 
 ## 3. Caveats
 
-- **No caveats.** The audit covered source code inspection, diff analysis, mathematical formula verification, edge-case evaluation, and full independent execution of static typechecks and unit test suites.
+- WebGPU compute execution requires browser/environment WebGPU capability (`navigator.gpu`). If WebGPU is unavailable (e.g. headless Node.js environment without GPU passthrough), the codebase gracefully falls back to the verified CPU reference / 5-point Umeyama similarity transform path as designed.
 
 ---
 
 ## 4. Conclusion
 
-**Verdict: CLEAN**
+The Milestone 2 code changes in `src/lib/face/scrfd.ts`, `src/lib/face/exp-norm-wgsl.ts`, `src/lib/face/similarity-transform.ts`, and `src/lib/face/pipeline.ts` are **authentic, non-facade, non-hardcoded**, and fully implement SCRFD-2.5G face detection, ExpNorm 3D UV WGSL frontalization, 5-point Umeyama fallback, and pipeline pose routing.
 
-Worker M2's code changes in `src/lib/face/embeddings.ts`, `src/lib/face/match.ts`, and `src/lib/face/match.test.ts` fully satisfy all Milestone M2 requirements specified in `PROJECT.md` and `ORIGINAL_REQUEST.md`. The implementation is authentic, mathematically sound, free of hardcoded shortcuts, and fully verified through independent test execution.
+**Verdict**: **CLEAN**
 
 ---
 
 ## 5. Verification Method
 
 To independently verify this audit:
-
-1. **Typecheck**:
-   ```bash
-   npm run typecheck
-   ```
-   Expect: Exit code 0 with 0 errors.
-
-2. **Unit Test Suite**:
-   ```bash
-   npm test
-   ```
-   Expect: 64 tests passing, 0 failures.
-
-3. **Formula & Calibration Empirical Check**:
-   ```bash
-   node -e '
-   import { distanceToMatchPercent, ageAffinity, computeMatchConfidence } from "./src/lib/face/embeddings.ts";
-   console.assert(distanceToMatchPercent(0) === 100, "d=0 must be 100");
-   console.assert(distanceToMatchPercent(0.35) === 85.9, "d=0.35 must be 85.9");
-   console.assert(ageAffinity(25, 25) === 1, "ageAffinity same age must be 1");
-   console.assert(computeMatchConfidence(0.92, 70, 0.15, 0.9) === 81.7, "confidence check");
-   console.log("All empirical verification assertions passed!");
-   '
-   ```
-
----
-
-## Adversarial Review & Stress-Test Results
-
-### Challenge Summary
-- **Overall Risk Assessment**: LOW
-- **Assumptions Tested**:
-  1. *Negative or extreme distance inputs to `distanceToMatchPercent`*: Handled gracefully via `Math.max(0, distance)` and asymptotic lower bound `15.0%`.
-  2. *Percentage (0-100) vs Fractional (0-1) inputs to `computeMatchConfidence`*: Handled via conditional scaling (`> 1 ? value / 100 : value`).
-  3. *Gender mismatch penalty dominance*: Soft prior bounded in `[0.75, 1.0]` ensures facial vector similarity remains the primary match signal.
-  4. *Monotonicity of Hill Equation curve*: Verified across `d` from `0` to `1.5` with step `0.02` with 0 violations.
-
-- **Unchallenged Areas**: None within Milestone M2 scope.
+1. Run `npm test` from project root `/Volumes/LaCie/GitHub/twinframe` — confirm 273/273 unit tests pass.
+2. Run `npm run typecheck` — confirm zero TypeScript errors.
+3. Inspect `src/lib/face/scrfd.ts`, `exp-norm-wgsl.ts`, `similarity-transform.ts`, `pipeline.ts` to confirm mathematical implementations and pipeline routing logic.

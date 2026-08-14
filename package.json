@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "vite dev --host 0.0.0.0 --port 8080",
-    "build": "vite build && npm run db:migrate",
+    "build": "node scripts/copy-ort-assets.mjs && vite build && node scripts/post-build-patch.mjs && npm run db:migrate",
+    "copy:ort": "node scripts/copy-ort-assets.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
@@ -59,6 +60,7 @@
     "date-fns": "^4.0.0",
     "kysely": "^0.28.5",
     "lucide-react": "^0.510.0",
+    "onnxruntime-web": "^1.20.1",
     "pg": "^8.16.3",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",

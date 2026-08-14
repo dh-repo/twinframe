@@ -86,7 +86,7 @@ describe("M1 & M2 Empirical Challenger Verification Suite", () => {
       };
 
       // Verify structural invariant totalMs >= sum of inner stage latencies
-      const innerSum = latencies.ssdPassMs + latencies.claheMs + latencies.embeddingMs;
+      const innerSum = (latencies.ssdPassMs ?? 0) + (latencies.claheMs ?? 0) + latencies.embeddingMs;
       assert.ok(
         latencies.totalMs >= innerSum,
         `Total latency (${latencies.totalMs}ms) must be >= sum of inner processing stages (${innerSum}ms)`,

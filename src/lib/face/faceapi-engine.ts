@@ -11,6 +11,19 @@ let detectorReady = false;
 
 const MODEL_URL = "/models/face-api";
 
+function createCanvas(w: number, h: number): HTMLCanvasElement {
+  if (typeof document !== "undefined") {
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(w));
+    c.height = Math.max(1, Math.round(h));
+    return c;
+  }
+  if (typeof OffscreenCanvas !== "undefined") {
+    return new OffscreenCanvas(Math.max(1, Math.round(w)), Math.max(1, Math.round(h))) as unknown as HTMLCanvasElement;
+  }
+  throw new Error("Canvas API not available in current environment");
+}
+
 async function importFaceApi(): Promise<any> {
   const mod = await import("@vladmandic/face-api");
   return (mod as any).default?.nets ? (mod as any).default : mod;
@@ -205,8 +218,13 @@ export function logFaceTelemetry(telemetry: FaceTelemetry): void {
     latencies,
   } = telemetry;
 
+  const detMs = latencies.scrfdPassMs ?? latencies.ssdPassMs ?? 0;
+  const frontMs = latencies.frontalizationMs ?? latencies.claheMs ?? 0;
+  const embMs = latencies.embeddingPassMs ?? latencies.embeddingMs ?? 0;
+  const bioMs = latencies.biohashMs ?? 0;
+
   console.log(
-    `%c[Twinframe Telemetry]%c Image: ${originalWidth}x${originalHeight} -> Canvas: ${downscaledWidth}x${downscaledHeight} (${latencies.downscaleMs}ms) | SSD: ${latencies.ssdPassMs}ms (${faceCount} face${faceCount === 1 ? "" : "s"}, conf: ${(primaryConfidence * 100).toFixed(0)}%) | CLAHE: ${latencies.claheMs}ms | Embedding: ${latencies.embeddingMs}ms | Model: ${latencies.modelLoadMs}ms | Total: ${latencies.totalMs}ms`,
+    `%c[Twinframe Telemetry]%c Image: ${originalWidth}x${originalHeight} -> Canvas: ${downscaledWidth}x${downscaledHeight} (${latencies.downscaleMs}ms) | Det: ${detMs}ms (${faceCount} face${faceCount === 1 ? "" : "s"}, conf: ${(primaryConfidence * 100).toFixed(0)}%) | Frontalization: ${frontMs}ms | Embedding: ${embMs}ms | Biohash: ${bioMs}ms | Model: ${latencies.modelLoadMs}ms | Total: ${latencies.totalMs}ms`,
     "color: #38bdf8; font-weight: bold;",
     "color: inherit;",
   );
@@ -267,18 +285,14 @@ async function rasterizeSource(
 ): Promise<{ canvas: HTMLCanvasElement; scale: number; w: number; h: number }> {
   const { w, h } = sourceSize(source);
   if (!w || !h) {
-    const empty = document.createElement("canvas");
-    empty.width = 1;
-    empty.height = 1;
+    const empty = createCanvas(1, 1);
     return { canvas: empty, scale: 1, w: 1, h: 1 };
   }
 
   const scale = Math.min(1, maxSide / Math.max(w, h));
   const cw = Math.max(1, Math.round(w * scale));
   const ch = Math.max(1, Math.round(h * scale));
-  const canvas = document.createElement("canvas");
-  canvas.width = cw;
-  canvas.height = ch;
+  const canvas = createCanvas(cw, ch);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) return { canvas, scale, w, h };
   (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
@@ -318,9 +332,7 @@ async function rasterizeSource(
 /** Mean luminance 0–1 for a quick empty/black canvas check. */
 function canvasMeanLuma(canvas: HTMLCanvasElement): number {
   const s = 32;
-  const c = document.createElement("canvas");
-  c.width = s;
-  c.height = s;
+  const c = createCanvas(s, s);
   const ctx = c.getContext("2d", { willReadFrequently: true });
   if (!ctx) return 0.5;
   ctx.drawImage(canvas, 0, 0, s, s);
@@ -387,13 +399,11 @@ export function applyLocalContrastBoost(
 
   // Pre-downscale to maxClaheSide (640px) to keep CPU pixel loop < 25ms
   let workingCanvas: HTMLCanvasElement = sourceCanvas;
-  if (Math.max(origW, origH) > maxClaheSide && typeof document !== "undefined") {
+  if (Math.max(origW, origH) > maxClaheSide) {
     const scale = maxClaheSide / Math.max(origW, origH);
     const sw = Math.max(1, Math.round(origW * scale));
     const sh = Math.max(1, Math.round(origH * scale));
-    const downCanvas = document.createElement("canvas");
-    downCanvas.width = sw;
-    downCanvas.height = sh;
+    const downCanvas = createCanvas(sw, sh);
     const dctx = downCanvas.getContext("2d", { willReadFrequently: true });
     if (dctx) {
       (dctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
@@ -404,9 +414,7 @@ export function applyLocalContrastBoost(
 
   const w = workingCanvas.width;
   const h = workingCanvas.height;
-  const outCanvas = document.createElement("canvas");
-  outCanvas.width = w;
-  outCanvas.height = h;
+  const outCanvas = createCanvas(w, h);
   const ctx = outCanvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) return sourceCanvas;
 
@@ -529,7 +537,7 @@ function l2NormalizeVec(v: ArrayLike<number>): Float32Array {
 function computeSharpness(canvas: HTMLCanvasElement): { sharpness: number; illumination: number } {
   // Fast 64x64 grayscale Laplacian variance
   const s = 64;
-  const c = document.createElement("canvas");
+  const c = createCanvas(s, s);
   c.width = s;
   c.height = s;
   const ctx = c.getContext("2d", { willReadFrequently: true });
@@ -586,7 +594,7 @@ function createPaddedCanvas(
   const padX = Math.round(sw * padPct);
   const padY = Math.round(sh * padPct);
 
-  const canvas = document.createElement("canvas");
+  const canvas = createCanvas(sw + padX * 2, sh + padY * 2);
   canvas.width = sw + padX * 2;
   canvas.height = sh + padY * 2;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -604,7 +612,7 @@ function extractCenterFaceCanvas(
   outSize = 320,
 ): HTMLCanvasElement {
   const { w, h } = sourceSize(source);
-  const canvas = document.createElement("canvas");
+  const canvas = createCanvas(outSize, outSize);
   canvas.width = outSize;
   canvas.height = outSize;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -622,7 +630,7 @@ function extractCenterFaceCanvas(
 
 function generateImageRegionDescriptor(canvas: HTMLCanvasElement): Float32Array {
   const s = 16;
-  const c = document.createElement("canvas");
+  const c = createCanvas(s, s);
   c.width = s;
   c.height = s;
   const ctx = c.getContext("2d", { willReadFrequently: true });
@@ -780,11 +788,9 @@ export async function detectFacesOnly(
 
   // Black canvas recovery (failed decode / orientation)
   if (canvasMeanLuma(primaryCanvas) < 0.02) {
-    const retry = document.createElement("canvas");
     const { w: rw, h: rh } = sourceSize(source);
     const s = Math.min(1, maxSide / Math.max(rw, rh, 1));
-    retry.width = Math.max(1, Math.round(rw * s));
-    retry.height = Math.max(1, Math.round(rh * s));
+    const retry = createCanvas(rw * s, rh * s);
     const rctx = retry.getContext("2d");
     if (rctx) {
       (rctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
@@ -879,10 +885,8 @@ export async function detectFacesOnly(
     const pcH = primaryCanvas.height;
     const colW = Math.round(pcW * 0.55);
     for (const sx of [0, Math.round(pcW * 0.225), Math.max(0, pcW - colW)]) {
-      const tile = document.createElement("canvas");
       const localScale = Math.min(1, 640 / Math.max(colW, pcH));
-      tile.width = Math.max(1, Math.round(colW * localScale));
-      tile.height = Math.max(1, Math.round(pcH * localScale));
+      const tile = createCanvas(colW * localScale, pcH * localScale);
       const tctx = tile.getContext("2d");
       if (!tctx) continue;
       tctx.drawImage(primaryCanvas, sx, 0, colW, pcH, 0, 0, tile.width, tile.height);
@@ -1007,8 +1011,8 @@ export async function detectAndDescribe(
   cropY = Math.max(0, Math.min(h - side, cropY + (cropH - side) / 2));
   const cropSide = Math.min(side, w - cropX, h - cropY);
 
-  const faceCanvas = document.createElement("canvas");
   const outSize = 320;
+  const faceCanvas = createCanvas(outSize, outSize);
   faceCanvas.width = outSize;
   faceCanvas.height = outSize;
   const fctx = faceCanvas.getContext("2d");
@@ -1125,10 +1129,13 @@ export async function detectAndDescribe(
   const stageLatencies: FaceStageLatencies = {
     modelLoadMs,
     downscaleMs,
+    scrfdPassMs: detection.latencies.detectMs,
+    frontalizationMs: 0,
+    embeddingMs,
+    biohashMs: 0,
+    totalMs,
     ssdPassMs: detection.latencies.detectMs,
     claheMs: 0,
-    embeddingMs,
-    totalMs,
   };
 
   const telemetry: FaceTelemetry = {
@@ -1191,7 +1198,7 @@ export async function detectAndDescribeWithTTA(
 
     const tTtaStart = performance.now();
     // High-speed crop-level horizontal flip (320x320)
-    const flipCanvas = document.createElement("canvas");
+    const flipCanvas = createCanvas(cropCanvas.width, cropCanvas.height);
     flipCanvas.width = cropCanvas.width;
     flipCanvas.height = cropCanvas.height;
     const fctx = flipCanvas.getContext("2d");

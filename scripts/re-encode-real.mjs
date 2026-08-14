@@ -8,14 +8,20 @@
 // - Rewrites gallery.buckets.json descriptors via bins (q8/f32) + meta v4.1
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import * as canvas from "canvas";
 import * as tf from "@tensorflow/tfjs";
 import sharp from "sharp";
 
+// Hardware optimization for Mac Studio / Apple Silicon
+const NUM_CORES = os.cpus().length;
+sharp.concurrency(Math.min(16, NUM_CORES));
+sharp.cache({ memory: 4096, items: 10000, files: 2000 });
+
 // Patch face-api to use node-canvas (ESM build uses tfjs, not tfjs-node, so works on Node 26)
 import * as faceapi from "@vladmandic/face-api/dist/face-api.esm.js";
 
-const ROOT = "/Users/damian/GitHub/twinframe";
+const ROOT = process.cwd();
 const INDEX = path.join(ROOT, "public/celebs/index.json");
 const GALLERY = path.join(ROOT, "public/celebs/gallery.buckets.json");
 const META = path.join(ROOT, "public/celebs/embeddings.meta.json");

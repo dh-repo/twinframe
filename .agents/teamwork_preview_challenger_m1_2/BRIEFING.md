@@ -1,53 +1,58 @@
-# BRIEFING — 2026-08-10T23:59:12Z
+# BRIEFING — 2026-08-11T18:47:10Z
 
 ## Mission
-Adversarially stress-test and empirically evaluate Milestone M1 preview for Twinframe, validating catalog assets, browser smoke tests, and absence of console/404 errors.
+Perform empirical verification and stress testing for Milestone 1 (ONNX Engine & WebWorker Zero-Copy Transfer Protocol).
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
-- Working directory: /Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2
-- Original parent: 9a30d176-ccde-4465-994e-66c574e15b87
-- Milestone: M1
-- Instance: 2 of 2
+- Working directory: /Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2
+- Original parent: d09137f2-1711-4743-9c1a-a93b4eb6b89b
+- Milestone: Milestone 1
+- Instance: 2 of 2 (challenger_m1_2)
 
 ## 🔒 Key Constraints
-- Review-only — do NOT modify implementation code (report findings as errors)
-- EMPIRICAL verification required — run tests, inspect assets, capture logs/screenshots
-- Explicit verdict (`APPROVE` or `REJECT`) in handoff.md
+- Review-only — do NOT modify implementation code
+- Run empirical verification code yourself; do NOT trust worker claims or logs
+- Verification commands must be executed and reported with exact output
 
 ## Current Parent
-- Conversation ID: 9a30d176-ccde-4465-994e-66c574e15b87
-- Updated: 2026-08-10T23:59:12Z
+- Conversation ID: d09137f2-1711-4743-9c1a-a93b4eb6b89b
+- Updated: 2026-08-11T18:47:10Z
 
 ## Review Scope
 - **Files to review**:
-  - `/Users/damian/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md`
-  - `/Users/damian/GitHub/twinframe/PROJECT.md`
-  - Running app on `http://127.0.0.1:8080/`
-  - Catalog assets and browser console logs
-- **Interface contracts**: PROJECT.md / AGENTS.md
-- **Review criteria**: Visual correctness, catalog asset loading, zero console/404 errors, functional preview
+  - `/Volumes/LaCie/GitHub/twinframe/.agents/ORIGINAL_REQUEST.md`
+  - `/Volumes/LaCie/GitHub/twinframe/PROJECT.md`
+  - `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m1/handoff.md`
+  - `/Volumes/LaCie/GitHub/twinframe/.agents/teamwork_preview_worker_m1/changes.md`
+  - `src/lib/face/onnx-engine.ts`, `src/lib/face/face-worker.ts`, `src/lib/face/worker-client.ts`, `src/lib/face/worker-protocol.ts`, `src/lib/face/smoothing.ts`
+- **Interface contracts**: PROJECT.md / ORIGINAL_REQUEST.md
+- **Review criteria**: Empirical correctness, fallback logic, timeout & frame drop handling, correlation map memory leaks, zero-copy transferable protocol, bitmap closure.
 
 ## Attack Surface
 - **Hypotheses tested**:
-  - Missing asset path 404s in catalog? Tested 9,916 asset references across `gallery.buckets.json` and `embeddings.json` -> 0 missing files.
-  - Console errors on http://127.0.0.1:8080/? Verified live network requests via Playwright -> 0 console errors, 0 HTTP >=400 errors.
-  - Unit test suite failure? Ran `npm test && npm run typecheck` -> 58 tests passed, 0 tsc errors.
-- **Vulnerabilities found**: None.
-- **Untested angles**: None.
-
-## Loaded Skills
-- None loaded
+  - ONNX Engine WebGPU fallback to WASM: CONFIRMED WORKING
+  - Hardware capability probe gracefully handling WebGPU errors: CONFIRMED WORKING
+  - `FaceWorkerClient` timeout handling & correlation map cleanup: CONFIRMED WORKING
+  - `FaceWorkerClient` busy frame drop (`dropIfBusy`): CONFIRMED WORKING
+  - Zero-copy Transferable protocol & `bitmap.close()` cleanup in `finally` block: CONFIRMED WORKING
+  - `FaceWorkerClient.updateSmoothing()` protocol response handling: CONFIRMED DEFECTIVE (Always times out)
+  - `FaceWorkerClient.isBusy` flag tracking under concurrent requests: CONFIRMED DEFECTIVE (Premature reset)
+- **Vulnerabilities found**:
+  - CRITICAL Defect #1: `UPDATE_SMOOTHING` response protocol mismatch causes `updateSmoothing()` to always time out after 5s.
+  - MEDIUM Defect #2: `isBusy` flag resets to `false` when the first of multiple concurrent requests resolves.
+- **Untested angles**:
+  - WebGPU compute shaders in actual browser WebGPU context (requires live browser execution).
 
 ## Key Decisions Made
-- Executed browser smoke test and validated screenshot (`/Users/damian/GitHub/twinframe/screenshots/app-builder-preview.png`).
-- Performed empirical Playwright network asset testing.
-- Verified 58 passing unit tests and clean typechecking.
-- Issued verdict: **APPROVE** in `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2/handoff.md`.
+- Created comprehensive empirical stress test suite (`src/lib/face/m1-challenger-verification.test.ts`).
+- Executed `npm run typecheck` (PASSED 0 errors) and `npm test` (PASSED 254/254 tests).
+- Determined verdict **REJECT** due to CRITICAL Defect #1 (`updateSmoothing()` timeout defect).
 
 ## Artifact Index
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2/DISPATCH.md` — Log of incoming messages
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2/BRIEFING.md` — State and working memory
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2/progress.md` — Progress tracker
-- `/Users/damian/GitHub/twinframe/.agents/teamwork_preview_challenger_m1_2/handoff.md` — Evaluation handoff report with APPROVE verdict
+- `.agents/teamwork_preview_challenger_m1_2/DISPATCH.md` — User dispatch message
+- `.agents/teamwork_preview_challenger_m1_2/BRIEFING.md` — Persistent briefing
+- `.agents/teamwork_preview_challenger_m1_2/progress.md` — Progress log
+- `.agents/teamwork_preview_challenger_m1_2/handoff.md` — Handoff report with REJECT verdict
+- `src/lib/face/m1-challenger-verification.test.ts` — Empirical verification test suite
