@@ -7,9 +7,37 @@ import type {
   ReferenceVector,
   FaceViewType,
   HeadPoseOrientation,
+  MatchScoreResult,
+  EthnicCluster,
 } from "./types.ts";
-export type { CelebrityEmbedding, ReferenceVector, FaceViewType, HeadPoseOrientation };
+export type { CelebrityEmbedding, ReferenceVector, FaceViewType, HeadPoseOrientation, MatchScoreResult, EthnicCluster };
 import { sanitizeGalleryEmbeddings } from "./gallery-dedupe.ts";
+import { morphologicalDistance, crossDemographicMismatchPenalty, ensureAnatomicalFeatures } from "./geometry.ts";
+import { getPoseAdaptiveLandmarkWeight } from "./pose.ts";
+
+const FRONTAL_NEUTRAL_POSE: HeadPoseOrientation = { yawDeg: 0, pitchDeg: 0, rollDeg: 0 };
+
+/** Attach derived clinical anatomical ratios when a gallery feature pack omitted them. */
+export function hydrateFaceFeatures(feat: FaceFeatures): FaceFeatures {
+  if (feat.anatomical) return feat;
+  return { ...feat, anatomical: ensureAnatomicalFeatures(feat) };
+}
+
+function makeReferenceVector(
+  descriptor: Float32Array,
+  feat: FaceFeatures,
+  photoUrl: string | undefined,
+  viewType: FaceViewType,
+  pose?: HeadPoseOrientation,
+): ReferenceVector {
+  return {
+    descriptor,
+    viewType,
+    pose: pose ?? (viewType === "frontal" ? FRONTAL_NEUTRAL_POSE : undefined),
+    photoUrl,
+    features: feat,
+  };
+}
 
 export interface EmbeddingsGallery {
   version: string;
@@ -82,23 +110,29 @@ async function idbGet(version: string): Promise<CelebrityEmbedding[] | null> {
         const v = rq.result as { version: string; data: CelebrityEmbedding[] } | undefined;
         if (v && v.version === version && Array.isArray(v.data)) {
           const hydrated = v.data.map((c) => {
+            const feat = hydrateFaceFeatures(
+              c.features
+                ?? getCelebrityById(c.id)?.features
+                ?? generateDemographicFeatures(c.gender, c.genderProb, c.age, c.id),
+            );
             const descs = getCelebrityDescriptors(c);
             const refs = c.referenceVectors && c.referenceVectors.length > 0
-              ? c.referenceVectors.map((r) => ({
+              ? c.referenceVectors.map((r, idx) => ({
                   ...r,
                   descriptor: r.descriptor instanceof Float32Array ? r.descriptor : l2Normalize(r.descriptor),
+                  viewType: r.viewType ?? (idx === 0 ? "frontal" : "expression"),
+                  pose: r.pose ?? (idx === 0 ? FRONTAL_NEUTRAL_POSE : r.pose),
+                  features: r.features ? hydrateFaceFeatures(r.features) : feat,
                 }))
-              : descs.map((d) => ({
-                  descriptor: d,
-                  photoUrl: c.path,
-                  features: c.features,
-                }));
+              : descs.map((d, idx) =>
+                  makeReferenceVector(d, feat, c.path, idx === 0 ? "frontal" : "expression"),
+                );
             return {
               ...c,
               descriptor: c.descriptor || Array.from(descs[0]!),
               descriptors: descs,
               referenceVectors: refs,
-              features: c.features ?? getCelebrityById(c.id)?.features ?? generateDemographicFeatures(c.gender, c.genderProb, c.age, c.id),
+              features: feat,
             };
           });
           res(hydrated);
@@ -137,6 +171,8 @@ export interface ExtraReference {
   descriptor: number[];
   photoUrl?: string;
   distanceToPrimary?: number;
+  viewType?: FaceViewType;
+  pose?: HeadPoseOrientation;
 }
 
 /** Attach extra views that already passed a same-person distance gate. */
@@ -152,20 +188,26 @@ export function mergeExtraReferences(
     const celeb = byId.get(extra.id);
     if (!celeb || !extra.descriptor || extra.descriptor.length !== 128) continue;
     const vec = l2Normalize(extra.descriptor);
-    celeb.descriptors = celeb.descriptors ?? [
-      celeb.descriptor instanceof Float32Array
-        ? celeb.descriptor
-        : Float32Array.from(celeb.descriptor),
-    ];
+    const primary = celeb.descriptor instanceof Float32Array
+      ? celeb.descriptor
+      : Float32Array.from(celeb.descriptor);
+    celeb.descriptors = celeb.descriptors ?? [primary];
     const isClone = celeb.descriptors.some((d) => ensembleDistance(d, vec) < cloneEps);
     if (isClone) continue;
+    if (!celeb.referenceVectors || celeb.referenceVectors.length === 0) {
+      const feat = celeb.features ?? hydrateFaceFeatures(
+        getCelebrityById(celeb.id)?.features ?? generateDemographicFeatures(celeb.gender, celeb.genderProb, celeb.age, celeb.id),
+      );
+      celeb.referenceVectors = [makeReferenceVector(primary, feat, celeb.path, "frontal")];
+    }
     celeb.descriptors.push(vec);
-    celeb.referenceVectors = celeb.referenceVectors ?? [];
     celeb.referenceVectors.push({
       descriptor: vec,
-      viewType: "expression",
+      viewType: extra.viewType ?? "expression",
+      pose: extra.pose,
       photoUrl: extra.photoUrl,
     });
+    delete (celeb as { _f32Descriptors?: Float32Array[] })._f32Descriptors;
     added++;
   }
   void added;
@@ -187,28 +229,233 @@ async function applyExtraReferences(
 }
 
 export function getCelebrityDescriptors(celeb: CelebrityEmbedding): Float32Array[] {
+  if ((celeb as any)._f32Descriptors) return (celeb as any)._f32Descriptors;
+
+  let result: Float32Array[] = [];
   if (celeb.referenceVectors && celeb.referenceVectors.length > 0) {
-    return celeb.referenceVectors.map((r) =>
+    result = celeb.referenceVectors.map((r) =>
       r.descriptor instanceof Float32Array ? r.descriptor : Float32Array.from(r.descriptor),
     );
-  }
-
-  if (celeb.descriptors && celeb.descriptors.length > 0) {
-    return celeb.descriptors.map((d) =>
+  } else if (celeb.descriptors && celeb.descriptors.length > 0) {
+    result = celeb.descriptors.map((d) =>
       d instanceof Float32Array ? d : Float32Array.from(d),
     );
-  }
-
-  if (celeb.descriptor && celeb.descriptor.length > 0) {
-    return [
+  } else if (celeb.descriptor && celeb.descriptor.length > 0) {
+    result = [
       celeb.descriptor instanceof Float32Array
         ? celeb.descriptor
         : Float32Array.from(celeb.descriptor),
     ];
   }
 
-  return [];
+  (celeb as any)._f32Descriptors = result;
+  return result;
 }
+
+/** Returns true only if both feature objects contain valid anatomical morphological ratios. */
+export function hasMorphologicalFeatures(
+  featA?: FaceFeatures | null,
+  featB?: FaceFeatures | null,
+): boolean {
+  if (!featA || !featB) return false;
+  return Boolean(featA.anatomical && featB.anatomical);
+}
+
+/** SIMD-friendly dot product for Float32Arrays. Zero allocation. */
+export function fastDot32(a: Float32Array, b: Float32Array): number {
+  const len = Math.min(a.length, b.length);
+  let dot = 0;
+  for (let i = 0; i < len; i++) {
+    dot += a[i]! * b[i]!;
+  }
+  return dot;
+}
+
+/** Fast single-pass ensemble distance for vectors. Zero allocation. */
+export function fastEnsembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): number {
+  if (!a || !b || a.length === 0 || b.length === 0) return 1.0;
+  if (a instanceof Float32Array && b instanceof Float32Array && a.length === b.length) {
+    const len = a.length;
+    let dot0 = 0, dot1 = 0, dot2 = 0, dot3 = 0;
+    let na0 = 0, na1 = 0, na2 = 0, na3 = 0;
+    let nb0 = 0, nb1 = 0, nb2 = 0, nb3 = 0;
+    let i = 0;
+    for (; i + 7 < len; i += 8) {
+      const a0 = a[i]!, a1 = a[i + 1]!, a2 = a[i + 2]!, a3 = a[i + 3]!;
+      const a4 = a[i + 4]!, a5 = a[i + 5]!, a6 = a[i + 6]!, a7 = a[i + 7]!;
+      const b0 = b[i]!, b1 = b[i + 1]!, b2 = b[i + 2]!, b3 = b[i + 3]!;
+      const b4 = b[i + 4]!, b5 = b[i + 5]!, b6 = b[i + 6]!, b7 = b[i + 7]!;
+      dot0 += a0 * b0 + a4 * b4;
+      dot1 += a1 * b1 + a5 * b5;
+      dot2 += a2 * b2 + a6 * b6;
+      dot3 += a3 * b3 + a7 * b7;
+      na0 += a0 * a0 + a4 * a4;
+      na1 += a1 * a1 + a5 * a5;
+      na2 += a2 * a2 + a6 * a6;
+      na3 += a3 * a3 + a7 * a7;
+      nb0 += b0 * b0 + b4 * b4;
+      nb1 += b1 * b1 + b5 * b5;
+      nb2 += b2 * b2 + b6 * b6;
+      nb3 += b3 * b3 + b7 * b7;
+    }
+    let dot = (dot0 + dot1) + (dot2 + dot3);
+    let na = (na0 + na1) + (na2 + na3);
+    let nb = (nb0 + nb1) + (nb2 + nb3);
+    for (; i < len; i++) {
+      const av = a[i]!;
+      const bv = b[i]!;
+      dot += av * bv;
+      na += av * av;
+      nb += bv * bv;
+    }
+    if (!Number.isFinite(dot) || na <= 0 || nb <= 0) return ensembleDistance(a, b);
+    const normProduct = Math.sqrt(na * nb);
+    const cos = dot / normProduct;
+    const clampedCos = cos > 1.0 ? 1.0 : cos < -1.0 ? -1.0 : cos;
+    const eucDist = Math.sqrt(Math.max(0, na + nb - 2.0 * dot));
+    const cosDist = 1.0 - clampedCos;
+    return 0.90 * eucDist + 0.42 * cosDist;
+  }
+  return ensembleDistance(a, b);
+}
+
+export const ensembleKernel128 = fastEnsembleDistance;
+
+/**
+ * Fast topological manifold vector distance scanning query templates against candidate reference vectors.
+ * Incorporates head pose manifold alignment and view-type affinity bonuses.
+ */
+export function fastTopologicalManifoldDistance(
+  qDescs: Float32Array[],
+  celeb: CelebrityEmbedding,
+  queryPose?: HeadPoseOrientation,
+  maxDist?: number,
+): number {
+  const refVecs = celeb.referenceVectors;
+  const cDescs = getCelebrityDescriptors(celeb);
+  const cLen = cDescs.length;
+  if (cLen === 0) return 1.0;
+
+  const qLen = qDescs.length;
+  let best = Infinity;
+  const pruneThreshold = maxDist !== undefined ? maxDist : Infinity;
+
+  for (let i = 0; i < qLen; i++) {
+    const q = qDescs[i]!;
+
+    for (let j = 0; j < cLen; j++) {
+      const c = cDescs[j]!;
+      const baseDist = fastEnsembleDistance(q, c);
+
+      let posePenalty = 0;
+      let viewBonus = 0;
+
+      const ref = refVecs && refVecs[j] ? refVecs[j] : undefined;
+      if (queryPose && ref && ref.pose) {
+        const dYaw = (queryPose.yawDeg - ref.pose.yawDeg) / 45.0;
+        const dPitch = (queryPose.pitchDeg - ref.pose.pitchDeg) / 30.0;
+        const dRoll = (queryPose.rollDeg - ref.pose.rollDeg) / 20.0;
+        const poseDist = Math.sqrt(dYaw * dYaw + dPitch * dPitch + dRoll * dRoll);
+        posePenalty = 0.04 * Math.min(1.0, poseDist);
+
+        if (
+          Math.abs(queryPose.yawDeg) > 15 &&
+          ref.viewType &&
+          ref.viewType !== "frontal" &&
+          ref.pose.yawDeg !== undefined &&
+          queryPose.yawDeg * ref.pose.yawDeg > 0
+        ) {
+          viewBonus = -0.035;
+        }
+      }
+
+      const manifoldDist = baseDist + posePenalty + viewBonus;
+      if (manifoldDist < best) {
+        best = manifoldDist;
+        if (best < 1e-4) return best;
+      }
+    }
+  }
+
+  return best === Infinity ? 1.0 : best;
+}
+
+/** Fast multi-vector distance scanning query templates against candidate descriptors. */
+export function fastMinMultiVectorDistance(
+  qDescs: Float32Array[],
+  celeb: CelebrityEmbedding,
+  queryPose?: HeadPoseOrientation,
+  maxDist?: number,
+): number {
+  return fastTopologicalManifoldDistance(qDescs, celeb, queryPose, maxDist);
+}
+
+/**
+ * Retrieve the best matching reference vector or descriptor for a celebrity identity
+ * matching against a set of query template descriptors.
+ */
+export function getBestMatchingReferenceVector(
+  qDescs: Float32Array[],
+  celeb: CelebrityEmbedding,
+  queryPose?: HeadPoseOrientation,
+): { descriptor: Float32Array; refVec?: ReferenceVector; distance: number; index: number } {
+  const cDescs = getCelebrityDescriptors(celeb);
+  const cLen = cDescs.length;
+  const refVecs = celeb.referenceVectors;
+
+  if (cLen === 0) {
+    const fallbackDesc = celeb.descriptor instanceof Float32Array
+      ? celeb.descriptor
+      : Float32Array.from(celeb.descriptor || []);
+    return { descriptor: fallbackDesc, distance: 1.0, index: -1 };
+  }
+
+  const qLen = qDescs.length;
+  let bestDist = Infinity;
+  let bestIdx = 0;
+
+  for (let i = 0; i < qLen; i++) {
+    const q = qDescs[i]!;
+
+    for (let j = 0; j < cLen; j++) {
+      const c = cDescs[j]!;
+      const baseDist = fastEnsembleDistance(q, c);
+
+      let posePenalty = 0;
+      let viewBonus = 0;
+
+      const ref = refVecs && refVecs[j] ? refVecs[j] : undefined;
+      if (queryPose && ref && ref.pose) {
+        const dYaw = (queryPose.yawDeg - ref.pose.yawDeg) / 45.0;
+        const dPitch = (queryPose.pitchDeg - ref.pose.pitchDeg) / 30.0;
+        const dRoll = (queryPose.rollDeg - ref.pose.rollDeg) / 20.0;
+        const poseDist = Math.sqrt(dYaw * dYaw + dPitch * dPitch + dRoll * dRoll);
+        posePenalty = 0.04 * Math.min(1.0, poseDist);
+
+        if (
+          Math.abs(queryPose.yawDeg) > 15 &&
+          ref.viewType &&
+          ref.viewType !== "frontal" &&
+          ref.pose.yawDeg !== undefined &&
+          queryPose.yawDeg * ref.pose.yawDeg > 0
+        ) {
+          viewBonus = -0.035;
+        }
+      }
+
+      const manifoldDist = baseDist + posePenalty + viewBonus;
+      if (manifoldDist < bestDist) {
+        bestDist = manifoldDist;
+        bestIdx = j;
+      }
+    }
+  }
+
+  const bestDesc = cDescs[bestIdx]!;
+  const refVec = refVecs && refVecs[bestIdx] ? refVecs[bestIdx] : undefined;
+  return { descriptor: bestDesc, refVec, distance: bestDist === Infinity ? 1.0 : bestDist, index: bestIdx };
+}
+
 
 /** Load precomputed FaceNet-style 128-d celebrity descriptors. */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
@@ -222,7 +469,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
       if (metaRes.ok) {
         const meta = (await metaRes.json()) as GalleryMeta;
         const bust = `${meta.version}:${meta.countCelebs}:${meta.countBuckets}`;
-        const cacheKey = `${bust}-dedupe-v1-m1-multivec-v8-plan-extras`;
+        const cacheKey = `${bust}-dedupe-v1-m1-multivec-v9-frontal-anat`;
         const cached = await idbGet(cacheKey);
         if (cached) {
           galleryCache = await applyExtraReferences(sanitizeGalleryEmbeddings(cached).gallery);
@@ -258,17 +505,20 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
                 raw[j] = q * scale;
               }
               const f32Desc = l2Normalize(raw);
-              const feat = featuresMap[b.id]
-                ?? getCelebrityById(b.id)?.features
-                ?? generateDemographicFeatures(b.gender, b.genderProb, b.age, b.id);
-
-              const refVec: ReferenceVector = {
-                descriptor: f32Desc,
-                photoUrl: b.path ?? b.fallbackPath,
-                features: feat,
-              };
+              const feat = hydrateFaceFeatures(
+                featuresMap[b.id]
+                  ?? getCelebrityById(b.id)?.features
+                  ?? generateDemographicFeatures(b.gender, b.genderProb, b.age, b.id),
+              );
 
               const existing = byId.get(b.id);
+              const refVec = makeReferenceVector(
+                f32Desc,
+                feat,
+                b.path ?? b.fallbackPath,
+                existing ? "expression" : "frontal",
+              );
+
               if (!existing) {
                 byId.set(b.id, {
                   id: b.id,
@@ -323,17 +573,20 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
               const b = buckets[i]!;
               const off = i * dim;
               const f32Desc = l2Normalize(f32.subarray(off, off + dim));
-              const feat = featuresMap2[b.id]
-                ?? getCelebrityById(b.id)?.features
-                ?? generateDemographicFeatures(b.gender, b.genderProb, b.age, b.id);
-
-              const refVec: ReferenceVector = {
-                descriptor: f32Desc,
-                photoUrl: b.path ?? b.fallbackPath,
-                features: feat,
-              };
+              const feat = hydrateFaceFeatures(
+                featuresMap2[b.id]
+                  ?? getCelebrityById(b.id)?.features
+                  ?? generateDemographicFeatures(b.gender, b.genderProb, b.age, b.id),
+              );
 
               const existing = byId.get(b.id);
+              const refVec = makeReferenceVector(
+                f32Desc,
+                feat,
+                b.path ?? b.fallbackPath,
+                existing ? "expression" : "frontal",
+              );
+
               if (!existing) {
                 byId.set(b.id, {
                   id: b.id,
@@ -377,8 +630,10 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
         galleryCache = await applyExtraReferences(sanitizeGalleryEmbeddings(
           data.celebrities.map((c) => {
             const f32Desc = l2Normalize(c.descriptor);
-            const feat = c.features ?? getCelebrityById(c.id)?.features ?? generateDemographicFeatures(c.gender, c.genderProb, c.age, c.id);
-            const refVec: ReferenceVector = { descriptor: f32Desc, photoUrl: c.path, features: feat };
+            const feat = hydrateFaceFeatures(
+              c.features ?? getCelebrityById(c.id)?.features ?? generateDemographicFeatures(c.gender, c.genderProb, c.age, c.id),
+            );
+            const refVec = makeReferenceVector(f32Desc, feat, c.path, "frontal");
             return {
               ...c,
               descriptor: Array.from(f32Desc),
@@ -394,21 +649,57 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
       /* fallback to CELEBRITIES */
     }
 
-    // Node / test fallback using CELEBRITIES database
+    // Node / test fallback using CELEBRITIES database with multi-vector expansion
     galleryCache = sanitizeGalleryEmbeddings(
       CELEBRITIES.map((c, i) => {
-        const desc = new Float32Array(128);
-        for (let j = 0; j < 128; j++) desc[j] = Math.sin((i + 1) * (j + 1) * 0.1);
-        const f32Desc = l2Normalize(desc);
-        const feat = c.features ?? getCelebrityById(c.id)?.features ?? generateDemographicFeatures("male", 0.85, 35, c.id);
-        const refVec: ReferenceVector = { descriptor: f32Desc, photoUrl: `/celebs/${c.id}.jpg`, features: feat };
+        const feat = hydrateFaceFeatures(
+          c.features ?? getCelebrityById(c.id)?.features ?? generateDemographicFeatures("male", 0.85, 35, c.id),
+        );
+
+        const referenceVectors: ReferenceVector[] = [];
+        const descriptors: Float32Array[] = [];
+
+        if (c.referenceViews && c.referenceViews.length > 0) {
+          c.referenceViews.forEach((rv, k) => {
+            const raw = new Float32Array(128);
+            for (let j = 0; j < 128; j++) {
+              raw[j] = Math.sin((i + 1) * (j + 1) * 0.1) + (k * 0.04) * Math.cos((j + 1) * 0.15);
+            }
+            const desc = l2Normalize(raw);
+            descriptors.push(desc);
+            const defaultPose =
+              rv.pose ??
+              (rv.viewType === "frontal"
+                ? FRONTAL_NEUTRAL_POSE
+                : rv.viewType === "expression"
+                  ? { yawDeg: 2, pitchDeg: 4, rollDeg: 0 }
+                  : undefined);
+            referenceVectors.push({
+              descriptor: desc,
+              viewType: rv.viewType,
+              pose: defaultPose,
+              photoUrl: rv.photoUrl ?? `/celebs/${c.id}.jpg`,
+              features: rv.features ? { ...feat, ...rv.features } : feat,
+            });
+          });
+        } else {
+          const raw = new Float32Array(128);
+          for (let j = 0; j < 128; j++) {
+            raw[j] = Math.sin((i + 1) * (j + 1) * 0.1);
+          }
+          const desc = l2Normalize(raw);
+          descriptors.push(desc);
+          referenceVectors.push(makeReferenceVector(desc, feat, `/celebs/${c.id}.jpg`, "frontal"));
+        }
+
+        const primaryDesc = descriptors[0]!;
         return {
           id: c.id,
           name: c.name,
           path: `/celebs/${c.id}.jpg`,
-          descriptor: Array.from(f32Desc),
-          descriptors: [f32Desc],
-          referenceVectors: [refVec],
+          descriptor: Array.from(primaryDesc),
+          descriptors,
+          referenceVectors,
           age: 35,
           gender: (feat.masculine ?? 0.5) > 0.5 ? "male" : "female",
           genderProb: 0.85,
@@ -431,45 +722,71 @@ export function prefetchEmbeddings(): void {
 }
 
 function l2Norm(v: ArrayLike<number>): number {
+  if (!v || v.length === 0) return 1.0;
   let s = 0;
-  for (let i = 0; i < v.length; i++) s += (v[i] ?? 0) * (v[i] ?? 0);
-  return Math.sqrt(s) || 1;
+  for (let i = 0; i < v.length; i++) {
+    const val = v[i];
+    if (typeof val === "number" && Number.isFinite(val)) {
+      s += val * val;
+    }
+  }
+  return Math.sqrt(s) || 1.0;
 }
 
 export function l2Normalize(v: ArrayLike<number>): Float32Array {
+  if (!v || v.length === 0) return new Float32Array(0);
   const n = l2Norm(v);
   const out = new Float32Array(v.length);
-  for (let i = 0; i < v.length; i++) out[i] = (v[i] ?? 0) / n;
+  for (let i = 0; i < v.length; i++) {
+    const val = v[i];
+    out[i] = typeof val === "number" && Number.isFinite(val) ? val / n : 0.0;
+  }
   return out;
 }
 
-/** Euclidean distance between two equal-length vectors. */
+/** Euclidean distance between two equal-length vectors. Returns 1.0 for empty or invalid vectors. */
 export function euclideanDistance(a: ArrayLike<number>, b: ArrayLike<number>): number {
+  if (!a || !b || a.length === 0 || b.length === 0) return 1.0;
   const n = Math.min(a.length, b.length);
+  if (n === 0) return 1.0;
   let sum = 0;
+  let validCount = 0;
   for (let i = 0; i < n; i++) {
-    const d = (a[i] ?? 0) - (b[i] ?? 0);
+    const av = a[i];
+    const bv = b[i];
+    const aNum = typeof av === "number" && Number.isFinite(av) ? av : 0;
+    const bNum = typeof bv === "number" && Number.isFinite(bv) ? bv : 0;
+    const d = aNum - bNum;
     sum += d * d;
+    validCount++;
   }
+  if (validCount === 0) return 1.0;
   return Math.sqrt(sum);
 }
 
-/** Cosine distance in [0,2] (0=identical). Vectors are L2-normalized internally. */
+/** Cosine distance in [0,2] (0=identical). Vectors are L2-normalized internally. Returns 1.0 for empty vectors. */
 export function cosineDistance(a: ArrayLike<number>, b: ArrayLike<number>): number {
+  if (!a || !b || a.length === 0 || b.length === 0) return 1.0;
   const n = Math.min(a.length, b.length);
+  if (n === 0) return 1.0;
   let dot = 0;
   let na = 0;
   let nb = 0;
+  let validCount = 0;
   for (let i = 0; i < n; i++) {
-    const av = a[i] ?? 0;
-    const bv = b[i] ?? 0;
-    dot += av * bv;
-    na += av * av;
-    nb += bv * bv;
+    const av = a[i];
+    const bv = b[i];
+    const aNum = typeof av === "number" && Number.isFinite(av) ? av : 0;
+    const bNum = typeof bv === "number" && Number.isFinite(bv) ? bv : 0;
+    dot += aNum * bNum;
+    na += aNum * aNum;
+    nb += bNum * bNum;
+    validCount++;
   }
-  if (na === 0 || nb === 0) return 1;
+  if (validCount === 0 || na === 0 || nb === 0) return 1.0;
   const cos = dot / (Math.sqrt(na) * Math.sqrt(nb));
-  return 1 - Math.max(-1, Math.min(1, cos));
+  const result = 1.0 - Math.max(-1.0, Math.min(1.0, cos));
+  return Number.isFinite(result) ? result : 1.0;
 }
 
 /** Ensemble: 0.90 euclidean + 0.42 cosine */
@@ -480,15 +797,88 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
 }
 
 /**
+ * Combines normalized 23-d canonical morphological descriptors with 128-d deep vector representations.
+ * Incorporates head pose adaptive landmark weighting and cross-demographic mismatch penalty.
+ */
+export function combinedDescriptorDistance(
+  deepVecA: ArrayLike<number>,
+  deepVecB: ArrayLike<number>,
+  featA?: FaceFeatures | null,
+  featB?: FaceFeatures | null,
+  options?: {
+    headPose?: HeadPoseOrientation;
+    ethnicClusterA?: EthnicCluster | null;
+    ethnicClusterB?: EthnicCluster | null;
+  },
+): number {
+  const deepDist = ensembleDistance(deepVecA, deepVecB);
+  const hasMorph = hasMorphologicalFeatures(featA, featB);
+  const morphDist = hasMorph ? morphologicalDistance(featA, featB) : 0;
+  const wGeom = hasMorph
+    ? (options?.headPose ? getPoseAdaptiveLandmarkWeight(options.headPose as any, 0.10) : 0.10)
+    : 0.0;
+  const crossPenalty = crossDemographicMismatchPenalty(featA, featB, options?.ethnicClusterA, options?.ethnicClusterB);
+  
+  return (1 - wGeom) * deepDist + wGeom * morphDist + crossPenalty;
+}
+
+/**
  * Convert FaceNet L2 distance to a calibrated match percentage using the Hill Equation curve:
  * P(d) = 15.0 + 85.0 / (1 + (d / 0.32)^3.5)
  * rounded to 1 decimal place. distanceToMatchPercent(0) returns 100.0.
  */
 export function distanceToMatchPercent(distance: number): number {
+  if (Number.isNaN(distance)) return 15.0;
+  if (distance <= 0) return 100.0;
+  if (!Number.isFinite(distance)) return 15.0;
   const d = Math.max(0, distance);
   const hill = 15.0 + 85.0 / (1 + Math.pow(d / 0.32, 3.5));
   const pct = Math.max(15.0, Math.min(100.0, hill));
   return Math.round(pct * 10) / 10;
+}
+
+/**
+ * Computes calibrated MatchScoreResult for two face identities matching contract in PROJECT.md.
+ */
+export function computeMatchScore(
+  deepVecA: ArrayLike<number>,
+  deepVecB: ArrayLike<number>,
+  featA?: FaceFeatures | null,
+  featB?: FaceFeatures | null,
+  options?: {
+    gateThresholdPct?: number;
+    headPose?: HeadPoseOrientation;
+    ethnicClusterA?: EthnicCluster | null;
+    ethnicClusterB?: EthnicCluster | null;
+  },
+): MatchScoreResult {
+  const deepVectorDistance = cosineDistance(deepVecA, deepVecB);
+  const deepEnsembleDist = ensembleDistance(deepVecA, deepVecB);
+  const hasMorph = hasMorphologicalFeatures(featA, featB);
+  const morphDist = hasMorph ? morphologicalDistance(featA, featB) : 0;
+  
+  const wGeom = hasMorph
+    ? (options?.headPose ? getPoseAdaptiveLandmarkWeight(options.headPose as any, 0.10) : 0.10)
+    : 0.0;
+  const crossPenalty = crossDemographicMismatchPenalty(featA, featB, options?.ethnicClusterA, options?.ethnicClusterB);
+  
+  const descriptorDistance = (1 - wGeom) * deepEnsembleDist + wGeom * morphDist + crossPenalty;
+  const confidencePct = distanceToMatchPercent(descriptorDistance);
+  
+  const gateThresholdPct = options?.gateThresholdPct ?? 20.0;
+  const passedLookalikeGate =
+    confidencePct >= gateThresholdPct &&
+    confidencePct >= 20.0 &&
+    descriptorDistance <= 0.70 &&
+    crossPenalty < 0.20;
+
+  return {
+    confidencePct,
+    descriptorDistance,
+    morphologicalDistance: hasMorph ? morphDist : 0,
+    deepVectorDistance,
+    passedLookalikeGate,
+  };
 }
 
 /** Relative ranking percents from absolute distances (preserves order). */

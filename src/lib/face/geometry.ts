@@ -1,11 +1,288 @@
-import type { FaceFeatures, FeatureKey } from "./types.ts";
+import type { ExtendedAnatomicalFeatures, FaceFeatures, FeatureKey, Point2D, Point3D } from "./types.ts";
 import { clamp, dist, mid, emptyFeatures, rgbToApproxLab } from "./math.ts";
+import { alignToCanonical3D } from "./pose.ts";
+
+export type { Point2D };
 
 /** MediaPipe Face Landmarker landmark (normalized image coords). */
 export interface Landmark {
   x: number;
   y: number;
   z?: number;
+}
+
+export interface AffineTransform2D {
+  a: number;           // scale * cos(theta)
+  b: number;           // scale * sin(theta)
+  tx: number;          // translation x
+  ty: number;          // translation y
+  scale: number;       // scale s = sqrt(a^2 + b^2)
+  rotationDeg: number; // angle theta in degrees = atan2(b, a) * 180 / PI
+}
+
+/**
+ * Fixed 5 Canonical Landmark Anchor Points in 150x150 embedding space (R2).
+ * Target Anchor Coordinates:
+ *   Left Eye Center: (46.5, 54.0)
+ *   Right Eye Center: (103.5, 54.0)
+ *   Nose Tip: (75.0, 85.5)
+ *   Left Mouth Corner: (52.5, 115.5)
+ *   Right Mouth Corner: (97.5, 115.5)
+ */
+export const CANONICAL_5_POINTS_150: [Point2D, Point2D, Point2D, Point2D, Point2D] = [
+  { x: 46.5, y: 54.0 },   // Left Eye Center
+  { x: 103.5, y: 54.0 },  // Right Eye Center
+  { x: 75.0, y: 85.5 },   // Nose Tip
+  { x: 52.5, y: 115.5 },  // Left Mouth Corner
+  { x: 97.5, y: 115.5 },  // Right Mouth Corner
+];
+
+/**
+ * Extract 5 landmark anchor points [Left Eye, Right Eye, Nose Tip, Left Mouth, Right Mouth]
+ * from 68-point dlib landmarks, 468/478-point MediaPipe landmarks, or 5-point landmark arrays.
+ */
+export function extract5AnchorPoints(
+  landmarks: Array<{ x: number; y: number }>,
+): [Point2D, Point2D, Point2D, Point2D, Point2D] | null {
+  if (!landmarks || !Array.isArray(landmarks) || landmarks.length < 5) {
+    return null;
+  }
+
+  // Case 1: Exactly 5 points passed directly
+  if (landmarks.length === 5) {
+    const pts = landmarks.map((p) => ({ x: Number(p.x), y: Number(p.y) }));
+    if (pts.every((p) => Number.isFinite(p.x) && Number.isFinite(p.y))) {
+      return pts as [Point2D, Point2D, Point2D, Point2D, Point2D];
+    }
+    return null;
+  }
+
+  // Case 2: 68-point dlib landmarks (or 68 to <400 points)
+  if (landmarks.length >= 68 && landmarks.length < 400) {
+    const pt = (i: number) => landmarks[i] ?? { x: 0, y: 0 };
+    // Left Eye Center: average of 36..41
+    let leX = 0, leY = 0;
+    for (let i = 36; i <= 41; i++) {
+      const p = pt(i);
+      leX += p.x;
+      leY += p.y;
+    }
+    const leftEye = { x: leX / 6, y: leY / 6 };
+
+    // Right Eye Center: average of 42..47
+    let reX = 0, reY = 0;
+    for (let i = 42; i <= 47; i++) {
+      const p = pt(i);
+      reX += p.x;
+      reY += p.y;
+    }
+    const rightEye = { x: reX / 6, y: reY / 6 };
+
+    // Nose Tip: 30
+    const pNose = pt(30);
+    const noseTip = { x: pNose.x, y: pNose.y };
+
+    // Left Mouth Corner: 48
+    const pLmMouth = pt(48);
+    const leftMouth = { x: pLmMouth.x, y: pLmMouth.y };
+
+    // Right Mouth Corner: 54
+    const pRmMouth = pt(54);
+    const rightMouth = { x: pRmMouth.x, y: pRmMouth.y };
+
+    const anchors: [Point2D, Point2D, Point2D, Point2D, Point2D] = [
+      leftEye, rightEye, noseTip, leftMouth, rightMouth
+    ];
+
+    if (anchors.every((p) => Number.isFinite(p.x) && Number.isFinite(p.y))) {
+      return anchors;
+    }
+    return null;
+  }
+
+  // Case 3: MediaPipe 468/478 landmarks (>= 400 points)
+  if (landmarks.length >= 400) {
+    const pt = (i: number) => landmarks[i] ?? { x: 0, y: 0 };
+    const p33 = pt(33), p133 = pt(133);
+    const leftEye = { x: (p33.x + p133.x) / 2, y: (p33.y + p133.y) / 2 };
+
+    const p263 = pt(263), p362 = pt(362);
+    const rightEye = { x: (p263.x + p362.x) / 2, y: (p263.y + p362.y) / 2 };
+
+    const p1 = pt(1);
+    const noseTip = { x: p1.x, y: p1.y };
+
+    const p61 = pt(61);
+    const leftMouth = { x: p61.x, y: p61.y };
+
+    const p291 = pt(291);
+    const rightMouth = { x: p291.x, y: p291.y };
+
+    const anchors: [Point2D, Point2D, Point2D, Point2D, Point2D] = [
+      leftEye, rightEye, noseTip, leftMouth, rightMouth
+    ];
+
+    if (anchors.every((p) => Number.isFinite(p.x) && Number.isFinite(p.y))) {
+      return anchors;
+    }
+    return null;
+  }
+
+  return null;
+}
+
+/**
+ * Solve 2D similarity transform (a, b, tx, ty) mapping source 5-point anchor coordinates
+ * to fixed canonical target coordinates using linear least squares (A^T A u = A^T b).
+ *
+ * Transform mapping:
+ *   x' = a * x - b * y + tx
+ *   y' = b * x + a * y + ty
+ *
+ * where a = scale * cos(theta), b = scale * sin(theta).
+ */
+export function compute5PointAffineTransform(
+  sourcePoints: Point2D[],
+  targetPoints: Point2D[] = CANONICAL_5_POINTS_150,
+): AffineTransform2D {
+  const N = Math.min(sourcePoints.length, targetPoints.length);
+  if (N < 2) {
+    return { a: 1, b: 0, tx: 0, ty: 0, scale: 1, rotationDeg: 0 };
+  }
+
+  let srcMx = 0, srcMy = 0, tgtMx = 0, tgtMy = 0;
+  for (let i = 0; i < N; i++) {
+    srcMx += sourcePoints[i]!.x;
+    srcMy += sourcePoints[i]!.y;
+    tgtMx += targetPoints[i]!.x;
+    tgtMy += targetPoints[i]!.y;
+  }
+  srcMx /= N;
+  srcMy /= N;
+  tgtMx /= N;
+  tgtMy /= N;
+
+  let numA = 0;
+  let numB = 0;
+  let den = 0;
+
+  for (let i = 0; i < N; i++) {
+    const dx = sourcePoints[i]!.x - srcMx;
+    const dy = sourcePoints[i]!.y - srcMy;
+    const dxT = targetPoints[i]!.x - tgtMx;
+    const dyT = targetPoints[i]!.y - tgtMy;
+
+    numA += dx * dxT + dy * dyT;
+    numB += -dy * dxT + dx * dyT;
+    den += dx * dx + dy * dy;
+  }
+
+  if (den < 1e-9) {
+    return {
+      a: 1,
+      b: 0,
+      tx: tgtMx - srcMx,
+      ty: tgtMy - srcMy,
+      scale: 1,
+      rotationDeg: 0,
+    };
+  }
+
+  const a = numA / den;
+  const b = numB / den;
+  const tx = tgtMx - (a * srcMx - b * srcMy);
+  const ty = tgtMy - (b * srcMx + a * srcMy);
+
+  const scale = Math.hypot(a, b);
+  const rotationRad = Math.atan2(b, a);
+  const rotationDeg = (rotationRad * 180) / Math.PI;
+
+  return {
+    a,
+    b,
+    tx,
+    ty,
+    scale,
+    rotationDeg,
+  };
+}
+
+/**
+ * Apply 2D affine transformation to a point (x, y).
+ */
+export function applyAffineTransform2D(
+  pt: Point2D,
+  transform: AffineTransform2D,
+): Point2D {
+  return {
+    x: transform.a * pt.x - transform.b * pt.y + transform.tx,
+    y: transform.b * pt.x + transform.a * pt.y + transform.ty,
+  };
+}
+
+/**
+ * Apply 2D affine warping to crop and align a facial image into upright canonical 150x150 space.
+ * Uses 5 landmark anchor points to compute similarity transform (a, b, tx, ty) via linear least squares.
+ *
+ * Normalizes in-plane head tilt (> 20 deg) to upright canonical alignment.
+ */
+export function warp5PointCanonicalCanvas(
+  source: CanvasImageSource,
+  sourceLandmarks: Array<{ x: number; y: number }>,
+  outSize = 150,
+): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = outSize;
+  canvas.height = outSize;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
+
+  (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+
+  const anchors = extract5AnchorPoints(sourceLandmarks);
+  if (!anchors) {
+    ctx.drawImage(source, 0, 0, outSize, outSize);
+    return canvas;
+  }
+
+  const srcW = (source as any).width ?? (source as any).videoWidth ?? outSize;
+  const srcH = (source as any).height ?? (source as any).videoHeight ?? outSize;
+
+  const maxX = Math.max(...anchors.map((p) => p.x));
+  const maxY = Math.max(...anchors.map((p) => p.y));
+
+  const scaledAnchors: [Point2D, Point2D, Point2D, Point2D, Point2D] = anchors.map((p) => {
+    if (maxX <= 1.0 && maxY <= 1.0 && (srcW > 1.0 || srcH > 1.0)) {
+      return { x: p.x * srcW, y: p.y * srcH };
+    }
+    return { x: p.x, y: p.y };
+  }) as [Point2D, Point2D, Point2D, Point2D, Point2D];
+
+  const targetPoints: Point2D[] = outSize === 150
+    ? CANONICAL_5_POINTS_150
+    : CANONICAL_5_POINTS_150.map((p) => ({
+        x: (p.x / 150) * outSize,
+        y: (p.y / 150) * outSize,
+      }));
+
+  const transform = compute5PointAffineTransform(scaledAnchors, targetPoints);
+
+  ctx.save();
+  ctx.setTransform(transform.a, transform.b, -transform.b, transform.a, transform.tx, transform.ty);
+  ctx.drawImage(source, 0, 0);
+  ctx.restore();
+
+  return canvas;
+}
+
+/**
+ * Helper function to unwarp 2D or 3D landmarks to canonical frontal plane via 3D SVD alignment.
+ */
+export function unwarpLandmarksToFrontal(
+  landmarks: Landmark[] | Array<{ x: number; y: number }>
+): Point3D[] {
+  const result = alignToCanonical3D(landmarks);
+  return result.unwarpedLandmarks;
 }
 
 /**
@@ -43,10 +320,310 @@ export const LM = {
   rightCheekbone: 280,
 } as const;
 
-function pt(landmarks: Landmark[], i: number): Landmark {
+function pt(landmarks: Array<{ x: number; y: number; z?: number }>, i: number): { x: number; y: number; z?: number } {
   const p = landmarks[i];
   if (!p) return { x: 0.5, y: 0.5 };
   return p;
+}
+
+function d3d(
+  a: { x: number; y: number; z?: number },
+  b: { x: number; y: number; z?: number },
+): number {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  const dz = (a.z ?? 0) - (b.z ?? 0);
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+function mid3d(
+  a: { x: number; y: number; z?: number },
+  b: { x: number; y: number; z?: number },
+): { x: number; y: number; z: number } {
+  return {
+    x: (a.x + b.x) / 2,
+    y: (a.y + b.y) / 2,
+    z: ((a.z ?? 0) + (b.z ?? 0)) / 2,
+  };
+}
+
+function clampNum(
+  val: number,
+  minVal: number,
+  maxVal: number,
+  fallback: number,
+): number {
+  if (!Number.isFinite(val) || Number.isNaN(val)) return fallback;
+  return Math.max(minVal, Math.min(maxVal, val));
+}
+
+/** Canonical reference default values for clinical facial proportions (M2). */
+export const CANONICAL_ANATOMICAL_DEFAULTS: ExtendedAnatomicalFeatures = {
+  upperThirdRatio: 0.3333,
+  middleThirdRatio: 0.3333,
+  lowerThirdRatio: 0.3333,
+  lateralFifthsRatios: [0.20, 0.20, 0.20, 0.20, 0.20],
+  interCanthalDistance: 0.21,
+  canthalTiltAngleDeg: 4.0,
+  nasalIndex: 0.75,
+  bigonialToBizygomaticRatio: 0.76,
+  gonialJawlineAngleDeg: 124.0,
+  lipVermilionHeightRatio: 0.625,
+  philtrumDepth: 0.50,
+};
+
+/**
+ * Extract extended 9 clinical anatomical facial proportions from MediaPipe 468/478 landmarks.
+ * Automatically unwarps landmarks to 3D canonical frontal space before computation.
+ */
+export function extractAnatomicalFeatures(
+  landmarks: Landmark[] | Array<{ x: number; y: number; z?: number }>,
+): ExtendedAnatomicalFeatures {
+  if (!landmarks || landmarks.length < 10) {
+    return {
+      ...CANONICAL_ANATOMICAL_DEFAULTS,
+      lateralFifthsRatios: [...CANONICAL_ANATOMICAL_DEFAULTS.lateralFifthsRatios],
+    };
+  }
+
+  const alignment = alignToCanonical3D(landmarks);
+  const targetLms =
+    alignment.unwarpedLandmarks.length === landmarks.length
+      ? alignment.unwarpedLandmarks
+      : landmarks;
+
+  const tr = pt(targetLms, LM.forehead);
+  const gInnerL = pt(targetLms, LM.leftBrowInner);
+  const gInnerR = pt(targetLms, LM.rightBrowInner);
+  const g = mid3d(gInnerL, gInnerR);
+  const sn = pt(targetLms, 2);
+  const me = pt(targetLms, LM.chin);
+
+  const hUpper = d3d(tr, g);
+  const hMiddle = d3d(g, sn);
+  const hLower = d3d(sn, me);
+  const hTotal = Math.max(hUpper + hMiddle + hLower, 1e-6);
+
+  const upperThirdRatio = clampNum(hUpper / hTotal, 0.05, 0.70, 0.3333);
+  const middleThirdRatio = clampNum(hMiddle / hTotal, 0.05, 0.70, 0.3333);
+  const lowerThirdRatio = clampNum(hLower / hTotal, 0.05, 0.70, 0.3333);
+
+  const zyL = pt(targetLms, LM.leftCheek);
+  const exL = pt(targetLms, LM.leftEyeOuter);
+  const enL = pt(targetLms, LM.leftEyeInner);
+  const enR = pt(targetLms, LM.rightEyeInner);
+  const exR = pt(targetLms, LM.rightEyeOuter);
+  const zyR = pt(targetLms, LM.rightCheek);
+
+  const w1 = d3d(zyL, exL);
+  const w2 = d3d(exL, enL);
+  const w3 = d3d(enL, enR);
+  const w4 = d3d(enR, exR);
+  const w5 = d3d(exR, zyR);
+  const wSum = Math.max(w1 + w2 + w3 + w4 + w5, 1e-6);
+
+  const lateralFifthsRatios = [
+    clampNum(w1 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w2 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w3 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w4 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w5 / wSum, 0.01, 0.60, 0.20),
+  ];
+
+  const wBizygomatic = Math.max(d3d(zyL, zyR), 1e-6);
+  const dInterCanthal = d3d(enL, enR);
+  const interCanthalDistance = clampNum(dInterCanthal / wBizygomatic, 0.05, 0.65, 0.21);
+
+  const thetaL = Math.atan2(exL.y - enL.y, Math.abs(exL.x - enL.x) + 1e-6) * (180 / Math.PI);
+  const thetaR = Math.atan2(exR.y - enR.y, Math.abs(exR.x - enR.x) + 1e-6) * (180 / Math.PI);
+  const canthalTiltAngleDeg = clampNum((thetaL + thetaR) / 2, -35.0, 35.0, 4.0);
+
+  const alL = pt(targetLms, LM.noseLeft);
+  const alR = pt(targetLms, LM.noseRight);
+  const nasion = pt(targetLms, LM.noseBridge);
+  const wAlar = d3d(alL, alR);
+  const lNasal = Math.max(d3d(nasion, sn), 1e-6);
+  const nasalIndex = clampNum(wAlar / lNasal, 0.20, 2.0, 0.75);
+
+  const goL = pt(targetLms, LM.jawLeft);
+  const goR = pt(targetLms, LM.jawRight);
+  const wBigonial = d3d(goL, goR);
+  const bigonialToBizygomaticRatio = clampNum(wBigonial / wBizygomatic, 0.30, 1.20, 0.76);
+
+  const uL = [zyL.x - goL.x, zyL.y - goL.y, (zyL.z ?? 0) - (goL.z ?? 0)];
+  const vL = [me.x - goL.x, me.y - goL.y, (me.z ?? 0) - (goL.z ?? 0)];
+  const dotL = uL[0] * vL[0] + uL[1] * vL[1] + uL[2] * vL[2];
+  const magL = Math.max(Math.sqrt(uL[0] * uL[0] + uL[1] * uL[1] + uL[2] * uL[2]) * Math.sqrt(vL[0] * vL[0] + vL[1] * vL[1] + vL[2] * vL[2]), 1e-6);
+  const gonialL = Math.acos(Math.max(-1.0, Math.min(1.0, dotL / magL))) * (180 / Math.PI);
+
+  const uR = [zyR.x - goR.x, zyR.y - goR.y, (zyR.z ?? 0) - (goR.z ?? 0)];
+  const vR = [me.x - goR.x, me.y - goR.y, (me.z ?? 0) - (goR.z ?? 0)];
+  const dotR = uR[0] * vR[0] + uR[1] * vR[1] + uR[2] * vR[2];
+  const magR = Math.max(Math.sqrt(uR[0] * uR[0] + uR[1] * uR[1] + uR[2] * uR[2]) * Math.sqrt(vR[0] * vR[0] + vR[1] * vR[1] + vR[2] * vR[2]), 1e-6);
+  const gonialR = Math.acos(Math.max(-1.0, Math.min(1.0, dotR / magR))) * (180 / Math.PI);
+  const gonialJawlineAngleDeg = clampNum((gonialL + gonialR) / 2, 70.0, 160.0, 124.0);
+
+  const ls = pt(targetLms, LM.upperLip);
+  const li = pt(targetLms, LM.lowerLip);
+  const sto = { x: (ls.x + li.x) / 2, y: (ls.y + li.y) / 2, z: ((ls.z ?? 0) + (li.z ?? 0)) / 2 };
+  const hUpperLip = d3d(ls, sto);
+  const hLowerLip = Math.max(d3d(sto, li), 1e-6);
+  const lipVermilionHeightRatio = clampNum(hUpperLip / hLowerLip, 0.10, 3.0, 0.625);
+
+  const lPhiltrum = d3d(sn, ls);
+  const hLowerFace = Math.max(d3d(sn, me), 1e-6);
+  const r2D = lPhiltrum / hLowerFace;
+  const pg = pt(targetLms, 164);
+  const prL = pt(targetLms, 37);
+  const prR = pt(targetLms, 267);
+  const ridgeZ = ((prL.z ?? 0) + (prR.z ?? 0)) / 2;
+  const deltaZ = Math.abs(ridgeZ - (pg.z ?? 0));
+  const philtrumDepth = clampNum((r2D / 0.25) * (1.0 + 2.0 * (deltaZ / Math.max(dInterCanthal, 1e-6))), 0.10, 2.0, 0.50);
+
+  return {
+    upperThirdRatio,
+    middleThirdRatio,
+    lowerThirdRatio,
+    lateralFifthsRatios,
+    interCanthalDistance,
+    canthalTiltAngleDeg,
+    nasalIndex,
+    bigonialToBizygomaticRatio,
+    gonialJawlineAngleDeg,
+    lipVermilionHeightRatio,
+    philtrumDepth,
+  };
+}
+
+/**
+ * Extract extended 9 clinical anatomical facial proportions from 68-point dlib landmarks.
+ * Automatically unwarps landmarks to 3D canonical frontal space before computation.
+ */
+export function extractAnatomicalFeatures68(
+  landmarks: Array<{ x: number; y: number; z?: number }>,
+): ExtendedAnatomicalFeatures {
+  if (!landmarks || landmarks.length < 68) {
+    return {
+      ...CANONICAL_ANATOMICAL_DEFAULTS,
+      lateralFifthsRatios: [...CANONICAL_ANATOMICAL_DEFAULTS.lateralFifthsRatios],
+    };
+  }
+
+  const lms68 = landmarks.slice(0, 68);
+  const alignment = alignToCanonical3D(lms68);
+  const targetLms =
+    alignment.unwarpedLandmarks.length === 68
+      ? alignment.unwarpedLandmarks
+      : lms68;
+
+  const chin = pt(targetLms, 8);
+  const browMid = mid3d(pt(targetLms, 21), pt(targetLms, 22));
+  const tr = {
+    x: browMid.x + 0.35 * (browMid.x - chin.x),
+    y: browMid.y + 0.35 * (browMid.y - chin.y),
+    z: browMid.z + 0.35 * (browMid.z - (chin.z ?? 0)),
+  };
+  const g = pt(targetLms, 27);
+  const sn = pt(targetLms, 33);
+  const me = chin;
+
+  const hUpper = d3d(tr, g);
+  const hMiddle = d3d(g, sn);
+  const hLower = d3d(sn, me);
+  const hTotal = Math.max(hUpper + hMiddle + hLower, 1e-6);
+
+  const upperThirdRatio = clampNum(hUpper / hTotal, 0.05, 0.70, 0.3333);
+  const middleThirdRatio = clampNum(hMiddle / hTotal, 0.05, 0.70, 0.3333);
+  const lowerThirdRatio = clampNum(hLower / hTotal, 0.05, 0.70, 0.3333);
+
+  const zyL = pt(targetLms, 0);
+  const exL = pt(targetLms, 36);
+  const enL = pt(targetLms, 39);
+  const enR = pt(targetLms, 42);
+  const exR = pt(targetLms, 45);
+  const zyR = pt(targetLms, 16);
+
+  const w1 = d3d(zyL, exL);
+  const w2 = d3d(exL, enL);
+  const w3 = d3d(enL, enR);
+  const w4 = d3d(enR, exR);
+  const w5 = d3d(exR, zyR);
+  const wSum = Math.max(w1 + w2 + w3 + w4 + w5, 1e-6);
+
+  const lateralFifthsRatios = [
+    clampNum(w1 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w2 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w3 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w4 / wSum, 0.01, 0.60, 0.20),
+    clampNum(w5 / wSum, 0.01, 0.60, 0.20),
+  ];
+
+  const wBizygomatic = Math.max(d3d(zyL, zyR), 1e-6);
+  const dInterCanthal = d3d(enL, enR);
+  const interCanthalDistance = clampNum(dInterCanthal / wBizygomatic, 0.05, 0.65, 0.21);
+
+  const thetaL = Math.atan2(exL.y - enL.y, Math.abs(exL.x - enL.x) + 1e-6) * (180 / Math.PI);
+  const thetaR = Math.atan2(exR.y - enR.y, Math.abs(exR.x - enR.x) + 1e-6) * (180 / Math.PI);
+  const canthalTiltAngleDeg = clampNum((thetaL + thetaR) / 2, -35.0, 35.0, 4.0);
+
+  const alL = pt(targetLms, 31);
+  const alR = pt(targetLms, 35);
+  const nasion = pt(targetLms, 27);
+  const wAlar = d3d(alL, alR);
+  const lNasal = Math.max(d3d(nasion, sn), 1e-6);
+  const nasalIndex = clampNum(wAlar / lNasal, 0.20, 2.0, 0.75);
+
+  const goL = pt(targetLms, 4);
+  const goR = pt(targetLms, 12);
+  const wBigonial = d3d(goL, goR);
+  const bigonialToBizygomaticRatio = clampNum(wBigonial / wBizygomatic, 0.30, 1.20, 0.76);
+
+  const uL = [zyL.x - goL.x, zyL.y - goL.y, (zyL.z ?? 0) - (goL.z ?? 0)];
+  const vL = [me.x - goL.x, me.y - goL.y, (me.z ?? 0) - (goL.z ?? 0)];
+  const dotL = uL[0] * vL[0] + uL[1] * vL[1] + uL[2] * vL[2];
+  const magL = Math.max(Math.sqrt(uL[0] * uL[0] + uL[1] * uL[1] + uL[2] * uL[2]) * Math.sqrt(vL[0] * vL[0] + vL[1] * vL[1] + vL[2] * vL[2]), 1e-6);
+  const gonialL = Math.acos(Math.max(-1.0, Math.min(1.0, dotL / magL))) * (180 / Math.PI);
+
+  const uR = [zyR.x - goR.x, zyR.y - goR.y, (zyR.z ?? 0) - (goR.z ?? 0)];
+  const vR = [me.x - goR.x, me.y - goR.y, (me.z ?? 0) - (goR.z ?? 0)];
+  const dotR = uR[0] * vR[0] + uR[1] * vR[1] + uR[2] * vR[2];
+  const magR = Math.max(Math.sqrt(uR[0] * uR[0] + uR[1] * uR[1] + uR[2] * uR[2]) * Math.sqrt(vR[0] * vR[0] + vR[1] * vR[1] + vR[2] * vR[2]), 1e-6);
+  const gonialR = Math.acos(Math.max(-1.0, Math.min(1.0, dotR / magR))) * (180 / Math.PI);
+  const gonialJawlineAngleDeg = clampNum((gonialL + gonialR) / 2, 70.0, 160.0, 124.0);
+
+  const ls = pt(targetLms, 51);
+  const li = pt(targetLms, 57);
+  const innerMid = mid(pt(targetLms, 62), pt(targetLms, 66));
+  const p62 = pt(targetLms, 62);
+  const p66 = pt(targetLms, 66);
+  const sto = { x: innerMid.x, y: innerMid.y, z: ((p62.z ?? 0) + (p66.z ?? 0)) / 2 };
+  const hUpperLip = d3d(ls, sto);
+  const hLowerLip = Math.max(d3d(sto, li), 1e-6);
+  const lipVermilionHeightRatio = clampNum(hUpperLip / hLowerLip, 0.10, 3.0, 0.625);
+
+  const lPhiltrum = d3d(sn, ls);
+  const hLowerFace = Math.max(d3d(sn, me), 1e-6);
+  const r2D = lPhiltrum / hLowerFace;
+  const pg = { x: (sn.x + ls.x) / 2, y: (sn.y + ls.y) / 2, z: ((sn.z ?? 0) + (ls.z ?? 0)) / 2 };
+  const prL = pt(targetLms, 50);
+  const prR = pt(targetLms, 52);
+  const ridgeZ = ((prL.z ?? 0) + (prR.z ?? 0)) / 2;
+  const deltaZ = Math.abs(ridgeZ - pg.z);
+  const philtrumDepth = clampNum((r2D / 0.25) * (1.0 + 2.0 * (deltaZ / Math.max(dInterCanthal, 1e-6))), 0.10, 2.0, 0.50);
+
+  return {
+    upperThirdRatio,
+    middleThirdRatio,
+    lowerThirdRatio,
+    lateralFifthsRatios,
+    interCanthalDistance,
+    canthalTiltAngleDeg,
+    nasalIndex,
+    bigonialToBizygomaticRatio,
+    gonialJawlineAngleDeg,
+    lipVermilionHeightRatio,
+    philtrumDepth,
+  };
 }
 
 /**
@@ -57,33 +634,38 @@ export function extractGeometryFeatures(landmarks: Landmark[]): FaceFeatures {
   const f = emptyFeatures();
   if (landmarks.length < 400) return f;
 
-  const chin = pt(landmarks, LM.chin);
-  const forehead = pt(landmarks, LM.forehead);
-  const leftCheek = pt(landmarks, LM.leftCheek);
-  const rightCheek = pt(landmarks, LM.rightCheek);
+  const alignment = alignToCanonical3D(landmarks);
+  const targetLms = alignment.unwarpedLandmarks.length === landmarks.length
+    ? alignment.unwarpedLandmarks
+    : landmarks;
+
+  const chin = pt(targetLms, LM.chin);
+  const forehead = pt(targetLms, LM.forehead);
+  const leftCheek = pt(targetLms, LM.leftCheek);
+  const rightCheek = pt(targetLms, LM.rightCheek);
 
   const faceH = Math.max(dist(forehead, chin), 1e-6);
   const faceW = Math.max(dist(leftCheek, rightCheek), 1e-6);
 
   f.faceAspect = clamp(faceW / faceH / 1.35);
 
-  const jawW = dist(pt(landmarks, LM.jawLeft), pt(landmarks, LM.jawRight));
+  const jawW = dist(pt(targetLms, LM.jawLeft), pt(targetLms, LM.jawRight));
   f.jawWidth = clamp(jawW / faceW);
 
-  const jawMid = mid(pt(landmarks, LM.jawLeft), pt(landmarks, LM.jawRight));
+  const jawMid = mid(pt(targetLms, LM.jawLeft), pt(targetLms, LM.jawRight));
   const chinDrop = dist(jawMid, chin) / faceH;
   f.chinSharpness = clamp(chinDrop / 0.28);
 
   const browMid = mid(
-    pt(landmarks, LM.leftBrowInner),
-    pt(landmarks, LM.rightBrowInner),
+    pt(targetLms, LM.leftBrowInner),
+    pt(targetLms, LM.rightBrowInner),
   );
   f.foreheadHeight = clamp(dist(forehead, browMid) / faceH / 0.35);
 
-  const lOuter = pt(landmarks, LM.leftEyeOuter);
-  const lInner = pt(landmarks, LM.leftEyeInner);
-  const rOuter = pt(landmarks, LM.rightEyeOuter);
-  const rInner = pt(landmarks, LM.rightEyeInner);
+  const lOuter = pt(targetLms, LM.leftEyeOuter);
+  const lInner = pt(targetLms, LM.leftEyeInner);
+  const rOuter = pt(targetLms, LM.rightEyeOuter);
+  const rInner = pt(targetLms, LM.rightEyeInner);
   const leftEyeC = mid(lOuter, lInner);
   const rightEyeC = mid(rOuter, rInner);
   const iod = Math.max(dist(leftEyeC, rightEyeC), 1e-6);
@@ -91,12 +673,12 @@ export function extractGeometryFeatures(landmarks: Landmark[]): FaceFeatures {
   f.eyeSpacing = clamp(iod / faceW / 0.55);
 
   const leftOpen = dist(
-    pt(landmarks, LM.leftEyeTop),
-    pt(landmarks, LM.leftEyeBottom),
+    pt(targetLms, LM.leftEyeTop),
+    pt(targetLms, LM.leftEyeBottom),
   );
   const rightOpen = dist(
-    pt(landmarks, LM.rightEyeTop),
-    pt(landmarks, LM.rightEyeBottom),
+    pt(targetLms, LM.rightEyeTop),
+    pt(targetLms, LM.rightEyeBottom),
   );
   const leftWidth = Math.max(dist(lOuter, lInner), 1e-6);
   const rightWidth = Math.max(dist(rOuter, rInner), 1e-6);
@@ -109,35 +691,35 @@ export function extractGeometryFeatures(landmarks: Landmark[]): FaceFeatures {
   f.eyeSlant = clamp(0.5 + ((leftSlant - rightSlant) / 2) * 8);
 
   const leftBrow = mid(
-    pt(landmarks, LM.leftBrowInner),
-    pt(landmarks, LM.leftBrowOuter),
+    pt(targetLms, LM.leftBrowInner),
+    pt(targetLms, LM.leftBrowOuter),
   );
   const rightBrow = mid(
-    pt(landmarks, LM.rightBrowInner),
-    pt(landmarks, LM.rightBrowOuter),
+    pt(targetLms, LM.rightBrowInner),
+    pt(targetLms, LM.rightBrowOuter),
   );
   const browH =
     (dist(leftBrow, leftEyeC) + dist(rightBrow, rightEyeC)) / 2 / faceH;
   f.browHeight = clamp(browH / 0.12);
 
-  const noseTip = pt(landmarks, LM.noseTip);
-  const noseBridge = pt(landmarks, LM.noseBridge);
+  const noseTip = pt(targetLms, LM.noseTip);
+  const noseBridge = pt(targetLms, LM.noseBridge);
   f.noseLength = clamp(dist(noseBridge, noseTip) / faceH / 0.28);
   f.noseWidth = clamp(
-    dist(pt(landmarks, LM.noseLeft), pt(landmarks, LM.noseRight)) /
+    dist(pt(targetLms, LM.noseLeft), pt(targetLms, LM.noseRight)) /
       faceW /
       0.28,
   );
 
-  const mouthL = pt(landmarks, LM.mouthLeft);
-  const mouthR = pt(landmarks, LM.mouthRight);
+  const mouthL = pt(targetLms, LM.mouthLeft);
+  const mouthR = pt(targetLms, LM.mouthRight);
   f.mouthWidth = clamp(dist(mouthL, mouthR) / faceW / 0.45);
-  const lipGap = dist(pt(landmarks, LM.upperLip), pt(landmarks, LM.lowerLip));
+  const lipGap = dist(pt(targetLms, LM.upperLip), pt(targetLms, LM.lowerLip));
   f.lipFullness = clamp(lipGap / faceH / 0.08);
 
   const cheekSpan = dist(
-    pt(landmarks, LM.leftCheekbone),
-    pt(landmarks, LM.rightCheekbone),
+    pt(targetLms, LM.leftCheekbone),
+    pt(targetLms, LM.rightCheekbone),
   );
   f.cheekboneProminence = clamp(cheekSpan / faceW);
 
@@ -159,13 +741,15 @@ export function extractGeometryFeatures(landmarks: Landmark[]): FaceFeatures {
       0.2 * (1 - f.jawWidth),
   );
 
+  f.anatomical = extractAnatomicalFeatures(targetLms);
+
   return f;
 }
 
 function pt68(
-  landmarks: Array<{ x: number; y: number }>,
+  landmarks: Array<{ x: number; y: number; z?: number }>,
   i: number,
-): { x: number; y: number } {
+): { x: number; y: number; z?: number } {
   const p = landmarks[i];
   if (!p) return { x: 0.5, y: 0.5 };
   return p;
@@ -182,40 +766,46 @@ export function extractGeometryFeatures68(
   const f = emptyFeatures();
   if (!landmarks || landmarks.length < 68) return f;
 
-  const chin = pt68(landmarks, 8);
-  const leftCheek = pt68(landmarks, 0);
-  const rightCheek = pt68(landmarks, 16);
-  const browMid = mid(pt68(landmarks, 21), pt68(landmarks, 22));
+  const lms68 = landmarks.slice(0, 68);
+  const alignment = alignToCanonical3D(lms68);
+  const targetLms = alignment.unwarpedLandmarks.length === 68
+    ? alignment.unwarpedLandmarks
+    : lms68;
+
+  const chin = pt68(targetLms, 8);
+  const leftCheek = pt68(targetLms, 0);
+  const rightCheek = pt68(targetLms, 16);
+  const browMid = mid(pt68(targetLms, 21), pt68(targetLms, 22));
 
   const faceW = Math.max(dist(leftCheek, rightCheek), 1e-6);
   const faceH = Math.max(dist(browMid, chin) * 1.35, 1e-6);
 
   f.faceAspect = clamp(faceW / faceH / 1.35);
 
-  const jawW = dist(pt68(landmarks, 4), pt68(landmarks, 12));
+  const jawW = dist(pt68(targetLms, 4), pt68(targetLms, 12));
   f.jawWidth = clamp(jawW / faceW);
 
-  const jawMid = mid(pt68(landmarks, 4), pt68(landmarks, 12));
+  const jawMid = mid(pt68(targetLms, 4), pt68(targetLms, 12));
   const chinDrop = dist(jawMid, chin) / faceH;
   f.chinSharpness = clamp(chinDrop / 0.28);
 
-  const noseBridge = pt68(landmarks, 27);
+  const noseBridge = pt68(targetLms, 27);
   f.foreheadHeight = clamp(dist(noseBridge, browMid) / faceH / 0.35);
 
-  const lOuter = pt68(landmarks, 36);
-  const lInner = pt68(landmarks, 39);
-  const rInner = pt68(landmarks, 42);
-  const rOuter = pt68(landmarks, 45);
+  const lOuter = pt68(targetLms, 36);
+  const lInner = pt68(targetLms, 39);
+  const rInner = pt68(targetLms, 42);
+  const rOuter = pt68(targetLms, 45);
   const leftEyeC = mid(lOuter, lInner);
   const rightEyeC = mid(rOuter, rInner);
   const iod = Math.max(dist(leftEyeC, rightEyeC), 1e-6);
 
   f.eyeSpacing = clamp(iod / faceW / 0.55);
 
-  const lTop = mid(pt68(landmarks, 37), pt68(landmarks, 38));
-  const lBottom = mid(pt68(landmarks, 40), pt68(landmarks, 41));
-  const rTop = mid(pt68(landmarks, 43), pt68(landmarks, 44));
-  const rBottom = mid(pt68(landmarks, 46), pt68(landmarks, 47));
+  const lTop = mid(pt68(targetLms, 37), pt68(targetLms, 38));
+  const lBottom = mid(pt68(targetLms, 40), pt68(targetLms, 41));
+  const rTop = mid(pt68(targetLms, 43), pt68(targetLms, 44));
+  const rBottom = mid(pt68(targetLms, 46), pt68(targetLms, 47));
 
   const leftOpen = dist(lTop, lBottom);
   const rightOpen = dist(rTop, rBottom);
@@ -229,25 +819,25 @@ export function extractGeometryFeatures68(
   const rightSlant = (rOuter.y - rInner.y) / faceH;
   f.eyeSlant = clamp(0.5 + ((leftSlant - rightSlant) / 2) * 8);
 
-  const leftBrow = mid(pt68(landmarks, 17), pt68(landmarks, 21));
-  const rightBrow = mid(pt68(landmarks, 22), pt68(landmarks, 26));
+  const leftBrow = mid(pt68(targetLms, 17), pt68(targetLms, 21));
+  const rightBrow = mid(pt68(targetLms, 22), pt68(targetLms, 26));
   const browH =
     (dist(leftBrow, leftEyeC) + dist(rightBrow, rightEyeC)) / 2 / faceH;
   f.browHeight = clamp(browH / 0.12);
 
-  const noseTip = pt68(landmarks, 30);
+  const noseTip = pt68(targetLms, 30);
   f.noseLength = clamp(dist(noseBridge, noseTip) / faceH / 0.28);
   f.noseWidth = clamp(
-    dist(pt68(landmarks, 31), pt68(landmarks, 35)) / faceW / 0.28,
+    dist(pt68(targetLms, 31), pt68(targetLms, 35)) / faceW / 0.28,
   );
 
-  const mouthL = pt68(landmarks, 48);
-  const mouthR = pt68(landmarks, 54);
+  const mouthL = pt68(targetLms, 48);
+  const mouthR = pt68(targetLms, 54);
   f.mouthWidth = clamp(dist(mouthL, mouthR) / faceW / 0.45);
-  const lipGap = dist(pt68(landmarks, 51), pt68(landmarks, 57));
+  const lipGap = dist(pt68(targetLms, 51), pt68(targetLms, 57));
   f.lipFullness = clamp(lipGap / faceH / 0.08);
 
-  const cheekSpan = dist(pt68(landmarks, 1), pt68(landmarks, 15));
+  const cheekSpan = dist(pt68(targetLms, 1), pt68(targetLms, 15));
   f.cheekboneProminence = clamp(cheekSpan / faceW);
 
   f.faceRoundness = clamp(1 - Math.abs(faceW / faceH - 0.78) / 0.4);
@@ -267,6 +857,8 @@ export function extractGeometryFeatures68(
       0.25 * f.faceRoundness +
       0.2 * (1 - f.jawWidth),
   );
+
+  f.anatomical = extractAnatomicalFeatures68(targetLms);
 
   return f;
 }
@@ -336,12 +928,116 @@ export function sanitizeFeatures(f?: FaceFeatures | null): FaceFeatures | null {
 }
 
 /**
+ * Ensure FaceFeatures or Partial contains valid ExtendedAnatomicalFeatures (R5).
+ * Derives missing 9 clinical proportions from scalar features if anatomical is omitted.
+ */
+export function ensureAnatomicalFeatures(f?: FaceFeatures | null): ExtendedAnatomicalFeatures {
+  if (!f) return { ...CANONICAL_ANATOMICAL_DEFAULTS, lateralFifthsRatios: [...CANONICAL_ANATOMICAL_DEFAULTS.lateralFifthsRatios] };
+  if (f.anatomical) return f.anatomical;
+
+  const upperThirdRatio = clampNum(0.3333 * (0.8 + 0.4 * (f.foreheadHeight ?? 0.5)), 0.05, 0.70, 0.3333);
+  const middleThirdRatio = clampNum(0.3333 * (0.8 + 0.4 * (f.noseLength ?? 0.5)), 0.05, 0.70, 0.3333);
+  const lowerThirdRatio = clampNum(1.0 - upperThirdRatio - middleThirdRatio, 0.05, 0.70, 0.3333);
+
+  const canthalTiltAngleDeg = clampNum(((f.eyeSlant ?? 0.5) - 0.50) * 30.0 + 4.0, -35.0, 35.0, 4.0);
+  const nasalIndex = clampNum(((f.noseWidth ?? 0.5) / Math.max(0.1, f.noseLength ?? 0.5)) * 0.75, 0.20, 2.0, 0.75);
+  const gonialJawlineAngleDeg = clampNum(124.0 + (0.50 - (f.chinSharpness ?? 0.5)) * 25.0 + ((f.jawWidth ?? 0.5) - 0.50) * 15.0, 70.0, 160.0, 124.0);
+
+  const interCanthalDistance = clampNum((f.eyeSpacing ?? 0.5) * 0.42, 0.05, 0.65, 0.21);
+  const bigonialToBizygomaticRatio = clampNum(0.76 * ((f.jawWidth ?? 0.5) / Math.max(0.1, f.cheekboneProminence ?? 0.5)), 0.30, 1.20, 0.76);
+  const lipVermilionHeightRatio = clampNum(0.625 * ((f.lipFullness ?? 0.5) / 0.50), 0.10, 3.0, 0.625);
+  const philtrumDepth = clampNum(0.50 * ((f.noseLength ?? 0.5) / 0.50), 0.10, 2.0, 0.50);
+
+  return {
+    upperThirdRatio,
+    middleThirdRatio,
+    lowerThirdRatio,
+    lateralFifthsRatios: [0.20, 0.20, 0.20, 0.20, 0.20],
+    interCanthalDistance,
+    canthalTiltAngleDeg,
+    nasalIndex,
+    bigonialToBizygomaticRatio,
+    gonialJawlineAngleDeg,
+    lipVermilionHeightRatio,
+    philtrumDepth,
+  };
+}
+
+/**
+ * Calculate 3D canonical unwarped clinical morphological distance D_morph in [0, 1] (R5).
+ * Evaluates the 4 core anatomical metrics:
+ * 1. Facial Thirds (Upper, Middle, Lower ratios)
+ * 2. Canthal Tilt angle (palpebral fissure slant in degrees)
+ * 3. Gonial Jawline angle (mandibular corner angle in degrees)
+ * 4. Nasal Index (alar breadth vs nasal height ratio)
+ *
+ * Fallback to 0.50 when landmark points or features are missing/undefined.
+ */
+export function computeMorphologicalDistance(
+  uFeatRaw?: FaceFeatures | ExtendedAnatomicalFeatures | null,
+  cFeatRaw?: FaceFeatures | ExtendedAnatomicalFeatures | null,
+  occ?: { eyeConf?: number; jawConf?: number } | null,
+): number {
+  if (!uFeatRaw || !cFeatRaw) return 0.50;
+
+  const uAnat: ExtendedAnatomicalFeatures | undefined =
+    "upperThirdRatio" in uFeatRaw ? uFeatRaw : uFeatRaw.anatomical ?? (uFeatRaw ? ensureAnatomicalFeatures(uFeatRaw) : undefined);
+  const cAnat: ExtendedAnatomicalFeatures | undefined =
+    "upperThirdRatio" in cFeatRaw ? cFeatRaw : cFeatRaw.anatomical ?? (cFeatRaw ? ensureAnatomicalFeatures(cFeatRaw) : undefined);
+
+  if (!uAnat || !cAnat) return 0.50;
+
+  const eyeConf = occ?.eyeConf ?? 1;
+  const jawConf = occ?.jawConf ?? 1;
+  if (eyeConf < 0.35 && jawConf < 0.35) return 0.50;
+
+  const dUpperMid =
+    Math.abs(uAnat.upperThirdRatio - cAnat.upperThirdRatio) +
+    Math.abs(uAnat.middleThirdRatio - cAnat.middleThirdRatio);
+  const dLower = Math.abs(uAnat.lowerThirdRatio - cAnat.lowerThirdRatio);
+  const dThirds = Math.min(1.0, (dUpperMid + dLower * jawConf) / 0.30);
+
+  const dCanthal = Math.min(
+    1.0,
+    Math.abs(uAnat.canthalTiltAngleDeg - cAnat.canthalTiltAngleDeg) / 15.0,
+  );
+
+  const dGonial = Math.min(
+    1.0,
+    Math.abs(uAnat.gonialJawlineAngleDeg - cAnat.gonialJawlineAngleDeg) / 25.0,
+  );
+
+  const dNasal = Math.min(
+    1.0,
+    Math.abs(uAnat.nasalIndex - cAnat.nasalIndex) / 0.35,
+  );
+
+  let wThirds = 0.30;
+  let wCanthal = 0.25 * eyeConf;
+  let wGonial = 0.25 * jawConf;
+  let wNasal = 0.20;
+  const wSum = wThirds + wCanthal + wGonial + wNasal;
+  if (wSum < 1e-6) return 0.50;
+  wThirds /= wSum;
+  wCanthal /= wSum;
+  wGonial /= wSum;
+  wNasal /= wSum;
+
+  const dMorph = wThirds * dThirds + wCanthal * dCanthal + wGonial * dGonial + wNasal * dNasal;
+  return Number.isFinite(dMorph) ? Math.min(1.0, Math.max(0.0, dMorph)) : 0.50;
+}
+
+/** Alias for computeMorphologicalDistance */
+export const computeClinicalMorphDistance = computeMorphologicalDistance;
+
+/**
  * Calculate structural morphological distance D_morph between two facial feature sets.
  * Returns normalized distance in [0, 1]. Returns 0.50 if either feature set is missing.
  */
 export function morphologicalDistance(
   uFeatRaw?: FaceFeatures | null,
   cFeatRaw?: FaceFeatures | null,
+  opts?: { muteHair?: boolean },
 ): number {
   if (!uFeatRaw || !cFeatRaw) return 0.50;
 
@@ -394,7 +1090,7 @@ export function morphologicalDistance(
     uFeat.hairA - cFeat.hairA,
     uFeat.hairB - cFeat.hairB,
   );
-  const dHair = Math.min(1.0, (dHairRaw / 0.48) * 0.50);
+  const dHair = opts?.muteHair ? 0 : Math.min(1.0, (dHairRaw / 0.48) * 0.50);
 
   const dColor = 0.85 * dSkin + 0.15 * dHair;
 
@@ -515,6 +1211,7 @@ export function sampleRegionColor(
 
 /**
  * Enrich geometric features with skin + hair color sampled from the image.
+ * MediaPipe 468/478 path only (≥400 landmarks).
  */
 export function enrichWithColor(
   features: FaceFeatures,
@@ -547,6 +1244,90 @@ export function enrichWithColor(
 
   const hairY = Math.max(0.02, forehead.y - 0.08);
   const hair = sampleRegionColor(imageData, forehead.x, hairY, 8);
+  const hairLab = rgbToApproxLab(hair.r, hair.g, hair.b);
+
+  return {
+    ...features,
+    skinL: skinLab.L,
+    skinA: skinLab.a,
+    skinB: skinLab.b,
+    hairL: hairLab.L,
+    hairA: hairLab.a,
+    hairB: hairLab.b,
+  };
+}
+
+/**
+ * Normalize 68-pt landmarks to unit [0,1] for image sampling.
+ * ≤1.5 → already unit; ≤100 → percent; else pixels vs image size.
+ */
+function landmarks68ToUnit(
+  landmarks68: Array<{ x: number; y: number }>,
+  imageW: number,
+  imageH: number,
+): Array<{ x: number; y: number }> {
+  let maxC = 0;
+  for (const p of landmarks68) {
+    if (p.x > maxC) maxC = p.x;
+    if (p.y > maxC) maxC = p.y;
+  }
+  if (maxC <= 1.5) {
+    return landmarks68.map((p) => ({ x: p.x, y: p.y }));
+  }
+  if (maxC <= 100) {
+    return landmarks68.map((p) => ({ x: p.x / 100, y: p.y / 100 }));
+  }
+  const iw = Math.max(1, imageW - 1);
+  const ih = Math.max(1, imageH - 1);
+  return landmarks68.map((p) => ({ x: p.x / iw, y: p.y / ih }));
+}
+
+/**
+ * Enrich FaceFeatures with skin + hair color from 68-point landmarks + face crop.
+ * Cheeks at 1 & 15; mid-skin along mid(21,22)→27; hair above brow min-y − 0.08.
+ */
+export function enrichWithColor68(
+  features: FaceFeatures,
+  landmarks68: Array<{ x: number; y: number }>,
+  imageData: ImageData | { width: number; height: number; data: Uint8ClampedArray | Uint8Array },
+): FaceFeatures {
+  if (!landmarks68 || landmarks68.length < 68) return features;
+  if (!imageData || imageData.width < 4 || imageData.height < 4) return features;
+
+  const img = imageData as ImageData;
+  const unit = landmarks68ToUnit(landmarks68, img.width, img.height);
+
+  const leftCheek = unit[1]!;
+  const rightCheek = unit[15]!;
+  const browL = unit[21]!;
+  const browR = unit[22]!;
+  const browMid = mid(browL, browR);
+  const noseBridge = unit[27]!;
+  // Mid skin: halfway from brow mid toward nose bridge (27).
+  const midSkin = {
+    x: browMid.x + 0.5 * (noseBridge.x - browMid.x),
+    y: browMid.y + 0.5 * (noseBridge.y - browMid.y),
+  };
+
+  const samples = [
+    sampleRegionColor(img, leftCheek.x, leftCheek.y, 6),
+    sampleRegionColor(img, rightCheek.x, rightCheek.y, 6),
+    sampleRegionColor(img, midSkin.x, midSkin.y, 5),
+  ];
+  const skin = {
+    r: samples.reduce((s, c) => s + c.r, 0) / samples.length,
+    g: samples.reduce((s, c) => s + c.g, 0) / samples.length,
+    b: samples.reduce((s, c) => s + c.b, 0) / samples.length,
+  };
+  const skinLab = rgbToApproxLab(skin.r, skin.g, skin.b);
+
+  let minBrowY = Infinity;
+  for (let i = 17; i <= 26; i++) {
+    const by = unit[i]!.y;
+    if (by < minBrowY) minBrowY = by;
+  }
+  const hairY = Math.max(0.02, minBrowY - 0.08);
+  const hair = sampleRegionColor(img, browMid.x, hairY, 8);
   const hairLab = rgbToApproxLab(hair.r, hair.g, hair.b);
 
   return {

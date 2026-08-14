@@ -19,6 +19,7 @@ export interface CropReviewProps {
   onApprove: (
     blob: Blob,
     selectedBox?: { x: number; y: number; width: number; height: number },
+    meta?: { faceCount: number },
   ) => void;
   onRetake: () => void;
 }
@@ -401,7 +402,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
           }
         : undefined;
 
-      onApprove(blob, selectedBox);
+      onApprove(blob, selectedBox, { faceCount: candidates.length });
     } catch (e) {
       console.error(e);
       setIsApproving(false);

@@ -1,6 +1,6 @@
 import type { FaceFeatures } from "../face/types.ts";
 import { mergeFeatures } from "../face/math.ts";
-import type { CelebrityProfile } from "./types.ts";
+import type { CelebrityProfile, ViewReferenceProfile } from "./types.ts";
 
 function c(
   id: string,
@@ -9,6 +9,7 @@ function c(
   tags: string[],
   accentHue: number,
   partial: Partial<FaceFeatures>,
+  referenceViews?: ViewReferenceProfile[],
 ): CelebrityProfile {
   return {
     id,
@@ -17,6 +18,7 @@ function c(
     tags,
     accentHue,
     features: mergeFeatures(partial),
+    ...(referenceViews ? { referenceViews } : {}),
   };
 }
 

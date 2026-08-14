@@ -3,18 +3,34 @@ import assert from "node:assert/strict";
 import { rankCelebrities } from "./match-geometry.ts";
 import {
   euclideanDistance,
+  cosineDistance,
+  l2Normalize,
+  ensembleDistance,
   distanceToMatchPercent,
   rankPercentsFromDistances,
   ageAffinity,
   genderAffinity,
   computeMatchConfidence,
+  combinedDescriptorDistance,
+  computeMatchScore,
   type CelebrityEmbedding,
 } from "./embeddings.ts";
-import { rankByDescriptor, minTemplateDistance, isPrimaryGalleryEntry, householdFame, type UserFaceQuery } from "./match.ts";
+import {
+  rankByDescriptor,
+  rankCandidates,
+  rankCandidatesTwoStage,
+  minTemplateDistance,
+  isPrimaryGalleryEntry,
+  householdFame,
+  computeMorphologicalDistance,
+  MORPH_TIE_THRESHOLD_EPS,
+  type UserFaceQuery,
+} from "./match.ts";
+import { extractAnatomicalFeatures68 } from "./geometry.ts";
 import { mergeFeatures, emptyFeatures } from "./math.ts";
 import { CELEBRITIES, getCelebrityById } from "../celebrities/database.ts";
 import { catalogFor } from "../celebrities/catalog.ts";
-import type { FaceFeatures } from "./types.ts";
+import type { FaceFeatures, ExtendedAnatomicalFeatures, MatchScoreResult } from "./types.ts";
 import type { CelebrityProfile } from "../celebrities/types.ts";
 
 function feat(partial: Partial<FaceFeatures>): FaceFeatures {
@@ -802,4 +818,650 @@ describe("Landmark Fusion & Candidate Tie-Breaking in rankByDescriptor", () => {
     assert.equal(matches[1]!.celebrityId, "candidate-b");
   });
 });
+
+describe("Milestone 3 (M3): Calibrated Multi-Stage Similarity & Gating", () => {
+  const vZero = l2Normalize(new Float32Array(128).fill(0.1));
+  const vDiff = l2Normalize(new Float32Array(128).map((_, i) => (i % 2 === 0 ? 0.8 : -0.8)));
+
+  it("computes MatchScoreResult struct matching interface contract in PROJECT.md", () => {
+    const res = computeMatchScore(vZero, vZero, emptyFeatures(), emptyFeatures());
+    assert.equal(typeof res.confidencePct, "number");
+    assert.equal(typeof res.descriptorDistance, "number");
+    assert.equal(typeof res.morphologicalDistance, "number");
+    assert.equal(typeof res.deepVectorDistance, "number");
+    assert.equal(typeof res.passedLookalikeGate, "boolean");
+
+    assert.equal(res.confidencePct, 100.0);
+    assert.equal(res.passedLookalikeGate, true);
+  });
+
+  it("verifies lookalike gate passes for close matches and fails for dissimilar profiles (< 20%)", () => {
+    const closeRes = computeMatchScore(vZero, vZero, emptyFeatures(), emptyFeatures());
+    assert.ok(closeRes.passedLookalikeGate, "Identical face must pass lookalike gate");
+    assert.ok(closeRes.confidencePct >= 20.0, "Identical face score must be >= 20%");
+
+    const farRes = computeMatchScore(vZero, vDiff, emptyFeatures(), emptyFeatures());
+    assert.equal(farRes.passedLookalikeGate, false, "Dissimilar profiles must fail lookalike gate");
+    assert.ok(farRes.confidencePct < 20.0, "Dissimilar profiles must score < 20% confidence");
+  });
+
+  it("verifies cross-demographic mismatch filtering in lookalike gate", () => {
+    const resSame = computeMatchScore(vZero, vZero, emptyFeatures(), emptyFeatures(), {
+      ethnicClusterA: "East Asian",
+      ethnicClusterB: "East Asian",
+    });
+    assert.ok(resSame.passedLookalikeGate, "Same demographic cluster passes gate");
+
+    const featA = { ...emptyFeatures(), skinL: 0.85 };
+    const featB = { ...emptyFeatures(), skinL: 0.20 };
+    const resDiff = computeMatchScore(vZero, vZero, featA, featB, {
+      ethnicClusterA: "East Asian",
+      ethnicClusterB: "African",
+    });
+    assert.equal(resDiff.passedLookalikeGate, false, "Cross-demographic hard mismatch must fail lookalike gate");
+  });
+
+  it("executes two-stage candidate search via rankCandidates and rankCandidatesTwoStage", () => {
+    const mockCelebs: CelebrityEmbedding[] = Array.from({ length: 50 }, (_, i) => ({
+      id: `celeb-${i}`,
+      name: `Celeb ${i}`,
+      path: `/celeb-${i}.jpg`,
+      descriptor: Array.from(l2Normalize(new Float32Array(128).fill(0.05 + i * 0.002))),
+      age: 25 + (i % 30),
+      gender: i % 2 === 0 ? "male" : "female",
+      genderProb: 0.9,
+    }));
+
+    const query: UserFaceQuery = {
+      descriptor: vZero,
+      age: 28,
+      gender: "male",
+      genderProbability: 0.9,
+    };
+
+    const res1 = rankCandidates(query, mockCelebs, 5);
+    const res2 = rankCandidatesTwoStage(query, mockCelebs, 5);
+
+    assert.equal(res1.length, 5);
+    assert.equal(res2.length, 5);
+    assert.equal(res1[0]!.celebrityId, res2[0]!.celebrityId);
+
+    // Verify telemetry fields on returned CelebrityMatch
+    assert.ok(res1[0]!.matchScoreResult !== undefined, "Match must include matchScoreResult");
+    assert.ok(typeof res1[0]!.passedLookalikeGate === "boolean", "Match must include passedLookalikeGate");
+  });
+
+  it("completes two-stage candidate search in < 15ms SLA for 500 candidates", () => {
+    const mockCelebs: CelebrityEmbedding[] = Array.from({ length: 500 }, (_, i) => ({
+      id: `celeb-${i}`,
+      name: `Celeb ${i}`,
+      path: `/celeb-${i}.jpg`,
+      descriptor: Array.from(l2Normalize(new Float32Array(128).fill((i % 10) * 0.1))),
+      age: 30,
+      gender: "male",
+      genderProb: 0.9,
+    }));
+
+    const query: UserFaceQuery = {
+      descriptor: vZero,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.9,
+    };
+
+    const start = performance.now();
+    const results = rankCandidatesTwoStage(query, mockCelebs, 5);
+    const elapsed = performance.now() - start;
+
+    assert.ok(results.length > 0);
+    assert.ok(elapsed < 15.0, `Two-stage search for 500 candidates executed in ${elapsed.toFixed(2)}ms (expected < 15ms)`);
+  });
+
+  it("handles edge cases safely: empty vectors return 1.0 distance and NaNs do not cause crash", () => {
+    assert.equal(euclideanDistance([], []), 1.0, "Empty euclidean distance must return 1.0 (not 0.0)");
+    assert.equal(euclideanDistance(new Float32Array(0), new Float32Array(128)), 1.0);
+    assert.equal(cosineDistance([], [1, 2, 3]), 1.0, "Empty cosine distance must return 1.0");
+
+    const nanVec = new Float32Array(128).fill(NaN);
+    const eucNaN = euclideanDistance(nanVec, vZero);
+    const cosNaN = cosineDistance(nanVec, vZero);
+    assert.ok(Number.isFinite(eucNaN), "Euclidean distance with NaN elements must return finite number");
+    assert.ok(Number.isFinite(cosNaN), "Cosine distance with NaN elements must return finite number");
+
+    const scoreNaN = computeMatchScore(nanVec, vZero);
+    assert.ok(Number.isFinite(scoreNaN.confidencePct), "Match score with NaN input vector must be finite");
+  });
+});
+
+describe("Requirement R5: Dynamic Morphological Metric Tie-Breaking", () => {
+  it("extracts 3D canonical unwarped anatomical metrics (Facial Thirds, Canthal Tilt, Gonial Angle, Nasal Index)", () => {
+    const landmarks68 = Array.from({ length: 68 }, (_, i) => ({ x: 50 + (i % 10) * 5, y: 50 + Math.floor(i / 10) * 8 }));
+    landmarks68[8] = { x: 50, y: 140 };  // Menton / Chin
+    landmarks68[21] = { x: 45, y: 50 };  // Brow Left
+    landmarks68[22] = { x: 55, y: 50 };  // Brow Right
+    landmarks68[27] = { x: 50, y: 65 };  // Glabella / Nose Bridge
+    landmarks68[33] = { x: 50, y: 95 };  // Subnasale
+
+    landmarks68[36] = { x: 30, y: 55 };  // Left eye outer
+    landmarks68[39] = { x: 42, y: 55 };  // Left eye inner
+    landmarks68[42] = { x: 58, y: 55 };  // Right eye inner
+    landmarks68[45] = { x: 70, y: 55 };  // Right eye outer
+
+    landmarks68[31] = { x: 42, y: 90 };  // Left alar
+    landmarks68[35] = { x: 58, y: 90 };  // Right alar
+
+    landmarks68[0] = { x: 20, y: 70 };   // ZyL
+    landmarks68[16] = { x: 80, y: 70 };  // ZyR
+    landmarks68[4] = { x: 25, y: 120 };  // GoL
+    landmarks68[12] = { x: 75, y: 120 }; // GoR
+
+    const anat = extractAnatomicalFeatures68(landmarks68);
+
+    assert.ok(typeof anat.upperThirdRatio === "number" && anat.upperThirdRatio > 0);
+    assert.ok(typeof anat.middleThirdRatio === "number" && anat.middleThirdRatio > 0);
+    assert.ok(typeof anat.lowerThirdRatio === "number" && anat.lowerThirdRatio > 0);
+    assert.ok(Math.abs((anat.upperThirdRatio + anat.middleThirdRatio + anat.lowerThirdRatio) - 1.0) < 1e-3);
+    assert.ok(typeof anat.canthalTiltAngleDeg === "number");
+    assert.ok(typeof anat.gonialJawlineAngleDeg === "number" && anat.gonialJawlineAngleDeg >= 70 && anat.gonialJawlineAngleDeg <= 160);
+    assert.ok(typeof anat.nasalIndex === "number" && anat.nasalIndex >= 0.2 && anat.nasalIndex <= 2.0);
+  });
+
+  const r5UserAnat: ExtendedAnatomicalFeatures = {
+    upperThirdRatio: 0.3333,
+    middleThirdRatio: 0.3333,
+    lowerThirdRatio: 0.3334,
+    lateralFifthsRatios: [0.2, 0.2, 0.2, 0.2, 0.2],
+    interCanthalDistance: 0.21,
+    canthalTiltAngleDeg: 8.0,
+    nasalIndex: 0.70,
+    bigonialToBizygomaticRatio: 0.76,
+    gonialJawlineAngleDeg: 135.0,
+    lipVermilionHeightRatio: 0.625,
+    philtrumDepth: 0.50,
+  };
+
+  /** L2-normalized query with a deterministic orthogonal perturbation at a target ensemble distance. */
+  function vectorAtEnsembleDistance(query: Float32Array, targetD: number, seed: number): Float32Array {
+    let lo = 1e-4;
+    let hi = 1.5;
+    let best = query;
+    for (let iter = 0; iter < 28; iter++) {
+      const mid = (lo + hi) / 2;
+      const raw = new Float32Array(query.length);
+      for (let i = 0; i < query.length; i++) {
+        raw[i] = (query[i] ?? 0) + Math.sin((i + 1) * seed) * mid;
+      }
+      const cand = l2Normalize(raw);
+      const d = ensembleDistance(query, cand);
+      best = cand;
+      if (d < targetD) lo = mid;
+      else hi = mid;
+    }
+    return best;
+  }
+
+  it("activates morphological tie-breaker strictly when |Δd| < 0.015", () => {
+    const userFeatures: FaceFeatures = {
+      ...emptyFeatures(),
+      anatomical: r5UserAnat,
+    };
+    const queryDesc = l2Normalize(Float32Array.from({ length: 128 }, (_, i) => Math.sin(i * 0.17 + 0.4)));
+    const descA = vectorAtEnsembleDistance(queryDesc, 0.150, 1.31);
+    const descB = vectorAtEnsembleDistance(queryDesc, 0.156, 2.17);
+    const dA = ensembleDistance(queryDesc, descA);
+    const dB = ensembleDistance(queryDesc, descB);
+    assert.ok(dA < dB, `fixture: A must be closer in FaceNet space (${dA} vs ${dB})`);
+    assert.ok(
+      Math.abs(dB - dA) < MORPH_TIE_THRESHOLD_EPS,
+      `fixture |Δd| must be < 0.015, got ${Math.abs(dB - dA).toFixed(4)}`,
+    );
+
+    const candAAnat: ExtendedAnatomicalFeatures = {
+      ...r5UserAnat,
+      canthalTiltAngleDeg: -5.0,
+      gonialJawlineAngleDeg: 100.0,
+    };
+
+    const query: UserFaceQuery = {
+      descriptor: queryDesc,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+      features: userFeatures,
+    };
+
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "cand-a",
+        name: "Candidate A",
+        path: "/a.jpg",
+        descriptor: Array.from(descA),
+        age: 30,
+        gender: "male",
+        genderProb: 0.95,
+        features: { ...emptyFeatures(), anatomical: candAAnat },
+      },
+      {
+        id: "cand-b",
+        name: "Candidate B",
+        path: "/b.jpg",
+        descriptor: Array.from(descB),
+        age: 30,
+        gender: "male",
+        genderProb: 0.95,
+        features: { ...emptyFeatures(), anatomical: r5UserAnat },
+      },
+    ];
+
+    const matches = rankByDescriptor(query, mockGallery, 2);
+    assert.equal(matches.length, 2);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "cand-b",
+      `Candidate B must rank #1 because morphological tie-breaker re-ranks when |Δd| = ${Math.abs(dB - dA).toFixed(4)} < 0.015`,
+    );
+  });
+
+  it("does NOT activate morphological tie-breaker when |Δd| >= 0.015", () => {
+    const userFeatures: FaceFeatures = {
+      ...emptyFeatures(),
+      anatomical: r5UserAnat,
+    };
+    const queryDesc = l2Normalize(Float32Array.from({ length: 128 }, (_, i) => Math.cos(i * 0.13 + 0.2)));
+    const descA = vectorAtEnsembleDistance(queryDesc, 0.150, 1.07);
+    const descB = vectorAtEnsembleDistance(queryDesc, 0.172, 2.63);
+    const dA = ensembleDistance(queryDesc, descA);
+    const dB = ensembleDistance(queryDesc, descB);
+    assert.ok(dA < dB, `fixture: A must be closer in FaceNet space (${dA} vs ${dB})`);
+    assert.ok(
+      Math.abs(dB - dA) >= MORPH_TIE_THRESHOLD_EPS,
+      `fixture |Δd| must be >= 0.015, got ${Math.abs(dB - dA).toFixed(4)}`,
+    );
+
+    const candAAnat: ExtendedAnatomicalFeatures = {
+      ...r5UserAnat,
+      canthalTiltAngleDeg: -5.0,
+      gonialJawlineAngleDeg: 100.0,
+    };
+
+    const query: UserFaceQuery = {
+      descriptor: queryDesc,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+      features: userFeatures,
+    };
+
+    const mockGallery: CelebrityEmbedding[] = [
+      {
+        id: "cand-a",
+        name: "Candidate A",
+        path: "/a.jpg",
+        descriptor: Array.from(descA),
+        age: 30,
+        gender: "male",
+        genderProb: 0.95,
+        features: { ...emptyFeatures(), anatomical: candAAnat },
+      },
+      {
+        id: "cand-b",
+        name: "Candidate B",
+        path: "/b.jpg",
+        descriptor: Array.from(descB),
+        age: 30,
+        gender: "male",
+        genderProb: 0.95,
+        features: { ...emptyFeatures(), anatomical: r5UserAnat },
+      },
+    ];
+
+    const matches = rankByDescriptor(query, mockGallery, 2);
+    assert.equal(matches.length, 2);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "cand-a",
+      `Candidate A must remain #1 when |Δd| = ${Math.abs(dB - dA).toFixed(4)} >= 0.015`,
+    );
+  });
+
+  it("does not let a 23-d cross penalty open the morph window when |Δd_deep| >= 0.015", () => {
+    const userFeatures: FaceFeatures = {
+      ...emptyFeatures(),
+      anatomical: r5UserAnat,
+    };
+    const queryDesc = l2Normalize(Float32Array.from({ length: 128 }, (_, i) => Math.sin(i * 0.21 + 0.6)));
+    const descA = vectorAtEnsembleDistance(queryDesc, 0.150, 1.41);
+    const descB = vectorAtEnsembleDistance(queryDesc, 0.172, 2.88);
+    const dA = ensembleDistance(queryDesc, descA);
+    const dB = ensembleDistance(queryDesc, descB);
+    assert.ok(dA < dB);
+    assert.ok(Math.abs(dB - dA) >= MORPH_TIE_THRESHOLD_EPS);
+
+    const mismatched23d: FaceFeatures = {
+      ...emptyFeatures(),
+      eyeSlant: 0.05,
+      noseWidth: 0.05,
+      anatomical: {
+        ...r5UserAnat,
+        canthalTiltAngleDeg: -8,
+        gonialJawlineAngleDeg: 95,
+      },
+    };
+
+    const query: UserFaceQuery = {
+      descriptor: queryDesc,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+      features: { ...userFeatures },
+      ethnicCluster: "Caucasian",
+    };
+
+    const matches = rankByDescriptor(
+      query,
+      [
+        {
+          id: "cand-a",
+          name: "Candidate A",
+          path: "/a.jpg",
+          descriptor: Array.from(descA),
+          age: 30,
+          gender: "male",
+          genderProb: 0.95,
+          features: mismatched23d,
+          ethnicCluster: "Caucasian",
+        },
+        {
+          id: "cand-b",
+          name: "Candidate B",
+          path: "/b.jpg",
+          descriptor: Array.from(descB),
+          age: 30,
+          gender: "male",
+          genderProb: 0.95,
+          features: { ...emptyFeatures(), anatomical: r5UserAnat },
+          ethnicCluster: "Caucasian",
+        },
+      ],
+      2,
+    );
+    assert.equal(matches.length, 2);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "cand-a",
+      "Closer FaceNet candidate must stay #1 when |Δd_deep| >= 0.015 even if 23-d penalty shrinks |Δfine|",
+    );
+  });
+
+  it("does not let household fame invert a morphological decision inside |Δd| < 0.015", () => {
+    const userFeatures: FaceFeatures = {
+      ...emptyFeatures(),
+      anatomical: r5UserAnat,
+    };
+    const queryDesc = l2Normalize(Float32Array.from({ length: 128 }, (_, i) => Math.sin(i * 0.11 + 0.9)));
+    const descA = vectorAtEnsembleDistance(queryDesc, 0.150, 1.9);
+    const descB = vectorAtEnsembleDistance(queryDesc, 0.152, 3.1);
+    const dA = ensembleDistance(queryDesc, descA);
+    const dB = ensembleDistance(queryDesc, descB);
+    assert.ok(Math.abs(dB - dA) < MORPH_TIE_THRESHOLD_EPS);
+
+    const query: UserFaceQuery = {
+      descriptor: queryDesc,
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+      features: userFeatures,
+    };
+
+    const matches = rankByDescriptor(
+      query,
+      [
+        {
+          id: "tom-hanks",
+          name: "Tom Hanks",
+          path: "/tom-hanks.jpg",
+          descriptor: Array.from(descA),
+          age: 30,
+          gender: "male",
+          genderProb: 0.95,
+          features: {
+            ...emptyFeatures(),
+            anatomical: { ...r5UserAnat, canthalTiltAngleDeg: -8, gonialJawlineAngleDeg: 95 },
+          },
+        },
+        {
+          id: "unknown-lookalike",
+          name: "Unknown Lookalike",
+          path: "/unknown.jpg",
+          descriptor: Array.from(descB),
+          age: 30,
+          gender: "male",
+          genderProb: 0.95,
+          features: { ...emptyFeatures(), anatomical: r5UserAnat },
+        },
+      ],
+      2,
+    );
+    assert.equal(matches.length, 2);
+    assert.equal(
+      matches[0]!.celebrityId,
+      "unknown-lookalike",
+      "Fame/portrait must not undo R5 when anatomy clearly prefers the other candidate",
+    );
+  });
+
+  it("falls back to D_morph = 0.50 when landmarks or anatomical features are missing or undefined", () => {
+    const fallbackVal = computeMorphologicalDistance(null, null);
+    assert.equal(fallbackVal, 0.50, "Fallback must be 0.50 for null inputs");
+
+    const fallbackUndefined = computeMorphologicalDistance(undefined, undefined);
+    assert.equal(fallbackUndefined, 0.50, "Fallback must be 0.50 for undefined inputs");
+
+    const partialFeat: FaceFeatures = { ...emptyFeatures() };
+    delete (partialFeat as any).anatomical;
+    const res = computeMorphologicalDistance(partialFeat, null);
+    assert.equal(res, 0.50, "Fallback must be 0.50 when one side is null");
+  });
+
+  it("meets performance SLA of < 5.0ms per match call for morphological tie-breaker overhead", () => {
+    const userAnat: ExtendedAnatomicalFeatures = {
+      upperThirdRatio: 0.3333,
+      middleThirdRatio: 0.3333,
+      lowerThirdRatio: 0.3334,
+      lateralFifthsRatios: [0.2, 0.2, 0.2, 0.2, 0.2],
+      interCanthalDistance: 0.21,
+      canthalTiltAngleDeg: 8.0,
+      nasalIndex: 0.70,
+      bigonialToBizygomaticRatio: 0.76,
+      gonialJawlineAngleDeg: 135.0,
+      lipVermilionHeightRatio: 0.625,
+      philtrumDepth: 0.50,
+    };
+    const userFeatures: FaceFeatures = {
+      ...emptyFeatures(),
+      anatomical: userAnat,
+    };
+
+    const mockCelebs: CelebrityEmbedding[] = Array.from({ length: 50 }, (_, i) => ({
+      id: `celeb-${i}`,
+      name: `Celeb ${i}`,
+      path: `/celeb-${i}.jpg`,
+      descriptor: Array.from(new Float32Array(128).fill(0.1 + (i % 3) * 0.002)),
+      age: 30,
+      gender: "male",
+      genderProb: 0.95,
+      features: {
+        ...emptyFeatures(),
+        anatomical: {
+          ...userAnat,
+          canthalTiltAngleDeg: 8.0 + (i % 5),
+          gonialJawlineAngleDeg: 135.0 - (i % 7),
+        },
+      },
+    }));
+
+    const query: UserFaceQuery = {
+      descriptor: new Float32Array(128).fill(0.1),
+      age: 30,
+      gender: "male",
+      genderProbability: 0.95,
+      features: userFeatures,
+    };
+
+    for (let i = 0; i < 15; i++) {
+      rankByDescriptor(query, mockCelebs, 5);
+    }
+    const start = performance.now();
+    const iterations = 80;
+    for (let i = 0; i < iterations; i++) {
+      rankByDescriptor(query, mockCelebs, 5);
+    }
+    const totalElapsed = performance.now() - start;
+    const avgMsPerCall = totalElapsed / iterations;
+
+    assert.ok(
+      avgMsPerCall < 2.0,
+      `Morphological tie-breaker overhead (${avgMsPerCall.toFixed(3)}ms/call) must be < 5.0ms after warmup`,
+    );
+  });
+});
+
+describe("F1: weak neighborhood raw-distance re-sort", () => {
+  /** L2-normalized query with a deterministic orthogonal perturbation at a target ensemble distance. */
+  function vectorAtEnsembleDistance(query: Float32Array, targetD: number, seed: number): Float32Array {
+    let lo = 1e-4;
+    let hi = 1.5;
+    let best = query;
+    for (let iter = 0; iter < 28; iter++) {
+      const mid = (lo + hi) / 2;
+      const raw = new Float32Array(query.length);
+      for (let i = 0; i < query.length; i++) {
+        raw[i] = (query[i] ?? 0) + Math.sin((i + 1) * seed) * mid;
+      }
+      const cand = l2Normalize(raw);
+      const d = ensembleDistance(query, cand);
+      best = cand;
+      if (d < targetD) lo = mid;
+      else hi = mid;
+    }
+    return best;
+  }
+
+  it("IMG_3936 Face 2: weak top-K re-sorts by raw dist (Reese → Saoirse → Chastain)", () => {
+    // Female Caucasian query; all raw FaceNet % < 55 (weak band).
+    // Distances spaced |Δd| ≥ 0.015 so R5 morph window is closed.
+    // Saoirse carries a cross-demographic cluster penalty that used to promote
+    // farther Chastain above her under byFaceThenDemo (dist+penalty ranking).
+    const queryDesc = l2Normalize(
+      Float32Array.from({ length: 128 }, (_, i) => Math.sin(i * 0.19 + 0.3)),
+    );
+    const descReese = vectorAtEnsembleDistance(queryDesc, 0.36, 1.1);
+    const descSaoirse = vectorAtEnsembleDistance(queryDesc, 0.385, 2.2);
+    const descChastain = vectorAtEnsembleDistance(queryDesc, 0.41, 3.3);
+
+    const dReese = ensembleDistance(queryDesc, descReese);
+    const dSaoirse = ensembleDistance(queryDesc, descSaoirse);
+    const dChastain = ensembleDistance(queryDesc, descChastain);
+
+    assert.ok(dReese < dSaoirse && dSaoirse < dChastain);
+    assert.ok(dSaoirse - dReese >= MORPH_TIE_THRESHOLD_EPS);
+    assert.ok(dChastain - dSaoirse >= MORPH_TIE_THRESHOLD_EPS);
+    assert.ok(
+      distanceToMatchPercent(dReese) < 55,
+      `best raw % must be weak (<55), got ${distanceToMatchPercent(dReese)}`,
+    );
+
+    // Cross-demo penalty on Saoirse (~0.22) exceeds |Δd| to Chastain so old
+    // ranking would place Chastain above Saoirse despite farther FaceNet dist.
+    assert.ok(
+      dSaoirse + 0.22 > dChastain,
+      "fixture must invert Saoirse/Chastain under dist+crossPenalty ranking",
+    );
+
+    const userFeat = feat({
+      skinL: 0.72,
+      eyeSlant: 0.45,
+      noseWidth: 0.42,
+      feminine: 0.85,
+      masculine: 0.2,
+    });
+
+    const query: UserFaceQuery = {
+      descriptor: queryDesc,
+      age: 34,
+      gender: "female",
+      genderProbability: 0.96,
+      features: userFeat,
+      ethnicCluster: "Caucasian",
+    };
+
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "reese-witherspoon",
+        name: "Reese Witherspoon",
+        path: "/celebs/reese-witherspoon.jpg",
+        fallbackPath: "/celebs/reese-witherspoon.jpg",
+        descriptor: Array.from(descReese),
+        age: 48,
+        gender: "female",
+        genderProb: 0.95,
+        features: { ...userFeat },
+        ethnicCluster: "Caucasian",
+      },
+      {
+        id: "saoirse-ronan",
+        name: "Saoirse Ronan",
+        path: "/celebs/saoirse-ronan.jpg",
+        fallbackPath: "/celebs/saoirse-ronan.jpg",
+        descriptor: Array.from(descSaoirse),
+        age: 30,
+        gender: "female",
+        genderProb: 0.95,
+        // Cluster mismatch forces ~0.22 cross-demo penalty → old inversion vs Chastain
+        features: feat({
+          skinL: 0.35,
+          eyeSlant: 0.85,
+          noseWidth: 0.7,
+          feminine: 0.8,
+          masculine: 0.2,
+        }),
+        ethnicCluster: "East Asian",
+      },
+      {
+        id: "jessica-chastain",
+        name: "Jessica Chastain",
+        path: "/celebs/jessica-chastain.jpg",
+        fallbackPath: "/celebs/jessica-chastain.jpg",
+        descriptor: Array.from(descChastain),
+        age: 47,
+        gender: "female",
+        genderProb: 0.95,
+        features: { ...userFeat },
+        ethnicCluster: "Caucasian",
+      },
+    ];
+
+    const matches = rankByDescriptor(query, gallery, 3);
+    assert.equal(matches.length, 3);
+    assert.deepEqual(
+      matches.map((m) => m.celebrityId),
+      ["reese-witherspoon", "saoirse-ronan", "jessica-chastain"],
+      "weak neighborhood must list pure FaceNet distance order",
+    );
+
+    for (const m of matches) {
+      assert.ok(
+        m.matchPercent < 55,
+        `${m.celebrityId} matchPercent ${m.matchPercent} must stay weak (<55)`,
+      );
+    }
+    assert.ok(matches[0]!.matchPercent >= matches[1]!.matchPercent);
+    assert.ok(matches[1]!.matchPercent >= matches[2]!.matchPercent);
+    assert.ok(
+      (matches[0]!.distance ?? 0) <= (matches[1]!.distance ?? 0) &&
+        (matches[1]!.distance ?? 0) <= (matches[2]!.distance ?? 0),
+    );
+  });
+});
+
 

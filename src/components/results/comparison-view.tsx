@@ -2,7 +2,9 @@ import { useState, useRef, useCallback } from "react";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { cn } from "@/lib/utils/cn";
 import { Sliders, Columns, Sparkles } from "lucide-react";
-import type { TraitInsight } from "@/lib/face/types";
+import type { ExtendedAnatomicalFeatures, TraitInsight } from "@/lib/face/types";
+import type { RegionalOcclusionConfidence } from "@/lib/face/occlusion";
+import { AnatomicalInspectionCards, FaceMeshOverlay } from "@/components/results/biometric-mesh";
 
 export type ComparisonMode = "side-by-side" | "split-slider" | "landmarks";
 
@@ -15,6 +17,9 @@ export interface ComparisonViewProps {
   celebrityInitials: string;
   accentHue?: number;
   traits?: TraitInsight[];
+  landmarks?: Array<{ x: number; y: number }> | null;
+  anatomical?: ExtendedAnatomicalFeatures | null;
+  occlusion?: RegionalOcclusionConfidence | null;
   className?: string;
 }
 
@@ -27,6 +32,9 @@ export function ComparisonView({
   celebrityInitials,
   accentHue = 180,
   traits = [],
+  landmarks = null,
+  anatomical = null,
+  occlusion = null,
   className,
 }: ComparisonViewProps) {
   const [mode, setMode] = useState<ComparisonMode>("side-by-side");
@@ -250,22 +258,15 @@ export function ComparisonView({
       {mode === "landmarks" && (
         <div className="space-y-3">
           <div className="flex items-center justify-center gap-3 sm:gap-6">
-            {/* User Face with Landmark Nodes */}
-            <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-2xl border border-match/40 bg-bg-subtle shadow-md">
+            <div className="relative h-28 w-28 sm:h-40 sm:w-40 overflow-hidden rounded-2xl border border-match/40 bg-bg-subtle shadow-md">
               {userPhotoUrl ? (
                 <img src={userPhotoUrl} alt="Your face landmarks" className="h-full w-full object-cover object-top filter brightness-95" />
               ) : (
                 <div className="h-full w-full bg-bg-subtle" />
               )}
-              {/* Feature Points Overlay */}
-              <div className="absolute inset-0 pointer-events-none z-10">
-                <div className="absolute top-[38%] left-[36%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-                <div className="absolute top-[38%] left-[64%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-                <div className="absolute top-[52%] left-[50%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-                <div className="absolute top-[68%] left-[50%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-              </div>
+              <FaceMeshOverlay landmarks={landmarks} occlusion={occlusion} />
               <span className="absolute bottom-1.5 left-1.5 rounded bg-bg/80 px-1.5 py-0.5 text-[10px] font-mono text-match backdrop-blur-sm">
-                YOU_MESH
+                YOU
               </span>
             </div>
 
@@ -273,8 +274,7 @@ export function ComparisonView({
               MATCH_VECTOR ➔
             </div>
 
-            {/* Celebrity Face with Landmark Nodes */}
-            <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-2xl border border-match/40 bg-bg-subtle shadow-md">
+            <div className="relative h-28 w-28 sm:h-40 sm:w-40 overflow-hidden rounded-2xl border border-match/40 bg-bg-subtle shadow-md">
               <CelebrityPortrait
                 initials={celebrityInitials}
                 accentHue={accentHue}
@@ -285,19 +285,19 @@ export function ComparisonView({
                 alt={celebrityName}
                 className="h-full w-full rounded-none filter brightness-95"
               />
-              <div className="absolute inset-0 pointer-events-none z-10">
-                <div className="absolute top-[38%] left-[36%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-                <div className="absolute top-[38%] left-[64%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-                <div className="absolute top-[52%] left-[50%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-                <div className="absolute top-[68%] left-[50%] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-match shadow-[0_0_6px_var(--color-match)]" />
-              </div>
+              <FaceMeshOverlay />
               <span className="absolute bottom-1.5 right-1.5 rounded bg-bg/80 px-1.5 py-0.5 text-[10px] font-mono text-match backdrop-blur-sm">
-                STAR_MESH
+                CANONICAL TWIN
               </span>
             </div>
           </div>
 
-          {/* Trait Feature Callout Badges */}
+          <AnatomicalInspectionCards
+            anatomical={anatomical}
+            celebrityName={celebrityName}
+            occlusion={occlusion}
+          />
+
           {traits.length > 0 && (
             <div className="grid grid-cols-2 gap-2 max-w-md mx-auto pt-1">
               {traits.map((t) => (

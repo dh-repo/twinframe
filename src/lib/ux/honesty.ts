@@ -55,11 +55,17 @@ export function shareText(name: string, matchPercent: number): string {
 export function shouldShowEstimatedAge(
   age: number | null | undefined,
   quality?: { score?: number; sharpness?: number },
+  extras?: { youthfulness?: number },
 ): boolean {
   if (age == null || !Number.isFinite(age)) return false;
+  // Never display a child age — the net overshoots kids and it is the wrong label.
+  if (age < 16 || age > 80) return false;
   const score = quality?.score ?? 1;
   const sharpness = quality?.sharpness ?? 100;
   if (score < 0.35 || sharpness < 40) return false;
-  if ((age < 16 || age > 75) && (score < 0.55 || sharpness < 55)) return false;
+  if (age > 75 && (score < 0.55 || sharpness < 55)) return false;
+  const youth = extras?.youthfulness;
+  // Age-net often reports ~18–21 for children. High youthfulness + "teen" → hide.
+  if (typeof youth === "number" && age <= 22 && youth >= 0.68) return false;
   return true;
 }

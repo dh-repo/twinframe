@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   extractGeometryFeatures,
   extractGeometryFeatures68,
+  enrichWithColor68,
   geomAffinity,
   morphologicalAffinity,
   morphologicalDistance,
@@ -89,6 +90,7 @@ describe("extractGeometryFeatures", () => {
   it("extracts finite features in [0,1] from synthetic face", () => {
     const f = extractGeometryFeatures(syntheticFace());
     for (const [k, v] of Object.entries(f)) {
+      if (k === "anatomical") continue;
       assert.ok(Number.isFinite(v), `${k} not finite`);
       assert.ok(v >= 0 && v <= 1, `${k}=${v} out of range`);
     }
@@ -161,6 +163,7 @@ describe("extractGeometryFeatures68", () => {
   it("extracts finite normalized ratios in [0, 1] from 68-point landmarks", () => {
     const f = extractGeometryFeatures68(syntheticFace68());
     for (const [key, val] of Object.entries(f)) {
+      if (key === "anatomical") continue;
       assert.ok(Number.isFinite(val), `68-point trait ${key} is not finite: ${val}`);
       assert.ok(val >= 0 && val <= 1, `68-point trait ${key}=${val} is out of [0, 1]`);
     }
@@ -259,6 +262,95 @@ describe("sampleRegionColor", () => {
     assert.ok(Math.abs(c.r - 200) < 1);
     assert.ok(Math.abs(c.g - 120) < 1);
     assert.ok(Math.abs(c.b - 90) < 1);
+  });
+});
+
+describe("enrichWithColor68 (F4)", () => {
+  /** Fill image: light or dark skin body + optional hair band at top. */
+  function faceCropImage(opts: {
+    skin: [number, number, number];
+    hair: [number, number, number];
+    w?: number;
+    h?: number;
+  }) {
+    const w = opts.w ?? 100;
+    const h = opts.h ?? 100;
+    const data = new Uint8ClampedArray(w * h * 4);
+    // Hair band covers sample y = min(brow)/100 − 0.08 ≈ 0.15 for syntheticFace68
+    const hairH = Math.floor(h * 0.22);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const [r, g, b] = y < hairH ? opts.hair : opts.skin;
+        data[i] = r;
+        data[i + 1] = g;
+        data[i + 2] = b;
+        data[i + 3] = 255;
+      }
+    }
+    return makeImageData(data, w, h);
+  }
+
+  it("light-skin ImageData + 68 pts in 0–100 → skinL materially ≠ 0.5 and higher than dark-skin", () => {
+    const lms = syntheticFace68(); // already 0–100 style coords
+    const lightImg = faceCropImage({
+      skin: [230, 190, 165],
+      hair: [60, 45, 35],
+    });
+    const darkImg = faceCropImage({
+      skin: [70, 45, 35],
+      hair: [25, 20, 18],
+    });
+    const base = extractGeometryFeatures68(lms);
+    const light = enrichWithColor68(base, lms, lightImg);
+    const dark = enrichWithColor68(base, lms, darkImg);
+    assert.ok(Math.abs(light.skinL - 0.5) > 0.05, `light skinL=${light.skinL} too close to 0.5`);
+    assert.ok(
+      light.skinL > dark.skinL,
+      `light skinL=${light.skinL} should exceed dark skinL=${dark.skinL}`,
+    );
+    console.log(`enrich68 light.skinL=${light.skinL} dark.skinL=${dark.skinL}`);
+  });
+
+  it("dark hair band above brow → hairL lower than blonde fixture", () => {
+    const lms = syntheticFace68();
+    const darkHair = faceCropImage({
+      skin: [210, 170, 145],
+      hair: [20, 15, 12],
+    });
+    const blondeHair = faceCropImage({
+      skin: [210, 170, 145],
+      hair: [220, 195, 140],
+    });
+    const base = extractGeometryFeatures68(lms);
+    const dark = enrichWithColor68(base, lms, darkHair);
+    const blonde = enrichWithColor68(base, lms, blondeHair);
+    assert.ok(
+      dark.hairL < blonde.hairL,
+      `dark hairL=${dark.hairL} should be < blonde hairL=${blonde.hairL}`,
+    );
+    console.log(`enrich68 dark.hairL=${dark.hairL} blonde.hairL=${blonde.hairL}`);
+  });
+
+  it("enrichWithColor68 with 68 pts does NOT no-op", () => {
+    const lms = syntheticFace68();
+    const img = faceCropImage({
+      skin: [200, 150, 120],
+      hair: [40, 30, 25],
+    });
+    const base = emptyFeatures();
+    assert.equal(base.skinL, 0.5);
+    assert.equal(base.hairL, 0.5);
+    const enriched = enrichWithColor68(base, lms, img);
+    const changed =
+      enriched.skinL !== base.skinL ||
+      enriched.skinA !== base.skinA ||
+      enriched.skinB !== base.skinB ||
+      enriched.hairL !== base.hairL ||
+      enriched.hairA !== base.hairA ||
+      enriched.hairB !== base.hairB;
+    assert.ok(changed, `enrichWithColor68 no-oped: skinL=${enriched.skinL} hairL=${enriched.hairL}`);
+    console.log(`enrich68 no-op-check skinL=${enriched.skinL} hairL=${enriched.hairL}`);
   });
 });
 

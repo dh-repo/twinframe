@@ -1,4 +1,11 @@
-import type { FaceFeatures } from "../face/types.ts";
+import type { FaceFeatures, FaceViewType, HeadPoseOrientation } from "../face/types.ts";
+
+export interface ViewReferenceProfile {
+  viewType: FaceViewType;
+  pose?: HeadPoseOrientation;
+  features?: Partial<FaceFeatures>;
+  photoUrl?: string;
+}
 
 export interface CelebrityProfile {
   id: string;
@@ -7,6 +14,7 @@ export interface CelebrityProfile {
   tags: string[];
   accentHue: number;
   features: FaceFeatures;
+  referenceViews?: ViewReferenceProfile[];
 }
 
 export function initials(name: string): string {

@@ -32,7 +32,22 @@ describe("shouldShowEstimatedAge", () => {
   it("hides implausible ages on low-quality captures", () => {
     assert.equal(shouldShowEstimatedAge(null), false);
     assert.equal(shouldShowEstimatedAge(13, { score: 0.2, sharpness: 30 }), false);
-    assert.equal(shouldShowEstimatedAge(13, { score: 0.4, sharpness: 45 }), false);
+    assert.equal(shouldShowEstimatedAge(13, { score: 0.8, sharpness: 80 }), false);
     assert.equal(shouldShowEstimatedAge(28, { score: 0.8, sharpness: 70 }), true);
+  });
+
+  it("hides teen age-net overshoot when the face is still child-like", () => {
+    assert.equal(
+      shouldShowEstimatedAge(18, { score: 0.61, sharpness: 100 }, { youthfulness: 0.72 }),
+      false,
+    );
+    assert.equal(
+      shouldShowEstimatedAge(38, { score: 0.64, sharpness: 100 }, { youthfulness: 0.73 }),
+      true,
+    );
+    assert.equal(
+      shouldShowEstimatedAge(21, { score: 0.8, sharpness: 80 }, { youthfulness: 0.4 }),
+      true,
+    );
   });
 });

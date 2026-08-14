@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils/cn";
 interface WebcamCaptureProps {
   open: boolean;
   onClose: () => void;
-  onCapture: (blob: Blob) => void;
+  onCapture: (blob: Blob, burst?: Blob[]) => void;
 }
 
 export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) {
@@ -75,28 +75,40 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
     return () => stop();
   }, [open, start, stop]);
 
+  const grabFrame = useCallback(async (): Promise<Blob> => {
+    const video = videoRef.current;
+    if (!video) throw new Error("No video");
+    const w = video.videoWidth;
+    const h = video.videoHeight;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas unavailable");
+    if (facingMode === "user") {
+      ctx.translate(w, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0, w, h);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.92),
+    );
+    if (!blob) throw new Error("Capture failed");
+    return blob;
+  }, [facingMode]);
+
   const takePhoto = useCallback(async () => {
     const video = videoRef.current;
     if (!video || !ready || capturing) return;
     setCapturing(true);
     try {
-      const w = video.videoWidth;
-      const h = video.videoHeight;
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas unavailable");
-      if (facingMode === "user") {
-        ctx.translate(w, 0);
-        ctx.scale(-1, 1);
+      const burst: Blob[] = [];
+      for (let i = 0; i < 6; i++) {
+        if (i > 0) await new Promise((r) => setTimeout(r, 75));
+        burst.push(await grabFrame());
       }
-      ctx.drawImage(video, 0, 0, w, h);
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/jpeg", 0.92),
-      );
-      if (!blob) throw new Error("Capture failed");
-      onCapture(blob);
+      const blob = burst[burst.length - 1]!;
+      onCapture(blob, burst);
       onClose();
     } catch {
       setError("Capture failed. Try again or upload a photo.");
@@ -104,7 +116,7 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
       setCapturing(false);
       setCountdown(null);
     }
-  }, [ready, capturing, facingMode, onCapture, onClose]);
+  }, [ready, capturing, grabFrame, onCapture, onClose]);
 
   const beginCountdown = useCallback(() => {
     if (!ready || !!error || capturing || countdown != null) return;

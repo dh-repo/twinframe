@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { RotateCcw, AlertTriangle } from "lucide-react";
+import { RotateCcw, AlertTriangle, Users } from "lucide-react";
 import type { MatchResult } from "@/lib/face/types";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { MatchRevealCard } from "@/components/results/match-reveal-card";
@@ -13,9 +13,15 @@ interface MatchResultsProps {
   result: MatchResult;
   previewUrl: string | null;
   onReset: () => void;
+  onMatchOtherFace?: () => void;
 }
 
-export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps) {
+export function MatchResults({
+  result,
+  previewUrl,
+  onReset,
+  onMatchOtherFace,
+}: MatchResultsProps) {
   const top = result.matches[0];
   const rest = result.matches.slice(1);
   const youUrl = result.facePreviewUrl || previewUrl;
@@ -45,79 +51,8 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
     );
   }
 
-  // <55% is embedding proximity, not a look-alike. Do not run the reveal /
-  // share treatment — that is what made a 39% Travis Scott result feel like a twin.
-  if (topWeak) {
-    return (
-      <section className="animate-fade-up space-y-6">
-        <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-bg-elevated">
-          <div className="px-5 py-5 sm:px-6 text-center space-y-3">
-            {youUrl && (
-              <div className="mx-auto h-20 w-20 overflow-hidden rounded-2xl border border-border bg-bg">
-                <img src={youUrl} alt="Your face" className="h-full w-full object-cover object-top" />
-              </div>
-            )}
-            <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.16em] text-fg-subtle">
-              No close look-alike
-            </p>
-            <h2 className="text-xl font-bold tracking-tight text-fg">
-              Nobody in the gallery is a strong match
-            </h2>
-            <p className="mx-auto max-w-sm text-sm leading-relaxed text-fg-muted text-pretty">
-              Your photo analyzed fine. The names below are only the nearest embeddings
-              ({Math.round(top.matchPercent)}% face similarity) — they are not doppelgängers.
-              Try another angle or lighting, or the set may not include a close look-alike yet.
-            </p>
-          </div>
-        </div>
-
-        {result.matches.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="px-1 text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-              Nearest in the gallery
-            </h3>
-            <ul className="space-y-2.5">
-              {result.matches.map((m, i) => (
-                <li
-                  key={m.celebrityId}
-                  className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-bg-elevated px-4 py-3"
-                >
-                  <span className="w-5 text-center text-xs font-mono font-medium text-fg-subtle">
-                    #{i + 1}
-                  </span>
-                  <CelebrityPortrait
-                    initials={m.initials}
-                    accentHue={m.accentHue}
-                    photoUrl={m.photoUrl}
-                    photoUrl192={m.photoUrl192}
-                    fallbackUrl={m.fallbackPhotoUrl}
-                    size="sm"
-                    alt={m.name}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold leading-tight text-fg">{m.name}</p>
-                    <p className="truncate text-xs text-fg-muted">{m.knownFor}</p>
-                  </div>
-                  <div className="shrink-0 text-right text-sm font-medium tabular-nums text-fg-muted">
-                    {Math.round(m.matchPercent)}%
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <Button variant="primary" size="lg" onClick={onReset} className="w-full">
-          <RotateCcw className="h-4 w-4" />
-          Try another photo
-        </Button>
-        <p className="pb-1 text-center text-[11px] leading-relaxed text-fg-subtle">
-          FaceNet embeddings · on-device · engine v{result.engineVersion}
-        </p>
-      </section>
-    );
-  }
-
+  // All bands share one shell so weak matches keep ComparisonView / Landmarks HUD
+  // and the quality note. ShareCard stays soft/strong only (no twin-share chrome on weak).
   return (
     <section className="animate-fade-up space-y-6">
       {qualityNote && (
@@ -132,6 +67,10 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         youUrl={youUrl}
         estimatedAge={result.estimatedAge}
         quality={result.quality}
+        landmarks={result.croppedLandmarks}
+        anatomical={result.features?.anatomical}
+        occlusion={result.occlusion}
+        youthfulness={result.features?.youthfulness}
       />
 
       {rest.length > 0 && (
@@ -176,13 +115,22 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         </div>
       )}
 
-      <ShareCard
-        youUrl={youUrl}
-        celebrityName={top.name}
-        celebrityPhotoUrl={top.photoUrl}
-        celebrityPhoto192Url={top.photoUrl192}
-        matchPercent={top.matchPercent}
-      />
+      {!topWeak && (
+        <ShareCard
+          youUrl={youUrl}
+          celebrityName={top.name}
+          celebrityPhotoUrl={top.photoUrl}
+          celebrityPhoto192Url={top.photoUrl192}
+          matchPercent={top.matchPercent}
+        />
+      )}
+
+      {onMatchOtherFace && (
+        <Button variant="secondary" size="lg" onClick={onMatchOtherFace} className="w-full">
+          <Users className="h-4 w-4" />
+          Match another face in this photo
+        </Button>
+      )}
 
       <Button variant="secondary" size="lg" onClick={onReset} className="w-full">
         <RotateCcw className="h-4 w-4" />

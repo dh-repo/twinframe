@@ -5,12 +5,23 @@ import {
   type FaceFeatures,
   type TraitInsight,
   type EthnicCluster,
+  type MatchScoreResult,
   getEthnicCluster,
 } from "./types.ts";
-import { geomAffinity, crossDemographicMismatchPenalty } from "./geometry.ts";
+import { geomAffinity, crossDemographicMismatchPenalty, computeMorphologicalDistance, morphologicalDistance } from "./geometry.ts";
+import type { RegionalOcclusionConfidence } from "./occlusion.ts";
+import {
+  estimateNuissanceDirections,
+  projectIdentity,
+  shouldProjectIdentity,
+} from "./identity-project.ts";
 import {
   type CelebrityEmbedding,
   ensembleDistance,
+  fastEnsembleDistance,
+  fastMinMultiVectorDistance,
+  fastTopologicalManifoldDistance,
+  getBestMatchingReferenceVector,
   getCelebrityDescriptors,
   rankPercentsFromDistances,
   distanceToMatchPercent,
@@ -19,10 +30,17 @@ import {
   computeMatchConfidence,
   blendWithMatchConfidence,
   mergeWithProfile,
+  combinedDescriptorDistance,
+  computeMatchScore,
 } from "./embeddings.ts";
 import { getPoseAdaptiveLandmarkWeight, type HeadPose } from "./pose.ts";
+import { WEAK_MATCH_MAX } from "../ux/honesty.ts";
 
-export { computeMatchConfidence, blendWithMatchConfidence };
+/** Threshold for Dynamic Morphological Metric Tie-Breaking (R5: |\Delta d| < 0.015) */
+export const MORPH_TIE_THRESHOLD_EPS = 0.015;
+
+export { computeMatchConfidence, blendWithMatchConfidence, computeMatchScore, combinedDescriptorDistance, computeMorphologicalDistance };
+export type { MatchScoreResult };
 
 /** Real celebrity portraits (jpg) vs 96px TV-extra scrapes that steal top-k. */
 export function isPrimaryGalleryEntry(celeb: CelebrityEmbedding): boolean {
@@ -104,6 +122,10 @@ export interface UserFaceQuery {
   headPose?: HeadPose;
   /** Ethnic cluster annotation for cross-demographic alignment */
   ethnicCluster?: EthnicCluster;
+  /** Glasses/beard regional confidence for morph damping */
+  occlusion?: RegionalOcclusionConfidence;
+  /** Soft-wipe hair/age directions on the query (live photos only) */
+  projectIdentity?: boolean;
 }
 
 /** Min ensemble distance across query templates (falls back to single descriptor). */
@@ -117,7 +139,7 @@ export function minTemplateDistance(
       : [query.descriptor];
   let best = Infinity;
   for (const t of templates) {
-    const d = ensembleDistance(t, celebDescriptor);
+    const d = fastEnsembleDistance(t, celebDescriptor);
     if (d < best) best = d;
   }
   return best;
@@ -131,22 +153,37 @@ export function minMultiVectorDistance(
   query: UserFaceQuery,
   celeb: CelebrityEmbedding,
 ): number {
-  const templates =
-    query.descriptors && query.descriptors.length > 0
-      ? query.descriptors
-      : [query.descriptor];
-  const celebDescriptors = getCelebrityDescriptors(celeb);
-  if (celebDescriptors.length === 0) {
-    return minTemplateDistance(query, celeb.descriptor);
+  if (!query.descriptor || query.descriptor.length === 0) return 1.0;
+  const qMain = query.descriptor instanceof Float32Array
+    ? query.descriptor
+    : Float32Array.from(query.descriptor);
+  const qDescs = query.descriptors && query.descriptors.length > 0
+    ? query.descriptors.map((d) => d instanceof Float32Array ? d : Float32Array.from(d))
+    : [qMain];
+  return fastMinMultiVectorDistance(qDescs, celeb, query.headPose);
+}
+
+function getTopKCoarseItems<T extends { dist: number; coarseAdjusted: number }>(items: T[], k: number): T[] {
+  if (items.length <= k) {
+    return items.slice().sort((a, b) => a.dist - b.dist || a.coarseAdjusted - b.coarseAdjusted);
   }
-  let best = Infinity;
-  for (const t of templates) {
-    for (const cVec of celebDescriptors) {
-      const d = ensembleDistance(t, cVec);
-      if (d < best) best = d;
+  const top: T[] = items.slice(0, k);
+  let maxIdx = 0;
+  for (let i = 1; i < k; i++) {
+    if (top[i]!.dist > top[maxIdx]!.dist) maxIdx = i;
+  }
+  for (let i = k; i < items.length; i++) {
+    const item = items[i]!;
+    if (item.dist < top[maxIdx]!.dist) {
+      top[maxIdx] = item;
+      maxIdx = 0;
+      for (let j = 1; j < k; j++) {
+        if (top[j]!.dist > top[maxIdx]!.dist) maxIdx = j;
+      }
     }
   }
-  return best;
+  top.sort((a, b) => a.dist - b.dist || a.coarseAdjusted - b.coarseAdjusted);
+  return top;
 }
 
 /**
@@ -171,18 +208,84 @@ export function rankByDescriptor(
   topK = 5,
   options?: { includeLongTail?: boolean },
 ): CelebrityMatch[] {
+  if (!gallery || gallery.length === 0) return [];
+  if (!user.descriptor || user.descriptor.length === 0) return [];
+
   const geomWeight = user.headPose
     ? getPoseAdaptiveLandmarkWeight(user.headPose, 0.10)
     : 0.10;
   const genderConf = Math.max(0, Math.min(1, user.genderProbability));
 
-  const head = gallery.filter(isPrimaryGalleryEntry);
-  const searchGallery =
-    options?.includeLongTail || head.length === 0 ? gallery : head;
+  let searchGallery = gallery;
+  if (!options?.includeLongTail) {
+    const head = gallery.filter(isPrimaryGalleryEntry);
+    if (head.length > 0) searchGallery = head;
+  }
 
-  // --- STAGE 1: Coarse Multi-Vector Search (Top-K1, K1 = 30) ---
-  const coarseScored = searchGallery.map((celeb) => {
-    const dist = minMultiVectorDistance(user, celeb);
+  // Pre-convert query descriptors to Float32Array ONCE (zero allocation in loop)
+  const qMain = user.descriptor instanceof Float32Array
+    ? user.descriptor
+    : Float32Array.from(user.descriptor);
+  const qDescs = user.descriptors && user.descriptors.length > 0
+    ? user.descriptors.map((d) => d instanceof Float32Array ? d : Float32Array.from(d))
+    : [qMain];
+
+  let qDescsProj: Float32Array[] | null = null;
+  if (user.projectIdentity) {
+    const residuals: Float32Array[] = [];
+    for (const celeb of searchGallery) {
+      const ds = getCelebrityDescriptors(celeb);
+      if (ds.length < 2) continue;
+      const primary = ds[0]!;
+      for (let i = 1; i < ds.length; i++) {
+        const extra = ds[i]!;
+        if (extra.length !== primary.length) continue;
+        const r = new Float32Array(primary.length);
+        for (let k = 0; k < primary.length; k++) r[k] = (extra[k] ?? 0) - (primary[k] ?? 0);
+        residuals.push(r);
+      }
+    }
+    const dirs = estimateNuissanceDirections(residuals, 2);
+    if (dirs.length > 0) qDescsProj = qDescs.map((d) => projectIdentity(d, dirs));
+  }
+
+  // Stage 1 target capacity K1 = max(30, topK * 2)
+  const K1 = Math.max(30, topK * 2);
+
+  // --- STAGE 1: Bounded Coarse Multi-Vector Search ---
+  type CoarseItem = {
+    celeb: CelebrityEmbedding;
+    dist: number;
+    coarseAdjusted: number;
+    g: number;
+    a: number;
+  };
+  const topK1List: CoarseItem[] = [];
+  const bestById = new Map<string, CoarseItem>();
+  let maxDistInTopK1 = Infinity;
+
+  for (let i = 0; i < searchGallery.length; i++) {
+    const celeb = searchGallery[i]!;
+
+    const prev = bestById.get(celeb.id);
+    const useProj =
+      Boolean(qDescsProj) &&
+      shouldProjectIdentity(user.age, celeb.age, user.features?.hairL, celeb.features?.hairL);
+    const dist = fastMinMultiVectorDistance(
+      useProj ? qDescsProj! : qDescs,
+      celeb,
+      user.headPose,
+      maxDistInTopK1,
+    );
+
+    if (prev && dist >= prev.dist - 1e-6) {
+      continue;
+    }
+
+    if (topK1List.length >= K1 && dist >= maxDistInTopK1) {
+      continue;
+    }
+
     const g = genderAffinity(user.gender, user.genderProbability, celeb);
     const a = ageAffinity(user.age, celeb.age);
     const genderNudge =
@@ -191,37 +294,62 @@ export function rankByDescriptor(
         : 0;
     const ageNudge = 0.05 * (1 - a);
     const coarseAdjusted = dist + genderNudge + ageNudge;
-    return { celeb, dist, coarseAdjusted, g, a };
-  });
 
-  // Deduplicate by celeb id: keep best bucket per id (lowest face distance, then coarseAdjusted)
-  const bestById = new Map<string, (typeof coarseScored)[number]>();
-  for (const s of coarseScored) {
-    const prev = bestById.get(s.celeb.id);
-    if (
-      !prev ||
-      s.dist < prev.dist - 1e-6 ||
-      (Math.abs(s.dist - prev.dist) <= 1e-6 && s.coarseAdjusted < prev.coarseAdjusted)
-    ) {
-      bestById.set(s.celeb.id, s);
+    const newItem: CoarseItem = { celeb, dist, coarseAdjusted, g, a };
+    bestById.set(celeb.id, newItem);
+
+    if (prev) {
+      const existingIdx = topK1List.indexOf(prev);
+      if (existingIdx >= 0) topK1List.splice(existingIdx, 1);
+    }
+
+    let low = 0;
+    let high = topK1List.length;
+    while (low < high) {
+      const mid = (low + high) >>> 1;
+      const m = topK1List[mid]!;
+      if (m.dist < dist || (m.dist === dist && m.coarseAdjusted <= coarseAdjusted)) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+    topK1List.splice(low, 0, newItem);
+
+    if (topK1List.length > K1) {
+      const popped = topK1List.pop()!;
+      bestById.delete(popped.celeb.id);
+    }
+
+    if (topK1List.length >= K1) {
+      maxDistInTopK1 = topK1List[topK1List.length - 1]!.dist;
+    } else {
+      maxDistInTopK1 = Infinity;
     }
   }
-  const dedupedCoarse = Array.from(bestById.values());
-  dedupedCoarse.sort((a, b) => a.dist - b.dist || a.coarseAdjusted - b.coarseAdjusted);
 
-  const K1 = Math.min(30, dedupedCoarse.length);
-  const coarseCandidates = dedupedCoarse.slice(0, K1);
+  const topCoarse = topK1List;
 
   // --- STAGE 2: Fine Morphological Reranker (Top-K2, K2 = topK) ---
   const uCluster = user.ethnicCluster
     ?? (user.features ? getEthnicCluster({ id: "user", features: user.features }) : null);
 
-  const fineScored = coarseCandidates.map((c) => {
+  const fineScored = topCoarse.map((c) => {
     const celebFeatures = c.celeb.features ?? getCelebrityById(c.celeb.id)?.features;
     const cCluster = c.celeb.ethnicCluster
       ?? getEthnicCluster({ id: c.celeb.id, name: c.celeb.name, features: celebFeatures });
     const geomAffinityScore = geomAffinity(user.features, celebFeatures);
-    const crossPenalty = crossDemographicMismatchPenalty(user.features, celebFeatures, uCluster, cCluster);
+    const muteHair =
+      typeof user.age === "number" && Math.abs(user.age - c.celeb.age) > 15;
+    const crossPenalty =
+      user.features && celebFeatures
+        ? crossDemographicMismatchPenalty(
+            morphologicalDistance(user.features, celebFeatures, { muteHair }),
+            undefined,
+            uCluster,
+            cCluster,
+          )
+        : crossDemographicMismatchPenalty(user.features, celebFeatures, uCluster, cCluster);
 
     const genderNudge =
       user.gender !== "unknown" && c.celeb.gender !== user.gender
@@ -242,19 +370,36 @@ export function rankByDescriptor(
     };
   });
 
-  // Primary sort: raw face distance + cross-demographic penalty.
-  const FACE_TIE_EPS = 0.005;
+  // Primary sort: fine face distance + cross-demographic penalty with clinical morphological tie-breaking (R5).
   const byFaceThenDemo = (
     a: (typeof fineScored)[number],
     b: (typeof fineScored)[number],
   ) => {
     const gNudgeA = user.gender !== "unknown" && a.celeb.gender !== user.gender ? 0.10 * genderConf : 0;
     const gNudgeB = user.gender !== "unknown" && b.celeb.gender !== user.gender ? 0.10 * genderConf : 0;
-    const fineDistA = a.dist + a.crossPenalty + gNudgeA;
-    const fineDistB = b.dist + b.crossPenalty + gNudgeB;
-    const dFace = fineDistA - fineDistB;
-    if (Math.abs(dFace) > FACE_TIE_EPS) return dFace;
-    // Near-tie: higher geom affinity first (landmark fusion), then gender/age
+    const dDeep = a.dist - b.dist;
+
+    // Gate on raw FaceNet distance. Penalty/gender still rank outside the window,
+    // but must not open the clinical morph window when |Δd_deep| >= 0.015.
+    if (Math.abs(dDeep) >= MORPH_TIE_THRESHOLD_EPS) {
+      return (a.dist + a.crossPenalty + gNudgeA) - (b.dist + b.crossPenalty + gNudgeB);
+    }
+
+    const userFeat = user.features;
+    const aFeat = a.celeb.features ?? getCelebrityById(a.celeb.id)?.features;
+    const bFeat = b.celeb.features ?? getCelebrityById(b.celeb.id)?.features;
+
+    const dMorphA = computeMorphologicalDistance(userFeat, aFeat, user.occlusion);
+    const dMorphB = computeMorphologicalDistance(userFeat, bFeat, user.occlusion);
+
+    const wMorph = 0.04;
+    const dFinalA = a.dist + wMorph * dMorphA;
+    const dFinalB = b.dist + wMorph * dMorphB;
+    const dFinalDiff = dFinalA - dFinalB;
+
+    if (Math.abs(dFinalDiff) > 1e-6) return dFinalDiff;
+
+    // Secondary fallback: higher landmark geometric affinity first, then demographic prior
     const geomDelta = b.geomAffinityScore - a.geomAffinityScore;
     if (Math.abs(geomDelta) > 1e-4) return geomDelta;
     const demo = b.g + 0.5 * b.a - (a.g + 0.5 * a.a);
@@ -268,20 +413,16 @@ export function rankByDescriptor(
   // Soft gender nudge already lives in byFaceThenDemo. Do not hard-partition
   // the list — that buried opposite-gender identities that were clearly closer.
 
-  // Age/gender may break a true FaceNet near-tie only. Never invert a clearer face.
-  const WEAK_AGE_FACE_EPS = 0.005;
+  // Age/gender may break a true FaceNet near-tie only. Preserves R5 morphological tie-breaking when |Δd| < 0.015.
   if (ordered.length > 1) {
     const poolN = Math.min(48, ordered.length);
     const pool = ordered.slice(0, poolN);
     const rest = ordered.slice(poolN);
     pool.sort((a, b) => {
-      const faceA = a.dist + a.crossPenalty;
-      const faceB = b.dist + b.crossPenalty;
-      if (Math.abs(faceA - faceB) > WEAK_AGE_FACE_EPS) return faceA - faceB;
-      const scoreA = faceA + 0.18 * (1 - a.a) + (a.g < 1 ? 0.08 * genderConf : 0);
-      const scoreB = faceB + 0.18 * (1 - b.a) + (b.g < 1 ? 0.08 * genderConf : 0);
-      if (Math.abs(scoreA - scoreB) > 1e-6) return scoreA - scoreB;
-      return faceA - faceB;
+      if (Math.abs(a.dist - b.dist) >= MORPH_TIE_THRESHOLD_EPS) {
+        return (a.dist + a.crossPenalty) - (b.dist + b.crossPenalty);
+      }
+      return byFaceThenDemo(a, b);
     });
     ordered = [...pool, ...rest];
   }
@@ -296,9 +437,23 @@ export function rankByDescriptor(
     return 1;
   };
   ordered.sort((a, b) => {
-    const faceA = a.dist + a.crossPenalty;
-    const faceB = b.dist + b.crossPenalty;
-    if (Math.abs(faceA - faceB) > FAME_FACE_EPS) return 0;
+    const dFace = Math.abs(a.dist - b.dist);
+    if (dFace > FAME_FACE_EPS) return 0;
+    // R5 owns |Δd_deep| < 0.015: fame/portrait may not invert a morphological decision.
+    if (dFace < MORPH_TIE_THRESHOLD_EPS) {
+      if (!user.features) return 0;
+      const dMorphA = computeMorphologicalDistance(
+        user.features,
+        a.celeb.features ?? getCelebrityById(a.celeb.id)?.features,
+        user.occlusion,
+      );
+      const dMorphB = computeMorphologicalDistance(
+        user.features,
+        b.celeb.features ?? getCelebrityById(b.celeb.id)?.features,
+        user.occlusion,
+      );
+      if (Math.abs(dMorphA - dMorphB) > 1e-4) return 0;
+    }
     const pq = portraitQuality(b.celeb) - portraitQuality(a.celeb);
     if (pq !== 0) return pq;
     return householdFame(b.celeb.id) - householdFame(a.celeb.id);
@@ -310,6 +465,15 @@ export function rankByDescriptor(
   const top = ordered.slice(0, topK);
   if (top.length === 0 || top[0]!.dist > 1.15) {
     return [];
+  }
+
+  // Weak neighborhood: display order must follow raw FaceNet distance so hero %
+  // is non-increasing. Soft/strong (≥55%) keep look-alike ranking (R5, fame, demo).
+  const bestPct = distanceToMatchPercent(Math.min(...top.map((t) => t.dist)));
+  if (bestPct < WEAK_MATCH_MAX) {
+    top.sort(
+      (a, b) => a.dist - b.dist || a.celeb.id.localeCompare(b.celeb.id),
+    );
   }
 
   // Hero % from raw face distance only — cross-demo penalty is for ranking, not score inflation
@@ -330,6 +494,25 @@ export function rankByDescriptor(
       t.celeb.id;
     const anyPath = t.celeb as CelebrityEmbedding & { path192?: string; fallbackPath?: string };
     const matchPercent = percents[i] ?? 0;
+    const celebFeatures = t.celeb.features ?? getCelebrityById(t.celeb.id)?.features;
+    const cCluster = t.celeb.ethnicCluster ?? getEthnicCluster({ id: t.celeb.id, name: t.celeb.name, features: celebFeatures });
+    
+    const bestMatch = getBestMatchingReferenceVector(qDescs, t.celeb, user.headPose);
+    const bestDesc = bestMatch.descriptor;
+    const bestFeat = bestMatch.refVec?.features ?? celebFeatures;
+
+    const matchScore = computeMatchScore(
+      user.descriptor,
+      bestDesc,
+      user.features,
+      bestFeat,
+      {
+        headPose: user.headPose,
+        ethnicClusterA: uCluster,
+        ethnicClusterB: cCluster,
+      },
+    );
+
     return {
       celebrityId: t.celeb.id,
       name: displayName,
@@ -345,9 +528,34 @@ export function rankByDescriptor(
       photoUrl192: anyPath.path192,
       fallbackPhotoUrl: anyPath.fallbackPath,
       distance: t.dist,
-      ethnicCluster: t.celeb.ethnicCluster ?? getEthnicCluster(t.celeb),
+      ethnicCluster: cCluster,
+      matchScoreResult: matchScore,
+      passedLookalikeGate: matchScore.passedLookalikeGate,
     };
   });
+}
+
+/**
+ * Two-Stage candidate search and ranking engine matching contract in PROJECT.md:
+ * Stage 1: Fast coarse dot-product / distance gating on candidate array to select Top 30-50 candidates in < 2ms.
+ * Stage 2: Fine morphological reranking with pose weighting and hill-curve similarity scoring.
+ */
+export function rankCandidates(
+  user: UserFaceQuery,
+  gallery: CelebrityEmbedding[],
+  topK = 5,
+  options?: { includeLongTail?: boolean },
+): CelebrityMatch[] {
+  return rankByDescriptor(user, gallery, topK, options);
+}
+
+export function rankCandidatesTwoStage(
+  user: UserFaceQuery,
+  gallery: CelebrityEmbedding[],
+  topK = 5,
+  options?: { includeLongTail?: boolean },
+): CelebrityMatch[] {
+  return rankByDescriptor(user, gallery, topK, options);
 }
 
 function buildDescriptorTraits(

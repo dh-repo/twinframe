@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FaceStageLatencies, FaceTelemetry } from "./types";
-import { isValidHumanFaceLandmarks68 } from "./geometry";
+import { applyLocalContrastBoost, applyClaheCanvas } from "./clahe";
+export { applyLocalContrastBoost, applyClaheCanvas };
+import {
+  isValidHumanFaceLandmarks68,
+  extract5AnchorPoints,
+  compute5PointAffineTransform,
+  warp5PointCanonicalCanvas,
+  CANONICAL_5_POINTS_150,
+} from "./geometry";
+import { cropNeedsIlluminationNorm } from "./quality";
 
 type FaceApiModule = typeof import("@vladmandic/face-api");
 
@@ -192,6 +201,8 @@ export interface DetectOptions {
   enableContrastBoost?: boolean;
   /** Fast-exit confidence threshold (default: 0.70) */
   fastExitConfidence?: number;
+  /** Skip flip/tight-scale TTA (burst frames). */
+  tta?: boolean;
 }
 
 export interface FaceCandidateInput {
@@ -454,179 +465,7 @@ export function sortFaceCandidates(
   return scored;
 }
 
-/**
- * CLAHE (Contrast Limited Adaptive Histogram Equalization) & Local Contrast Boost
- * Enhances local contrast in low-light / backlit outdoor images (e.g. sunset photos).
- */
-export function applyLocalContrastBoost(
-  sourceCanvas: HTMLCanvasElement,
-  clipLimit = 3.0,
-  gridTiles = 8,
-  maxClaheSide = 384,
-): HTMLCanvasElement {
-  const origW = sourceCanvas.width;
-  const origH = sourceCanvas.height;
-  if (!origW || !origH) return sourceCanvas;
 
-  // Pre-downscale to maxClaheSide (384px) with disabled smoothing before getImageData
-  let workingCanvas: HTMLCanvasElement = sourceCanvas;
-  if (Math.max(origW, origH) > maxClaheSide && typeof document !== "undefined") {
-    const scale = maxClaheSide / Math.max(origW, origH);
-    const sw = Math.max(1, Math.round(origW * scale));
-    const sh = Math.max(1, Math.round(origH * scale));
-    const downCanvas = document.createElement("canvas");
-    downCanvas.width = sw;
-    downCanvas.height = sh;
-    const dctx = downCanvas.getContext("2d", { willReadFrequently: true });
-    if (dctx) {
-      dctx.imageSmoothingEnabled = false;
-      (dctx as unknown as { imageSmoothingQuality?: string }).imageSmoothingQuality = "low";
-      dctx.drawImage(sourceCanvas, 0, 0, sw, sh);
-      workingCanvas = downCanvas;
-    }
-  }
-
-  const w = workingCanvas.width;
-  const h = workingCanvas.height;
-  const outCanvas = document.createElement("canvas");
-  outCanvas.width = w;
-  outCanvas.height = h;
-  const ctx = outCanvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) return sourceCanvas;
-
-  // Always sample from workingCanvas (may already be pre-downscaled to maxClaheSide)
-  ctx.drawImage(workingCanvas, 0, 0);
-  const imgData = ctx.getImageData(0, 0, w, h);
-  const data = imgData.data;
-
-  const tileW = Math.max(1, Math.ceil(w / gridTiles));
-  const tileH = Math.max(1, Math.ceil(h / gridTiles));
-  const numPixels = w * h;
-  const lum = new Uint8Array(numPixels);
-
-  // 1. Calculate pixel luminance Y = 0.299R + 0.587G + 0.114B
-  for (let i = 0; i < numPixels; i++) {
-    const p = i * 4;
-    const r = data[p]!;
-    const g = data[p + 1]!;
-    const b = data[p + 2]!;
-    lum[i] = (299 * r + 587 * g + 114 * b + 500) / 1000 | 0;
-  }
-
-  // 2. Compute histogram, clip limit, and CDF per tile
-  const numBins = 256;
-  const tileCDFs = new Float32Array(gridTiles * gridTiles * numBins);
-  const hist = new Int32Array(numBins);
-
-  for (let ty = 0; ty < gridTiles; ty++) {
-    const startY = ty * tileH;
-    const endY = Math.min(h, startY + tileH);
-    for (let tx = 0; tx < gridTiles; tx++) {
-      hist.fill(0);
-      const startX = tx * tileW;
-      const endX = Math.min(w, startX + tileW);
-      const tileSize = Math.max(1, (endX - startX) * (endY - startY));
-
-      for (let y = startY; y < endY; y++) {
-        const rowOffset = y * w;
-        for (let x = startX; x < endX; x++) {
-          const lVal = lum[rowOffset + x]!;
-          hist[lVal]++;
-        }
-      }
-
-      // Clip histogram excess
-      const clipThreshold = Math.max(1, Math.round((clipLimit * tileSize) / numBins));
-      let excess = 0;
-      for (let i = 0; i < numBins; i++) {
-        if (hist[i]! > clipThreshold) {
-          excess += hist[i]! - clipThreshold;
-          hist[i] = clipThreshold;
-        }
-      }
-
-      // Redistribute excess evenly across all bins
-      const bonus = (excess / numBins) | 0;
-      for (let i = 0; i < numBins; i++) {
-        hist[i] += bonus;
-      }
-
-      // Calculate tile CDF
-      const tileOffset = (ty * gridTiles + tx) * numBins;
-      let cum = 0;
-      for (let i = 0; i < numBins; i++) {
-        cum += hist[i]!;
-        tileCDFs[tileOffset + i] = Math.min(255, (cum / tileSize) * 255);
-      }
-    }
-  }
-
-  // Precompute X interpolation bounds and weights
-  const tx1Arr = new Int32Array(w);
-  const tx2Arr = new Int32Array(w);
-  const xLerpArr = new Float32Array(w);
-  for (let x = 0; x < w; x++) {
-    const u = x / tileW - 0.5;
-    const tx1 = Math.max(0, Math.floor(u));
-    const tx2 = Math.min(gridTiles - 1, tx1 + 1);
-    tx1Arr[x] = tx1;
-    tx2Arr[x] = tx2;
-    xLerpArr[x] = Math.max(0, Math.min(1, u - tx1));
-  }
-
-  // 3. Bilinear interpolation across tile CDFs
-  for (let y = 0; y < h; y++) {
-    const v = y / tileH - 0.5;
-    const ty1 = Math.max(0, Math.floor(v));
-    const ty2 = Math.min(gridTiles - 1, ty1 + 1);
-    const yLerp = Math.max(0, Math.min(1, v - ty1));
-    const ty1Grid = ty1 * gridTiles;
-    const ty2Grid = ty2 * gridTiles;
-
-    const rowOffset = y * w;
-    for (let x = 0; x < w; x++) {
-      const tx1 = tx1Arr[x]!;
-      const tx2 = tx2Arr[x]!;
-      const xLerp = xLerpArr[x]!;
-
-      const idx = rowOffset + x;
-      const val = lum[idx]!;
-
-      const offTL = (ty1Grid + tx1) * 256 + val;
-      const offTR = (ty1Grid + tx2) * 256 + val;
-      const offBL = (ty2Grid + tx1) * 256 + val;
-      const offBR = (ty2Grid + tx2) * 256 + val;
-
-      const cdfTL = tileCDFs[offTL]!;
-      const cdfTR = tileCDFs[offTR]!;
-      const cdfBL = tileCDFs[offBL]!;
-      const cdfBR = tileCDFs[offBR]!;
-
-      const top = cdfTL + (cdfTR - cdfTL) * xLerp;
-      const bottom = cdfBL + (cdfBR - cdfBL) * xLerp;
-      const newLum = top + (bottom - top) * yLerp;
-
-      const origLum = val > 0 ? val : 1;
-      const ratio = newLum / origLum;
-
-      const pxIdx = idx * 4;
-      const rVal = data[pxIdx]!;
-      const gVal = data[pxIdx + 1]!;
-      const bVal = data[pxIdx + 2]!;
-
-      const rNew = (rVal * ratio) + 0.5 | 0;
-      const gNew = (gVal * ratio) + 0.5 | 0;
-      const bNew = (bVal * ratio) + 0.5 | 0;
-
-      data[pxIdx] = rNew > 255 ? 255 : (rNew < 0 ? 0 : rNew);
-      data[pxIdx + 1] = gNew > 255 ? 255 : (gNew < 0 ? 0 : gNew);
-      data[pxIdx + 2] = bNew > 255 ? 255 : (bNew < 0 ? 0 : bNew);
-    }
-  }
-
-  ctx.putImageData(imgData, 0, 0);
-  return outCanvas;
-}
 
 // ---- High-accuracy helpers ----
 
@@ -725,6 +564,33 @@ export function createHorizontalFlipCanvas(source: HTMLCanvasElement): HTMLCanva
     fctx.translate(canvas.width, 0);
     fctx.scale(-1, 1);
     fctx.drawImage(source as CanvasImageSource, 0, 0);
+  }
+  return canvas;
+}
+
+/**
+ * Tight scale crop of a face canvas (TTA helper).
+ * Scales box around center (default 0.85x scale box / 1.15x zoom around center (75, 75)).
+ * Pure canvas ops — used by detectAndDescribeWithTTA and unit tests.
+ */
+export function createTightScaleCanvas(
+  source: HTMLCanvasElement,
+  outSize = FACENET_EMBED_SIZE,
+  scaleFactor = 0.85,
+): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = outSize;
+  canvas.height = outSize;
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+    const srcW = source.width;
+    const srcH = source.height;
+    const boxW = srcW * scaleFactor;
+    const boxH = srcH * scaleFactor;
+    const sx = (srcW - boxW) / 2;
+    const sy = (srcH - boxH) / 2;
+    ctx.drawImage(source as CanvasImageSource, sx, sy, boxW, boxH, 0, 0, outSize, outSize);
   }
   return canvas;
 }
@@ -928,7 +794,7 @@ export interface DetectFacesOnlyResult {
   detectionScale: number;
   /** Which detector stage produced the kept boxes (for integrity assertions). */
   detectorBackend: DetectorBackend;
-  latencies: { modelLoadMs: number; detectMs: number; totalMs: number };
+  latencies: { modelLoadMs: number; detectMs: number; claheMs?: number; totalMs: number };
 }
 
 /**
@@ -1037,13 +903,17 @@ export async function detectFacesOnly(
     pushRaw(await runSsd(primaryCanvas, 0.20), primaryScale, 0, 0, 0.20, "ssd");
   }
 
+  let claheMs = 0;
+
   // Early exit: if Pass 1 found faces, DO NOT run subsequent heavy passes
   if (collected.length === 0) {
     // Pass 2 — CLAHE for sunset / backlit outdoor
     if (enableClahe && performance.now() - tDetect < maxDetectBudgetMs - 1500) {
       await yieldToUi();
       try {
+        const tClaheStart = performance.now();
         const boosted = applyLocalContrastBoost(primaryCanvas, 2.5, 6, 384);
+        claheMs = Math.round(performance.now() - tClaheStart);
         const claheScale = primaryScale * (boosted.width / Math.max(1, primaryCanvas.width));
         pushRaw(await runSsd(boosted, 0.20), claheScale, 0, 0, 0.20, "clahe-ssd");
       } catch {
@@ -1185,6 +1055,7 @@ export async function detectFacesOnly(
     latencies: {
       modelLoadMs,
       detectMs,
+      claheMs,
       totalMs: Math.round(performance.now() - t0),
     },
   };
@@ -1332,6 +1203,56 @@ export function generateSynthetic68Landmarks(box: { x: number; y: number; width:
   return pts;
 }
 
+/** Padded square around a face box in original-image pixels (same crop as faceCanvas). */
+export function paddedFaceSquare(
+  box: { x: number; y: number; width: number; height: number },
+  imageW: number,
+  imageH: number,
+  pad = 0.35,
+): { x: number; y: number; side: number } {
+  const padX = box.width * pad;
+  const padY = box.height * pad * 1.1;
+  let cropX = Math.max(0, box.x - padX);
+  let cropY = Math.max(0, box.y - padY);
+  let cropW = Math.min(imageW - cropX, box.width + padX * 2);
+  let cropH = Math.min(imageH - cropY, box.height + padY * 2.2);
+  const side = Math.max(cropW, cropH);
+  cropX = Math.max(0, Math.min(imageW - side, cropX + (cropW - side) / 2));
+  cropY = Math.max(0, Math.min(imageH - side, cropY + (cropH - side) / 2));
+  const cropSide = Math.min(side, imageW - cropX, imageH - cropY);
+  return { x: cropX, y: cropY, side: cropSide };
+}
+
+/**
+ * Rasterize the padded face square from the original source (not the 1600px
+ * detect raster). Thin glasses rims survive on 24MP group photos.
+ * 0–100 crop landmarks map onto this square the same way as faceCanvas.
+ */
+export function rasterizePaddedFaceImage(
+  source: CanvasImageSource,
+  box: { x: number; y: number; width: number; height: number },
+  imageW: number,
+  imageH: number,
+  maxSide = 640,
+): ImageData | null {
+  if (typeof document === "undefined") return null;
+  const sq = paddedFaceSquare(box, imageW, imageH);
+  if (!(sq.side >= 16) || !(imageW > 0) || !(imageH > 0)) return null;
+  const out = Math.round(Math.min(maxSide, Math.max(320, sq.side)));
+  const canvas = document.createElement("canvas");
+  canvas.width = out;
+  canvas.height = out;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return null;
+  (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+  try {
+    ctx.drawImage(source, sq.x, sq.y, sq.side, sq.side, 0, 0, out, out);
+  } catch {
+    return null;
+  }
+  return ctx.getImageData(0, 0, out, out);
+}
+
 /**
  * Detect the face, extract FaceNet descriptor + age/gender, crop face.
  * Uses detectFacesOnly for robust multi-scale multi-person boxes, then embeds primary.
@@ -1362,17 +1283,10 @@ export async function detectAndDescribe(
   // Crop face from original source (high-res) for embedding quality
   const tEmbStart = performance.now();
   const origBox = primary.box;
-  const pad = 0.35;
-  const padX = origBox.width * pad;
-  const padY = origBox.height * pad * 1.1;
-  let cropX = Math.max(0, origBox.x - padX);
-  let cropY = Math.max(0, origBox.y - padY);
-  let cropW = Math.min(w - cropX, origBox.width + padX * 2);
-  let cropH = Math.min(h - cropY, origBox.height + padY * 2.2);
-  const side = Math.max(cropW, cropH);
-  cropX = Math.max(0, Math.min(w - side, cropX + (cropW - side) / 2));
-  cropY = Math.max(0, Math.min(h - side, cropY + (cropH - side) / 2));
-  const cropSide = Math.min(side, w - cropX, h - cropY);
+  const square = paddedFaceSquare(origBox, w, h);
+  const cropX = square.x;
+  const cropY = square.y;
+  const cropSide = square.side;
 
   const faceCanvas = document.createElement("canvas");
   const outSize = 320;
@@ -1427,6 +1341,7 @@ export async function detectAndDescribe(
   // Landmarks on the face crop (best effort — never fail the whole detect)
   let normalizedLandmarks: { x: number; y: number }[] = [];
   let croppedLandmarks: { x: number; y: number }[] = [];
+  let rawLandmarksPx: { x: number; y: number }[] = [];
   let landmarks: unknown;
   let isLandmarksValid = false;
 
@@ -1434,6 +1349,7 @@ export async function detectAndDescribe(
     isLandmarksValid = isValidHumanFaceLandmarks68(rawPts, outSize, outSize);
     if (!isLandmarksValid) return;
     if (lmObj !== undefined) landmarks = lmObj;
+    rawLandmarksPx = rawPts;
     croppedLandmarks = [];
     normalizedLandmarks = [];
     for (const pt of rawPts) {
@@ -1499,6 +1415,10 @@ export async function detectAndDescribe(
     const synPts = generateSynthetic68Landmarks(origBox);
     if (isValidHumanFaceLandmarks68(synPts, w, h)) {
       isLandmarksValid = true;
+      rawLandmarksPx = synPts.map((p) => ({
+        x: Math.min(outSize, Math.max(0, ((p.x - origBox.x) / Math.max(1, origBox.width)) * outSize)),
+        y: Math.min(outSize, Math.max(0, ((p.y - origBox.y) / Math.max(1, origBox.height)) * outSize)),
+      }));
       normalizedLandmarks = synPts.map((p) => ({
         x: Math.min(100, Math.max(0, (p.x / w) * 100)),
         y: Math.min(100, Math.max(0, (p.y / h) * 100)),
@@ -1525,43 +1445,69 @@ export async function detectAndDescribe(
   }
 
 
-  // FaceNet descriptor — Dlib eye/mouth align when landmarks support it.
-  // Preview `faceCanvas` stays the padded 320 portrait; embed uses 150×150 aligned.
+  // FaceNet descriptor — 5-point Canonical Affine Warp (or Dlib fallback) when landmarks support it.
+  // Preview `faceCanvas` stays the padded 320 portrait; embed uses 150×150 canonical aligned.
   let embedCanvas = faceCanvas;
   let alignment: "dlib" | "padded-box" = "padded-box";
-  const alignBox = dlibAlignBoxFromLandmarks(landmarks);
-  if (alignBox) {
-    const scale = cropSide / outSize;
-    const origAlign = {
-      x: cropX + alignBox.x * scale,
-      y: cropY + alignBox.y * scale,
-      width: alignBox.width * scale,
-      height: alignBox.height * scale,
-    };
-    if (hiRaster && origAlign.width >= 8) {
-      embedCanvas = extractRegionToCanvas(
-        hiRaster.canvas,
-        {
-          x: origAlign.x * hiRaster.scale,
-          y: origAlign.y * hiRaster.scale,
-          width: origAlign.width * hiRaster.scale,
-          height: origAlign.height * hiRaster.scale,
-        },
-        hiRaster.canvas.width,
-        hiRaster.canvas.height,
-        FACENET_EMBED_SIZE,
-      );
-      alignment = "dlib";
+  const alignAnchors = isLandmarksValid && rawLandmarksPx.length
+    ? extract5AnchorPoints(rawLandmarksPx)
+    : null;
+
+  if (alignAnchors) {
+    if (hiRaster) {
+      const hiPts = rawLandmarksPx.map((p) => ({
+        x: (cropX + (p.x / outSize) * cropSide) * hiRaster.scale,
+        y: (cropY + (p.y / outSize) * cropSide) * hiRaster.scale,
+      }));
+      embedCanvas = warp5PointCanonicalCanvas(hiRaster.canvas, hiPts, FACENET_EMBED_SIZE);
     } else {
-      embedCanvas = extractRegionToCanvas(
-        faceCanvas,
-        alignBox,
-        outSize,
-        outSize,
-        FACENET_EMBED_SIZE,
-      );
-      alignment = "dlib";
+      embedCanvas = warp5PointCanonicalCanvas(faceCanvas, rawLandmarksPx, FACENET_EMBED_SIZE);
     }
+    alignment = "dlib";
+  } else {
+    const alignBox = dlibAlignBoxFromLandmarks(landmarks);
+    if (alignBox) {
+      const scale = cropSide / outSize;
+      const origAlign = {
+        x: cropX + alignBox.x * scale,
+        y: cropY + alignBox.y * scale,
+        width: alignBox.width * scale,
+        height: alignBox.height * scale,
+      };
+      if (hiRaster && origAlign.width >= 8) {
+        embedCanvas = extractRegionToCanvas(
+          hiRaster.canvas,
+          {
+            x: origAlign.x * hiRaster.scale,
+            y: origAlign.y * hiRaster.scale,
+            width: origAlign.width * hiRaster.scale,
+            height: origAlign.height * hiRaster.scale,
+          },
+          hiRaster.canvas.width,
+          hiRaster.canvas.height,
+          FACENET_EMBED_SIZE,
+        );
+        alignment = "dlib";
+      } else {
+        embedCanvas = extractRegionToCanvas(
+          faceCanvas,
+          alignBox,
+          outSize,
+          outSize,
+          FACENET_EMBED_SIZE,
+        );
+        alignment = "dlib";
+      }
+    }
+  }
+
+  // Adaptive LAB CLAHE on the 150 aligned crop before FaceNet (R4).
+  // Skip well-lit uniform crops so queries stay in the enrolled gallery domain.
+  let embedClaheMs = 0;
+  if (options.enableContrastBoost !== false && cropNeedsIlluminationNorm(embedCanvas)) {
+    const tClaheEmbed = performance.now();
+    embedCanvas = applyClaheCanvas(embedCanvas, { clipLimit: 2.5, gridTiles: 8, maxClaheSide: 150 });
+    embedClaheMs = Math.round(performance.now() - tClaheEmbed);
   }
 
   let rawDesc: Float32Array;
@@ -1618,7 +1564,7 @@ export async function detectAndDescribe(
     modelLoadMs,
     downscaleMs,
     ssdPassMs: detection.latencies.detectMs,
-    claheMs: 0,
+    claheMs: (detection.latencies.claheMs ?? 0) + embedClaheMs,
     embeddingMs,
     totalMs,
   };
@@ -1675,6 +1621,10 @@ export async function detectAndDescribeWithTTA(
   const primary = await detectAndDescribe(source, options);
   if (!primary) return null;
 
+  if (options.tta === false) {
+    return { ...primary, descriptors: [primary.descriptor] };
+  }
+
   // Default 1.01 = never skip on confidence (accuracy-first). Opt into old 0.70 via options.
   const fastExitThreshold = options.fastExitConfidence ?? 1.01;
   if (primary.confidence >= fastExitThreshold) {
@@ -1700,24 +1650,62 @@ export async function detectAndDescribeWithTTA(
     }
 
     const tTtaStart = performance.now();
-    // Flip the FaceNet input (Dlib-aligned 150 when available, else padded 320)
-    const flipCanvas = createHorizontalFlipCanvas(cropCanvas);
 
-    let flippedRaw: Float32Array;
-    if (typeof api.computeFaceDescriptor === "function") {
-      flippedRaw = await api.computeFaceDescriptor(flipCanvas);
-    } else if (api.nets.faceRecognitionNet?.isLoaded) {
-      flippedRaw = await api.nets.faceRecognitionNet.computeFaceDescriptor(flipCanvas);
+    // 1. Canonical Aligned Crop C1 (150x150) & v1
+    let cropCanvas150: HTMLCanvasElement;
+    if (cropCanvas.width === FACENET_EMBED_SIZE && cropCanvas.height === FACENET_EMBED_SIZE) {
+      cropCanvas150 = cropCanvas;
     } else {
-      flippedRaw = generateImageRegionDescriptor(flipCanvas);
+      cropCanvas150 = document.createElement("canvas");
+      cropCanvas150.width = FACENET_EMBED_SIZE;
+      cropCanvas150.height = FACENET_EMBED_SIZE;
+      const ctx1 = cropCanvas150.getContext("2d");
+      if (ctx1) {
+        (ctx1 as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+        ctx1.drawImage(cropCanvas, 0, 0, FACENET_EMBED_SIZE, FACENET_EMBED_SIZE);
+      }
     }
+    const v1 = primary.descriptor instanceof Float32Array
+      ? primary.descriptor
+      : l2NormalizeVec(primary.descriptor);
 
-    if (!flippedRaw || flippedRaw.length === 0) {
-      return { ...primary, descriptors: [primary.descriptor] };
+    const computeDesc = async (canvas: HTMLCanvasElement): Promise<Float32Array> => {
+      let raw: Float32Array;
+      if (typeof api.computeFaceDescriptor === "function") {
+        raw = await api.computeFaceDescriptor(canvas);
+      } else if (api.nets?.faceRecognitionNet?.isLoaded) {
+        raw = await api.nets.faceRecognitionNet.computeFaceDescriptor(canvas);
+      } else {
+        raw = generateImageRegionDescriptor(canvas);
+      }
+      return l2NormalizeVec(raw ?? new Float32Array(128));
+    };
+
+    // 2. Horizontal Mirror Flip Crop C2 (150x150) & v2
+    const flipCanvas = createHorizontalFlipCanvas(cropCanvas150);
+    const v2 = await computeDesc(flipCanvas);
+
+    // 3. Tight Scale Crop C3 (150x150, 1.15x zoom / 0.85x scale box around center) & v3
+    const tightCanvas = createTightScaleCanvas(cropCanvas150, FACENET_EMBED_SIZE, 0.85);
+    const v3 = await computeDesc(tightCanvas);
+
+    // 4. L2-normalized ensemble vector v_ensemble = l2Normalize(v1 + v2 + v3)
+    const dim = Math.min(v1.length, v2.length, v3.length);
+    const sumVec = new Float32Array(dim);
+    for (let i = 0; i < dim; i++) {
+      sumVec[i] = (v1[i] ?? 0) + (v2[i] ?? 0) + (v3[i] ?? 0);
     }
-    const flippedDesc = l2NormalizeVec(flippedRaw);
-    const primaryDesc = primary.descriptor;
-    const avg = averageDescriptors(primaryDesc, flippedDesc);
+    const vEnsemble = l2NormalizeVec(sumVec);
+
+    // Clean up temporary canvases immediately to ensure zero memory leaks
+    flipCanvas.width = 0;
+    flipCanvas.height = 0;
+    tightCanvas.width = 0;
+    tightCanvas.height = 0;
+    if (cropCanvas150 !== cropCanvas) {
+      cropCanvas150.width = 0;
+      cropCanvas150.height = 0;
+    }
 
     const ttaMs = Math.round(performance.now() - tTtaStart);
     let updatedTelemetry = primary.telemetry;
@@ -1739,9 +1727,9 @@ export async function detectAndDescribeWithTTA(
 
     return {
       ...primary,
-      descriptor: avg,
-      // Multi-template: ranker takes min distance across primary, flip, and average
-      descriptors: [primaryDesc, flippedDesc, avg],
+      descriptor: vEnsemble,
+      // Return 4 descriptors: [v1 (canonical), v2 (flip), v3 (tight scale), vEnsemble]
+      descriptors: [v1, v2, v3, vEnsemble],
       telemetry: updatedTelemetry,
       stageLatencies: updatedLatencies,
     };

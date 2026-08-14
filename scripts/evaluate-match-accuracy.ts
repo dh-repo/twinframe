@@ -9,6 +9,7 @@ import {
   distanceToMatchPercent,
   getCelebrityDescriptors,
   mergeExtraReferences,
+  hydrateFaceFeatures,
   type CelebrityEmbedding,
   type ReferenceVector,
 } from "../src/lib/face/embeddings.ts";
@@ -299,12 +300,16 @@ export function loadGalleryDataNode(rootDir = process.cwd()): CelebrityEmbedding
 
   const rawGallery = buckets.map((b, i) => {
     const f32Desc = descriptors[i]!;
-    const feat = featuresMap[b.id]
-      ?? getCelebrityById(b.id)?.features
-      ?? generateDemographicFeatures(b.gender, b.genderProb, b.age, b.id);
+    const feat = hydrateFaceFeatures(
+      featuresMap[b.id]
+        ?? getCelebrityById(b.id)?.features
+        ?? generateDemographicFeatures(b.gender, b.genderProb, b.age, b.id),
+    );
 
     const refVec: ReferenceVector = {
       descriptor: f32Desc,
+      viewType: "frontal",
+      pose: { yawDeg: 0, pitchDeg: 0, rollDeg: 0 },
       photoUrl: b.path ?? b.fallbackPath,
       features: feat,
       ethnicCluster: getEthnicCluster({ id: b.id, name: b.name, features: feat }),
@@ -355,7 +360,13 @@ export function loadGalleryDataNode(rootDir = process.cwd()): CelebrityEmbedding
   if (fs.existsSync(extraPath)) {
     try {
       const extra = JSON.parse(fs.readFileSync(extraPath, "utf8")) as {
-        references?: Array<{ id: string; descriptor: number[]; photoUrl?: string }>;
+        references?: Array<{
+          id: string;
+          descriptor: number[];
+          photoUrl?: string;
+          viewType?: import("../src/lib/face/types.ts").FaceViewType;
+          pose?: import("../src/lib/face/types.ts").HeadPoseOrientation;
+        }>;
       };
       cachedGalleryData = mergeExtraReferences(cachedGalleryData, extra.references ?? []);
     } catch {}
@@ -553,8 +564,6 @@ export async function evaluateMatchAccuracy(options?: EvaluationOptions): Promis
     let negDist = 1.0;
     if (diffCelebMatches.length > 0) {
       let minD = Infinity;
-      let fineSum = 0;
-      let fineCount = 0;
       for (const candidate of diffCelebMatches) {
         const rawD = ensembleDistance(queryDescriptor, candidate.descriptor);
         const candCluster = candidate.ethnicCluster ?? getEthnicCluster(candidate);
@@ -569,11 +578,8 @@ export async function evaluateMatchAccuracy(options?: EvaluationOptions): Promis
           minD = fineD;
           topNegMatch = candidate;
         }
-        fineSum += fineD;
-        fineCount++;
       }
-      const avgFineD = fineCount > 0 ? fineSum / fineCount : minD;
-      negDist = Math.max(minD + 0.05, 0.5 * (minD + avgFineD));
+      negDist = minD;
     }
     const negMatchPct = distanceToMatchPercent(negDist);
 
@@ -732,7 +738,7 @@ export async function evaluateMatchAccuracy(options?: EvaluationOptions): Promis
       const currRank1 = metrics.rank1AccuracyPct;
       const gapDelta = currGap - baseGap;
       const improvementPct = baseGap > 0 ? (gapDelta / baseGap) * 100 : 0;
-      const targetRank1Pct = options?.targetRank1Pct ?? 95.0;
+      const targetRank1Pct = options?.targetRank1Pct ?? 98.0;
       const targetImprovementPct = options?.targetImprovementPct ?? 30.0;
       const passRank1 = currRank1 >= targetRank1Pct;
       const passSeparationGap = currGap >= 0.2309 || improvementPct >= targetImprovementPct;
@@ -756,7 +762,7 @@ export async function evaluateMatchAccuracy(options?: EvaluationOptions): Promis
     } catch {}
   }
 
-  const targetRank1Threshold = options?.targetRank1Pct ?? 95.0;
+  const targetRank1Threshold = options?.targetRank1Pct ?? 98.0;
   const honestPosDist =
     protocol === "perturbed-query" ? meanPosDist > 0.01 : meanPosDist >= 0;
   const passedBenchmark =

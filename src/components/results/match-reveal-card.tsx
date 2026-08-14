@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import type { CelebrityMatch } from "@/lib/face/types";
+import type { CelebrityMatch, ExtendedAnatomicalFeatures } from "@/lib/face/types";
+import type { RegionalOcclusionConfidence } from "@/lib/face/occlusion";
 import { NumberCounter } from "@/components/ui/number-counter";
 import { ComparisonView } from "@/components/results/comparison-view";
 import { Progress } from "@/components/ui/progress";
@@ -17,6 +18,10 @@ export interface MatchRevealCardProps {
   youUrl: string | null;
   estimatedAge?: number | null;
   quality?: { score?: number; sharpness?: number };
+  landmarks?: Array<{ x: number; y: number }> | null;
+  anatomical?: ExtendedAnatomicalFeatures | null;
+  occlusion?: RegionalOcclusionConfidence | null;
+  youthfulness?: number | null;
   className?: string;
 }
 
@@ -25,6 +30,10 @@ export function MatchRevealCard({
   youUrl,
   estimatedAge,
   quality,
+  landmarks = null,
+  anatomical = null,
+  occlusion = null,
+  youthfulness = null,
   className,
 }: MatchRevealCardProps) {
   const [isRevealed, setIsRevealed] = useState(false);
@@ -42,7 +51,9 @@ export function MatchRevealCard({
   const headline = honestyHeadline(band);
   const confidenceRating = honestyRating(band, confidenceScore);
   const badgePct = Math.round(sim);
-  const showAge = shouldShowEstimatedAge(estimatedAge, quality);
+  const showAge = shouldShowEstimatedAge(estimatedAge, quality, {
+    youthfulness: youthfulness ?? undefined,
+  });
   const showMeta = showAge || topMatch.tags.length > 0;
   const visibleTraits = (topMatch.traits ?? [])
     .filter((t) => !isWeak || t.trait === "facialStructure")
@@ -128,6 +139,9 @@ export function MatchRevealCard({
           celebrityInitials={topMatch.initials}
           accentHue={topMatch.accentHue}
           traits={topMatch.traits}
+          landmarks={landmarks}
+          anatomical={anatomical}
+          occlusion={occlusion}
         />
       </div>
 

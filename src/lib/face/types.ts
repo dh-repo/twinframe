@@ -1,3 +1,32 @@
+/** Extended 9 clinical anatomical facial proportions (M2). */
+export interface ExtendedAnatomicalFeatures {
+  /** Upper facial third ratio: Trichion (forehead top) to Glabella vs total facial height */
+  upperThirdRatio: number;
+  /** Middle facial third ratio: Glabella to Subnasale vs total facial height */
+  middleThirdRatio: number;
+  /** Lower facial third ratio: Subnasale to Menton vs total facial height */
+  lowerThirdRatio: number;
+  /** Lateral fifths ratios: 5 equal vertical facial sectors normalized by bizygomatic width */
+  lateralFifthsRatios: number[];
+
+  /** Inter-canthal distance normalized by bizygomatic facial width */
+  interCanthalDistance: number;
+  /** Average canthal tilt angle of palpebral fissure in degrees relative to horizontal */
+  canthalTiltAngleDeg: number;
+  /** Nasal index: alar width vs nasal bridge length */
+  nasalIndex: number;
+
+  /** Bigonial mandibular width vs bizygomatic upper facial width ratio */
+  bigonialToBizygomaticRatio: number;
+  /** Gonial jawline contour angle at mandibular angle in degrees */
+  gonialJawlineAngleDeg: number;
+
+  /** Lip vermilion height ratio: upper vermilion height vs lower vermilion height */
+  lipVermilionHeightRatio: number;
+  /** Philtrum groove depth / normalized length relative to lower face height */
+  philtrumDepth: number;
+}
+
 /** Normalized facial feature vector used for matching (0–1 scale unless noted). */
 export interface FaceFeatures {
   faceAspect: number;
@@ -23,9 +52,11 @@ export interface FaceFeatures {
   masculine: number;
   feminine: number;
   youthfulness: number;
+  /** Extended 9 clinical anatomical facial proportions (M2) */
+  anatomical?: ExtendedAnatomicalFeatures;
 }
 
-export type FeatureKey = keyof FaceFeatures;
+export type FeatureKey = Exclude<keyof FaceFeatures, "anatomical">;
 
 export const FEATURE_KEYS: FeatureKey[] = [
   "faceAspect",
@@ -114,6 +145,14 @@ export const ETHNIC_CLUSTERS: EthnicCluster[] = [
   "Middle Eastern",
 ];
 
+export interface MatchScoreResult {
+  confidencePct: number;         // 0.0 to 100.0 via calibrated hill curve
+  descriptorDistance: number;    // Combined 128-d + morphological distance
+  morphologicalDistance: number;// 23-d unwarped morphological distance
+  deepVectorDistance: number;   // 128-d cosine distance
+  passedLookalikeGate: boolean;  // True if score >= threshold and passed gating
+}
+
 export interface CelebrityMatch {
   celebrityId: string;
   name: string;
@@ -130,6 +169,8 @@ export interface CelebrityMatch {
   fallbackPhotoUrl?: string;
   distance?: number;
   ethnicCluster?: EthnicCluster;
+  matchScoreResult?: MatchScoreResult;
+  passedLookalikeGate?: boolean;
 }
 
 /**
@@ -182,6 +223,8 @@ export interface MatchResult {
   telemetry?: FaceTelemetry;
   candidates?: import("./faceapi-engine").FaceCandidate[];
   candidateBoxes?: Array<{ x: number; y: number; width: number; height: number; isPrimary: boolean }>;
+  croppedLandmarks?: { x: number; y: number }[];
+  occlusion?: import("./occlusion.ts").RegionalOcclusionConfidence;
 }
 
 export const ENGINE_VERSION = "3.2.0-dlib-align";
@@ -197,6 +240,34 @@ export interface HeadPoseOrientation {
   yawDeg: number;
   pitchDeg: number;
   rollDeg: number;
+}
+
+export interface Point2D {
+  x: number;
+  y: number;
+}
+
+export interface Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export type Vector3D = [number, number, number];
+
+export type Matrix3x3 = [
+  [number, number, number],
+  [number, number, number],
+  [number, number, number]
+];
+
+export interface CanonicalAlignmentResult {
+  rotation: Matrix3x3;
+  translation: Vector3D;
+  scale: number;
+  unwarpedLandmarks: Point3D[];
+  residualError: number;
+  isOccludedMask: boolean[];
 }
 
 export interface ReferenceVector {

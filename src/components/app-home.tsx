@@ -8,6 +8,7 @@ import { AnalyzingState } from "@/components/analyzing-state";
 import { StarGalleryModal } from "@/components/gallery/star-gallery-modal";
 import { Button } from "@/components/ui/button";
 import {
+  analyzeFaceBurst,
   analyzeFaceSource,
   loadImageFromBlob,
   prefetchModel,
@@ -40,6 +41,7 @@ export function AppHome() {
   // review state
   const [reviewSrc, setReviewSrc] = useState<string | null>(null);
   const [reviewFileName, setReviewFileName] = useState<string | undefined>(undefined);
+  const [groupFaceCount, setGroupFaceCount] = useState(0);
   const reviewSrcRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function AppHome() {
     reviewSrcRef.current = null;
     setReviewSrc(null);
     setReviewFileName(undefined);
+    setGroupFaceCount(0);
   }, []);
 
   const [detectedDetails, setDetectedDetails] = useState<{
@@ -219,9 +222,11 @@ export function AppHome() {
     [setReview],
   );
 
+  const burstRef = useRef<Blob[] | null>(null);
+
   const onCapture = useCallback(
-    (blob: Blob) => {
-      // camera capture also goes through review for consistency, but with quick approve
+    (blob: Blob, burst?: Blob[]) => {
+      burstRef.current = burst && burst.length >= 3 ? burst : null;
       const url = URL.createObjectURL(blob);
       setReview(url, "camera.jpg");
       setPhase("review");
@@ -234,12 +239,38 @@ export function AppHome() {
     (
       croppedBlob: Blob,
       selectedBox?: { x: number; y: number; width: number; height: number },
+      meta?: { faceCount: number },
     ) => {
-      clearReview();
+      const burst = burstRef.current;
+      burstRef.current = null;
+      if (typeof meta?.faceCount === "number") setGroupFaceCount(meta.faceCount);
+      // Keep the original photo so "Match another face" can return to the picker.
+      if (burst && burst.length >= 3) {
+        void (async () => {
+          try {
+            setPreview(URL.createObjectURL(burst[burst.length - 1]!));
+            setPhase("analyzing");
+            const imgs = await Promise.all(burst.map((b) => loadImageFromBlob(b)));
+            const matchResult = await analyzeFaceBurst(imgs, { topK: 6 });
+            setResult(matchResult);
+            setPhase(matchResult.matches.length > 0 ? "results" : "quality-blocked");
+          } catch (e) {
+            setError(e instanceof Error ? e.message : "Burst analysis failed.");
+            setPhase("error");
+          }
+        })();
+        return;
+      }
       void runAnalysis(croppedBlob, selectedBox);
     },
-    [clearReview, runAnalysis],
+    [runAnalysis, setPreview],
   );
+
+  const onMatchOtherFace = useCallback(() => {
+    if (!reviewSrcRef.current) return;
+    setResult(null);
+    setPhase("review");
+  }, []);
 
   const onRetake = useCallback(() => {
     clearReview();
@@ -397,6 +428,9 @@ export function AppHome() {
             result={result}
             previewUrl={previewUrl}
             onReset={reset}
+            onMatchOtherFace={
+              groupFaceCount > 1 && reviewSrc ? onMatchOtherFace : undefined
+            }
           />
         )}
 

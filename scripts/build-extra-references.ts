@@ -90,6 +90,7 @@ for (const c of pack) {
     descriptor: c.descriptor,
     photoUrl,
     distanceToPrimary: Number(d.toFixed(4)),
+    viewType: "expression" as const,
   });
 }
 

@@ -1,7 +1,7 @@
 import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types";
 import { ENGINE_VERSION } from "./types";
 import { emptyFeatures } from "./math";
-import { extractGeometryFeatures68 } from "./geometry";
+import { enrichWithColor68, extractGeometryFeatures68 } from "./geometry";
 import { rankByDescriptor } from "./match";
 import {
   detectAndDescribeWithTTA,
@@ -9,7 +9,10 @@ import {
   loadFaceApi,
   assessDetectionQuality,
   logFaceTelemetry,
+  rasterizePaddedFaceImage,
 } from "./faceapi-engine";
+import { estimateRegionalOcclusion } from "./occlusion";
+import { consensusFromFrames } from "./temporal";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings";
 import { estimateHeadPose68 } from "./pose";
 import { analyzeImageQuality } from "./quality";
@@ -164,10 +167,11 @@ export async function analyzeFaceSource(
     (det.box.width * det.box.height) /
     Math.max(1, det.imageWidth * det.imageHeight);
 
+  // Prefer croppedLandmarks (0–100 on faceCanvas) over normalizedLandmarks.
   const landmarkPoints = det.croppedLandmarks?.length
     ? det.croppedLandmarks
     : det.normalizedLandmarks;
-  const features: FaceFeatures =
+  let features: FaceFeatures =
     landmarkPoints && landmarkPoints.length >= 68
       ? extractGeometryFeatures68(landmarkPoints)
       : emptyFeatures();
@@ -176,6 +180,26 @@ export async function analyzeFaceSource(
   const headPose =
     landmarkPoints && landmarkPoints.length >= 68
       ? estimateHeadPose68(landmarkPoints)
+      : undefined;
+
+  // Color wants native-res (24MP rims / hair). Occlusion stays on the 320
+  // faceCanvas — high-res lash/brow texture false-positives clean faces.
+  let previewImage: ImageData | null = null;
+  if (det.faceCanvas) {
+    const ctx = det.faceCanvas.getContext("2d", { willReadFrequently: true });
+    if (ctx) {
+      previewImage = ctx.getImageData(0, 0, det.faceCanvas.width, det.faceCanvas.height);
+    }
+  }
+  const detailImage =
+    rasterizePaddedFaceImage(source, det.box, det.imageWidth, det.imageHeight) ??
+    previewImage;
+  if (detailImage && landmarkPoints && landmarkPoints.length >= 68) {
+    features = enrichWithColor68(features, landmarkPoints, detailImage);
+  }
+  const occlusion =
+    landmarkPoints && landmarkPoints.length >= 68
+      ? estimateRegionalOcclusion(landmarkPoints, previewImage)
       : undefined;
 
   const matches = rankByDescriptor(
@@ -192,6 +216,8 @@ export async function analyzeFaceSource(
       qualityScore: quality.score,
       features,
       headPose,
+      occlusion,
+      projectIdentity: true,
     },
     gallery,
     topK,
@@ -211,6 +237,163 @@ export async function analyzeFaceSource(
     telemetry: det.telemetry,
     candidates: det.allFaces,
     candidateBoxes: det.candidateBoxes,
+    croppedLandmarks: landmarkPoints,
+    occlusion,
+  };
+}
+
+/**
+ * Multi-frame burst: detect each frame without TTA, EMA consensus, one rank.
+ */
+export async function analyzeFaceBurst(
+  sources: Array<HTMLImageElement | HTMLCanvasElement | HTMLVideoElement>,
+  options: AnalyzeOptions = {},
+): Promise<MatchResult> {
+  if (!sources.length) {
+    return {
+      features: emptyFeatures(),
+      quality: {
+        ok: false,
+        score: 0,
+        faceCoverage: 0,
+        centered: 0,
+        sharpness: 0,
+        illumination: 0,
+        issues: ["No frames in burst."],
+      },
+      matches: [],
+      analyzedAt: Date.now(),
+      engineVersion: ENGINE_VERSION,
+    };
+  }
+  if (sources.length === 1) return analyzeFaceSource(sources[0]!, options);
+
+  const topK = options.topK ?? 5;
+  const onProgress = options.onProgress;
+  onProgress?.(0, 12);
+  const galleryPromise = loadCelebrityEmbeddings();
+
+  const frames: Array<{
+    descriptor: Float32Array;
+    features: FaceFeatures;
+    headPose?: ReturnType<typeof estimateHeadPose68>;
+    confidence: number;
+    det: NonNullable<Awaited<ReturnType<typeof detectAndDescribeWithTTA>>>;
+  }> = [];
+
+  for (let i = 0; i < sources.length; i++) {
+    const det = await detectAndDescribeWithTTA(sources[i]!, {
+      ...options,
+      tta: false,
+      enableContrastBoost: i === 0,
+    });
+    onProgress?.(1, 20 + Math.round((i / sources.length) * 50));
+    if (!det) continue;
+    const lms = det.croppedLandmarks?.length ? det.croppedLandmarks : det.normalizedLandmarks;
+    const features =
+      lms && lms.length >= 68 ? extractGeometryFeatures68(lms) : emptyFeatures();
+    const headPose = lms && lms.length >= 68 ? estimateHeadPose68(lms) : undefined;
+    const desc = det.descriptor instanceof Float32Array
+      ? det.descriptor
+      : Float32Array.from(det.descriptor);
+    frames.push({
+      descriptor: desc,
+      features,
+      headPose,
+      confidence: det.confidence,
+      det,
+    });
+  }
+
+  if (frames.length === 0) {
+    return analyzeFaceSource(sources[sources.length - 1]!, options);
+  }
+
+  const consensus = consensusFromFrames(frames);
+  const last = frames[frames.length - 1]!;
+  const det = last.det;
+  const gallery = await galleryPromise;
+  onProgress?.(3, 88);
+
+  const quality: FaceQuality = assessDetectionQuality(det);
+  const faceCoverage =
+    (det.box.width * det.box.height) /
+    Math.max(1, det.imageWidth * det.imageHeight);
+  // Prefer croppedLandmarks (0–100 on faceCanvas) over normalizedLandmarks.
+  const landmarkPoints = det.croppedLandmarks?.length
+    ? det.croppedLandmarks
+    : det.normalizedLandmarks;
+  let features = consensus?.features ?? last.features;
+  const descriptor = consensus?.descriptor ?? last.descriptor;
+  const headPose = consensus?.headPose ?? last.headPose;
+
+  const burstSource = sources[sources.length - 1]!;
+  let previewImage: ImageData | null = null;
+  if (det.faceCanvas) {
+    const ctx = det.faceCanvas.getContext("2d", { willReadFrequently: true });
+    if (ctx) {
+      previewImage = ctx.getImageData(0, 0, det.faceCanvas.width, det.faceCanvas.height);
+    }
+  }
+  const detailImage =
+    rasterizePaddedFaceImage(
+      burstSource,
+      det.box,
+      det.imageWidth,
+      det.imageHeight,
+    ) ?? previewImage;
+  if (detailImage && landmarkPoints && landmarkPoints.length >= 68) {
+    features = enrichWithColor68(features, landmarkPoints, detailImage);
+  }
+  const occlusion =
+    landmarkPoints && landmarkPoints.length >= 68
+      ? estimateRegionalOcclusion(landmarkPoints, previewImage)
+      : undefined;
+
+  let facePreviewUrl: string | undefined;
+  if (det.faceCanvas) {
+    try {
+      facePreviewUrl = det.faceCanvas.toDataURL("image/jpeg", 0.88);
+    } catch {
+      facePreviewUrl = undefined;
+    }
+  }
+
+  const matches = rankByDescriptor(
+    {
+      descriptor,
+      descriptors: [descriptor],
+      age: det.age,
+      gender: det.gender,
+      genderProbability: det.genderProbability,
+      detConfidence: det.confidence,
+      sharpness: det.sharpness,
+      faceCoverage,
+      qualityScore: quality.score,
+      features,
+      headPose,
+      occlusion,
+      projectIdentity: true,
+    },
+    gallery,
+    topK,
+  );
+
+  onProgress?.(3, 100);
+  return {
+    features,
+    quality,
+    matches,
+    analyzedAt: Date.now(),
+    engineVersion: ENGINE_VERSION,
+    facePreviewUrl,
+    estimatedAge: Math.round(det.age),
+    estimatedGender: det.gender,
+    telemetry: det.telemetry,
+    candidates: det.allFaces,
+    candidateBoxes: det.candidateBoxes,
+    croppedLandmarks: landmarkPoints,
+    occlusion,
   };
 }
 
