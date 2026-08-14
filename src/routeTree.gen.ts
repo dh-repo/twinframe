@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppHomeRouteImport } from './routes/app-home'
+import { Route as HeldOutEncodeRouteImport } from './routes/held-out-encode'
 import { Route as ReEncodeRouteImport } from './routes/re-encode'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const AppHomeRoute = AppHomeRouteImport.update({
   path: '/app-home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HeldOutEncodeRoute = HeldOutEncodeRouteImport.update({
+  id: '/held-out-encode',
+  path: '/held-out-encode',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReEncodeRoute = ReEncodeRouteImport.update({
   id: '/re-encode',
   path: '/re-encode',
@@ -32,30 +38,34 @@ const ReEncodeRoute = ReEncodeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app-home': typeof AppHomeRoute
+  '/held-out-encode': typeof HeldOutEncodeRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app-home': typeof AppHomeRoute
+  '/held-out-encode': typeof HeldOutEncodeRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app-home': typeof AppHomeRoute
+  '/held-out-encode': typeof HeldOutEncodeRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app-home' | '/re-encode'
+  fullPaths: '/' | '/app-home' | '/held-out-encode' | '/re-encode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app-home' | '/re-encode'
-  id: '__root__' | '/' | '/app-home' | '/re-encode'
+  to: '/' | '/app-home' | '/held-out-encode' | '/re-encode'
+  id: '__root__' | '/' | '/app-home' | '/held-out-encode' | '/re-encode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppHomeRoute: typeof AppHomeRoute
+  HeldOutEncodeRoute: typeof HeldOutEncodeRoute
   ReEncodeRoute: typeof ReEncodeRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/held-out-encode': {
+      id: '/held-out-encode'
+      path: '/held-out-encode'
+      fullPath: '/held-out-encode'
+      preLoaderRoute: typeof HeldOutEncodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/re-encode': {
       id: '/re-encode'
       path: '/re-encode'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppHomeRoute: AppHomeRoute,
+  HeldOutEncodeRoute: HeldOutEncodeRoute,
   ReEncodeRoute: ReEncodeRoute,
 }
 export const routeTree = rootRouteImport

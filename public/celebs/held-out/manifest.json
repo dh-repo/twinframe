@@ -1,0 +1,1001 @@
+{
+  "version": "1.0.0",
+  "description": "Held-out query photos (not enrolled). Second Wikipedia image per id.",
+  "count": 142,
+  "cases": [
+    {
+      "id": "brad-pitt",
+      "name": "Brad Pitt",
+      "imagePath": "/celebs/held-out/brad-pitt/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/20/Angelina_Jolie_Brad_Pitt_Cannes.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Brad Pitt"
+    },
+    {
+      "id": "george-clooney",
+      "name": "George Clooney",
+      "imagePath": "/celebs/held-out/george-clooney/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/en/f/f8/ER_Cast_Season_1.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "George Clooney"
+    },
+    {
+      "id": "denzel-washington",
+      "name": "Denzel Washington",
+      "imagePath": "/celebs/held-out/denzel-washington/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/42-WHPO-P78052-26A.jpg/960px-42-WHPO-P78052-26A.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Denzel Washington"
+    },
+    {
+      "id": "idris-elba",
+      "name": "Idris Elba",
+      "imagePath": "/celebs/held-out/idris-elba/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Idris_Elba-5272.jpg/960px-Idris_Elba-5272.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Idris Elba"
+    },
+    {
+      "id": "timothee-chalamet",
+      "name": "Timoth\u00e9e Chalamet",
+      "imagePath": "/celebs/held-out/timothee-chalamet/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Men_Women_and_Children_16_%2815250911126%29.jpg/960px-Men_Women_and_Children_16_%2815250911126%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Timoth\u00e9e Chalamet"
+    },
+    {
+      "id": "michael-b-jordan",
+      "name": "Michael B. Jordan",
+      "imagePath": "/celebs/held-out/michael-b-jordan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/2018-05-12-_Cannes-L%27acteur_Michael_B._Jordan-2721_%2842075892224%29.jpg/960px-2018-05-12-_Cannes-L%27acteur_Michael_B._Jordan-2721_%2842075892224%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Michael B. Jordan"
+    },
+    {
+      "id": "keanu-reeves",
+      "name": "Keanu Reeves",
+      "imagePath": "/celebs/held-out/keanu-reeves/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Alexandra_Grant_2014.jpg/960px-Alexandra_Grant_2014.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Keanu Reeves"
+    },
+    {
+      "id": "pedro-pascal",
+      "name": "Pedro Pascal",
+      "imagePath": "/celebs/held-out/pedro-pascal/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Bella_Ramsey_and_Pedro_Pascal_at_SXSW_2025_02_%28cropped%29.jpg/960px-Bella_Ramsey_and_Pedro_Pascal_at_SXSW_2025_02_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Pedro Pascal"
+    },
+    {
+      "id": "dev-patel",
+      "name": "Dev Patel",
+      "imagePath": "/celebs/held-out/dev-patel/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/DevPatel08.jpg/960px-DevPatel08.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Dev Patel"
+    },
+    {
+      "id": "simu-liu",
+      "name": "Simu Liu",
+      "imagePath": "/celebs/held-out/simu-liu/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c4/SLiuRedCarpet.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Simu Liu"
+    },
+    {
+      "id": "john-cho",
+      "name": "John Cho",
+      "imagePath": "/celebs/held-out/john-cho/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/John_Cho_by_Gage_Skidmore.jpg/960px-John_Cho_by_Gage_Skidmore.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "John Cho"
+    },
+    {
+      "id": "donald-glover",
+      "name": "Donald Glover",
+      "imagePath": "/celebs/held-out/donald-glover/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Childish_Gambino-Bowery_Ballroom-1.jpg/960px-Childish_Gambino-Bowery_Ballroom-1.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Donald Glover"
+    },
+    {
+      "id": "scarlett-johansson",
+      "name": "Scarlett Johansson",
+      "imagePath": "/celebs/held-out/scarlett-johansson/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Asteroid_City_Cannes_Film_Festival_02_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Scarlett Johansson"
+    },
+    {
+      "id": "margot-robbie",
+      "name": "Margot Robbie",
+      "imagePath": "/celebs/held-out/margot-robbie/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Margot_Robbie_%2828601016915%29_%28cropped_3%29.jpg/960px-Margot_Robbie_%2828601016915%29_%28cropped_3%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Margot Robbie"
+    },
+    {
+      "id": "florence-pugh",
+      "name": "Florence Pugh",
+      "imagePath": "/celebs/held-out/florence-pugh/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Florence_Pugh_%2848471906272%29_%28cropped%29.jpg/960px-Florence_Pugh_%2848471906272%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Florence Pugh"
+    },
+    {
+      "id": "ana-de-armas",
+      "name": "Ana de Armas",
+      "imagePath": "/celebs/held-out/ana-de-armas/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/Ana_de_Armas%2C_March_2018%2C_GQ_Mexico_04_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Ana de Armas"
+    },
+    {
+      "id": "sydney-sweeney",
+      "name": "Sydney Sweeney",
+      "imagePath": "/celebs/held-out/sydney-sweeney/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/SydneySweeney-TIFF2025-03_%28cropped%29.png/960px-SydneySweeney-TIFF2025-03_%28cropped%29.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Sydney Sweeney"
+    },
+    {
+      "id": "jennifer-lawrence",
+      "name": "Jennifer Lawrence",
+      "imagePath": "/celebs/held-out/jennifer-lawrence/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Causeway_02_%2852359107768%29_%28cropped%29.jpg/960px-Causeway_02_%2852359107768%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jennifer Lawrence"
+    },
+    {
+      "id": "liu-yifei",
+      "name": "Liu Yifei",
+      "imagePath": "/celebs/held-out/liu-yifei/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Liu_Yifei_at_the_Beijing_International_Film_Festival_%282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Liu Yifei"
+    },
+    {
+      "id": "gal-gadot",
+      "name": "Gal Gadot",
+      "imagePath": "/celebs/held-out/gal-gadot/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/en/d/d9/New_York_Post_cover_for_the_Maxim_photoshoot_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Gal Gadot"
+    },
+    {
+      "id": "dua-lipa",
+      "name": "Dua Lipa",
+      "imagePath": "/celebs/held-out/dua-lipa/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/British_singer_and_songwriter_Dua_Lipa_at_the_SWR3_New_Pop_Festival_2016.jpg/960px-British_singer_and_songwriter_Dua_Lipa_at_the_SWR3_New_Pop_Festival_2016.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Dua Lipa"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "name": "Elizabeth Olsen",
+      "imagePath": "/celebs/held-out/elizabeth-olsen/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Elizabeth_Olsen_TIFF_2011a_%28cropped%29.jpg/960px-Elizabeth_Olsen_TIFF_2011a_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Elizabeth Olsen"
+    },
+    {
+      "id": "john-boyega",
+      "name": "John Boyega",
+      "imagePath": "/celebs/held-out/john-boyega/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/John_Boyega_%2854716098702%29.jpg/960px-John_Boyega_%2854716098702%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "John Boyega"
+    },
+    {
+      "id": "millie-bobby-brown",
+      "name": "Millie Bobby Brown",
+      "imagePath": "/celebs/held-out/millie-bobby-brown/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Millie_Bobby_Brown_-_MBB_-_4_-_SFM5_-_July_10%2C_2022_at_Stranger_Fan_Meet_5_People_Convention_%28cropped%29.jpg/960px-Millie_Bobby_Brown_-_MBB_-_4_-_SFM5_-_July_10%2C_2022_at_Stranger_Fan_Meet_5_People_Convention_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Millie Bobby Brown"
+    },
+    {
+      "id": "andrew-garfield",
+      "name": "Andrew Garfield",
+      "imagePath": "/celebs/held-out/andrew-garfield/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/68/Flickr_-_csztova_-_Andrew_Garfield_-_TIFF_09%27_%281%29_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Andrew Garfield"
+    },
+    {
+      "id": "chris-hemsworth",
+      "name": "Chris Hemsworth",
+      "imagePath": "/celebs/held-out/chris-hemsworth/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Chris_Hemsworth_%288492541282%29.jpg/960px-Chris_Hemsworth_%288492541282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Chris Hemsworth"
+    },
+    {
+      "id": "henry-cavill",
+      "name": "Henry Cavill",
+      "imagePath": "/celebs/held-out/henry-cavill/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Henry_Cavill_%2828487498052%29_%28cropped%29.jpg/960px-Henry_Cavill_%2828487498052%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Henry Cavill"
+    },
+    {
+      "id": "oscar-isaac",
+      "name": "Oscar Isaac",
+      "imagePath": "/celebs/held-out/oscar-isaac/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Juilliard_School_-_Alice_Tully_Hall.jpg/960px-Juilliard_School_-_Alice_Tully_Hall.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Oscar Isaac"
+    },
+    {
+      "id": "adam-driver",
+      "name": "Adam Driver",
+      "imagePath": "/celebs/held-out/adam-driver/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Adam_Driver.jpg/960px-Adam_Driver.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Adam Driver"
+    },
+    {
+      "id": "riz-ahmed",
+      "name": "Riz Ahmed",
+      "imagePath": "/celebs/held-out/riz-ahmed/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Riz_Ahmed-7658_%28cropped%29.jpg/960px-Riz_Ahmed-7658_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Riz Ahmed"
+    },
+    {
+      "id": "lupita-nyongo",
+      "name": "Lupita Nyong'o",
+      "imagePath": "/celebs/held-out/lupita-nyongo/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Lupita_Nyong%27o_%2882038%29_%28cropped%29.jpg/960px-Lupita_Nyong%27o_%2882038%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Lupita Nyong'o"
+    },
+    {
+      "id": "awkwafina",
+      "name": "Awkwafina",
+      "imagePath": "/celebs/held-out/awkwafina/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Awkwafina_-_Golden_Globes_2020_-_01.png/960px-Awkwafina_-_Golden_Globes_2020_-_01.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Awkwafina"
+    },
+    {
+      "id": "priyanka-chopra",
+      "name": "Priyanka Chopra",
+      "imagePath": "/celebs/held-out/priyanka-chopra/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Don_premiere.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Priyanka Chopra"
+    },
+    {
+      "id": "uzo-aduba",
+      "name": "Uzo Aduba",
+      "imagePath": "/celebs/held-out/uzo-aduba/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Uzo_Aduba_2014_%28cropped%29.jpg/960px-Uzo_Aduba_2014_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Uzo Aduba"
+    },
+    {
+      "id": "the-weeknd",
+      "name": "The Weeknd",
+      "imagePath": "/celebs/held-out/the-weeknd/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/FEQ_July_2018_The_Weeknd_%2844778856382%29_%28cropped%29.jpg/960px-FEQ_July_2018_The_Weeknd_%2844778856382%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "The Weeknd"
+    },
+    {
+      "id": "bad-bunny",
+      "name": "Bad Bunny",
+      "imagePath": "/celebs/held-out/bad-bunny/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Bad_Bunny_2017_-_2.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Bad Bunny"
+    },
+    {
+      "id": "chris-evans",
+      "name": "Chris Evans",
+      "imagePath": "/celebs/held-out/chris-evans/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/7_Dec._2016_CJCS_USO_Holiday_Tour_-_Afghanistan_161207-D-PB383-097_%2831457197196%29.jpg/960px-7_Dec._2016_CJCS_USO_Holiday_Tour_-_Afghanistan_161207-D-PB383-097_%2831457197196%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Chris Evans (actor)"
+    },
+    {
+      "id": "tiffany-haddish",
+      "name": "Tiffany Haddish",
+      "imagePath": "/celebs/held-out/tiffany-haddish/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Tiffany_Haddish_%2848013017808%29.jpg/960px-Tiffany_Haddish_%2848013017808%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Tiffany Haddish"
+    },
+    {
+      "id": "zendaya",
+      "name": "Zendaya",
+      "imagePath": "/celebs/held-out/zendaya/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Zendaya_-_2019_by_Glenn_Francis.jpg/960px-Zendaya_-_2019_by_Glenn_Francis.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Zendaya"
+    },
+    {
+      "id": "emma-stone",
+      "name": "Emma Stone",
+      "imagePath": "/celebs/held-out/emma-stone/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BugoniaBFILFF101025-32_%2854850114070%29.jpg/960px-BugoniaBFILFF101025-32_%2854850114070%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Emma Stone"
+    },
+    {
+      "id": "viola-davis",
+      "name": "Viola Davis",
+      "imagePath": "/celebs/held-out/viola-davis/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Viola_Davis_%2852358893246%29_%28cropped%29.jpg/960px-Viola_Davis_%2852358893246%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Viola Davis"
+    },
+    {
+      "id": "salma-hayek",
+      "name": "Salma Hayek",
+      "imagePath": "/celebs/held-out/salma-hayek/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/MKr383631_Salma_Hayek_%28Women_In_Motion%2C_Cannes_2025%29_crop.jpg/960px-MKr383631_Salma_Hayek_%28Women_In_Motion%2C_Cannes_2025%29_crop.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Salma Hayek"
+    },
+    {
+      "id": "ryan-gosling",
+      "name": "Ryan Gosling",
+      "imagePath": "/celebs/held-out/ryan-gosling/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/GoslingBFI081223_%2822_of_30%29_%2853388157347%29_%28cropped%29.jpg/960px-GoslingBFI081223_%2822_of_30%29_%2853388157347%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Ryan Gosling"
+    },
+    {
+      "id": "aaron-taylor-johnson",
+      "name": "Aaron Taylor Johnson",
+      "imagePath": "/celebs/held-out/aaron-taylor-johnson/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Aaron_Taylor-Johnson_at_82nd_Venice_International_Film_Festival-1_%28cropped%29.jpg/960px-Aaron_Taylor-Johnson_at_82nd_Venice_International_Film_Festival-1_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Aaron Taylor-Johnson"
+    },
+    {
+      "id": "adele",
+      "name": "Adele",
+      "imagePath": "/celebs/held-out/adele/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/2013_GGA_Adele_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Adele"
+    },
+    {
+      "id": "adriana-lima",
+      "name": "Adriana Lima",
+      "imagePath": "/celebs/held-out/adriana-lima/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Adriana-Lima_FantaysBra-Chgo_2010-12-10_photoby-Bielawski.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Adriana Lima"
+    },
+    {
+      "id": "alexander-skarsgard",
+      "name": "Alexander Skarsg\u00e5rd",
+      "imagePath": "/celebs/held-out/alexander-skarsgard/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Alexander_Skarsgard_by_Gage_Skidmore_2.jpg/960px-Alexander_Skarsgard_by_Gage_Skidmore_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Alexander Skarsg\u00e5rd"
+    },
+    {
+      "id": "alia-bhatt",
+      "name": "Alia Bhatt",
+      "imagePath": "/celebs/held-out/alia-bhatt/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Alia_Bhatt_2016.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Alia Bhatt"
+    },
+    {
+      "id": "alicia-vikander",
+      "name": "Alicia Vikander",
+      "imagePath": "/celebs/held-out/alicia-vikander/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Alicia_Vikander-7756.jpg/960px-Alicia_Vikander-7756.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Alicia Vikander"
+    },
+    {
+      "id": "amy-adams",
+      "name": "Amy Adams",
+      "imagePath": "/celebs/held-out/amy-adams/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/AmyAdamsOscarsFeb09.jpg/960px-AmyAdamsOscarsFeb09.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Amy Adams"
+    },
+    {
+      "id": "andrew-scott",
+      "name": "Andrew Scott",
+      "imagePath": "/celebs/held-out/andrew-scott/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Andrew_Scott%2C_BlueMoonBFILFF161025-72_%2854875258361%29_%28cropped%29.jpg/960px-Andrew_Scott%2C_BlueMoonBFILFF161025-72_%2854875258361%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Andrew Scott (actor)"
+    },
+    {
+      "id": "angela-bassett",
+      "name": "Angela Bassett",
+      "imagePath": "/celebs/held-out/angela-bassett/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Angela_Basset_at_the_2025_Cannes_Film_Festival_04_%28cropped%29.jpg/960px-Angela_Basset_at_the_2025_Cannes_Film_Festival_04_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Angela Bassett"
+    },
+    {
+      "id": "angelina-jolie",
+      "name": "Angelina Jolie",
+      "imagePath": "/celebs/held-out/angelina-jolie/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/2005_06_15_rice-jolie_600.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Angelina Jolie"
+    },
+    {
+      "id": "anna-sawai",
+      "name": "Anna Sawai",
+      "imagePath": "/celebs/held-out/anna-sawai/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Anna_Sawai_from_Sidewalks_Entertainment_2024_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Anna Sawai"
+    },
+    {
+      "id": "anthony-hopkins",
+      "name": "Anthony Hopkins",
+      "imagePath": "/celebs/held-out/anthony-hopkins/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Anthony_Hopkins-Tuscan_Sun_Festival.jpg/960px-Anthony_Hopkins-Tuscan_Sun_Festival.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Anthony Hopkins"
+    },
+    {
+      "id": "antonio-banderas",
+      "name": "Antonio Banderas",
+      "imagePath": "/celebs/held-out/antonio-banderas/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Antonio_Banderas%2C_Salma_Hayek_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Antonio Banderas"
+    },
+    {
+      "id": "anya-taylor-joy",
+      "name": "Anya Taylor-Joy",
+      "imagePath": "/celebs/held-out/anya-taylor-joy/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Anya_Taylor-Joy_at_the_2024_Cannes_Film_Festival_%28cropped%29.jpg/960px-Anya_Taylor-Joy_at_the_2024_Cannes_Film_Festival_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Anya Taylor-Joy"
+    },
+    {
+      "id": "ariana-grande",
+      "name": "Ariana Grande",
+      "imagePath": "/celebs/held-out/ariana-grande/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8d/ArianaGrandeDecember2013_ohne_Hintergrund.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Ariana Grande"
+    },
+    {
+      "id": "austin-butler",
+      "name": "Austin Butler",
+      "imagePath": "/celebs/held-out/austin-butler/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Austin_Butler_2019_by_Glenn_Francis.jpg/960px-Austin_Butler_2019_by_Glenn_Francis.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Austin Butler"
+    },
+    {
+      "id": "barack-obama",
+      "name": "Barack Obama",
+      "imagePath": "/celebs/held-out/barack-obama/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/en/3/33/Ann_Dunham_with_father_and_children.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Barack Obama"
+    },
+    {
+      "id": "bella-hadid",
+      "name": "Bella Hadid",
+      "imagePath": "/celebs/held-out/bella-hadid/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/17/Bella_Hadid_Met_Gala_2017.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Bella Hadid"
+    },
+    {
+      "id": "eva-longoria",
+      "name": "Eva Longoria",
+      "imagePath": "/celebs/held-out/eva-longoria/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Actress_Eva_Longoria.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Eva Longoria"
+    },
+    {
+      "id": "fan-bingbing",
+      "name": "Fan Bingbing",
+      "imagePath": "/celebs/held-out/fan-bingbing/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Fan_BingBing_and_Hugh_Jackman_-_2014_%2814184759884%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Fan Bingbing"
+    },
+    {
+      "id": "gary-oldman",
+      "name": "Gary Oldman",
+      "imagePath": "/celebs/held-out/gary-oldman/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/GaryOldman-1.jpg/960px-GaryOldman-1.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Gary Oldman"
+    },
+    {
+      "id": "gemma-chan",
+      "name": "Gemma Chan",
+      "imagePath": "/celebs/held-out/gemma-chan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3f/BAFTA%27s_2013_%288463798201%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Gemma Chan"
+    },
+    {
+      "id": "gigi-hadid",
+      "name": "Gigi Hadid",
+      "imagePath": "/celebs/held-out/gigi-hadid/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/AnnaSui-FW17RTW-Hadids-BW_%28cropped%29.jpg/960px-AnnaSui-FW17RTW-Hadids-BW_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Gigi Hadid"
+    },
+    {
+      "id": "glen-powell",
+      "name": "Glen Powell",
+      "imagePath": "/celebs/held-out/glen-powell/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Glen_Powell_%2831550284041%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Glen Powell"
+    },
+    {
+      "id": "hailee-steinfeld",
+      "name": "Hailee Steinfeld",
+      "imagePath": "/celebs/held-out/hailee-steinfeld/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Hailee_Steinfeld_%285491251554%29.jpg/960px-Hailee_Steinfeld_%285491251554%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Hailee Steinfeld"
+    },
+    {
+      "id": "helen-mirren",
+      "name": "Helen Mirren",
+      "imagePath": "/celebs/held-out/helen-mirren/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Helen_Mirren-2316.jpg/960px-Helen_Mirren-2316.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Helen Mirren"
+    },
+    {
+      "id": "helena-bonham-carter",
+      "name": "Helena Bonham Carter",
+      "imagePath": "/celebs/held-out/helena-bonham-carter/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Colin_Firth_and_Helena_Bonham_Carter_filming_%28cropped%29.jpg/960px-Colin_Firth_and_Helena_Bonham_Carter_filming_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Helena Bonham Carter"
+    },
+    {
+      "id": "hugh-jackman",
+      "name": "Hugh Jackman",
+      "imagePath": "/celebs/held-out/hugh-jackman/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/HughJackmanByPaulCush2011.jpg/960px-HughJackmanByPaulCush2011.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Hugh Jackman"
+    },
+    {
+      "id": "hunter-schafer",
+      "name": "Hunter Schafer",
+      "imagePath": "/celebs/held-out/hunter-schafer/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Hunter_Schafer-64188.jpg/960px-Hunter_Schafer-64188.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Hunter Schafer"
+    },
+    {
+      "id": "jackie-chan",
+      "name": "Jackie Chan",
+      "imagePath": "/celebs/held-out/jackie-chan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Jackie_Chan.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Jackie Chan"
+    },
+    {
+      "id": "jake-gyllenhaal",
+      "name": "Jake Gyllenhaal",
+      "imagePath": "/celebs/held-out/jake-gyllenhaal/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/61/Gyllenhaal.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Jake Gyllenhaal"
+    },
+    {
+      "id": "jamie-dornan",
+      "name": "Jamie Dornan",
+      "imagePath": "/celebs/held-out/jamie-dornan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/20150211_-_Jamie_Dornan_at_Berlinale_by_sebaso_2015.jpg/960px-20150211_-_Jamie_Dornan_at_Berlinale_by_sebaso_2015.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jamie Dornan"
+    },
+    {
+      "id": "jason-momoa",
+      "name": "Jason Momoa",
+      "imagePath": "/celebs/held-out/jason-momoa/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Jason_Momoa_%2843055621224%29_%28cropped%29.jpg/960px-Jason_Momoa_%2843055621224%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jason Momoa"
+    },
+    {
+      "id": "javier-bardem",
+      "name": "Javier Bardem",
+      "imagePath": "/celebs/held-out/javier-bardem/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Javier_Bardem_Cannes_2018.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Javier Bardem"
+    },
+    {
+      "id": "jennie-kim",
+      "name": "Jennie",
+      "imagePath": "/celebs/held-out/jennie-kim/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/171001_%EC%BD%94%EB%A6%AC%EC%95%84_%EB%AE%A4%EC%A7%81_%ED%8E%98%EC%8A%A4%ED%8B%B0%EB%B2%8C_%EB%B8%94%EB%9E%99%ED%95%91%ED%81%AC_%288%29.jpg/960px-171001_%EC%BD%94%EB%A6%AC%EC%95%84_%EB%AE%A4%EC%A7%81_%ED%8E%98%EC%8A%A4%ED%8B%B0%EB%B2%8C_%EB%B8%94%EB%9E%99%ED%95%91%ED%81%AC_%288%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jennie (singer)"
+    },
+    {
+      "id": "jessica-alba",
+      "name": "Jessica Alba",
+      "imagePath": "/celebs/held-out/jessica-alba/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Jessica_Alba_-_Los_Angeles_Comic_Con_2025.jpg/960px-Jessica_Alba_-_Los_Angeles_Comic_Con_2025.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jessica Alba"
+    },
+    {
+      "id": "jessica-chastain",
+      "name": "Jessica Chastain",
+      "imagePath": "/celebs/held-out/jessica-chastain/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Jessica_Chastain-64631_%28cropped%29.jpg/960px-Jessica_Chastain-64631_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jessica Chastain"
+    },
+    {
+      "id": "jet-li",
+      "name": "Jet Li",
+      "imagePath": "/celebs/held-out/jet-li/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/JetLiHK.jpg/960px-JetLiHK.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jet Li"
+    },
+    {
+      "id": "jisoo",
+      "name": "Jisoo",
+      "imagePath": "/celebs/held-out/jisoo/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/171001_%EC%BD%94%EB%A6%AC%EC%95%84_%EB%AE%A4%EC%A7%81_%ED%8E%98%EC%8A%A4%ED%8B%B0%EB%B2%8C_%EB%B8%94%EB%9E%99%ED%95%91%ED%81%AC_%285%29.jpg/960px-171001_%EC%BD%94%EB%A6%AC%EC%95%84_%EB%AE%A4%EC%A7%81_%ED%8E%98%EC%8A%A4%ED%8B%B0%EB%B2%8C_%EB%B8%94%EB%9E%99%ED%95%91%ED%81%AC_%285%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jisoo"
+    },
+    {
+      "id": "joaquin-phoenix",
+      "name": "Joaquin Phoenix",
+      "imagePath": "/celebs/held-out/joaquin-phoenix/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Her_Premiere_NYFF_2013.jpg/960px-Her_Premiere_NYFF_2013.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Joaquin Phoenix"
+    },
+    {
+      "id": "john-krasinski",
+      "name": "John Krasinski",
+      "imagePath": "/celebs/held-out/john-krasinski/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Emily_Blunt_and_John_Krasinski.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "John Krasinski"
+    },
+    {
+      "id": "jonah-hill",
+      "name": "Jonah Hill",
+      "imagePath": "/celebs/held-out/jonah-hill/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Jonah_Hill-4939_%28cropped%29_%28cropped%29.jpg/960px-Jonah_Hill-4939_%28cropped%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Jonah Hill"
+    },
+    {
+      "id": "joseph-gordon-levitt",
+      "name": "Joseph Gordon-Levitt",
+      "imagePath": "/celebs/held-out/joseph-gordon-levitt/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Joseph_Gordon-Levitt_Mar_2009.jpg/960px-Joseph_Gordon-Levitt_Mar_2009.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Joseph Gordon-Levitt"
+    },
+    {
+      "id": "josh-hutcherson",
+      "name": "Josh Hutcherson",
+      "imagePath": "/celebs/held-out/josh-hutcherson/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/JoshHutchersonSep09.jpg/960px-JoshHutchersonSep09.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Josh Hutcherson"
+    },
+    {
+      "id": "julia-roberts",
+      "name": "Julia Roberts",
+      "imagePath": "/celebs/held-out/julia-roberts/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/JuliaRoberts90.jpg/960px-JuliaRoberts90.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Julia Roberts"
+    },
+    {
+      "id": "kate-middleton",
+      "name": "Catherine, Princess of Wales",
+      "imagePath": "/celebs/held-out/kate-middleton/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Elena_Rybakina_%26_Catherine%2C_Duchess_of_Cambridge_%2852206418833%29.jpg/960px-Elena_Rybakina_%26_Catherine%2C_Duchess_of_Cambridge_%2852206418833%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Catherine, Princess of Wales"
+    },
+    {
+      "id": "kate-winslet",
+      "name": "Kate Winslet",
+      "imagePath": "/celebs/held-out/kate-winslet/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/KateWinsletAAFeb09.jpg/960px-KateWinsletAAFeb09.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Kate Winslet"
+    },
+    {
+      "id": "kendall-jenner",
+      "name": "Kendall Jenner",
+      "imagePath": "/celebs/held-out/kendall-jenner/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Cannes_2017_15.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Kendall Jenner"
+    },
+    {
+      "id": "kerry-washington",
+      "name": "Kerry Washington",
+      "imagePath": "/celebs/held-out/kerry-washington/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Kerry_Washington_Met_Opera_2010_Shankbone.jpg/960px-Kerry_Washington_Met_Opera_2010_Shankbone.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Kerry Washington"
+    },
+    {
+      "id": "kevin-hart",
+      "name": "Kevin Hart",
+      "imagePath": "/celebs/held-out/kevin-hart/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/80/Kevin_Hart_2014_%28cropped_2%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Kevin Hart"
+    },
+    {
+      "id": "kim-kardashian",
+      "name": "Kim Kardashian",
+      "imagePath": "/celebs/held-out/kim-kardashian/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/KardashianSisters%40JillStuartShow_9_1110_by_BettinaCirone42_%2810%29.jpg/960px-KardashianSisters%40JillStuartShow_9_1110_by_BettinaCirone42_%2810%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Kim Kardashian"
+    },
+    {
+      "id": "kristen-stewart",
+      "name": "Kristen Stewart",
+      "imagePath": "/celebs/held-out/kristen-stewart/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Kristen_Stewart%2C_Breaking_Dawn_Part_2%2C_London%2C_2012_%28crop%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Kristen Stewart"
+    },
+    {
+      "id": "kylian-mbappe",
+      "name": "Kylian Mbapp\u00e9",
+      "imagePath": "/celebs/held-out/kylian-mbappe/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/2019-07-17_SG_Dynamo_Dresden_vs._Paris_Saint-Germain_by_Sandro_Halank%E2%80%93617.jpg/960px-2019-07-17_SG_Dynamo_Dresden_vs._Paris_Saint-Germain_by_Sandro_Halank%E2%80%93617.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Kylian Mbapp\u00e9"
+    },
+    {
+      "id": "kylie-jenner",
+      "name": "Kylie Jenner",
+      "imagePath": "/celebs/held-out/kylie-jenner/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Kendall_%26_Kylie_Jenner_interview.png/960px-Kendall_%26_Kylie_Jenner_interview.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Kylie Jenner"
+    },
+    {
+      "id": "laurence-fishburne",
+      "name": "Laurence Fishburne",
+      "imagePath": "/celebs/held-out/laurence-fishburne/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Laurence_Fishburne_at_53rd_Saturn_Awards_2026.jpg/960px-Laurence_Fishburne_at_53rd_Saturn_Awards_2026.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Laurence Fishburne"
+    },
+    {
+      "id": "lee-jung-jae",
+      "name": "Lee Jung Jae",
+      "imagePath": "/celebs/held-out/lee-jung-jae/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Lee%2C_Jung-Jae.jpg/960px-Lee%2C_Jung-Jae.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Lee Jung-jae"
+    },
+    {
+      "id": "lee-min-ho",
+      "name": "Lee Min-ho",
+      "imagePath": "/celebs/held-out/lee-min-ho/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/20220401_Lee_Min-ho_%EC%9D%B4%EB%AF%BC%ED%98%B8_ELLE_Taiwan_%283%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Lee Min-ho"
+    },
+    {
+      "id": "leonardo-dicaprio",
+      "name": "Leonardo DiCaprio",
+      "imagePath": "/celebs/held-out/leonardo-dicaprio/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Actor_and_Environmentalist_Leonardo_DiCaprio_Walks_With_Secretary_Kerry_Before_he_Addresses_the_Third_Our_Ocean_Conference_in_Washington_%2829627440831%29.jpg/960px-Actor_and_Environmentalist_Leonardo_DiCaprio_Walks_With_Secretary_Kerry_Before_he_Addresses_the_Third_Our_Ocean_Conference_in_Washington_%2829627440831%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Leonardo DiCaprio"
+    },
+    {
+      "id": "liam-hemsworth",
+      "name": "Liam Hemsworth",
+      "imagePath": "/celebs/held-out/liam-hemsworth/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Independence_Day-_Resurgence_Japan_Premiere-_Liam_Hemsworth_%26_Jeff_Goldblum_%2828453569402%29_%28cropped%29.jpg/960px-Independence_Day-_Resurgence_Japan_Premiere-_Liam_Hemsworth_%26_Jeff_Goldblum_%2828453569402%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Liam Hemsworth"
+    },
+    {
+      "id": "liam-neeson",
+      "name": "Liam Neeson",
+      "imagePath": "/celebs/held-out/liam-neeson/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Liam_Neeson_Deauville_2012_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Liam Neeson"
+    },
+    {
+      "id": "lionel-messi",
+      "name": "Lionel Messi",
+      "imagePath": "/celebs/held-out/lionel-messi/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/2011_FIFA_Club_World_Cup_FC_Barcelona_vs_Al_Sadd.jpg/960px-2011_FIFA_Club_World_Cup_FC_Barcelona_vs_Al_Sadd.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Lionel Messi"
+    },
+    {
+      "id": "lizzo",
+      "name": "Lizzo",
+      "imagePath": "/celebs/held-out/lizzo/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/2018_Lizzo_%2844617724361%29_%28cropped%29.jpg/960px-2018_Lizzo_%2844617724361%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Lizzo"
+    },
+    {
+      "id": "logan-lerman",
+      "name": "Logan Lerman",
+      "imagePath": "/celebs/held-out/logan-lerman/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Logan_Lerman_2014.jpg/960px-Logan_Lerman_2014.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Logan Lerman"
+    },
+    {
+      "id": "luke-hemsworth",
+      "name": "Luke Hemsworth",
+      "imagePath": "/celebs/held-out/luke-hemsworth/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Luke_Hemsworth_by_Gage_Skidmore.jpg/960px-Luke_Hemsworth_by_Gage_Skidmore.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Luke Hemsworth"
+    },
+    {
+      "id": "mads-mikkelsen",
+      "name": "Mads Mikkelsen",
+      "imagePath": "/celebs/held-out/mads-mikkelsen/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Mads_Mikkelsen_at_82nd_Venice_International_Film_Festival_%28cropped2%29.jpg/960px-Mads_Mikkelsen_at_82nd_Venice_International_Film_Festival_%28cropped2%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Mads Mikkelsen"
+    },
+    {
+      "id": "mark-zuckerberg",
+      "name": "Mark Zuckerberg",
+      "imagePath": "/celebs/held-out/mark-zuckerberg/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Cristina_Kirchner_and_Mark_Zuckerberg.jpg/960px-Cristina_Kirchner_and_Mark_Zuckerberg.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Mark Zuckerberg"
+    },
+    {
+      "id": "martin-freeman",
+      "name": "Martin Freeman",
+      "imagePath": "/celebs/held-out/martin-freeman/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Martin_Freeman%2C_BBC_Radio_2_Folk_Awards_2016_at_The_Royal_Albert_Hall_%2826118668654%29.jpg/960px-Martin_Freeman%2C_BBC_Radio_2_Folk_Awards_2016_at_The_Royal_Albert_Hall_%2826118668654%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Martin Freeman"
+    },
+    {
+      "id": "matt-bomer",
+      "name": "Matt Bomer",
+      "imagePath": "/celebs/held-out/matt-bomer/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/6.7.11MattBomerByLuigiNovi2.jpg/960px-6.7.11MattBomerByLuigiNovi2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Matt Bomer"
+    },
+    {
+      "id": "matt-damon",
+      "name": "Matt Damon",
+      "imagePath": "/celebs/held-out/matt-damon/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/MattDamonBU.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Matt Damon"
+    },
+    {
+      "id": "meghan-markle",
+      "name": "Meghan Markle",
+      "imagePath": "/celebs/held-out/meghan-markle/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/141206-D-VO565-063_%2815965782122%29.jpg/960px-141206-D-VO565-063_%2815965782122%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Meghan, Duchess of Sussex"
+    },
+    {
+      "id": "meryl-streep",
+      "name": "Meryl Streep",
+      "imagePath": "/celebs/held-out/meryl-streep/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Alec_Baldwin%2C_Meryl_Streep%2C_Josh_Wood_15th_Annual_Screen_Actors_Guild_Awards_2.jpg/960px-Alec_Baldwin%2C_Meryl_Streep%2C_Josh_Wood_15th_Annual_Screen_Actors_Guild_Awards_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Meryl Streep"
+    },
+    {
+      "id": "michelle-obama",
+      "name": "Michelle Obama",
+      "imagePath": "/celebs/held-out/michelle-obama/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Michelle_Obama_2013_official_portrait.jpg/960px-Michelle_Obama_2013_official_portrait.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Michelle Obama"
+    },
+    {
+      "id": "michelle-yeoh",
+      "name": "Michelle Yeoh",
+      "imagePath": "/celebs/held-out/michelle-yeoh/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Festival_automobile_international_2016_-_Photocall_-_102.jpg/960px-Festival_automobile_international_2016_-_Photocall_-_102.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Michelle Yeoh"
+    },
+    {
+      "id": "miles-teller",
+      "name": "Miles Teller",
+      "imagePath": "/celebs/held-out/miles-teller/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Miles_Teller_Deauville_2014.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Miles Teller"
+    },
+    {
+      "id": "morgan-freeman",
+      "name": "Morgan Freeman",
+      "imagePath": "/celebs/held-out/morgan-freeman/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Morgan_Freeman_%28255277982%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Morgan Freeman"
+    },
+    {
+      "id": "naomi-campbell",
+      "name": "Naomi Campbell",
+      "imagePath": "/celebs/held-out/naomi-campbell/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg/960px-Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Naomi Campbell"
+    },
+    {
+      "id": "sam-smith",
+      "name": "Sam Smith",
+      "imagePath": "/celebs/held-out/sam-smith/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/ADELE_LIVE_2016_-_HELLO_-_ST.PAUL_-_night_1_-_Copy.jpg/960px-ADELE_LIVE_2016_-_HELLO_-_ST.PAUL_-_night_1_-_Copy.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Sam Smith"
+    },
+    {
+      "id": "sandra-bullock",
+      "name": "Sandra Bullock",
+      "imagePath": "/celebs/held-out/sandra-bullock/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/SandraBullockMay09.jpg/960px-SandraBullockMay09.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Sandra Bullock"
+    },
+    {
+      "id": "saoirse-ronan",
+      "name": "Saoirse Ronan",
+      "imagePath": "/celebs/held-out/saoirse-ronan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Brooklyn_06_%2821489878262%29.jpg/960px-Brooklyn_06_%2821489878262%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Saoirse Ronan"
+    },
+    {
+      "id": "sebastian-stan",
+      "name": "Sebastian Stan",
+      "imagePath": "/celebs/held-out/sebastian-stan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/CannesFF26_GRH_TUESPHOTO0276A_%28cropped%29.jpg/960px-CannesFF26_GRH_TUESPHOTO0276A_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Sebastian Stan"
+    },
+    {
+      "id": "selena-gomez",
+      "name": "Selena Gomez",
+      "imagePath": "/celebs/held-out/selena-gomez/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Selena_Gomez_2009.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Selena Gomez"
+    },
+    {
+      "id": "seth-rogen",
+      "name": "Seth Rogen",
+      "imagePath": "/celebs/held-out/seth-rogen/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/SethRogen_7_2007.JPG/960px-SethRogen_7_2007.JPG?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Seth Rogen"
+    },
+    {
+      "id": "shah-rukh-khan",
+      "name": "Shah Rukh Khan",
+      "imagePath": "/celebs/held-out/shah-rukh-khan/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Devdas_CD-Rom_Release.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Shah Rukh Khan"
+    },
+    {
+      "id": "shakira",
+      "name": "Shakira",
+      "imagePath": "/celebs/held-out/shakira/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2023-11-16_Gala_de_los_Latin_Grammy%2C_03_%28cropped%2902.jpg/960px-2023-11-16_Gala_de_los_Latin_Grammy%2C_03_%28cropped%2902.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Shakira"
+    },
+    {
+      "id": "song-kang",
+      "name": "Song Kang",
+      "imagePath": "/celebs/held-out/song-kang/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/230224_Song_Kang_Photoshoot_for_Marie_Claire_Korea.png/960px-230224_Song_Kang_Photoshoot_for_Marie_Claire_Korea.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Song Kang"
+    },
+    {
+      "id": "stephen-curry",
+      "name": "Stephen Curry",
+      "imagePath": "/celebs/held-out/stephen-curry/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/2019_nba_finals_game_2.jpg/960px-2019_nba_finals_game_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Stephen Curry"
+    },
+    {
+      "id": "taylor-lautner",
+      "name": "Taylor Lautner",
+      "imagePath": "/celebs/held-out/taylor-lautner/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Taylor_Lautner_2011%2C_2.jpg/960px-Taylor_Lautner_2011%2C_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Taylor Lautner"
+    },
+    {
+      "id": "taylor-swift",
+      "name": "Taylor Swift",
+      "imagePath": "/celebs/held-out/taylor-swift/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/5.3.10TaylorSwiftByDavidShankbone.jpg/960px-5.3.10TaylorSwiftByDavidShankbone.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Taylor Swift"
+    },
+    {
+      "id": "tom-hanks",
+      "name": "Tom Hanks",
+      "imagePath": "/celebs/held-out/tom-hanks/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/26th_Tokyo_International_Film_Festival-_Tom_Hanks_from_Captain_Phillips%2C_Yakusho_Koji_from_The_Kiyosu_Conference%2C_Prime_Minister_Abe_Shinzo_%2815403635119%29.jpg/960px-26th_Tokyo_International_Film_Festival-_Tom_Hanks_from_Captain_Phillips%2C_Yakusho_Koji_from_The_Kiyosu_Conference%2C_Prime_Minister_Abe_Shinzo_%2815403635119%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Tom Hanks"
+    },
+    {
+      "id": "tom-hardy",
+      "name": "Tom Hardy",
+      "imagePath": "/celebs/held-out/tom-hardy/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Tom_Hardy_%2841869508740%29.jpg/960px-Tom_Hardy_%2841869508740%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Tom Hardy"
+    },
+    {
+      "id": "trevor-noah",
+      "name": "Trevor Noah",
+      "imagePath": "/celebs/held-out/trevor-noah/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Trevor_Noah_%2853554114243%29_%28portrait_crop%29.jpg/960px-Trevor_Noah_%2853554114243%29_%28portrait_crop%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Trevor Noah"
+    },
+    {
+      "id": "vanessa-kirby",
+      "name": "Vanessa Kirby",
+      "imagePath": "/celebs/held-out/vanessa-kirby/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/be/Vanessa_Kirby.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Vanessa Kirby"
+    },
+    {
+      "id": "victoria-beckham",
+      "name": "Victoria Beckham",
+      "imagePath": "/celebs/held-out/victoria-beckham/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/DVB-Jeansvorstellung_007_%28cropped%29.jpg/960px-DVB-Jeansvorstellung_007_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Victoria Beckham"
+    },
+    {
+      "id": "will-smith",
+      "name": "Will Smith",
+      "imagePath": "/celebs/held-out/will-smith/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/TechCrunch_Disrupt_San_Francisco_2019_-_Day_1_%2848834070763%29_%28cropped%29.jpg/960px-TechCrunch_Disrupt_San_Francisco_2019_-_Day_1_%2848834070763%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Will Smith"
+    },
+    {
+      "id": "zac-efron",
+      "name": "Zac Efron",
+      "imagePath": "/celebs/held-out/zac-efron/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Zac_Efron_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Zac Efron"
+    },
+    {
+      "id": "zayn-malik",
+      "name": "Zayn Malik",
+      "imagePath": "/celebs/held-out/zayn-malik/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/40/One_Direction_2012_Stockholm.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Zayn Malik"
+    },
+    {
+      "id": "zoe-saldana",
+      "name": "Zoe Salda\u00f1a",
+      "imagePath": "/celebs/held-out/zoe-saldana/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Actress_Zoe_Saldana.jpg/960px-Actress_Zoe_Saldana.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Zoe Salda\u00f1a"
+    },
+    {
+      "id": "olivia-colman",
+      "name": "Olivia Colman",
+      "imagePath": "/celebs/held-out/olivia-colman/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Beverly_Hills%2C_CA%2C_USA_%2852538485825%29.jpg/960px-Beverly_Hills%2C_CA%2C_USA_%2852538485825%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Olivia Colman"
+    },
+    {
+      "id": "karol-g",
+      "name": "Karol G",
+      "imagePath": "/celebs/held-out/karol-g/001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/2023-11-16_Gala_de_los_Latin_Grammy%2C_15.jpg/960px-2023-11-16_Gala_de_los_Latin_Grammy%2C_15.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Karol G"
+    }
+  ]
+}
