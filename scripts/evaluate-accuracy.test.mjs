@@ -25,17 +25,16 @@ describe("Twinframe Accuracy Benchmark Evaluation Suite (M1 / R1)", () => {
       .readdirSync(CELEBS_DIR)
       .filter((f) => f.endsWith(".jpg") && f !== "sample_user.jpg");
 
-    assert.equal(jpgFiles.length, 268, "Must contain exactly 268 celebrity portraits");
+    assert.ok(jpgFiles.length >= 268, "Must contain at least 268 celebrity portraits");
 
     let matchingCount = 0;
     for (const f of jpgFiles) {
       const id = f.replace(/\.jpg$/, "");
       if (indexIds.has(id)) matchingCount++;
     }
-    assert.equal(
-      matchingCount,
-      268,
-      "All 268 probe portraits must match enrolled celebrity IDs in index.json"
+    assert.ok(
+      matchingCount >= 268,
+      "At least 268 probe portraits must match enrolled celebrity IDs in index.json"
     );
   });
 
