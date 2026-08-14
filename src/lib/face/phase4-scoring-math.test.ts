@@ -5,6 +5,7 @@ import {
   cosineDistance,
   ensembleDistance,
   distanceToMatchPercent,
+  calibratedAgeGapPenalty,
 } from "./embeddings.ts";
 
 describe("Phase 4: Scoring Math & Hill Curve Exact Calibration Suite", () => {
@@ -87,6 +88,81 @@ describe("Phase 4: Scoring Math & Hill Curve Exact Calibration Suite", () => {
         assert.ok(curr <= prev, `Monotonicity violation at d=${d}: prev=${prev}, curr=${curr}`);
         prev = curr;
       }
+    });
+  });
+
+  describe("Requirement R2: Calibrated Age-Gap Penalty Exact Mathematical Calibration", () => {
+    it("[R2-01] verifies exact numerical calibration grid from Survey Report 4.3", () => {
+      // 1. Strong match (d=0.35) -> 0.0
+      assert.equal(calibratedAgeGapPenalty(0.35, 45, 20), 0.0);
+      // 2. Weak match with close age (Δage=3) -> 0.0
+      assert.equal(calibratedAgeGapPenalty(0.44, 45, 42), 0.0);
+      // 3. Borderline (d=0.41, Δage=25, uAge=45): 0.22 * sqrt(0.1) * (5/20)^0.8 * 1.0 ≈ 0.022950
+      const p41 = calibratedAgeGapPenalty(0.41, 45, 20);
+      assert.ok(Math.abs(p41 - 0.022950) < 1e-4, `Expected ~0.022950, got ${p41}`);
+      // 4. Weak match (d=0.42, Δage=25, uAge=45): 0.22 * sqrt(0.2) * (5/20)^0.8 * 1.0 ≈ 0.032456
+      const p42 = calibratedAgeGapPenalty(0.42, 45, 20);
+      assert.ok(Math.abs(p42 - 0.032456) < 1e-4, `Expected ~0.032456, got ${p42}`);
+      // 5. Weak match (d=0.42, Δage=28, uAge=48): 0.22 * sqrt(0.2) * (8/20)^0.8 * 1.0 ≈ 0.047270
+      const p48_20 = calibratedAgeGapPenalty(0.42, 48, 20);
+      assert.ok(Math.abs(p48_20 - 0.047270) < 1e-4, `Expected ~0.047270, got ${p48_20}`);
+      // 6. Weak match (d=0.43, Δage=30, uAge=50): 0.22 * sqrt(0.3) * (10/20)^0.8 * 1.0 ≈ 0.069208
+      const p50_20 = calibratedAgeGapPenalty(0.43, 50, 20);
+      assert.ok(Math.abs(p50_20 - 0.069208) < 1e-4, `Expected ~0.069208, got ${p50_20}`);
+      // 7. Weak match (d=0.44, Δage=35, uAge=55): 0.22 * sqrt(0.4) * (15/20)^0.8 * 1.0 ≈ 0.110535
+      const p55_20 = calibratedAgeGapPenalty(0.44, 55, 20);
+      assert.ok(Math.abs(p55_20 - 0.110535) < 1e-4, `Expected ~0.110535, got ${p55_20}`);
+      // 8. Large gap (d=0.46, Δage=45, uAge=65): 0.22 * sqrt(0.6) * 1.0 * 1.0 ≈ 0.170411
+      const p65_20 = calibratedAgeGapPenalty(0.46, 65, 20);
+      assert.ok(Math.abs(p65_20 - 0.170411) < 1e-4, `Expected ~0.170411, got ${p65_20}`);
+      // 9. Young user with older candidate (uAge=20, cAge=50, d=0.45): 0.22 * sqrt(0.5) * (10/20)^0.8 * 0.5 ≈ 0.044674
+      const p20_50 = calibratedAgeGapPenalty(0.45, 20, 50);
+      assert.ok(Math.abs(p20_50 - 0.044674) < 1e-4, `Expected ~0.044674, got ${p20_50}`);
+    });
+
+    it("[R2-02] preserves twin invariance (d <= 0.40) and age-peer invariance (|Δage| <= 20)", () => {
+      for (let d = 0.0; d <= 0.40; d += 0.05) {
+        assert.equal(calibratedAgeGapPenalty(d, 60, 20), 0.0);
+        assert.equal(calibratedAgeGapPenalty(d, 20, 60), 0.0);
+      }
+      for (let delta = 0; delta <= 20; delta += 2) {
+        assert.equal(calibratedAgeGapPenalty(0.45, 45, 45 - delta), 0.0);
+        assert.equal(calibratedAgeGapPenalty(0.45, 45, 45 + delta), 0.0);
+      }
+    });
+
+    it("[R2-03] exhibits continuous boundary transition with no jump discontinuity", () => {
+      const epsD = 1e-4;
+      const pAt40 = calibratedAgeGapPenalty(0.40, 50, 20);
+      const pJustAbove40 = calibratedAgeGapPenalty(0.40 + epsD, 50, 20);
+      assert.equal(pAt40, 0.0);
+      assert.ok(pJustAbove40 > 0.0 && pJustAbove40 < 1e-2);
+
+      const epsAge = 0.01;
+      const pAt20 = calibratedAgeGapPenalty(0.45, 45, 25);
+      const pJustAbove20 = calibratedAgeGapPenalty(0.45, 45, 25 - epsAge);
+      assert.equal(pAt20, 0.0);
+      assert.ok(pJustAbove20 > 0.0 && pJustAbove20 < 1e-2);
+    });
+
+    it("[R2-04] guarantees bounded ceiling P_age <= 0.22", () => {
+      assert.equal(calibratedAgeGapPenalty(1.0, 80, 18), 0.22);
+      assert.equal(calibratedAgeGapPenalty(2.0, 90, 18), 0.22);
+      assert.ok(calibratedAgeGapPenalty(0.48, 55, 20) <= 0.22);
+    });
+
+    it("[R2-05] safely handles invalid/missing inputs (NaN, null, undefined, negative values)", () => {
+      assert.equal(calibratedAgeGapPenalty(NaN, 50, 20), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, NaN, 20), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, 50, NaN), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, null, 20), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, 50, null), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, undefined, 20), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, 50, undefined), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, -5, 20), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, 50, -5), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, 0, 20), 0.0);
+      assert.equal(calibratedAgeGapPenalty(0.45, 50, 0), 0.0);
     });
   });
 });

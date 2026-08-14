@@ -1,8 +1,7 @@
 #!/usr/bin/tsx
 /**
- * Replace one celebrity's primary FaceNet slot (f32 + q8) and metadata.
- * Usage: npx tsx scripts/patch-gallery-slot.ts --id karol-g --desc path.json --age 33 --gender female
- * desc json: { descriptor: number[128] }
+ * Replace one celebrity's primary FaceNet slot (f32 + q8), features, and metadata.
+ * Usage: npx tsx scripts/patch-gallery-slot.ts --id billie-eilish --desc path.json [--features feat.json] [--age 25] [--gender female] [--genderProb 0.94]
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -19,10 +18,13 @@ function arg(name: string): string | undefined {
 
 const id = arg("id");
 const descPath = arg("desc");
-const age = Number(arg("age") ?? 35);
+const featPath = arg("features");
+const age = Number(arg("age") ?? 25);
 const gender = (arg("gender") ?? "female") as "male" | "female";
+const genderProb = Number(arg("genderProb") ?? 0.94);
+
 if (!id || !descPath) {
-  console.error("usage: --id <celeb-id> --desc <json> [--age N] [--gender male|female]");
+  console.error("usage: --id <celeb-id> --desc <json> [--features <json>] [--age N] [--gender male|female] [--genderProb 0.94]");
   process.exit(1);
 }
 
@@ -72,7 +74,7 @@ buckets[idx] = {
   ...buckets[idx]!,
   age,
   gender,
-  genderProb: 0.95,
+  genderProb,
   fallbackPath: fs.existsSync(path.join(CELEBS, `${id}.jpg`)) ? jpg : buckets[idx]!.fallbackPath,
 };
 fs.writeFileSync(path.join(CELEBS, "gallery.buckets.json"), JSON.stringify(buckets, null, 2));
@@ -81,9 +83,32 @@ const indexPath = path.join(CELEBS, "index.json");
 const index = JSON.parse(fs.readFileSync(indexPath, "utf8")) as Array<{
   id: string;
   fallbackPath?: string;
+  baseAge?: number;
+  ageBuckets?: number[];
+  gender?: string;
+  genderProb?: number;
 }>;
 const ie = index.find((e) => e.id === id);
-if (ie && fs.existsSync(path.join(CELEBS, `${id}.jpg`))) ie.fallbackPath = jpg;
+if (ie) {
+  if (fs.existsSync(path.join(CELEBS, `${id}.jpg`))) ie.fallbackPath = jpg;
+  ie.baseAge = age;
+  ie.ageBuckets = [age];
+  ie.gender = gender;
+  ie.genderProb = genderProb;
+}
 fs.writeFileSync(indexPath, JSON.stringify(index, null, 2));
 
-console.log(`patched ${id} bucket=${idx} age=${age} gender=${gender}`);
+// Update gallery.features.json if features provided
+if (featPath && fs.existsSync(featPath)) {
+  const featJsonPath = path.join(CELEBS, "gallery.features.json");
+  if (fs.existsSync(featJsonPath)) {
+    const allFeatures = JSON.parse(fs.readFileSync(featJsonPath, "utf8"));
+    const newFeatures = JSON.parse(fs.readFileSync(featPath, "utf8"));
+    allFeatures[id] = newFeatures[id] ?? newFeatures;
+    fs.writeFileSync(featJsonPath, JSON.stringify(allFeatures, null, 2));
+    console.log(`updated gallery.features.json for ${id}`);
+  }
+}
+
+console.log(`patched ${id} bucket=${idx} age=${age} gender=${gender} genderProb=${genderProb}`);
+

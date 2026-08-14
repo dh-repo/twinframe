@@ -798,7 +798,7 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
 
 /**
  * Combines normalized 23-d canonical morphological descriptors with 128-d deep vector representations.
- * Incorporates head pose adaptive landmark weighting and cross-demographic mismatch penalty.
+ * Incorporates head pose adaptive landmark weighting, cross-demographic mismatch penalty, and calibrated age gap penalty.
  */
 export function combinedDescriptorDistance(
   deepVecA: ArrayLike<number>,
@@ -809,6 +809,8 @@ export function combinedDescriptorDistance(
     headPose?: HeadPoseOrientation;
     ethnicClusterA?: EthnicCluster | null;
     ethnicClusterB?: EthnicCluster | null;
+    userAge?: number | null;
+    celebAge?: number | null;
   },
 ): number {
   const deepDist = ensembleDistance(deepVecA, deepVecB);
@@ -818,8 +820,9 @@ export function combinedDescriptorDistance(
     ? (options?.headPose ? getPoseAdaptiveLandmarkWeight(options.headPose as any, 0.10) : 0.10)
     : 0.0;
   const crossPenalty = crossDemographicMismatchPenalty(featA, featB, options?.ethnicClusterA, options?.ethnicClusterB);
+  const agePenalty = calibratedAgeGapPenalty(deepDist, options?.userAge, options?.celebAge);
   
-  return (1 - wGeom) * deepDist + wGeom * morphDist + crossPenalty;
+  return (1 - wGeom) * deepDist + wGeom * morphDist + crossPenalty + agePenalty;
 }
 
 /**
@@ -850,6 +853,8 @@ export function computeMatchScore(
     headPose?: HeadPoseOrientation;
     ethnicClusterA?: EthnicCluster | null;
     ethnicClusterB?: EthnicCluster | null;
+    userAge?: number | null;
+    celebAge?: number | null;
   },
 ): MatchScoreResult {
   const deepVectorDistance = cosineDistance(deepVecA, deepVecB);
@@ -861,8 +866,9 @@ export function computeMatchScore(
     ? (options?.headPose ? getPoseAdaptiveLandmarkWeight(options.headPose as any, 0.10) : 0.10)
     : 0.0;
   const crossPenalty = crossDemographicMismatchPenalty(featA, featB, options?.ethnicClusterA, options?.ethnicClusterB);
+  const agePenalty = calibratedAgeGapPenalty(deepEnsembleDist, options?.userAge, options?.celebAge);
   
-  const descriptorDistance = (1 - wGeom) * deepEnsembleDist + wGeom * morphDist + crossPenalty;
+  const descriptorDistance = (1 - wGeom) * deepEnsembleDist + wGeom * morphDist + crossPenalty + agePenalty;
   const confidencePct = distanceToMatchPercent(descriptorDistance);
   
   const gateThresholdPct = options?.gateThresholdPct ?? 20.0;
@@ -870,7 +876,8 @@ export function computeMatchScore(
     confidencePct >= gateThresholdPct &&
     confidencePct >= 20.0 &&
     descriptorDistance <= 0.70 &&
-    crossPenalty < 0.20;
+    crossPenalty < 0.20 &&
+    agePenalty < 0.15;
 
   return {
     confidencePct,
@@ -924,6 +931,54 @@ export function ageAffinity(userAge: number, celebAge: number): number {
   const sigma = 18;
   const raw = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / sigma, 2));
   return Math.max(1e-6, raw);
+}
+
+/**
+ * Calibrated Non-Linear Age-Gap Penalty (Requirement R2 / Features F5, F6, F7).
+ *
+ * Applies a steep continuous non-linear penalty when:
+ * 1. Match distance is in the weak/borderline regime (rawDist > 0.40), AND
+ * 2. Age discrepancy is large (|Δage| > 20 years), particularly for mature users (userAge >= 40).
+ *
+ * Mathematical formulation:
+ * P_age = P_max * sqrt(min(1, max(0, (rawDist - 0.40) / 0.10))) * min(1, max(0, (|Δage| - 20) / 20))^0.80 * min(1, max(0.5, userAge / 40))
+ * where P_max = 0.22.
+ *
+ * Invariant properties:
+ * - Strong matches (rawDist <= 0.40) return exactly 0.0.
+ * - Age peers (|Δage| <= 20) return exactly 0.0.
+ * - Missing/invalid/non-positive ages return 0.0.
+ * - Max penalty is bounded at 0.22.
+ */
+export function calibratedAgeGapPenalty(
+  rawDist: number,
+  userAge?: number | null,
+  celebAge?: number | null,
+  options?: { matureThreshold?: number; maxPenalty?: number },
+): number {
+  if (!Number.isFinite(rawDist) || rawDist <= 0.40) return 0.0;
+  if (userAge === null || userAge === undefined || !Number.isFinite(userAge) || userAge <= 0) return 0.0;
+  if (celebAge === null || celebAge === undefined || !Number.isFinite(celebAge) || celebAge <= 0) return 0.0;
+
+  const deltaAge = Math.abs(userAge - celebAge);
+  if (deltaAge <= 20) return 0.0;
+
+  const maxPenalty = options?.maxPenalty ?? 0.22;
+  const matureThreshold = options?.matureThreshold ?? 40;
+
+  // Distance excess factor with square root curve for immediate response at d > 0.40
+  const distExcess = Math.min(1.0, Math.max(0.0, (rawDist - 0.40) / 0.10));
+  const gDist = Math.sqrt(distExcess);
+
+  // Age excess factor ramping smoothly from delta = 20 to delta = 40 with concave 0.80 exponent
+  const ageExcess = Math.min(1.0, Math.max(0.0, (deltaAge - 20) / 20));
+  const gAge = Math.pow(ageExcess, 0.80);
+
+  // Mature weighting factor: 1.0 for userAge >= matureThreshold (40), floor 0.5 for younger users
+  const matureWeight = Math.min(1.0, Math.max(0.5, userAge / matureThreshold));
+
+  const penalty = maxPenalty * gDist * gAge * matureWeight;
+  return Math.round(penalty * 1e6) / 1e6;
 }
 
 /**

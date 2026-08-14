@@ -1,10 +1,12 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { cn } from "@/lib/utils/cn";
 import { Sliders, Columns, Sparkles } from "lucide-react";
 import type { ExtendedAnatomicalFeatures, TraitInsight } from "@/lib/face/types";
 import type { RegionalOcclusionConfidence } from "@/lib/face/occlusion";
 import { AnatomicalInspectionCards, FaceMeshOverlay } from "@/components/results/biometric-mesh";
+import { getCelebrityFaceCropAndLandmarks, type CelebrityCropData } from "@/lib/face/celebrity-landmarks";
+import { Progress } from "@/components/ui/progress";
 
 export type ComparisonMode = "side-by-side" | "split-slider" | "landmarks";
 
@@ -40,7 +42,29 @@ export function ComparisonView({
   const [mode, setMode] = useState<ComparisonMode>("side-by-side");
   const [sliderPos, setSliderPos] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [celebCrop, setCelebCrop] = useState<CelebrityCropData | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const photoUrl = celebrityPhotoUrl ?? undefined;
+  const photoUrl192 = celebrityPhoto192Url ?? undefined;
+  const fallbackUrl = celebrityFallbackUrl ?? undefined;
+
+  useEffect(() => {
+    let isMounted = true;
+    const targetUrl = photoUrl192 || photoUrl || fallbackUrl;
+    if (!targetUrl) {
+      setCelebCrop(null);
+      return;
+    }
+    getCelebrityFaceCropAndLandmarks(targetUrl).then((data) => {
+      if (isMounted) {
+        setCelebCrop(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [photoUrl, photoUrl192, fallbackUrl]);
 
   const handleMove = useCallback(
     (clientX: number) => {
@@ -73,10 +97,6 @@ export function ComparisonView({
       handleMove(e.touches[0].clientX);
     }
   };
-
-  const photoUrl = celebrityPhotoUrl ?? undefined;
-  const photoUrl192 = celebrityPhoto192Url ?? undefined;
-  const fallbackUrl = celebrityFallbackUrl ?? undefined;
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -165,16 +185,24 @@ export function ComparisonView({
           {/* Celebrity Portrait Card */}
           <div className="flex flex-col items-center gap-2">
             <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-2xl border border-border bg-bg-subtle shadow-md">
-              <CelebrityPortrait
-                initials={celebrityInitials}
-                accentHue={accentHue}
-                photoUrl={photoUrl}
-                photoUrl192={photoUrl192}
-                fallbackUrl={fallbackUrl}
-                size="xl"
-                alt={celebrityName}
-                className="h-full w-full rounded-none"
-              />
+              {celebCrop?.cropUrl ? (
+                <img
+                  src={celebCrop.cropUrl}
+                  alt={celebrityName}
+                  className="h-full w-full object-cover object-top"
+                />
+              ) : (
+                <CelebrityPortrait
+                  initials={celebrityInitials}
+                  accentHue={accentHue}
+                  photoUrl={photoUrl}
+                  photoUrl192={photoUrl192}
+                  fallbackUrl={fallbackUrl}
+                  size="xl"
+                  alt={celebrityName}
+                  className="h-full w-full rounded-none"
+                />
+              )}
               <span className="absolute bottom-1.5 right-1.5 max-w-[80%] truncate rounded bg-bg/80 px-1.5 py-0.5 text-[10px] font-medium text-fg-muted backdrop-blur-sm">
                 {celebrityName.split(" ")[0]}
               </span>
@@ -202,16 +230,24 @@ export function ComparisonView({
           >
             {/* Background Layer: Celebrity Face */}
             <div className="absolute inset-0 h-full w-full">
-              <CelebrityPortrait
-                initials={celebrityInitials}
-                accentHue={accentHue}
-                photoUrl={photoUrl}
-                photoUrl192={photoUrl192}
-                fallbackUrl={fallbackUrl}
-                size="xl"
-                alt={celebrityName}
-                className="h-full w-full rounded-none"
-              />
+              {celebCrop?.cropUrl ? (
+                <img
+                  src={celebCrop.cropUrl}
+                  alt={celebrityName}
+                  className="h-full w-full object-cover object-top"
+                />
+              ) : (
+                <CelebrityPortrait
+                  initials={celebrityInitials}
+                  accentHue={accentHue}
+                  photoUrl={photoUrl}
+                  photoUrl192={photoUrl192}
+                  fallbackUrl={fallbackUrl}
+                  size="xl"
+                  alt={celebrityName}
+                  className="h-full w-full rounded-none"
+                />
+              )}
               <span className="absolute bottom-2 right-2 rounded bg-bg/85 px-2 py-0.5 text-[11px] font-mono font-medium text-fg-muted backdrop-blur-md z-10">
                 {celebrityName}
               </span>
@@ -275,19 +311,27 @@ export function ComparisonView({
             </div>
 
             <div className="relative h-28 w-28 sm:h-40 sm:w-40 overflow-hidden rounded-2xl border border-match/40 bg-bg-subtle shadow-md">
-              <CelebrityPortrait
-                initials={celebrityInitials}
-                accentHue={accentHue}
-                photoUrl={photoUrl}
-                photoUrl192={photoUrl192}
-                fallbackUrl={fallbackUrl}
-                size="xl"
-                alt={celebrityName}
-                className="h-full w-full rounded-none filter brightness-95"
-              />
-              <FaceMeshOverlay />
+              {celebCrop?.cropUrl ? (
+                <img
+                  src={celebCrop.cropUrl}
+                  alt={`${celebrityName} landmarks`}
+                  className="h-full w-full object-cover object-top filter brightness-95"
+                />
+              ) : (
+                <CelebrityPortrait
+                  initials={celebrityInitials}
+                  accentHue={accentHue}
+                  photoUrl={photoUrl}
+                  photoUrl192={photoUrl192}
+                  fallbackUrl={fallbackUrl}
+                  size="xl"
+                  alt={celebrityName}
+                  className="h-full w-full rounded-none filter brightness-95"
+                />
+              )}
+              <FaceMeshOverlay landmarks={celebCrop?.landmarks} />
               <span className="absolute bottom-1.5 right-1.5 rounded bg-bg/80 px-1.5 py-0.5 text-[10px] font-mono text-match backdrop-blur-sm">
-                CANONICAL TWIN
+                {celebrityName.split(" ")[0]}
               </span>
             </div>
           </div>
@@ -299,15 +343,24 @@ export function ComparisonView({
           />
 
           {traits.length > 0 && (
-            <div className="grid grid-cols-2 gap-2 max-w-md mx-auto pt-1">
-              {traits.map((t) => (
-                <div key={t.trait} className="flex items-center justify-between rounded-lg border border-border bg-bg-elevated px-3 py-2 text-xs">
-                  <span className="text-fg-muted font-medium truncate">{t.label}</span>
-                  <span className="font-mono text-match font-semibold ml-2">
-                    {Math.round(t.similarity * 100)}%
-                  </span>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md mx-auto pt-1">
+              {traits.map((t) => {
+                const pct = Math.round(t.similarity * 100);
+                return (
+                  <div
+                    key={t.trait}
+                    className="flex flex-col gap-1.5 rounded-lg border border-border bg-bg-elevated p-2.5 text-xs shadow-sm"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-fg-muted font-medium truncate">{t.label}</span>
+                      <span className="font-mono text-match font-semibold shrink-0">
+                        {pct}%
+                      </span>
+                    </div>
+                    <Progress value={pct} className="h-1" barClassName="bg-match" />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

@@ -8,7 +8,7 @@ import {
   type MatchScoreResult,
   getEthnicCluster,
 } from "./types.ts";
-import { geomAffinity, crossDemographicMismatchPenalty, computeMorphologicalDistance, morphologicalDistance } from "./geometry.ts";
+import { geomAffinity, crossDemographicMismatchPenalty, computeMorphologicalDistance, morphologicalDistance, ensureAnatomicalFeatures } from "./geometry.ts";
 import type { RegionalOcclusionConfidence } from "./occlusion.ts";
 import {
   estimateNuissanceDirections,
@@ -27,6 +27,7 @@ import {
   distanceToMatchPercent,
   genderAffinity,
   ageAffinity,
+  calibratedAgeGapPenalty,
   computeMatchConfidence,
   blendWithMatchConfidence,
   mergeWithProfile,
@@ -39,7 +40,14 @@ import { WEAK_MATCH_MAX } from "../ux/honesty.ts";
 /** Threshold for Dynamic Morphological Metric Tie-Breaking (R5: |\Delta d| < 0.015) */
 export const MORPH_TIE_THRESHOLD_EPS = 0.015;
 
-export { computeMatchConfidence, blendWithMatchConfidence, computeMatchScore, combinedDescriptorDistance, computeMorphologicalDistance };
+export {
+  computeMatchConfidence,
+  blendWithMatchConfidence,
+  computeMatchScore,
+  combinedDescriptorDistance,
+  computeMorphologicalDistance,
+  calibratedAgeGapPenalty,
+};
 export type { MatchScoreResult };
 
 /** Real celebrity portraits (jpg) vs 96px TV-extra scrapes that steal top-k. */
@@ -288,12 +296,13 @@ export function rankByDescriptor(
 
     const g = genderAffinity(user.gender, user.genderProbability, celeb);
     const a = ageAffinity(user.age, celeb.age);
+    const ageGapPenalty = calibratedAgeGapPenalty(dist, user.age, celeb.age);
     const genderNudge =
       user.gender !== "unknown" && celeb.gender !== user.gender
         ? 0.10 * genderConf
         : 0;
     const ageNudge = 0.05 * (1 - a);
-    const coarseAdjusted = dist + genderNudge + ageNudge;
+    const coarseAdjusted = dist + genderNudge + ageNudge + ageGapPenalty;
 
     const newItem: CoarseItem = { celeb, dist, coarseAdjusted, g, a };
     bestById.set(celeb.id, newItem);
@@ -356,8 +365,9 @@ export function rankByDescriptor(
         ? 0.10 * genderConf
         : 0;
     const ageNudge = 0.05 * (1 - c.a);
+    const agePenalty = calibratedAgeGapPenalty(c.dist, user.age, c.celeb.age);
     const geomBonus = 0.04 * geomWeight * geomAffinityScore * 10; // ~0–0.04
-    const adjusted = c.dist + crossPenalty + genderNudge + ageNudge - geomBonus + 1e-4;
+    const adjusted = c.dist + crossPenalty + genderNudge + ageNudge + agePenalty - geomBonus + 1e-4;
 
     return {
       celeb: c.celeb,
@@ -367,6 +377,7 @@ export function rankByDescriptor(
       a: c.a,
       geomAffinityScore,
       crossPenalty,
+      agePenalty,
     };
   });
 
@@ -382,7 +393,9 @@ export function rankByDescriptor(
     // Gate on raw FaceNet distance. Penalty/gender still rank outside the window,
     // but must not open the clinical morph window when |Δd_deep| >= 0.015.
     if (Math.abs(dDeep) >= MORPH_TIE_THRESHOLD_EPS) {
-      return (a.dist + a.crossPenalty + gNudgeA) - (b.dist + b.crossPenalty + gNudgeB);
+      const effA = a.dist + a.crossPenalty + gNudgeA + (a.agePenalty ?? 0);
+      const effB = b.dist + b.crossPenalty + gNudgeB + (b.agePenalty ?? 0);
+      return effA - effB;
     }
 
     const userFeat = user.features;
@@ -420,7 +433,9 @@ export function rankByDescriptor(
     const rest = ordered.slice(poolN);
     pool.sort((a, b) => {
       if (Math.abs(a.dist - b.dist) >= MORPH_TIE_THRESHOLD_EPS) {
-        return (a.dist + a.crossPenalty) - (b.dist + b.crossPenalty);
+        const effA = a.dist + a.crossPenalty + (a.agePenalty ?? 0);
+        const effB = b.dist + b.crossPenalty + (b.agePenalty ?? 0);
+        return effA - effB;
       }
       return byFaceThenDemo(a, b);
     });
@@ -467,13 +482,15 @@ export function rankByDescriptor(
     return [];
   }
 
-  // Weak neighborhood: display order must follow raw FaceNet distance so hero %
-  // is non-increasing. Soft/strong (≥55%) keep look-alike ranking (R5, fame, demo).
+  // Weak neighborhood: display order must follow effective distance so age & cross-demo penalties are preserved.
+  // Soft/strong (≥55%) keep look-alike ranking (R5, fame, demo).
   const bestPct = distanceToMatchPercent(Math.min(...top.map((t) => t.dist)));
   if (bestPct < WEAK_MATCH_MAX) {
-    top.sort(
-      (a, b) => a.dist - b.dist || a.celeb.id.localeCompare(b.celeb.id),
-    );
+    top.sort((a, b) => {
+      const effA = a.dist + a.crossPenalty + (a.agePenalty ?? 0);
+      const effB = b.dist + b.crossPenalty + (b.agePenalty ?? 0);
+      return effA - effB || a.dist - b.dist || a.celeb.id.localeCompare(b.celeb.id);
+    });
   }
 
   // Hero % from raw face distance only — cross-demo penalty is for ranking, not score inflation
@@ -510,6 +527,8 @@ export function rankByDescriptor(
         headPose: user.headPose,
         ethnicClusterA: uCluster,
         ethnicClusterB: cCluster,
+        userAge: user.age,
+        celebAge: t.celeb.age,
       },
     );
 
@@ -558,58 +577,118 @@ export function rankCandidatesTwoStage(
   return rankByDescriptor(user, gallery, topK, options);
 }
 
-function buildDescriptorTraits(
+/**
+ * 4-Part Granular Anatomical Trait Breakdown Builder per ORIGINAL_REQUEST R3 & PROJECT.md §3:
+ * 1. Facial Thirds & Forehead Proportions (facialThirds)
+ * 2. Eye Spacing & Canthal Tilt (eyeCanthal)
+ * 3. Nose Bridge & Width Index (noseBridge)
+ * 4. Jawline Contour & Chin Sharpness (jawlineChin)
+ */
+export function buildDescriptorTraits(
   user: UserFaceQuery,
   celeb: CelebrityEmbedding,
   distance: number,
 ): TraitInsight[] {
-  // Facial structure must track the same Hill curve as the hero similarity %
-  // (old 1 - d/0.95 overstated structure — e.g. 48% match showed 62% structure).
-  const faceSim = Math.max(0, Math.min(1, distanceToMatchPercent(distance) / 100));
-  const ageSim = ageAffinity(user.age, celeb.age);
-  const genderSim =
-    user.gender === "unknown"
-      ? 0.7
-      : user.gender === celeb.gender
-        ? Math.min(1, 0.88 + 0.12 * user.genderProbability)
-        : Math.max(0.08, 1 - user.genderProbability * 0.92);
+  const uFeat = user.features;
+  const cFeat = celeb.features ?? getCelebrityById(celeb.id)?.features;
 
-  const confidence = computeMatchConfidence(
-    user.detConfidence ?? 0.92,
-    user.sharpness ?? 0.85,
-    user.faceCoverage ?? 0.25,
-    user.genderProbability,
-  );
-  const qualitySim = confidence / 100;
+  const uAnat = uFeat ? ensureAnatomicalFeatures(uFeat) : null;
+  const cAnat = cFeat ? ensureAnatomicalFeatures(cFeat) : null;
+
+  // Base fallback face similarity derived from descriptor distance via Hill curve
+  const baseFaceSim = Math.max(0.05, Math.min(1.0, distanceToMatchPercent(distance) / 100));
+
+  let thirdsSim = baseFaceSim;
+  let eyeSim = baseFaceSim;
+  let noseSim = baseFaceSim;
+  let jawSim = baseFaceSim;
+
+  if (uFeat && cFeat && uAnat && cAnat) {
+    // 1. Facial Thirds & Forehead Proportions
+    // Farkas vertical thirds (upper, middle, lower) + foreheadHeight + faceAspect
+    const dUpperMid =
+      Math.abs(uAnat.upperThirdRatio - cAnat.upperThirdRatio) +
+      Math.abs(uAnat.middleThirdRatio - cAnat.middleThirdRatio);
+    const dLower = Math.abs(uAnat.lowerThirdRatio - cAnat.lowerThirdRatio);
+    const dForehead = Math.abs((uFeat.foreheadHeight ?? 0.5) - (cFeat.foreheadHeight ?? 0.5));
+    const dAspect = Math.abs((uFeat.faceAspect ?? 0.5) - (cFeat.faceAspect ?? 0.5));
+    const dThirds =
+      0.50 * ((dUpperMid + dLower) / 0.35) +
+      0.25 * (dForehead / 0.35) +
+      0.25 * (dAspect / 0.35);
+    thirdsSim = Math.max(0.05, Math.min(1.0, 1.0 - Math.min(1.0, dThirds) * 0.85));
+
+    // 2. Eye Spacing & Canthal Tilt
+    // Canthal tilt angle + ICD + eyeSpacing + eyeSlant
+    const dTilt = Math.abs(uAnat.canthalTiltAngleDeg - cAnat.canthalTiltAngleDeg) / 25.0;
+    const dIcd = Math.abs(uAnat.interCanthalDistance - cAnat.interCanthalDistance) / 0.12;
+    const dSpacing = Math.abs((uFeat.eyeSpacing ?? 0.5) - (cFeat.eyeSpacing ?? 0.5)) / 0.30;
+    const dSlant = Math.abs((uFeat.eyeSlant ?? 0.5) - (cFeat.eyeSlant ?? 0.5)) / 0.30;
+    const dEyes =
+      0.35 * Math.min(1.0, dTilt) +
+      0.30 * Math.min(1.0, dIcd) +
+      0.20 * Math.min(1.0, dSpacing) +
+      0.15 * Math.min(1.0, dSlant);
+    eyeSim = Math.max(0.05, Math.min(1.0, 1.0 - Math.min(1.0, dEyes) * 0.85));
+
+    // 3. Nose Bridge & Width Index
+    // Nasal index + noseLength + noseWidth
+    const dNasalIndex = Math.abs(uAnat.nasalIndex - cAnat.nasalIndex) / 0.40;
+    const dNoseLen = Math.abs((uFeat.noseLength ?? 0.5) - (cFeat.noseLength ?? 0.5)) / 0.30;
+    const dNoseWid = Math.abs((uFeat.noseWidth ?? 0.5) - (cFeat.noseWidth ?? 0.5)) / 0.30;
+    const dNose =
+      0.50 * Math.min(1.0, dNasalIndex) +
+      0.25 * Math.min(1.0, dNoseLen) +
+      0.25 * Math.min(1.0, dNoseWid);
+    noseSim = Math.max(0.05, Math.min(1.0, 1.0 - Math.min(1.0, dNose) * 0.85));
+
+    // 4. Jawline Contour & Chin Sharpness
+    // Gonial angle + bigonial ratio + jawWidth + chinSharpness
+    const dGonial = Math.abs(uAnat.gonialJawlineAngleDeg - cAnat.gonialJawlineAngleDeg) / 30.0;
+    const dBigonial = Math.abs(uAnat.bigonialToBizygomaticRatio - cAnat.bigonialToBizygomaticRatio) / 0.25;
+    const dJawWid = Math.abs((uFeat.jawWidth ?? 0.5) - (cFeat.jawWidth ?? 0.5)) / 0.30;
+    const dChin = Math.abs((uFeat.chinSharpness ?? 0.5) - (cFeat.chinSharpness ?? 0.5)) / 0.30;
+    const dJaw =
+      0.35 * Math.min(1.0, dGonial) +
+      0.30 * Math.min(1.0, dBigonial) +
+      0.20 * Math.min(1.0, dChin) +
+      0.15 * Math.min(1.0, dJawWid);
+    jawSim = Math.max(0.05, Math.min(1.0, 1.0 - Math.min(1.0, dJaw) * 0.85));
+  }
+
+  const clampSim = (s: number) => {
+    if (Number.isNaN(s) || !Number.isFinite(s)) return 0.50;
+    return Math.round(Math.max(0.0, Math.min(1.0, s)) * 100) / 100;
+  };
 
   return [
     {
-      trait: "facialStructure",
-      userValue: faceSim,
-      celebValue: 1,
-      similarity: faceSim,
-      label: "Facial Structure",
+      trait: "facialThirds",
+      label: "Facial Thirds & Forehead Proportions",
+      userValue: uAnat ? uAnat.upperThirdRatio : 0.33,
+      celebValue: cAnat ? cAnat.upperThirdRatio : 0.33,
+      similarity: clampSim(thirdsSim),
     },
     {
-      trait: "ageAffinity",
-      userValue: Math.min(1, user.age / 100),
-      celebValue: Math.min(1, celeb.age / 100),
-      similarity: ageSim,
-      label: "Age Affinity",
+      trait: "eyeCanthal",
+      label: "Eye Spacing & Canthal Tilt",
+      userValue: uAnat ? uAnat.interCanthalDistance : 0.30,
+      celebValue: cAnat ? cAnat.interCanthalDistance : 0.30,
+      similarity: clampSim(eyeSim),
     },
     {
-      trait: "genderPresentation",
-      userValue: user.genderProbability,
-      celebValue: celeb.genderProb,
-      similarity: genderSim,
-      label: "Gender Presentation",
+      trait: "noseBridge",
+      label: "Nose Bridge & Width Index",
+      userValue: uAnat ? uAnat.nasalIndex : 0.75,
+      celebValue: cAnat ? cAnat.nasalIndex : 0.75,
+      similarity: clampSim(noseSim),
     },
     {
-      trait: "lightingQuality",
-      userValue: user.qualityScore ?? qualitySim,
-      celebValue: 0.92,
-      similarity: qualitySim,
-      label: "Lighting & Quality",
+      trait: "jawlineChin",
+      label: "Jawline Contour & Chin Sharpness",
+      userValue: uAnat ? uAnat.bigonialToBizygomaticRatio : 0.75,
+      celebValue: cAnat ? cAnat.bigonialToBizygomaticRatio : 0.75,
+      similarity: clampSim(jawSim),
     },
-  ].sort((a, b) => b.similarity - a.similarity);
+  ];
 }

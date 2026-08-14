@@ -665,9 +665,9 @@
     "path": "/celebs/thumbs/96/billie-eilish.webp",
     "path192": "/celebs/thumbs/192/billie-eilish.webp",
     "fallbackPath": "/celebs/billie-eilish.jpg",
-    "age": 23,
+    "age": 25,
     "gender": "female",
-    "genderProb": 0.9367317035794258
+    "genderProb": 0.94
   },
   {
     "id": "bradley-cooper",

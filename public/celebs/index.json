@@ -996,11 +996,11 @@
     "path192": "/celebs/thumbs/192/billie-eilish.webp",
     "fallbackPath": "/celebs/billie-eilish.jpg",
     "gender": "female",
-    "genderProb": 0.9367317035794258,
+    "genderProb": 0.94,
     "ageBuckets": [
-      23
+      25
     ],
-    "baseAge": 23,
+    "baseAge": 25,
     "source": "reencode",
     "templateCount": 1
   },

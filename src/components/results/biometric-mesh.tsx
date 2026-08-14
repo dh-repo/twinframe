@@ -50,11 +50,14 @@ export function FaceMeshOverlay({
   landmarks,
   occlusion,
   className,
+  fallbackToCanonical = false,
 }: {
   landmarks?: Array<{ x: number; y: number }> | null;
   occlusion?: RegionalOcclusionConfidence | null;
   className?: string;
+  fallbackToCanonical?: boolean;
 }) {
+  if (!landmarks && !fallbackToCanonical) return null;
   const pts = landmarks && landmarks.length >= 68 ? toPct(landmarks) : projectCanonicalMesh();
   const eyeDim = (occlusion?.eyeConf ?? 1) < 0.55;
   const jawDim = (occlusion?.jawConf ?? 1) < 0.55;

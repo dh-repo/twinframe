@@ -55,9 +55,7 @@ export function MatchRevealCard({
     youthfulness: youthfulness ?? undefined,
   });
   const showMeta = showAge || topMatch.tags.length > 0;
-  const visibleTraits = (topMatch.traits ?? [])
-    .filter((t) => !isWeak || t.trait === "facialStructure")
-    .slice(0, 4);
+  const visibleTraits = (topMatch.traits ?? []).slice(0, 4);
 
   return (
     <article
@@ -167,16 +165,22 @@ export function MatchRevealCard({
       {visibleTraits.length > 0 && (
         <div className="relative z-10 border-t border-border px-5 py-5 sm:px-6">
           <h3 className="mb-3.5 text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-            {isWeak ? "FACE SIMILARITY BREAKDOWN" : "GRANULAR FACIAL DESCRIPTORS"}
+            {isWeak ? "FACE SIMILARITY BREAKDOWN" : "MORPHOLOGICAL BIOMETRIC BREAKDOWN"}
           </h3>
           <ul className="space-y-3">
-            {visibleTraits.map((t) => {
+            {visibleTraits.map((t, index) => {
               const traitPercent = Math.round(t.similarity * 100);
               return (
-                <li key={t.trait}>
-                  <div className="mb-1.5 flex items-center justify-between gap-3">
+                <li
+                  key={t.trait}
+                  className="space-y-1.5"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-3">
                     <span className="text-xs sm:text-sm font-medium text-fg">{t.label}</span>
-                    <div className="flex items-center gap-1 text-xs font-mono tabular-nums text-match">
+                    <div className="flex items-center gap-1 rounded-full border border-match/30 bg-match/10 px-2 py-0.5 text-xs font-mono font-semibold text-match">
                       <NumberCounter value={traitPercent} duration={1200} decimals={0} />
                       <span>%</span>
                     </div>

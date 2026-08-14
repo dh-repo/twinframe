@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-08-14T10:03:07.676Z",
+  "meta": {
+    "version": "4.3.8-adriana-extra",
+    "model": "face-api-faceRecognitionNet-128",
+    "dim": 128,
+    "enrolledNote": "804 celebs; tagged reencode 804; last run 89/89 real; excluded 0; 1 bucket/id; merge"
+  },
+  "counts": {
+    "rawBuckets": 804,
+    "uniqueIds": 804,
+    "uniqueFingerprints": 804,
+    "collapsedBuckets": 804,
+    "multiBucketSameIdGroups": 0,
+    "crossIdExactCollisionGroups": 0,
+    "nearCrossIdPairsDistLt": 0.12,
+    "nearCrossIdPairCount": 0,
+    "suspectVectors": 0
+  },
+  "preCollapse": {
+    "sameIdCloneRate": 0,
+    "bucketCount": 804
+  },
+  "sameIdCloneRate": 0,
+  "crossIdExactCollisions": [],
+  "nearCollisions": [],
+  "suspects": [],
+  "recommendations": [
+    "No exact cross-id collisions",
+    "Same-id clone rate OK",
+    "Near-collision count modest",
+    "No low-energy suspect vectors",
+    "NEXT: multi-photo per celeb with real FaceNet encodes; always TTA on enroll; ban random noise fallback",
+    "NEXT: gold-set human labels (public/celebs/gold-set.json) + evaluate-gold-set.ts"
+  ]
+}
