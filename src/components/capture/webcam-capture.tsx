@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, CameraOff, SwitchCamera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
+import { playShutterSound } from "@/lib/utils/feedback";
 
 interface WebcamCaptureProps {
   open: boolean;
@@ -77,6 +78,7 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
         ctx.translate(w, 0);
         ctx.scale(-1, 1);
       }
+      playShutterSound();
       ctx.drawImage(video, 0, 0, w, h);
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob(resolve, "image/jpeg", 0.92),

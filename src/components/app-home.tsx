@@ -14,6 +14,7 @@ import {
 } from "@/lib/face/pipeline";
 import type { FaceQuality, FaceTelemetry, MatchResult } from "@/lib/face/types";
 import { loadCelebrityEmbeddings } from "@/lib/face/embeddings";
+import { playMatchChime } from "@/lib/utils/feedback";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
 
@@ -168,6 +169,7 @@ export function AppHome() {
         if (!matchResult.matches || matchResult.matches.length === 0) {
           setPhase("quality-blocked");
         } else {
+          playMatchChime();
           setPhase("results");
         }
       } catch (e) {
