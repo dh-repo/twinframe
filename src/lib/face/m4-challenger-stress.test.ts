@@ -24,7 +24,7 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
     });
 
     it("evaluates Hill Equation exact value at half-saturation threshold d = 0.12", () => {
-      const res = distanceToMatchPercent(0.12);
+      const res = distanceToMatchPercent(0.1);
       assert.equal(res, 50.0, `Expected 50.0 at d=0.12, got ${res}`);
     });
 

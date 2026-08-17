@@ -8,6 +8,11 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import {
+  honestyBand,
+  honestyHeadline,
+  honestyRating,
+} from "@/lib/ux/honesty";
 
 export interface MatchRevealCardProps {
   topMatch: CelebrityMatch;
@@ -26,14 +31,15 @@ export function MatchRevealCard({
   const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
-    // Trigger active 3D reveal stage animation
     const timer = setTimeout(() => setIsRevealed(true), 50);
     return () => clearTimeout(timer);
   }, []);
 
-  const confidenceScore = topMatch.confidenceScore ?? Math.round(topMatch.matchPercent * 0.95);
-  const confidenceRating =
-    confidenceScore >= 80 ? "HIGH CONFIDENCE" : confidenceScore >= 60 ? "MODERATE CONFIDENCE" : "CALIBRATED MATCH";
+  const band = honestyBand(topMatch.matchPercent);
+  const confidenceScore =
+    topMatch.confidenceScore ?? Math.round(topMatch.matchPercent * 0.95);
+  const confidenceRating = honestyRating(band, confidenceScore);
+  const headline = honestyHeadline(band);
 
   return (
     <>
@@ -41,27 +47,37 @@ export function MatchRevealCard({
         className={cn(
           "relative overflow-hidden rounded-[var(--radius-xl)] border border-match/40 bg-bg-elevated shadow-2xl transition-all duration-700 perspective-1000",
           isRevealed ? "animate-card-flip-in animate-glow-aura" : "opacity-0 scale-95",
-          className
+          className,
         )}
       >
-        {/* Ambient Sparkles Overlay */}
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute top-4 left-1/4 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-70" style={{ animationDelay: "0ms" }} />
-          <div className="absolute top-8 right-1/4 h-1.5 w-1.5 rounded-full bg-match text-match animate-sparkle-float opacity-80" style={{ animationDelay: "600ms" }} />
-          <div className="absolute bottom-12 left-1/3 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-60" style={{ animationDelay: "1200ms" }} />
+          <div
+            className="absolute top-4 left-1/4 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-70"
+            style={{ animationDelay: "0ms" }}
+          />
+          <div
+            className="absolute top-8 right-1/4 h-1.5 w-1.5 rounded-full bg-match text-match animate-sparkle-float opacity-80"
+            style={{ animationDelay: "600ms" }}
+          />
+          <div
+            className="absolute bottom-12 left-1/3 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-60"
+            style={{ animationDelay: "1200ms" }}
+          />
         </div>
 
-        {/* Header Banner with Score & Confidence */}
         <div className="relative z-10 border-b border-border bg-gradient-to-b from-bg-subtle/80 to-bg-elevated px-5 py-5 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.16em] text-match">
-              Top match
+              {headline}
             </p>
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 rounded-full border border-match/40 bg-match/10 px-2.5 py-1.5 text-[10px] font-mono font-medium text-match shadow-sm">
                 <ShieldCheck className="h-3 w-3" />
-                <span>{confidenceRating} ({confidenceScore}%)</span>
+                <span>
+                  {confidenceRating}
+                  {band === "strong" ? ` (${confidenceScore}%)` : ""}
+                </span>
               </div>
 
               <Button
@@ -82,7 +98,9 @@ export function MatchRevealCard({
               <h2 className="text-[1.75rem] sm:text-[2.25rem] font-bold tracking-tight leading-tight truncate text-fg">
                 {topMatch.name}
               </h2>
-              <p className="mt-1 text-xs sm:text-sm text-fg-muted truncate">{topMatch.knownFor}</p>
+              <p className="mt-1 text-xs sm:text-sm text-fg-muted truncate">
+                {topMatch.knownFor}
+              </p>
             </div>
 
             <div className="shrink-0 text-right">
@@ -106,7 +124,6 @@ export function MatchRevealCard({
           </div>
         </div>
 
-        {/* Interactive Face Comparison View */}
         <div className="relative z-10 p-5 sm:p-6 bg-bg-elevated">
           <ComparisonView
             userPhotoUrl={youUrl}
@@ -120,7 +137,6 @@ export function MatchRevealCard({
           />
         </div>
 
-        {/* Meta Pills */}
         {(estimatedAge != null || topMatch.tags.length > 0) && (
           <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 border-t border-border bg-bg-subtle/50 px-5 py-3 sm:px-6">
             {estimatedAge != null && (
@@ -139,13 +155,11 @@ export function MatchRevealCard({
           </div>
         )}
 
-        {/* Biometric Trait Breakdown */}
         <div className="relative z-10 border-t border-border px-5 py-5 sm:px-6">
           <TraitBreakdown match={topMatch} />
         </div>
       </article>
 
-      {/* Share Card Modal */}
       <ShareCardModal
         open={shareOpen}
         onClose={() => setShareOpen(false)}
@@ -155,4 +169,3 @@ export function MatchRevealCard({
     </>
   );
 }
-

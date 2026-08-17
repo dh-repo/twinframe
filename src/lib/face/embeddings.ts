@@ -312,24 +312,30 @@ interface ExtraTemplateFile {
 }
 
 async function mergeExtraTemplates(base: CelebrityEmbedding[]): Promise<CelebrityEmbedding[]> {
+  // Dynamic import avoids a cycle: gallery-dedupe → embeddings (metrics) → gallery-dedupe.
+  const { buildMultiShotCentroidGallery, isPaddedFaceNetDescriptor } = await import(
+    "./gallery-dedupe.ts"
+  );
   try {
     const res = await fetch("/celebs/extra-templates.json?v=1.1.0", { cache: "force-cache" });
-    if (!res.ok) return base;
+    if (!res.ok) return buildMultiShotCentroidGallery(base);
     const data = (await res.json()) as ExtraTemplateFile;
-    if (!data.templates?.length) return base;
+    if (!data.templates?.length) return buildMultiShotCentroidGallery(base);
     const byId = new Map(base.map((b) => [b.id, b]));
     const extras: CelebrityEmbedding[] = [];
     for (const t of data.templates) {
       const proto = byId.get(t.id);
       if (!proto || !t.descriptor?.length) continue;
+      if (isPaddedFaceNetDescriptor(t.descriptor)) continue;
       extras.push({
         ...proto,
         descriptor: Array.from(l2Normalize(t.descriptor)),
       });
     }
-    return extras.length ? base.concat(extras) : base;
+    const merged = extras.length ? base.concat(extras) : base;
+    return buildMultiShotCentroidGallery(merged);
   } catch {
-    return base;
+    return buildMultiShotCentroidGallery(base);
   }
 }
 
@@ -436,12 +442,13 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
 }
 
 /**
- * Hill half-saturation and steepness. Tuned on live FaceNet-128 distances:
- * enrolled self ≈ 0.016, held-out self ≈ 0.038, non-celeb best lookalike ≈ 0.083,
- * random-gallery median ≈ 0.96. The old d0=0.38 mapped lookalikes to ~99%.
+ * Hill half-saturation and steepness for open-set look-alike percents.
+ * Conservative so 70%+ is rare and meaningful:
+ * enrolled self ≈ 0.016–0.038 stay high; non-celeb neighbors ≈ 0.083 land soft (<70);
+ * random-gallery distances stay weak.
  */
-export const HILL_D0 = 0.12;
-export const HILL_N = 3.2;
+export const HILL_D0 = 0.1;
+export const HILL_N = 3.8;
 
 /**
  * Convert L2-normalized cosine distance (d = 1 - a_hat^T b_hat) to a match percentage

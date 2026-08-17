@@ -168,11 +168,11 @@ describe("Milestone 3 Empirical Challenger Stress Suite", () => {
     it("verifies Hill Curve match percentages at critical milestone checkpoints", () => {
       // P(d) = 100 / (1 + (d / 0.12)^3.2)
       assert.equal(distanceToMatchPercent(0.0), 100.0);
-      assert.equal(distanceToMatchPercent(0.12), 50.0);
+      assert.equal(distanceToMatchPercent(0.1), 50.0);
       assert.equal(distanceToMatchPercent(0.038), 97.5);
-      assert.equal(distanceToMatchPercent(0.083), 76.5);
-      assert.equal(distanceToMatchPercent(0.20), 16.3);
-      assert.equal(distanceToMatchPercent(0.30), 5.1);
+      assert.equal(distanceToMatchPercent(0.083), 67.0);
+      assert.equal(distanceToMatchPercent(0.20), 6.7);
+      assert.equal(distanceToMatchPercent(0.30), 1.5);
     });
 
     it("evaluates strict monotonic decay over 10,000 fine-grained distance steps in [0.0, 2.0]", () => {
