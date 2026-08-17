@@ -52,6 +52,7 @@ describe("apply-gallery-review CLI", () => {
     assert.match(res.stdout, /Dry run/);
     assert.match(res.stdout, /gwenyth-paltrow/);
     assert.match(res.stdout, /Will not write embeddings\.v4\.q8\.bin/);
+    assert.match(res.stdout, /unset:\s+0/);
   });
 
   it("refuses to treat the binary as an output", () => {

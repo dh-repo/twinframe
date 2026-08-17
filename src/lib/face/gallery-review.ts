@@ -65,6 +65,19 @@ export function unsetReviewIds(
   return out;
 }
 
+/** Keep existing keep/drop/reenroll; default remaining audit ids to reenroll (not drop). */
+export function fillUnsetAsReenroll(
+  decisions: Record<string, ReviewDecision>,
+  suspectIds: readonly string[],
+): Record<string, ReviewDecision> {
+  const next: Record<string, ReviewDecision> = { ...decisions };
+  for (const id of suspectIds) {
+    if (!id || next[id]) continue;
+    next[id] = "reenroll";
+  }
+  return next;
+}
+
 export function applyDrops<T extends { id: string }>(
   rows: readonly T[],
   idsToDrop: readonly string[],

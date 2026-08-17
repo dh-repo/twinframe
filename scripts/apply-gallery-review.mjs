@@ -58,7 +58,9 @@ function main() {
   console.log("================================================================================");
   console.log("          TWINFRAME GALLERY REVIEW APPLY (catalog only)                         ");
   console.log("================================================================================");
+  const reenroll = Object.values(result.decisions).filter((d) => d === "reenroll").length;
   console.log(`drop:     ${result.drops.length}  [${result.drops.join(", ") || "—"}]`);
+  console.log(`reenroll: ${reenroll} (stay in catalog; replace encoding on Studio enroll)`);
   console.log(`unset:    ${result.unset.length} (still need keep / reenroll / drop)`);
   console.log(`buckets:  ${buckets.length} → ${result.buckets.length}`);
   console.log(`index:    ${index.length} → ${result.index.length}`);
