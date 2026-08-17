@@ -19,7 +19,7 @@ describe("open-set look-alike scoring", () => {
   });
 
   it("measures top-2 margin as d2 − d1 and floors at 0", () => {
-    assert.equal(rankMargin([0.5, 0.58]), 0.08);
+    assert.ok(Math.abs(rankMargin([0.5, 0.58]) - 0.08) < 1e-12);
     assert.equal(rankMargin([0.6, 0.6]), 0);
     assert.equal(rankMargin([0.7, 0.5]), 0);
   });
