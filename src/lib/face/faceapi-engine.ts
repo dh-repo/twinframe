@@ -1188,7 +1188,7 @@ export async function detectAndDescribe(
       rawDesc = generateImageRegionDescriptor(faceCanvas);
     }
   }
-  const descriptor = l2NormalizeVec(rawDesc);
+  const descriptor = rawDesc ? l2NormalizeVec(rawDesc) : new Float32Array(128);
 
   let age = 30;
   let gender: "male" | "female" = "male";
