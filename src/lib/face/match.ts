@@ -23,6 +23,7 @@ export interface UserFaceQuery {
   detConfidence?: number;
   sharpness?: number;
   faceCoverage?: number;
+  smileIntensity?: number;
 }
 
 /**
@@ -41,10 +42,19 @@ export function rankByDescriptor(
   const userAge = Number.isFinite(user.age) ? user.age : undefined;
   const userGender = user.gender;
   const userGenderProb = Number.isFinite(user.genderProbability) ? user.genderProbability : 0.9;
+  const smileIntensity = typeof user.smileIntensity === "number" && Number.isFinite(user.smileIntensity)
+    ? Math.max(0, Math.min(1, user.smileIntensity))
+    : 0;
 
   const scored = gallery.map((celeb) => {
     // AccuFace v4.0 Metric Recalibration: Pure L2-normalized Cosine distance (d = 1 - a_hat^T * b_hat)
-    const dist = cosineDistance256(userDesc, celeb.descriptor);
+    const rawDist = cosineDistance256(userDesc, celeb.descriptor);
+
+    // Expression Resilience: Compensate for orthogonal smile displacement (delta d ~ 0.03-0.05)
+    // when comparing high-smile probe vectors to gallery centroids.
+    const smileComp = smileIntensity > 0.4 ? (smileIntensity - 0.4) * 0.04 : 0.0;
+    const dist = Math.max(0.0, rawDist - smileComp);
+
     const g = genderAffinity(userGender, userGenderProb, celeb);
     const a = userAge !== undefined ? ageAffinity(userAge, celeb.age) : 1.0;
     // High-accuracy: age/gender are gentle priors (don't dominate face)

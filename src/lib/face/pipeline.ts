@@ -153,6 +153,7 @@ export async function analyzeFaceSource(
         det.telemetry.estimatedYaw = scrfdResult.primary.pose.yaw;
         det.telemetry.estimatedPitch = scrfdResult.primary.pose.pitch;
         det.telemetry.estimatedRoll = scrfdResult.primary.pose.roll;
+        det.telemetry.smileIntensity = scrfdResult.primary.smile?.smileIntensity;
       }
     }
   }
@@ -223,6 +224,7 @@ export async function analyzeFaceSource(
       sharpness: det.sharpness,
       faceCoverage,
       qualityScore: quality.score,
+      smileIntensity: det.telemetry?.smileIntensity,
     },
     gallery,
     topK,

@@ -1,6 +1,7 @@
 import * as ort from "onnxruntime-web";
 import { OnnxSessionManager, runInference } from "./onnx-engine.ts";
-import type { SCRFDDetectionResult, SCRFDBoundingBox, SCRFDPose } from "./types.ts";
+import type { SCRFDDetectionResult, SCRFDBoundingBox, SCRFDPose, SmileMetrics } from "./types.ts";
+import { estimateSmileMetrics } from "./types.ts";
 
 export interface Anchor {
   cx: number;
@@ -348,6 +349,8 @@ export async function detectSCRFD(
 
       // Estimate 3D head pose (yaw, pitch, roll)
       const pose = estimateHeadPose(landmarks);
+      // Estimate smile metrics (smileRatio, elevation, intensity)
+      const smile = estimateSmileMetrics(landmarks);
 
       const bbox: SCRFDBoundingBox = { x: x1, y: y1, width, height };
       const normalizedBox: SCRFDBoundingBox = {
@@ -365,6 +368,7 @@ export async function detectSCRFD(
         landmarks,
         normalizedLandmarks,
         pose,
+        smile,
       });
     }
   }

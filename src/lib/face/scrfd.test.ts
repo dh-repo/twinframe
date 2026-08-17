@@ -6,6 +6,7 @@ import {
   computeIoU,
   nmsFaceBoxes,
 } from "./scrfd.ts";
+import { estimateSmileMetrics } from "./types.ts";
 import type { SCRFDDetectionResult } from "./types.ts";
 
 describe("SCRFD-2.5G Face Detection Unit Suite", () => {
@@ -118,5 +119,31 @@ describe("SCRFD-2.5G Face Detection Unit Suite", () => {
     assert.equal(filtered.length, 2);
     assert.equal(filtered[0].score, 0.95);
     assert.equal(filtered[1].score, 0.90);
+  });
+
+  it("estimates smile metrics accurately for smiling vs neutral facial landmarks", () => {
+    // Neutral landmarks (mouth width / IOD ~ 0.77)
+    const neutralLandmarks = [
+      [38.0, 50.0],
+      [74.0, 50.0],
+      [56.0, 70.0],
+      [42.0, 90.0],
+      [70.0, 90.0],
+    ];
+
+    // Smiling landmarks (wide mouth width / IOD ~ 0.94, pulled up and wide)
+    const smilingLandmarks = [
+      [38.0, 50.0],
+      [74.0, 50.0],
+      [56.0, 70.0],
+      [39.0, 86.0],
+      [73.0, 86.0],
+    ];
+
+    const resNeutral = estimateSmileMetrics(neutralLandmarks);
+    const resSmile = estimateSmileMetrics(smilingLandmarks);
+
+    assert.ok(resSmile.smileRatio > resNeutral.smileRatio, `Expected smileRatio ${resSmile.smileRatio} > ${resNeutral.smileRatio}`);
+    assert.ok(resSmile.smileIntensity > resNeutral.smileIntensity, `Expected smileIntensity ${resSmile.smileIntensity} > ${resNeutral.smileIntensity}`);
   });
 });

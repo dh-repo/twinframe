@@ -1,5 +1,5 @@
 import type { CelebrityEmbedding } from "./embeddings.ts";
-import { ensembleDistance } from "./embeddings.ts";
+import { ensembleDistance, l2Normalize } from "./embeddings.ts";
 
 /** Near-zero ensemble distance treats gallery vectors as clones. */
 export const GALLERY_CLONE_EPS = 1e-4;
@@ -107,8 +107,54 @@ export function sanitizeGalleryEmbeddings(
 }
 
 /**
- * Count same-id clone pairs and unique descriptor fingerprints (for telemetry).
+ * Computes the normalized centroid embedding for multi-shot celebrity vectors:
+ * c = sum(v_k) / ||sum(v_k)||_2
  */
+export function computeCentroidEmbedding(vectors: ArrayLike<number>[]): Float32Array {
+  if (!vectors || vectors.length === 0) return new Float32Array(256);
+  const dim = vectors[0]!.length;
+  const sum = new Float32Array(dim);
+  for (const v of vectors) {
+    for (let i = 0; i < dim; i++) {
+      sum[i] += v[i] ?? 0;
+    }
+  }
+  return l2Normalize(sum);
+}
+
+/**
+ * Merge and compute multi-shot centroids for celebrities with multiple templates.
+ */
+export function buildMultiShotCentroidGallery(gallery: CelebrityEmbedding[]): CelebrityEmbedding[] {
+  const byId = new Map<string, CelebrityEmbedding[]>();
+  for (const entry of gallery) {
+    const list = byId.get(entry.id) ?? [];
+    list.push(entry);
+    byId.set(entry.id, list);
+  }
+
+  const result: CelebrityEmbedding[] = [];
+  for (const [id, entries] of byId.entries()) {
+    if (entries.length === 1) {
+      result.push(entries[0]!);
+    } else {
+      // Primary entry (base metadata)
+      const primary = entries[0]!;
+      // Compute centroid of all views/shots
+      const centroidDesc = Array.from(computeCentroidEmbedding(entries.map((e) => e.descriptor)));
+      result.push({
+        ...primary,
+        descriptor: centroidDesc,
+      });
+      // Keep distinct multi-view templates if they are not clones
+      const distinct = collapseSameIdDescriptorClones(entries);
+      for (const d of distinct) {
+        result.push(d);
+      }
+    }
+  }
+  return result;
+}
 export function galleryCloneStats(gallery: CelebrityEmbedding[], eps = GALLERY_CLONE_EPS) {
   const byId = new Map<string, CelebrityEmbedding[]>();
   for (const e of gallery) {
