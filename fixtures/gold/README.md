@@ -14,4 +14,4 @@ node --experimental-strip-types scripts/encode-gold-probe.mjs \
   --refuse
 ```
 
-Do not invent faces or look-alike labels. A useful first set is ~12 frontals (mix of gender/age) plus ~4 human “no doppelgänger” refuses.
+Do not invent faces or look-alike labels. This folder has no photos yet — that is intentional. A useful first set is ~12 frontals (mix of gender/age) plus ~4 human “no doppelgänger” refuses. After encoding, run `evaluate-lookalike-gold.mjs` and record acceptable@1 / refuse_ok / calibration(>=70% endorsed) before any ranking retune.

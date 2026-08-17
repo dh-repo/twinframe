@@ -16,10 +16,35 @@
 - Extras → prototypes via `buildMultiShotCentroidGallery` (skips FaceNet-padded 128→256 rows)
 - Enrollment QA: `npm`/`node --experimental-strip-types scripts/audit-gallery-enrollment.mjs`
 - Re-enroll (process pool): `scripts/enroll-gallery-onnx.mjs [--concurrency N]` — independent JPEGs in parallel child processes (default `min(16, CPU count)`). One 112×112 EdgeFace pass will not fill a big GPU.
-- Gallery collision audit: `scripts/audit-gallery-v4.mjs` → `public/celebs/gallery-audit-v4.json` (demotion list only; does not rewrite the binary)
+- Gallery collision audit: `scripts/audit-gallery-v4.mjs` → `public/celebs/gallery-audit-v4.json` (suspects only; does not rewrite the binary)
+- Human review: `public/celebs/gallery-review.json` (`drop` / `reenroll` / `keep`). Only `gwenyth-paltrow` is pre-dropped (typo clone of `gwyneth-paltrow`). Other audit ids stay unset until you decide.
+- Apply drops (catalog only): `scripts/apply-gallery-review.mjs` then `--write`. Never touches `embeddings.v4.q8.bin`.
 - Open-set gold: `public/celebs/lookalike-gold.json` + `scripts/evaluate-lookalike-gold.mjs`
 - Encode a labeled civilian photo: `scripts/encode-gold-probe.mjs --image fixtures/gold/….jpg --id … --accept id,id` (or `--refuse`)
 - Open-set leave-one-out: `scripts/evaluate-open-set-loo.mjs [--json]` (each gallery id vs the rest)
+
+## Studio re-enroll (after the review file is filled)
+
+Do this on the Mac Studio. Do not rewrite the binary from the audit JSON.
+
+1. Fill remaining unset ids in `gallery-review.json` (`keep` / `reenroll` / `drop`). Identity-range pairs are usually **reenroll**, not drop.
+2. `node --experimental-strip-types scripts/apply-gallery-review.mjs` (dry run), then `--write`.
+3. `node --experimental-strip-types scripts/enroll-gallery-onnx.mjs --concurrency 16`
+4. `node scripts/write-gallery-v4.mjs`
+5. `node --experimental-strip-types scripts/audit-gallery-v4.mjs`
+6. `node --experimental-strip-types scripts/evaluate-open-set-loo.mjs --json` — compare strong-band rate to the 109/968 baseline.
+
+## Measure after civilian gold (do not retune before this)
+
+Identity + refuse seeds are regression guards only. Civilian rows stay empty until real JPEGs exist under `fixtures/gold/` with human `acceptableTopIds` or `--refuse`. Do not invent faces or labels.
+
+When those rows exist:
+
+```bash
+node --experimental-strip-types scripts/evaluate-lookalike-gold.mjs
+```
+
+Record `acceptable@1`, `acceptable@5`, `refuse_ok`, and `calibration(>=70% endorsed)`. Those numbers decide the next ranking change (refuse more, more multi-shot views, or a different model). Do not retune Hill, margin, or gender priors before that.
 
 ## Tests
 
@@ -29,6 +54,7 @@ node --experimental-strip-types scripts/audit-gallery-v4.mjs
 node --experimental-strip-types scripts/evaluate-lookalike-gold.mjs
 node --experimental-strip-types scripts/evaluate-open-set-loo.mjs
 node --experimental-strip-types scripts/enroll-gallery-onnx.mjs --limit 8 --concurrency 4
+node --experimental-strip-types scripts/apply-gallery-review.mjs
 ```
 
 ## Civilian gold labeling protocol

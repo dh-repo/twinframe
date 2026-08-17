@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "note": "Human decisions only. apply-gallery-review.mjs applies drop to gallery.buckets.json and index.json. It does not rewrite embeddings.v4.q8.bin. Unset audit ids still need keep, reenroll, or drop.",
+  "sourceAudit": "gallery-audit-v4.json",
+  "decisions": {
+    "gwenyth-paltrow": "drop",
+    "gwyneth-paltrow": "keep"
+  }
+}
