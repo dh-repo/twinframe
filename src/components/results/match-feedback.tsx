@@ -61,15 +61,17 @@ export function MatchFeedback({
           <ThumbsDown className="h-3.5 w-3.5" />
           Not really
         </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={() => setPicking((v) => !v)}
-        >
-          <Sparkles className="h-3.5 w-3.5" />
-          Better match…
-        </Button>
+        {contenders.length > 0 && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => setPicking((v) => !v)}
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Better match…
+          </Button>
+        )}
       </div>
       {picking && contenders.length > 0 && (
         <ul className="mt-1 max-h-40 space-y-1 overflow-y-auto">

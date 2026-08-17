@@ -75,14 +75,18 @@ export function rankByDescriptor(
   const deduped = Array.from(bestById.values());
   deduped.sort((a, b) => a.adjusted - b.adjusted);
   if (deduped.length === 0) return [];
+  const presentable = selectPresentableRanks(deduped, topK, userGender, userGenderProb);
+  if (presentable.length === 0) return [];
 
-  const bestAdjusted = deduped[0]!.adjusted;
+  const bestAdjusted = presentable[0]!.adjusted;
   const previewPercents = rankPercentsFromDistances([bestAdjusted]);
   const floor = distanceLookalikeGate(bestAdjusted, previewPercents[0]);
   if (!floor.pass) return [];
 
-  const top = deduped.slice(0, topK);
+  const top = presentable;
   const hillPercents = rankPercentsFromDistances(top.map((t) => t.adjusted));
+  // Margin vs the real gallery #2 (even if we hide them) so dropping a
+  // cross-gender neighbor does not invent a distinctive look-alike.
   const margin = rankMargin(deduped.map((t) => t.adjusted));
   const percents = applyOpenSetLookalikePercents(hillPercents, margin, bestAdjusted);
   const confScore = computeMatchConfidence(
@@ -119,6 +123,26 @@ export function rankByDescriptor(
       distance: t.dist,
     };
   });
+}
+
+/** Confident gender: keep #1 (visual twin may cross gender), fill #2+ same-gender. */
+export const PRESENTABLE_GENDER_MIN_PROB = 0.7;
+
+export function selectPresentableRanks<T extends { celeb: { gender?: string } }>(
+  ranked: readonly T[],
+  topK: number,
+  userGender: string | undefined,
+  userGenderProb: number,
+): T[] {
+  if (ranked.length === 0 || topK <= 0) return [];
+  const confident =
+    (userGender === "male" || userGender === "female") &&
+    Number.isFinite(userGenderProb) &&
+    userGenderProb >= PRESENTABLE_GENDER_MIN_PROB;
+  if (!confident) return ranked.slice(0, topK);
+  const first = ranked[0]!;
+  const rest = ranked.slice(1).filter((s) => s.celeb.gender === userGender);
+  return [first, ...rest].slice(0, topK);
 }
 
 function buildDescriptorTraits(

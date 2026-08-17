@@ -79,6 +79,11 @@ export function restListHeading(topPercent: number, rankMargin?: number): string
     : "ALSO CLOSE";
 }
 
+/** Weak tops are a nearest neighbor, not a look-alike pack — don't list the crowd. */
+export function shouldShowContenders(topPercent: number, rankMargin?: number): boolean {
+  return honestyBand(topPercent, rankMargin) !== "weak";
+}
+
 export function shareText(name: string, matchPercent: number, rankMargin?: number): string {
   const band = honestyBand(matchPercent, rankMargin);
   const pct = Math.round(matchPercent);
