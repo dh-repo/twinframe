@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0-open-set",
-  "description": "Human-labeled open-set look-alike gold. Prefer 256-d AccuFace descriptors. Empty acceptableTopIds + expectRefuse means no good doppelgänger.",
+  "version": "2.0.0-edgeface512",
+  "description": "Human-labeled open-set look-alike gold. Prefer EdgeFace-512 descriptors from scripts/encode-gold-probe.mjs. Empty acceptableTopIds + expectRefuse means no good doppelgänger.",
   "cases": [
     {
       "id": "example-civilian-female-01",

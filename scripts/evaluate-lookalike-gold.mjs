@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Open-set look-alike gold evaluation on the AccuFace v4 256-d gallery.
+ * Open-set look-alike gold evaluation on the AccuFace v4 EdgeFace-512 gallery.
  *
  * Metrics:
  *  - acceptable@1 / acceptable@5 when acceptableTopIds is non-empty
@@ -13,48 +13,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseV4BinaryHeader, l2Normalize } from "../src/lib/face/embeddings.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
-import { buildMultiShotCentroidGallery } from "../src/lib/face/gallery-dedupe.ts";
+import { loadV4Gallery } from "./lib/v4-gallery.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
-
-function loadV4Gallery() {
-  const buckets = JSON.parse(
-    fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
-  );
-  const buf = fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin"));
-  const arrayBuf = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-  const header = parseV4BinaryHeader(arrayBuf);
-  if (!header || header.magic !== "AFv4" || (header.dimension !== 256 && header.dimension !== 512)) {
-    throw new Error("Invalid embeddings.v4.q8.bin header");
-  }
-  const dim = header.dimension;
-  const payload = new Uint8Array(arrayBuf, 32);
-  const scale = header.globalScale;
-  const out = [];
-  for (let i = 0; i < buckets.length; i++) {
-    const b = buckets[i];
-    const raw = new Float32Array(dim);
-    const off = i * dim;
-    for (let j = 0; j < dim; j++) {
-      raw[j] = (payload[off + j] - 128) * scale;
-    }
-    out.push({
-      id: b.id,
-      name: b.name,
-      path: b.path,
-      path192: b.path192,
-      fallbackPath: b.fallbackPath,
-      descriptor: Array.from(l2Normalize(raw)),
-      age: b.age,
-      gender: b.gender,
-      genderProb: b.genderProb,
-    });
-  }
-  return buildMultiShotCentroidGallery(out);
-}
 
 function main() {
   const setIdx = process.argv.indexOf("--set");
@@ -69,7 +32,7 @@ function main() {
   }
 
   const set = JSON.parse(fs.readFileSync(setPath, "utf8"));
-  const gallery = loadV4Gallery();
+  const { gallery } = loadV4Gallery(ROOT);
 
   let scored = 0;
   let top1 = 0;
@@ -82,7 +45,7 @@ function main() {
   let acceptN = 0;
 
   console.log("================================================================================");
-  console.log("     TWINFRAME OPEN-SET LOOK-ALIKE GOLD (256-d AccuFace v4)                     ");
+  console.log("     TWINFRAME OPEN-SET LOOK-ALIKE GOLD (EdgeFace-512 AccuFace v4)              ");
   console.log("================================================================================");
   console.log(`Set: ${setPath}`);
   console.log(`cases=${set.cases.length}  gallery=${gallery.length}`);

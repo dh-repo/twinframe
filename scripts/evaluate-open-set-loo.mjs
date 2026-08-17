@@ -7,132 +7,76 @@
  *
  * Usage:
  *   node --experimental-strip-types scripts/evaluate-open-set-loo.mjs
+ *   node --experimental-strip-types scripts/evaluate-open-set-loo.mjs --json
+ *   node --experimental-strip-types scripts/evaluate-open-set-loo.mjs --json public/celebs/open-set-loo.json
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseV4BinaryHeader, l2Normalize } from "../src/lib/face/embeddings.ts";
-import { rankByDescriptor } from "../src/lib/face/match.ts";
-import { buildMultiShotCentroidGallery } from "../src/lib/face/gallery-dedupe.ts";
-import { honestyBand } from "../src/lib/ux/honesty.ts";
+import { loadV4Gallery, runLeaveOneOut } from "./lib/v4-gallery.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
 
-function loadV4Gallery() {
-  const buckets = JSON.parse(
-    fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
-  );
-  const buf = fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin"));
-  const arrayBuf = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-  const header = parseV4BinaryHeader(arrayBuf);
-  if (!header || header.magic !== "AFv4" || (header.dimension !== 256 && header.dimension !== 512)) {
-    throw new Error("Invalid embeddings.v4.q8.bin header");
-  }
-  const dim = header.dimension;
-  const payload = new Uint8Array(arrayBuf, 32);
-  const scale = header.globalScale;
-  const out = [];
-  for (let i = 0; i < buckets.length; i++) {
-    const b = buckets[i];
-    const raw = new Float32Array(dim);
-    const off = i * dim;
-    for (let j = 0; j < dim; j++) {
-      raw[j] = (payload[off + j] - 128) * scale;
-    }
-    out.push({
-      id: b.id,
-      name: b.name,
-      path: b.path,
-      path192: b.path192,
-      fallbackPath: b.fallbackPath,
-      descriptor: Array.from(l2Normalize(raw)),
-      age: b.age,
-      gender: b.gender,
-      genderProb: b.genderProb,
-    });
-  }
-  return buildMultiShotCentroidGallery(out);
-}
-
-function quantile(sorted, p) {
-  if (sorted.length === 0) return NaN;
-  const i = Math.min(sorted.length - 1, Math.floor(p * sorted.length));
-  return sorted[i];
+function jsonOutPath() {
+  const idx = process.argv.indexOf("--json");
+  if (idx < 0) return null;
+  const next = process.argv[idx + 1];
+  if (next && !next.startsWith("-")) return path.resolve(next);
+  return path.join(CELEBS, "open-set-loo.json");
 }
 
 function main() {
-  const gallery = loadV4Gallery();
-  const byId = new Map();
-  for (const row of gallery) {
-    if (!byId.has(row.id)) byId.set(row.id, row);
-  }
-  const identities = Array.from(byId.values());
-
-  const percents = [];
-  const hills = [];
-  const margins = [];
-  const distances = [];
-  let refused = 0;
-  const bands = { weak: 0, soft: 0, strong: 0 };
-
-  for (const probe of identities) {
-    const others = gallery.filter((g) => g.id !== probe.id);
-    const matches = rankByDescriptor(
-      {
-        descriptor: Float32Array.from(probe.descriptor),
-        age: probe.age ?? 35,
-        gender: probe.gender ?? "unknown",
-        genderProbability: probe.genderProb ?? 0.9,
-      },
-      others,
-      5,
-    );
-    if (matches.length === 0) {
-      refused++;
-      continue;
-    }
-    const top = matches[0];
-    percents.push(top.matchPercent);
-    hills.push(top.hillPercent ?? top.matchPercent);
-    margins.push(top.rankMargin ?? 0);
-    distances.push(top.distance ?? NaN);
-    bands[honestyBand(top.matchPercent, top.rankMargin)] += 1;
-  }
-
-  const scored = percents.length;
-  const n = identities.length;
-  percents.sort((a, b) => a - b);
-  hills.sort((a, b) => a - b);
-  margins.sort((a, b) => a - b);
-  const finiteD = distances.filter((d) => Number.isFinite(d)).sort((a, b) => a - b);
+  const { gallery } = loadV4Gallery(ROOT);
+  const report = runLeaveOneOut(gallery);
+  const n = report.identities;
+  const scored = report.scored;
+  const { bands, quantiles } = report;
 
   console.log("================================================================================");
   console.log("     TWINFRAME OPEN-SET LEAVE-ONE-OUT (gallery identity as civilian proxy)     ");
   console.log("================================================================================");
-  console.log(`identities=${n}  scored=${scored}  refused=${refused} (${((refused / n) * 100).toFixed(1)}%)`);
+  console.log(
+    `identities=${n}  scored=${scored}  refused=${report.refused} (${((report.refused / n) * 100).toFixed(1)}%)`,
+  );
   console.log(
     `bands  weak=${bands.weak} (${((bands.weak / Math.max(1, scored)) * 100).toFixed(1)}%)  ` +
       `soft=${bands.soft} (${((bands.soft / Math.max(1, scored)) * 100).toFixed(1)}%)  ` +
       `strong=${bands.strong} (${((bands.strong / Math.max(1, scored)) * 100).toFixed(1)}%)`,
   );
   console.log(
-    `display%  p10=${quantile(percents, 0.1).toFixed(1)}  p50=${quantile(percents, 0.5).toFixed(1)}  p90=${quantile(percents, 0.9).toFixed(1)}`,
+    `display%  p10=${quantiles.displayPercent.p10.toFixed(1)}  p50=${quantiles.displayPercent.p50.toFixed(1)}  p90=${quantiles.displayPercent.p90.toFixed(1)}`,
   );
   console.log(
-    `hill%     p10=${quantile(hills, 0.1).toFixed(1)}  p50=${quantile(hills, 0.5).toFixed(1)}  p90=${quantile(hills, 0.9).toFixed(1)}`,
+    `hill%     p10=${quantiles.hillPercent.p10.toFixed(1)}  p50=${quantiles.hillPercent.p50.toFixed(1)}  p90=${quantiles.hillPercent.p90.toFixed(1)}`,
   );
   console.log(
-    `margin    p10=${quantile(margins, 0.1).toFixed(3)}  p50=${quantile(margins, 0.5).toFixed(3)}  p90=${quantile(margins, 0.9).toFixed(3)}`,
+    `margin    p10=${quantiles.margin.p10.toFixed(3)}  p50=${quantiles.margin.p50.toFixed(3)}  p90=${quantiles.margin.p90.toFixed(3)}`,
   );
-  if (finiteD.length > 0) {
+  if (Number.isFinite(quantiles.distance.p50)) {
     console.log(
-      `distance  p10=${quantile(finiteD, 0.1).toFixed(3)}  p50=${quantile(finiteD, 0.5).toFixed(3)}  p90=${quantile(finiteD, 0.9).toFixed(3)}`,
+      `distance  p10=${quantiles.distance.p10.toFixed(3)}  p50=${quantiles.distance.p50.toFixed(3)}  p90=${quantiles.distance.p90.toFixed(3)}`,
     );
   }
   console.log(
     `strong-band rate should stay low: this set is enrolled celebs held out, not true civilians, so some soft/strong is expected.`,
   );
+
+  const out = jsonOutPath();
+  if (out) {
+    const payload = {
+      version: "1.0.0",
+      generatedAt: new Date().toISOString(),
+      identities: report.identities,
+      scored: report.scored,
+      refused: report.refused,
+      bands: report.bands,
+      quantiles: report.quantiles,
+      strongHits: report.hits.filter((h) => h.band === "strong"),
+    };
+    fs.writeFileSync(out, JSON.stringify(payload, null, 2));
+    console.log(`wrote ${out}`);
+  }
 }
 
 main();

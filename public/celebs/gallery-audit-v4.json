@@ -1,0 +1,1997 @@
+{
+  "version": "1.0.0-edgeface512",
+  "generatedAt": "2026-08-17T20:14:39.795Z",
+  "note": "Generated audit — not a ranking source of truth. Demotion list is for human review only.",
+  "gallery": {
+    "magic": "AFv4",
+    "dimension": 512,
+    "vectorCount": 1000,
+    "prototypeRows": 1000,
+    "uniqueIds": 1000
+  },
+  "thresholds": {
+    "cloneMax": 0.0001,
+    "identityMax": 0.4,
+    "lookalikeMax": 0.49
+  },
+  "counts": {
+    "clonePairs": 1,
+    "identityRangePairs": 73,
+    "lookalikeRangePairs": 1,
+    "suspects": 0,
+    "looStrong": 109,
+    "demotionIds": 121
+  },
+  "clonePairs": [
+    {
+      "a": "gwenyth-paltrow",
+      "b": "gwyneth-paltrow",
+      "aName": "Gwenyth Paltrow",
+      "bName": "Gwyneth Paltrow",
+      "distance": 0,
+      "band": "clone"
+    }
+  ],
+  "identityRangePairs": [
+    {
+      "a": "mohanlal",
+      "b": "wang-yibo",
+      "aName": "Mohanlal",
+      "bName": "Wang Yibo",
+      "distance": 0.014472205064946952,
+      "band": "identity-range"
+    },
+    {
+      "a": "anitta",
+      "b": "rafael-nadal",
+      "aName": "Anitta",
+      "bName": "Rafael Nadal",
+      "distance": 0.02269169952906902,
+      "band": "identity-range"
+    },
+    {
+      "a": "bella-ramsey",
+      "b": "sofia-vergara",
+      "aName": "Bella Ramsey",
+      "bName": "Sofia Vergara",
+      "distance": 0.0360531244710961,
+      "band": "identity-range"
+    },
+    {
+      "a": "colman-domingo",
+      "b": "george-clooney",
+      "aName": "Colman Domingo",
+      "bName": "George Clooney",
+      "distance": 0.06620329250086754,
+      "band": "identity-range"
+    },
+    {
+      "a": "hayao-miyazaki",
+      "b": "simone-biles",
+      "aName": "Hayao Miyazaki",
+      "bName": "Simone Biles",
+      "distance": 0.07278375055567754,
+      "band": "identity-range"
+    },
+    {
+      "a": "martin-scorsese",
+      "b": "novak-djokovic",
+      "aName": "Martin Scorsese",
+      "bName": "Novak Djokovic",
+      "distance": 0.07900098673041955,
+      "band": "identity-range"
+    },
+    {
+      "a": "ken-watanabe",
+      "b": "wang-yibo",
+      "aName": "Ken Watanabe",
+      "bName": "Wang Yibo",
+      "distance": 0.08371893294516963,
+      "band": "identity-range"
+    },
+    {
+      "a": "ken-watanabe",
+      "b": "mohanlal",
+      "aName": "Ken Watanabe",
+      "bName": "Mohanlal",
+      "distance": 0.08773378664997944,
+      "band": "identity-range"
+    },
+    {
+      "a": "finn-wolfhard",
+      "b": "sandra-oh",
+      "aName": "Finn Wolfhard",
+      "bName": "Sandra Oh",
+      "distance": 0.09687662641148109,
+      "band": "identity-range"
+    },
+    {
+      "a": "cara-delevingne",
+      "b": "maitreyi-ramakrishnan",
+      "aName": "Cara Delevingne",
+      "bName": "Maitreyi Ramakrishnan",
+      "distance": 0.1085295651803424,
+      "band": "identity-range"
+    },
+    {
+      "a": "george-clooney",
+      "b": "ke-huy-quan",
+      "aName": "George Clooney",
+      "bName": "Ke Huy Quan",
+      "distance": 0.11089247241233768,
+      "band": "identity-range"
+    },
+    {
+      "a": "daniel-kaluuya",
+      "b": "greta-gerwig",
+      "aName": "Daniel Kaluuya",
+      "bName": "Greta Gerwig",
+      "distance": 0.11651613287282625,
+      "band": "identity-range"
+    },
+    {
+      "a": "anne-hathaway",
+      "b": "ian-somerhalder",
+      "aName": "Anne Hathaway",
+      "bName": "Ian Somerhalder",
+      "distance": 0.12152330207039752,
+      "band": "identity-range"
+    },
+    {
+      "a": "jack-black",
+      "b": "venus-williams",
+      "aName": "Jack Black",
+      "bName": "Venus Williams",
+      "distance": 0.12253368092582084,
+      "band": "identity-range"
+    },
+    {
+      "a": "chris-pratt",
+      "b": "mark-ruffalo",
+      "aName": "Chris Pratt",
+      "bName": "Mark Ruffalo",
+      "distance": 0.12267702676666936,
+      "band": "identity-range"
+    },
+    {
+      "a": "anthony-mackie",
+      "b": "lisa",
+      "aName": "Anthony Mackie",
+      "bName": "Lisa",
+      "distance": 0.12292324701561852,
+      "band": "identity-range"
+    },
+    {
+      "a": "diego-luna",
+      "b": "paul-giamatti",
+      "aName": "Diego Luna",
+      "bName": "Paul Giamatti",
+      "distance": 0.12436825381391492,
+      "band": "identity-range"
+    },
+    {
+      "a": "anushka-sharma",
+      "b": "tim-cook",
+      "aName": "Anushka Sharma",
+      "bName": "Tim Cook",
+      "distance": 0.12589013966722318,
+      "band": "identity-range"
+    },
+    {
+      "a": "christian-bale",
+      "b": "evangeline-lilly",
+      "aName": "Christian Bale",
+      "bName": "Evangeline Lilly",
+      "distance": 0.12836152290668035,
+      "band": "identity-range"
+    },
+    {
+      "a": "tim-cook",
+      "b": "tom-hiddleston",
+      "aName": "Tim Cook",
+      "bName": "Tom Hiddleston",
+      "distance": 0.12949578997412114,
+      "band": "identity-range"
+    },
+    {
+      "a": "ali-wong",
+      "b": "milly-alcock",
+      "aName": "Ali Wong",
+      "bName": "Milly Alcock",
+      "distance": 0.13143553469220015,
+      "band": "identity-range"
+    },
+    {
+      "a": "anushka-sharma",
+      "b": "tom-hiddleston",
+      "aName": "Anushka Sharma",
+      "bName": "Tom Hiddleston",
+      "distance": 0.134965860200553,
+      "band": "identity-range"
+    },
+    {
+      "a": "bella-ramsey",
+      "b": "johnny-depp",
+      "aName": "Bella Ramsey",
+      "bName": "Johnny Depp",
+      "distance": 0.13618959128685004,
+      "band": "identity-range"
+    },
+    {
+      "a": "rosalia",
+      "b": "theo-james",
+      "aName": "Rosalia",
+      "bName": "Theo James",
+      "distance": 0.13711745611800863,
+      "band": "identity-range"
+    },
+    {
+      "a": "johnny-depp",
+      "b": "sofia-vergara",
+      "aName": "Johnny Depp",
+      "bName": "Sofia Vergara",
+      "distance": 0.13721759036502834,
+      "band": "identity-range"
+    },
+    {
+      "a": "jodie-comer",
+      "b": "sterling-k-brown",
+      "aName": "Jodie Comer",
+      "bName": "Sterling K Brown",
+      "distance": 0.14321576664835955,
+      "band": "identity-range"
+    },
+    {
+      "a": "brendan-fraser",
+      "b": "vin-diesel",
+      "aName": "Brendan Fraser",
+      "bName": "Vin Diesel",
+      "distance": 0.14631835038629437,
+      "band": "identity-range"
+    },
+    {
+      "a": "colman-domingo",
+      "b": "ke-huy-quan",
+      "aName": "Colman Domingo",
+      "bName": "Ke Huy Quan",
+      "distance": 0.1546786014193614,
+      "band": "identity-range"
+    },
+    {
+      "a": "cha-eun-woo",
+      "b": "chris-pine",
+      "aName": "Cha Eun-woo",
+      "bName": "Chris Pine",
+      "distance": 0.15733170588555734,
+      "band": "identity-range"
+    },
+    {
+      "a": "dakota-johnson",
+      "b": "simone-biles",
+      "aName": "Dakota Johnson",
+      "bName": "Simone Biles",
+      "distance": 0.15773033543092663,
+      "band": "identity-range"
+    },
+    {
+      "a": "jeff-bezos",
+      "b": "nicolas-cage",
+      "aName": "Jeff Bezos",
+      "bName": "Nicolas Cage",
+      "distance": 0.15817505841668067,
+      "band": "identity-range"
+    },
+    {
+      "a": "rami-malek",
+      "b": "vijay-sethupathi",
+      "aName": "Rami Malek",
+      "bName": "Vijay Sethupathi",
+      "distance": 0.15830034730192266,
+      "band": "identity-range"
+    },
+    {
+      "a": "harrison-ford",
+      "b": "jenna-ortega",
+      "aName": "Harrison Ford",
+      "bName": "Jenna Ortega",
+      "distance": 0.15914641866336032,
+      "band": "identity-range"
+    },
+    {
+      "a": "greta-gerwig",
+      "b": "maluma",
+      "aName": "Greta Gerwig",
+      "bName": "Maluma",
+      "distance": 0.16140101863486922,
+      "band": "identity-range"
+    },
+    {
+      "a": "roger-federer",
+      "b": "xiao-zhan",
+      "aName": "Roger Federer",
+      "bName": "Xiao Zhan",
+      "distance": 0.1634913569862101,
+      "band": "identity-range"
+    },
+    {
+      "a": "bill-skarsgard",
+      "b": "uma-thurman",
+      "aName": "Bill Skarsgård",
+      "bName": "Uma Thurman",
+      "distance": 0.16567146044566694,
+      "band": "identity-range"
+    },
+    {
+      "a": "brie-larson",
+      "b": "yash",
+      "aName": "Brie Larson",
+      "bName": "Yash",
+      "distance": 0.16593648912547165,
+      "band": "identity-range"
+    },
+    {
+      "a": "colin-firth",
+      "b": "rafael-nadal",
+      "aName": "Colin Firth",
+      "bName": "Rafael Nadal",
+      "distance": 0.16628621510054165,
+      "band": "identity-range"
+    },
+    {
+      "a": "daniel-radcliffe",
+      "b": "jacob-elordi",
+      "aName": "Daniel Radcliffe",
+      "bName": "Jacob Elordi",
+      "distance": 0.16808087185557385,
+      "band": "identity-range"
+    },
+    {
+      "a": "mahershala-ali",
+      "b": "tilda-swinton",
+      "aName": "Mahershala Ali",
+      "bName": "Tilda Swinton",
+      "distance": 0.1709397751412799,
+      "band": "identity-range"
+    },
+    {
+      "a": "gong-yoo",
+      "b": "jungkook",
+      "aName": "Gong Yoo",
+      "bName": "Jungkook",
+      "distance": 0.17139425148877285,
+      "band": "identity-range"
+    },
+    {
+      "a": "daniel-kaluuya",
+      "b": "maluma",
+      "aName": "Daniel Kaluuya",
+      "bName": "Maluma",
+      "distance": 0.17489928978582903,
+      "band": "identity-range"
+    },
+    {
+      "a": "fahadh-faasil",
+      "b": "kit-harington",
+      "aName": "Fahadh Faasil",
+      "bName": "Kit Harington",
+      "distance": 0.17702107602587558,
+      "band": "identity-range"
+    },
+    {
+      "a": "dhanush",
+      "b": "paul-wesley",
+      "aName": "Dhanush",
+      "bName": "Paul Wesley",
+      "distance": 0.18173984040434044,
+      "band": "identity-range"
+    },
+    {
+      "a": "ryan-reynolds",
+      "b": "samuel-l-jackson",
+      "aName": "Ryan Reynolds",
+      "bName": "Samuel L Jackson",
+      "distance": 0.1838828141561788,
+      "band": "identity-range"
+    },
+    {
+      "a": "anitta",
+      "b": "colin-firth",
+      "aName": "Anitta",
+      "bName": "Colin Firth",
+      "distance": 0.18422892342275587,
+      "band": "identity-range"
+    },
+    {
+      "a": "ben-affleck",
+      "b": "vicky-kaushal",
+      "aName": "Ben Affleck",
+      "bName": "Vicky Kaushal",
+      "distance": 0.19175418314693282,
+      "band": "identity-range"
+    },
+    {
+      "a": "drew-barrymore",
+      "b": "song-hye-kyo",
+      "aName": "Drew Barrymore",
+      "bName": "Song Hye-kyo",
+      "distance": 0.19396027577297537,
+      "band": "identity-range"
+    },
+    {
+      "a": "emilia-clarke",
+      "b": "lana-condor",
+      "aName": "Emilia Clarke",
+      "bName": "Lana Condor",
+      "distance": 0.19986062362244272,
+      "band": "identity-range"
+    },
+    {
+      "a": "son-ye-jin",
+      "b": "zoe-kravitz",
+      "aName": "Son Ye-jin",
+      "bName": "Zoë Kravitz",
+      "distance": 0.20288249603283748,
+      "band": "identity-range"
+    },
+    {
+      "a": "adam-sandler",
+      "b": "penelope-cruz",
+      "aName": "Adam Sandler",
+      "bName": "Penelope Cruz",
+      "distance": 0.20297716267163257,
+      "band": "identity-range"
+    },
+    {
+      "a": "dakota-johnson",
+      "b": "hayao-miyazaki",
+      "aName": "Dakota Johnson",
+      "bName": "Hayao Miyazaki",
+      "distance": 0.20320407837828824,
+      "band": "identity-range"
+    },
+    {
+      "a": "radhika-apte",
+      "b": "regina-king",
+      "aName": "Radhika Apte",
+      "bName": "Regina King",
+      "distance": 0.20841917556076006,
+      "band": "identity-range"
+    },
+    {
+      "a": "samantha-ruth-prabhu",
+      "b": "yara-shahidi",
+      "aName": "Samantha Ruth Prabhu",
+      "bName": "Yara Shahidi",
+      "distance": 0.20950884329614816,
+      "band": "identity-range"
+    },
+    {
+      "a": "lily-gladstone",
+      "b": "vijay-sethupathi",
+      "aName": "Lily Gladstone",
+      "bName": "Vijay Sethupathi",
+      "distance": 0.21632182790824017,
+      "band": "identity-range"
+    },
+    {
+      "a": "lily-gladstone",
+      "b": "rami-malek",
+      "aName": "Lily Gladstone",
+      "bName": "Rami Malek",
+      "distance": 0.21793685306997945,
+      "band": "identity-range"
+    },
+    {
+      "a": "jennifer-aniston",
+      "b": "mike-faist",
+      "aName": "Jennifer Aniston",
+      "bName": "Mike Faist",
+      "distance": 0.2355421066745268,
+      "band": "identity-range"
+    },
+    {
+      "a": "jeffrey-c-robinson",
+      "b": "manu-bennett",
+      "aName": "Jeffrey C. Robinson",
+      "bName": "Manu Bennett",
+      "distance": 0.23576475719643186,
+      "band": "identity-range"
+    },
+    {
+      "a": "olivia-cooke",
+      "b": "steve-carell",
+      "aName": "Olivia Cooke",
+      "bName": "Steve Carell",
+      "distance": 0.23667546469014455,
+      "band": "identity-range"
+    },
+    {
+      "a": "hrithik-roshan",
+      "b": "prabhas",
+      "aName": "Hrithik Roshan",
+      "bName": "Prabhas",
+      "distance": 0.24197252534527813,
+      "band": "identity-range"
+    },
+    {
+      "a": "aishwarya-rai",
+      "b": "nawazuddin-siddiqui",
+      "aName": "Aishwarya Rai",
+      "bName": "Nawazuddin Siddiqui",
+      "distance": 0.24251719696751162,
+      "band": "identity-range"
+    },
+    {
+      "a": "j-balvin",
+      "b": "robert-de-niro",
+      "aName": "J Balvin",
+      "bName": "Robert De Niro",
+      "distance": 0.24263608236099599,
+      "band": "identity-range"
+    },
+    {
+      "a": "bill-gates",
+      "b": "emma-darcy",
+      "aName": "Bill Gates",
+      "bName": "Emma DArcy",
+      "distance": 0.2441025414379394,
+      "band": "identity-range"
+    },
+    {
+      "a": "miley-cyrus",
+      "b": "novak-djokovic",
+      "aName": "Miley Cyrus",
+      "bName": "Novak Djokovic",
+      "distance": 0.24763453748411834,
+      "band": "identity-range"
+    },
+    {
+      "a": "gael-garcia-bernal",
+      "b": "kareena-kapoor",
+      "aName": "Gael García Bernal",
+      "bName": "Kareena Kapoor",
+      "distance": 0.24787631902512963,
+      "band": "identity-range"
+    },
+    {
+      "a": "iu",
+      "b": "sadie-sink",
+      "aName": "IU",
+      "bName": "Sadie Sink",
+      "distance": 0.26498369556768087,
+      "band": "identity-range"
+    },
+    {
+      "a": "martin-scorsese",
+      "b": "miley-cyrus",
+      "aName": "Martin Scorsese",
+      "bName": "Miley Cyrus",
+      "distance": 0.2680511601348925,
+      "band": "identity-range"
+    },
+    {
+      "a": "barry-keoghan",
+      "b": "justin-bieber",
+      "aName": "Barry Keoghan",
+      "bName": "Justin Bieber",
+      "distance": 0.28986890672364485,
+      "band": "identity-range"
+    },
+    {
+      "a": "hugh-grant",
+      "b": "ralph-fiennes",
+      "aName": "Hugh Grant",
+      "bName": "Ralph Fiennes",
+      "distance": 0.3143948912200384,
+      "band": "identity-range"
+    },
+    {
+      "a": "hyun-bin",
+      "b": "matt-smith",
+      "aName": "Hyun Bin",
+      "bName": "Matt Smith",
+      "distance": 0.3232426729584166,
+      "band": "identity-range"
+    },
+    {
+      "a": "al-pacino",
+      "b": "mia-goth",
+      "aName": "Al Pacino",
+      "bName": "Mia Goth",
+      "distance": 0.3237570582164123,
+      "band": "identity-range"
+    },
+    {
+      "a": "allu-arjun",
+      "b": "rose-blackpink",
+      "aName": "Allu Arjun",
+      "bName": "Rosé",
+      "distance": 0.32650312280453486,
+      "band": "identity-range"
+    },
+    {
+      "a": "halle-bailey",
+      "b": "lebron-james",
+      "aName": "Halle Bailey",
+      "bName": "LeBron James",
+      "distance": 0.3513435184401035,
+      "band": "identity-range"
+    }
+  ],
+  "lookalikeRangePairs": [
+    {
+      "a": "olivia-rodrigo",
+      "b": "sydney-sweeney",
+      "aName": "Olivia Rodrigo",
+      "bName": "Sydney Sweeney",
+      "distance": 0.48864219980355694,
+      "band": "lookalike-range"
+    }
+  ],
+  "lookalikeRangePairCount": 1,
+  "suspects": [],
+  "loo": {
+    "identities": 1000,
+    "scored": 968,
+    "refused": 32,
+    "bands": {
+      "weak": 816,
+      "soft": 43,
+      "strong": 109
+    },
+    "quantiles": {
+      "displayPercent": {
+        "p10": 25.5,
+        "p50": 33.5,
+        "p90": 96.9
+      },
+      "hillPercent": {
+        "p10": 36.5,
+        "p50": 44.7,
+        "p90": 96.9
+      },
+      "margin": {
+        "p10": 0.004950734511977473,
+        "p50": 0.029442759763256166,
+        "p90": 0.18820046990698402
+      },
+      "distance": {
+        "p10": 0.24197252534527813,
+        "p50": 0.6247543165847125,
+        "p90": 0.6771365519504936
+      }
+    },
+    "strongHits": [
+      {
+        "probeId": "mahershala-ali",
+        "probeName": "Mahershala Ali",
+        "topId": "tilda-swinton",
+        "topName": "Tilda Swinton",
+        "distance": 0.1709397751412799,
+        "hillPercent": 99.2,
+        "matchPercent": 99.2,
+        "rankMargin": 0.46757322574141746,
+        "band": "strong"
+      },
+      {
+        "probeId": "zoe-kravitz",
+        "probeName": "Zoë Kravitz",
+        "topId": "son-ye-jin",
+        "topName": "Son Ye-jin",
+        "distance": 0.20288249603283748,
+        "hillPercent": 98.6,
+        "matchPercent": 98.6,
+        "rankMargin": 0.423698605854404,
+        "band": "strong"
+      },
+      {
+        "probeId": "jenna-ortega",
+        "probeName": "Jenna Ortega",
+        "topId": "harrison-ford",
+        "topName": "Harrison Ford",
+        "distance": 0.15914641866336032,
+        "hillPercent": 99.2,
+        "matchPercent": 99.2,
+        "rankMargin": 0.42001771083814876,
+        "band": "strong"
+      },
+      {
+        "probeId": "ali-wong",
+        "probeName": "Ali Wong",
+        "topId": "milly-alcock",
+        "topName": "Milly Alcock",
+        "distance": 0.13143553469220015,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5321057443622638,
+        "band": "strong"
+      },
+      {
+        "probeId": "sandra-oh",
+        "probeName": "Sandra Oh",
+        "topId": "finn-wolfhard",
+        "topName": "Finn Wolfhard",
+        "distance": 0.09687662641148109,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.6179681458920564,
+        "band": "strong"
+      },
+      {
+        "probeId": "yara-shahidi",
+        "probeName": "Yara Shahidi",
+        "topId": "samantha-ruth-prabhu",
+        "topName": "Samantha Ruth Prabhu",
+        "distance": 0.20950884329614816,
+        "hillPercent": 98.5,
+        "matchPercent": 98.5,
+        "rankMargin": 0.4229746768305819,
+        "band": "strong"
+      },
+      {
+        "probeId": "daniel-kaluuya",
+        "probeName": "Daniel Kaluuya",
+        "topId": "greta-gerwig",
+        "topName": "Greta Gerwig",
+        "distance": 0.11651613287282625,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.05252698845363116,
+        "band": "strong"
+      },
+      {
+        "probeId": "jacob-elordi",
+        "probeName": "Jacob Elordi",
+        "topId": "daniel-radcliffe",
+        "topName": "Daniel Radcliffe",
+        "distance": 0.16808087185557385,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.4253344159150295,
+        "band": "strong"
+      },
+      {
+        "probeId": "adam-sandler",
+        "probeName": "Adam Sandler",
+        "topId": "penelope-cruz",
+        "topName": "Penelope Cruz",
+        "distance": 0.20297716267163257,
+        "hillPercent": 98.6,
+        "matchPercent": 98.6,
+        "rankMargin": 0.41521678938354406,
+        "band": "strong"
+      },
+      {
+        "probeId": "aishwarya-rai",
+        "probeName": "Aishwarya Rai",
+        "topId": "nawazuddin-siddiqui",
+        "topName": "Nawazuddin Siddiqui",
+        "distance": 0.24251719696751162,
+        "hillPercent": 96.8,
+        "matchPercent": 96.8,
+        "rankMargin": 0.3105009281692246,
+        "band": "strong"
+      },
+      {
+        "probeId": "al-pacino",
+        "probeName": "Al Pacino",
+        "topId": "mia-goth",
+        "topName": "Mia Goth",
+        "distance": 0.3237570582164123,
+        "hillPercent": 87.6,
+        "matchPercent": 87.6,
+        "rankMargin": 0.24968388323244511,
+        "band": "strong"
+      },
+      {
+        "probeId": "anthony-mackie",
+        "probeName": "Anthony Mackie",
+        "topId": "lisa",
+        "topName": "Lisa",
+        "distance": 0.12292324701561852,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5027468072917713,
+        "band": "strong"
+      },
+      {
+        "probeId": "ben-affleck",
+        "probeName": "Ben Affleck",
+        "topId": "vicky-kaushal",
+        "topName": "Vicky Kaushal",
+        "distance": 0.19175418314693282,
+        "hillPercent": 99,
+        "matchPercent": 99,
+        "rankMargin": 0.4328118783981215,
+        "band": "strong"
+      },
+      {
+        "probeId": "bill-gates",
+        "probeName": "Bill Gates",
+        "topId": "emma-darcy",
+        "topName": "Emma DArcy",
+        "distance": 0.2441025414379394,
+        "hillPercent": 95.8,
+        "matchPercent": 95.8,
+        "rankMargin": 0.42379937736117024,
+        "band": "strong"
+      },
+      {
+        "probeId": "bill-skarsgard",
+        "probeName": "Bill Skarsgård",
+        "topId": "uma-thurman",
+        "topName": "Uma Thurman",
+        "distance": 0.16567146044566694,
+        "hillPercent": 99.2,
+        "matchPercent": 99.2,
+        "rankMargin": 0.4482024985064505,
+        "band": "strong"
+      },
+      {
+        "probeId": "brie-larson",
+        "probeName": "Brie Larson",
+        "topId": "yash",
+        "topName": "Yash",
+        "distance": 0.16593648912547165,
+        "hillPercent": 99.4,
+        "matchPercent": 99.4,
+        "rankMargin": 0.4256407469367265,
+        "band": "strong"
+      },
+      {
+        "probeId": "cara-delevingne",
+        "probeName": "Cara Delevingne",
+        "topId": "maitreyi-ramakrishnan",
+        "topName": "Maitreyi Ramakrishnan",
+        "distance": 0.1085295651803424,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.5056812483476748,
+        "band": "strong"
+      },
+      {
+        "probeId": "chris-pine",
+        "probeName": "Chris Pine",
+        "topId": "cha-eun-woo",
+        "topName": "Cha Eun-woo",
+        "distance": 0.15733170588555734,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.47136037410895915,
+        "band": "strong"
+      },
+      {
+        "probeId": "christian-bale",
+        "probeName": "Christian Bale",
+        "topId": "evangeline-lilly",
+        "topName": "Evangeline Lilly",
+        "distance": 0.12836152290668035,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.44335177305545986,
+        "band": "strong"
+      },
+      {
+        "probeId": "dakota-johnson",
+        "probeName": "Dakota Johnson",
+        "topId": "simone-biles",
+        "topName": "Simone Biles",
+        "distance": 0.15773033543092663,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.07755709853921486,
+        "band": "strong"
+      },
+      {
+        "probeId": "diego-luna",
+        "probeName": "Diego Luna",
+        "topId": "paul-giamatti",
+        "topName": "Paul Giamatti",
+        "distance": 0.12436825381391492,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5281864762427395,
+        "band": "strong"
+      },
+      {
+        "probeId": "drew-barrymore",
+        "probeName": "Drew Barrymore",
+        "topId": "song-hye-kyo",
+        "topName": "Song Hye-kyo",
+        "distance": 0.19396027577297537,
+        "hillPercent": 99,
+        "matchPercent": 99,
+        "rankMargin": 0.39148306612287653,
+        "band": "strong"
+      },
+      {
+        "probeId": "gael-garcia-bernal",
+        "probeName": "Gael García Bernal",
+        "topId": "kareena-kapoor",
+        "topName": "Kareena Kapoor",
+        "distance": 0.24787631902512963,
+        "hillPercent": 96.9,
+        "matchPercent": 96.9,
+        "rankMargin": 0.38052989903365525,
+        "band": "strong"
+      },
+      {
+        "probeId": "gong-yoo",
+        "probeName": "Gong Yoo",
+        "topId": "jungkook",
+        "topName": "Jungkook",
+        "distance": 0.17139425148877285,
+        "hillPercent": 99.4,
+        "matchPercent": 99.4,
+        "rankMargin": 0.47287825527530636,
+        "band": "strong"
+      },
+      {
+        "probeId": "gwenyth-paltrow",
+        "probeName": "Gwenyth Paltrow",
+        "topId": "gwyneth-paltrow",
+        "topName": "Gwyneth Paltrow",
+        "distance": 0,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.515753317647434,
+        "band": "strong"
+      },
+      {
+        "probeId": "gwyneth-paltrow",
+        "probeName": "Gwyneth Paltrow",
+        "topId": "gwenyth-paltrow",
+        "topName": "Gwenyth Paltrow",
+        "distance": 0,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.515753317647434,
+        "band": "strong"
+      },
+      {
+        "probeId": "hrithik-roshan",
+        "probeName": "Hrithik Roshan",
+        "topId": "prabhas",
+        "topName": "Prabhas",
+        "distance": 0.24197252534527813,
+        "hillPercent": 97.6,
+        "matchPercent": 97.6,
+        "rankMargin": 0.4075234380551572,
+        "band": "strong"
+      },
+      {
+        "probeId": "hugh-grant",
+        "probeName": "Hugh Grant",
+        "topId": "ralph-fiennes",
+        "topName": "Ralph Fiennes",
+        "distance": 0.3143948912200384,
+        "hillPercent": 93.1,
+        "matchPercent": 93.1,
+        "rankMargin": 0.29955736785798553,
+        "band": "strong"
+      },
+      {
+        "probeId": "hyun-bin",
+        "probeName": "Hyun Bin",
+        "topId": "matt-smith",
+        "topName": "Matt Smith",
+        "distance": 0.3232426729584166,
+        "hillPercent": 92.4,
+        "matchPercent": 92.4,
+        "rankMargin": 0.36106121813204145,
+        "band": "strong"
+      },
+      {
+        "probeId": "ian-somerhalder",
+        "probeName": "Ian Somerhalder",
+        "topId": "anne-hathaway",
+        "topName": "Anne Hathaway",
+        "distance": 0.12152330207039752,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.506150279709925,
+        "band": "strong"
+      },
+      {
+        "probeId": "jeff-bezos",
+        "probeName": "Jeff Bezos",
+        "topId": "nicolas-cage",
+        "topName": "Nicolas Cage",
+        "distance": 0.15817505841668067,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.4800880370512761,
+        "band": "strong"
+      },
+      {
+        "probeId": "jennifer-aniston",
+        "probeName": "Jennifer Aniston",
+        "topId": "mike-faist",
+        "topName": "Mike Faist",
+        "distance": 0.2355421066745268,
+        "hillPercent": 97.5,
+        "matchPercent": 97.5,
+        "rankMargin": 0.4429173632953578,
+        "band": "strong"
+      },
+      {
+        "probeId": "justin-bieber",
+        "probeName": "Justin Bieber",
+        "topId": "barry-keoghan",
+        "topName": "Barry Keoghan",
+        "distance": 0.28986890672364485,
+        "hillPercent": 94.9,
+        "matchPercent": 94.9,
+        "rankMargin": 0.39140286150398423,
+        "band": "strong"
+      },
+      {
+        "probeId": "kit-harington",
+        "probeName": "Kit Harington",
+        "topId": "fahadh-faasil",
+        "topName": "Fahadh Faasil",
+        "distance": 0.17702107602587558,
+        "hillPercent": 99.3,
+        "matchPercent": 99.3,
+        "rankMargin": 0.4784636915344622,
+        "band": "strong"
+      },
+      {
+        "probeId": "lana-condor",
+        "probeName": "Lana Condor",
+        "topId": "emilia-clarke",
+        "topName": "Emilia Clarke",
+        "distance": 0.19986062362244272,
+        "hillPercent": 98.9,
+        "matchPercent": 98.9,
+        "rankMargin": 0.45133282391491436,
+        "band": "strong"
+      },
+      {
+        "probeId": "lebron-james",
+        "probeName": "LeBron James",
+        "topId": "halle-bailey",
+        "topName": "Halle Bailey",
+        "distance": 0.3513435184401035,
+        "hillPercent": 88.2,
+        "matchPercent": 88.2,
+        "rankMargin": 0.27984929638298295,
+        "band": "strong"
+      },
+      {
+        "probeId": "mark-ruffalo",
+        "probeName": "Mark Ruffalo",
+        "topId": "chris-pratt",
+        "topName": "Chris Pratt",
+        "distance": 0.12267702676666936,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.4279337658646486,
+        "band": "strong"
+      },
+      {
+        "probeId": "paul-wesley",
+        "probeName": "Paul Wesley",
+        "topId": "dhanush",
+        "topName": "Dhanush",
+        "distance": 0.18173984040434044,
+        "hillPercent": 99.3,
+        "matchPercent": 99.3,
+        "rankMargin": 0.48742533154113243,
+        "band": "strong"
+      },
+      {
+        "probeId": "rami-malek",
+        "probeName": "Rami Malek",
+        "topId": "vijay-sethupathi",
+        "topName": "Vijay Sethupathi",
+        "distance": 0.15830034730192266,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.0649866942382952,
+        "band": "strong"
+      },
+      {
+        "probeId": "regina-king",
+        "probeName": "Regina King",
+        "topId": "radhika-apte",
+        "topName": "Radhika Apte",
+        "distance": 0.20841917556076006,
+        "hillPercent": 98.7,
+        "matchPercent": 98.7,
+        "rankMargin": 0.37427566715066984,
+        "band": "strong"
+      },
+      {
+        "probeId": "robert-de-niro",
+        "probeName": "Robert De Niro",
+        "topId": "j-balvin",
+        "topName": "J Balvin",
+        "distance": 0.24263608236099599,
+        "hillPercent": 96.7,
+        "matchPercent": 96.7,
+        "rankMargin": 0.4322574503816804,
+        "band": "strong"
+      },
+      {
+        "probeId": "roger-federer",
+        "probeName": "Roger Federer",
+        "topId": "xiao-zhan",
+        "topName": "Xiao Zhan",
+        "distance": 0.1634913569862101,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.47936644374583903,
+        "band": "strong"
+      },
+      {
+        "probeId": "rose-blackpink",
+        "probeName": "Rosé",
+        "topId": "allu-arjun",
+        "topName": "Allu Arjun",
+        "distance": 0.32650312280453486,
+        "hillPercent": 89.6,
+        "matchPercent": 89.6,
+        "rankMargin": 0.3487866277288372,
+        "band": "strong"
+      },
+      {
+        "probeId": "ryan-reynolds",
+        "probeName": "Ryan Reynolds",
+        "topId": "samuel-l-jackson",
+        "topName": "Samuel L Jackson",
+        "distance": 0.1838828141561788,
+        "hillPercent": 98.9,
+        "matchPercent": 98.9,
+        "rankMargin": 0.44473346122628765,
+        "band": "strong"
+      },
+      {
+        "probeId": "sadie-sink",
+        "probeName": "Sadie Sink",
+        "topId": "iu",
+        "topName": "IU",
+        "distance": 0.26498369556768087,
+        "hillPercent": 96.3,
+        "matchPercent": 96.3,
+        "rankMargin": 0.39459875164994923,
+        "band": "strong"
+      },
+      {
+        "probeId": "sterling-k-brown",
+        "probeName": "Sterling K Brown",
+        "topId": "jodie-comer",
+        "topName": "Jodie Comer",
+        "distance": 0.14321576664835955,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.44514621905296864,
+        "band": "strong"
+      },
+      {
+        "probeId": "steve-carell",
+        "probeName": "Steve Carell",
+        "topId": "olivia-cooke",
+        "topName": "Olivia Cooke",
+        "distance": 0.23667546469014455,
+        "hillPercent": 96.7,
+        "matchPercent": 96.7,
+        "rankMargin": 0.36435826366265794,
+        "band": "strong"
+      },
+      {
+        "probeId": "theo-james",
+        "probeName": "Theo James",
+        "topId": "rosalia",
+        "topName": "Rosalia",
+        "distance": 0.13711745611800863,
+        "hillPercent": 99.7,
+        "matchPercent": 99.7,
+        "rankMargin": 0.4424516206757768,
+        "band": "strong"
+      },
+      {
+        "probeId": "venus-williams",
+        "probeName": "Venus Williams",
+        "topId": "jack-black",
+        "topName": "Jack Black",
+        "distance": 0.12253368092582084,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5774838289945456,
+        "band": "strong"
+      },
+      {
+        "probeId": "vin-diesel",
+        "probeName": "Vin Diesel",
+        "topId": "brendan-fraser",
+        "topName": "Brendan Fraser",
+        "distance": 0.14631835038629437,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.4714986936577556,
+        "band": "strong"
+      },
+      {
+        "probeId": "barry-keoghan",
+        "probeName": "Barry Keoghan",
+        "topId": "justin-bieber",
+        "topName": "Justin Bieber",
+        "distance": 0.28986890672364485,
+        "hillPercent": 94.9,
+        "matchPercent": 94.9,
+        "rankMargin": 0.37512026731546183,
+        "band": "strong"
+      },
+      {
+        "probeId": "bella-ramsey",
+        "probeName": "Bella Ramsey",
+        "topId": "sofia-vergara",
+        "topName": "Sofia Vergara",
+        "distance": 0.0360531244710961,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.11549454573299767,
+        "band": "strong"
+      },
+      {
+        "probeId": "brendan-fraser",
+        "probeName": "Brendan Fraser",
+        "topId": "vin-diesel",
+        "topName": "Vin Diesel",
+        "distance": 0.14631835038629437,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.506248647577604,
+        "band": "strong"
+      },
+      {
+        "probeId": "colman-domingo",
+        "probeName": "Colman Domingo",
+        "topId": "george-clooney",
+        "topName": "George Clooney",
+        "distance": 0.06620329250086754,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.0876926250382824,
+        "band": "strong"
+      },
+      {
+        "probeId": "halle-bailey",
+        "probeName": "Halle Bailey",
+        "topId": "lebron-james",
+        "topName": "LeBron James",
+        "distance": 0.3513435184401035,
+        "hillPercent": 88.1,
+        "matchPercent": 88.1,
+        "rankMargin": 0.3615068704938208,
+        "band": "strong"
+      },
+      {
+        "probeId": "hayao-miyazaki",
+        "probeName": "Hayao Miyazaki",
+        "topId": "simone-biles",
+        "topName": "Simone Biles",
+        "distance": 0.07278375055567754,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.15095847806032253,
+        "band": "strong"
+      },
+      {
+        "probeId": "jodie-comer",
+        "probeName": "Jodie Comer",
+        "topId": "sterling-k-brown",
+        "topName": "Sterling K Brown",
+        "distance": 0.14321576664835955,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.4582097195828273,
+        "band": "strong"
+      },
+      {
+        "probeId": "maitreyi-ramakrishnan",
+        "probeName": "Maitreyi Ramakrishnan",
+        "topId": "cara-delevingne",
+        "topName": "Cara Delevingne",
+        "distance": 0.1085295651803424,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.5629645962661582,
+        "band": "strong"
+      },
+      {
+        "probeId": "martin-scorsese",
+        "probeName": "Martin Scorsese",
+        "topId": "novak-djokovic",
+        "topName": "Novak Djokovic",
+        "distance": 0.07900098673041955,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.22380075472609015,
+        "band": "strong"
+      },
+      {
+        "probeId": "mia-goth",
+        "probeName": "Mia Goth",
+        "topId": "al-pacino",
+        "topName": "Al Pacino",
+        "distance": 0.3237570582164123,
+        "hillPercent": 87.6,
+        "matchPercent": 87.6,
+        "rankMargin": 0.3079036119306847,
+        "band": "strong"
+      },
+      {
+        "probeId": "mike-faist",
+        "probeName": "Mike Faist",
+        "topId": "jennifer-aniston",
+        "topName": "Jennifer Aniston",
+        "distance": 0.2355421066745268,
+        "hillPercent": 97.5,
+        "matchPercent": 97.5,
+        "rankMargin": 0.44743782760840123,
+        "band": "strong"
+      },
+      {
+        "probeId": "nicolas-cage",
+        "probeName": "Nicolas Cage",
+        "topId": "jeff-bezos",
+        "topName": "Jeff Bezos",
+        "distance": 0.15817505841668067,
+        "hillPercent": 99.6,
+        "matchPercent": 99.6,
+        "rankMargin": 0.554394496448343,
+        "band": "strong"
+      },
+      {
+        "probeId": "paul-giamatti",
+        "probeName": "Paul Giamatti",
+        "topId": "diego-luna",
+        "topName": "Diego Luna",
+        "distance": 0.12436825381391492,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5135094612952414,
+        "band": "strong"
+      },
+      {
+        "probeId": "tilda-swinton",
+        "probeName": "Tilda Swinton",
+        "topId": "mahershala-ali",
+        "topName": "Mahershala Ali",
+        "distance": 0.1709397751412799,
+        "hillPercent": 99.2,
+        "matchPercent": 99.2,
+        "rankMargin": 0.49079049744380787,
+        "band": "strong"
+      },
+      {
+        "probeId": "uma-thurman",
+        "probeName": "Uma Thurman",
+        "topId": "bill-skarsgard",
+        "topName": "Bill Skarsgård",
+        "distance": 0.16567146044566694,
+        "hillPercent": 99.2,
+        "matchPercent": 99.2,
+        "rankMargin": 0.48038894255340747,
+        "band": "strong"
+      },
+      {
+        "probeId": "chris-pratt",
+        "probeName": "Chris Pratt",
+        "topId": "mark-ruffalo",
+        "topName": "Mark Ruffalo",
+        "distance": 0.12267702676666936,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.48113516947518997,
+        "band": "strong"
+      },
+      {
+        "probeId": "jack-black",
+        "probeName": "Jack Black",
+        "topId": "venus-williams",
+        "topName": "Venus Williams",
+        "distance": 0.12253368092582084,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5281439402323013,
+        "band": "strong"
+      },
+      {
+        "probeId": "anne-hathaway",
+        "probeName": "Anne Hathaway",
+        "topId": "ian-somerhalder",
+        "topName": "Ian Somerhalder",
+        "distance": 0.12152330207039752,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5336461603940049,
+        "band": "strong"
+      },
+      {
+        "probeId": "daniel-radcliffe",
+        "probeName": "Daniel Radcliffe",
+        "topId": "jacob-elordi",
+        "topName": "Jacob Elordi",
+        "distance": 0.16808087185557385,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.41171103974065903,
+        "band": "strong"
+      },
+      {
+        "probeId": "ralph-fiennes",
+        "probeName": "Ralph Fiennes",
+        "topId": "hugh-grant",
+        "topName": "Hugh Grant",
+        "distance": 0.3143948912200384,
+        "hillPercent": 93.1,
+        "matchPercent": 93.1,
+        "rankMargin": 0.3169850188767334,
+        "band": "strong"
+      },
+      {
+        "probeId": "penelope-cruz",
+        "probeName": "Penelope Cruz",
+        "topId": "adam-sandler",
+        "topName": "Adam Sandler",
+        "distance": 0.20297716267163257,
+        "hillPercent": 98.6,
+        "matchPercent": 98.6,
+        "rankMargin": 0.4725040475678962,
+        "band": "strong"
+      },
+      {
+        "probeId": "sofia-vergara",
+        "probeName": "Sofia Vergara",
+        "topId": "bella-ramsey",
+        "topName": "Bella Ramsey",
+        "distance": 0.0360531244710961,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.1040388391124698,
+        "band": "strong"
+      },
+      {
+        "probeId": "anitta",
+        "probeName": "Anitta",
+        "topId": "rafael-nadal",
+        "topName": "Rafael Nadal",
+        "distance": 0.02269169952906902,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.18414667268398907,
+        "band": "strong"
+      },
+      {
+        "probeId": "rosalia",
+        "probeName": "Rosalia",
+        "topId": "theo-james",
+        "topName": "Theo James",
+        "distance": 0.13711745611800863,
+        "hillPercent": 99.7,
+        "matchPercent": 99.7,
+        "rankMargin": 0.5436690266629802,
+        "band": "strong"
+      },
+      {
+        "probeId": "kareena-kapoor",
+        "probeName": "Kareena Kapoor",
+        "topId": "gael-garcia-bernal",
+        "topName": "Gael García Bernal",
+        "distance": 0.24787631902512963,
+        "hillPercent": 96.8,
+        "matchPercent": 96.8,
+        "rankMargin": 0.4717763690813057,
+        "band": "strong"
+      },
+      {
+        "probeId": "vicky-kaushal",
+        "probeName": "Vicky Kaushal",
+        "topId": "ben-affleck",
+        "topName": "Ben Affleck",
+        "distance": 0.19175418314693282,
+        "hillPercent": 99,
+        "matchPercent": 99,
+        "rankMargin": 0.40911289969249387,
+        "band": "strong"
+      },
+      {
+        "probeId": "nawazuddin-siddiqui",
+        "probeName": "Nawazuddin Siddiqui",
+        "topId": "aishwarya-rai",
+        "topName": "Aishwarya Rai",
+        "distance": 0.24251719696751162,
+        "hillPercent": 96.7,
+        "matchPercent": 96.7,
+        "rankMargin": 0.36371830175911835,
+        "band": "strong"
+      },
+      {
+        "probeId": "radhika-apte",
+        "probeName": "Radhika Apte",
+        "topId": "regina-king",
+        "topName": "Regina King",
+        "distance": 0.20841917556076006,
+        "hillPercent": 98.7,
+        "matchPercent": 98.7,
+        "rankMargin": 0.4592878326293609,
+        "band": "strong"
+      },
+      {
+        "probeId": "vijay-sethupathi",
+        "probeName": "Vijay Sethupathi",
+        "topId": "rami-malek",
+        "topName": "Rami Malek",
+        "distance": 0.15830034730192266,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.06406970436105047,
+        "band": "strong"
+      },
+      {
+        "probeId": "dhanush",
+        "probeName": "Dhanush",
+        "topId": "paul-wesley",
+        "topName": "Paul Wesley",
+        "distance": 0.18173984040434044,
+        "hillPercent": 99.3,
+        "matchPercent": 99.3,
+        "rankMargin": 0.470140396189792,
+        "band": "strong"
+      },
+      {
+        "probeId": "samantha-ruth-prabhu",
+        "probeName": "Samantha Ruth Prabhu",
+        "topId": "yara-shahidi",
+        "topName": "Yara Shahidi",
+        "distance": 0.20950884329614816,
+        "hillPercent": 98.5,
+        "matchPercent": 98.5,
+        "rankMargin": 0.507165561713563,
+        "band": "strong"
+      },
+      {
+        "probeId": "allu-arjun",
+        "probeName": "Allu Arjun",
+        "topId": "rose-blackpink",
+        "topName": "Rosé",
+        "distance": 0.32650312280453486,
+        "hillPercent": 89.6,
+        "matchPercent": 89.6,
+        "rankMargin": 0.3298705582613791,
+        "band": "strong"
+      },
+      {
+        "probeId": "yash",
+        "probeName": "Yash",
+        "topId": "brie-larson",
+        "topName": "Brie Larson",
+        "distance": 0.16593648912547165,
+        "hillPercent": 99.4,
+        "matchPercent": 99.4,
+        "rankMargin": 0.48222262189337217,
+        "band": "strong"
+      },
+      {
+        "probeId": "prabhas",
+        "probeName": "Prabhas",
+        "topId": "hrithik-roshan",
+        "topName": "Hrithik Roshan",
+        "distance": 0.24197252534527813,
+        "hillPercent": 97.6,
+        "matchPercent": 97.6,
+        "rankMargin": 0.46208146268571704,
+        "band": "strong"
+      },
+      {
+        "probeId": "mohanlal",
+        "probeName": "Mohanlal",
+        "topId": "wang-yibo",
+        "topName": "Wang Yibo",
+        "distance": 0.014472205064946952,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.07205955698898953,
+        "band": "strong"
+      },
+      {
+        "probeId": "fahadh-faasil",
+        "probeName": "Fahadh Faasil",
+        "topId": "kit-harington",
+        "topName": "Kit Harington",
+        "distance": 0.17702107602587558,
+        "hillPercent": 99.3,
+        "matchPercent": 99.3,
+        "rankMargin": 0.47558943475572724,
+        "band": "strong"
+      },
+      {
+        "probeId": "son-ye-jin",
+        "probeName": "Son Ye-jin",
+        "topId": "zoe-kravitz",
+        "topName": "Zoë Kravitz",
+        "distance": 0.20288249603283748,
+        "hillPercent": 98.6,
+        "matchPercent": 98.6,
+        "rankMargin": 0.5018235825207861,
+        "band": "strong"
+      },
+      {
+        "probeId": "iu",
+        "probeName": "IU",
+        "topId": "sadie-sink",
+        "topName": "Sadie Sink",
+        "distance": 0.26498369556768087,
+        "hillPercent": 96.3,
+        "matchPercent": 96.3,
+        "rankMargin": 0.3766600233402491,
+        "band": "strong"
+      },
+      {
+        "probeId": "jungkook",
+        "probeName": "Jungkook",
+        "topId": "gong-yoo",
+        "topName": "Gong Yoo",
+        "distance": 0.17139425148877285,
+        "hillPercent": 99.4,
+        "matchPercent": 99.4,
+        "rankMargin": 0.4559796838719886,
+        "band": "strong"
+      },
+      {
+        "probeId": "lisa",
+        "probeName": "Lisa",
+        "topId": "anthony-mackie",
+        "topName": "Anthony Mackie",
+        "distance": 0.12292324701561852,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5229121580331776,
+        "band": "strong"
+      },
+      {
+        "probeId": "cha-eun-woo",
+        "probeName": "Cha Eun-woo",
+        "topId": "chris-pine",
+        "topName": "Chris Pine",
+        "distance": 0.15733170588555734,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.4590015208378023,
+        "band": "strong"
+      },
+      {
+        "probeId": "song-hye-kyo",
+        "probeName": "Song Hye-kyo",
+        "topId": "drew-barrymore",
+        "topName": "Drew Barrymore",
+        "distance": 0.19396027577297537,
+        "hillPercent": 99,
+        "matchPercent": 99,
+        "rankMargin": 0.46174057302388527,
+        "band": "strong"
+      },
+      {
+        "probeId": "wang-yibo",
+        "probeName": "Wang Yibo",
+        "topId": "mohanlal",
+        "topName": "Mohanlal",
+        "distance": 0.014472205064946952,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.07493944165429044,
+        "band": "strong"
+      },
+      {
+        "probeId": "xiao-zhan",
+        "probeName": "Xiao Zhan",
+        "topId": "roger-federer",
+        "topName": "Roger Federer",
+        "distance": 0.1634913569862101,
+        "hillPercent": 99.5,
+        "matchPercent": 99.5,
+        "rankMargin": 0.5029848926927218,
+        "band": "strong"
+      },
+      {
+        "probeId": "simone-biles",
+        "probeName": "Simone Biles",
+        "topId": "hayao-miyazaki",
+        "topName": "Hayao Miyazaki",
+        "distance": 0.07278375055567754,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.07347488324081287,
+        "band": "strong"
+      },
+      {
+        "probeId": "rafael-nadal",
+        "probeName": "Rafael Nadal",
+        "topId": "anitta",
+        "topName": "Anitta",
+        "distance": 0.02269169952906902,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.15272555480619696,
+        "band": "strong"
+      },
+      {
+        "probeId": "novak-djokovic",
+        "probeName": "Novak Djokovic",
+        "topId": "martin-scorsese",
+        "topName": "Martin Scorsese",
+        "distance": 0.07900098673041955,
+        "hillPercent": 100,
+        "matchPercent": 100,
+        "rankMargin": 0.1767402245630725,
+        "band": "strong"
+      },
+      {
+        "probeId": "j-balvin",
+        "probeName": "J Balvin",
+        "topId": "robert-de-niro",
+        "topName": "Robert De Niro",
+        "distance": 0.24263608236099599,
+        "hillPercent": 96.7,
+        "matchPercent": 96.7,
+        "rankMargin": 0.41791172059933646,
+        "band": "strong"
+      },
+      {
+        "probeId": "finn-wolfhard",
+        "probeName": "Finn Wolfhard",
+        "topId": "sandra-oh",
+        "topName": "Sandra Oh",
+        "distance": 0.09687662641148109,
+        "hillPercent": 99.9,
+        "matchPercent": 99.9,
+        "rankMargin": 0.6000103106148915,
+        "band": "strong"
+      },
+      {
+        "probeId": "evangeline-lilly",
+        "probeName": "Evangeline Lilly",
+        "topId": "christian-bale",
+        "topName": "Christian Bale",
+        "distance": 0.12836152290668035,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.4875886814856596,
+        "band": "strong"
+      },
+      {
+        "probeId": "samuel-l-jackson",
+        "probeName": "Samuel L Jackson",
+        "topId": "ryan-reynolds",
+        "topName": "Ryan Reynolds",
+        "distance": 0.1838828141561788,
+        "hillPercent": 98.9,
+        "matchPercent": 98.9,
+        "rankMargin": 0.48372068442614513,
+        "band": "strong"
+      },
+      {
+        "probeId": "harrison-ford",
+        "probeName": "Harrison Ford",
+        "topId": "jenna-ortega",
+        "topName": "Jenna Ortega",
+        "distance": 0.15914641866336032,
+        "hillPercent": 99.2,
+        "matchPercent": 99.2,
+        "rankMargin": 0.5945711072005533,
+        "band": "strong"
+      },
+      {
+        "probeId": "emilia-clarke",
+        "probeName": "Emilia Clarke",
+        "topId": "lana-condor",
+        "topName": "Lana Condor",
+        "distance": 0.19986062362244272,
+        "hillPercent": 98.9,
+        "matchPercent": 98.9,
+        "rankMargin": 0.4874561651147862,
+        "band": "strong"
+      },
+      {
+        "probeId": "olivia-cooke",
+        "probeName": "Olivia Cooke",
+        "topId": "steve-carell",
+        "topName": "Steve Carell",
+        "distance": 0.23667546469014455,
+        "hillPercent": 96.7,
+        "matchPercent": 96.7,
+        "rankMargin": 0.434658079731208,
+        "band": "strong"
+      },
+      {
+        "probeId": "emma-darcy",
+        "probeName": "Emma DArcy",
+        "topId": "bill-gates",
+        "topName": "Bill Gates",
+        "distance": 0.2441025414379394,
+        "hillPercent": 95.8,
+        "matchPercent": 95.8,
+        "rankMargin": 0.4170345234058052,
+        "band": "strong"
+      },
+      {
+        "probeId": "matt-smith",
+        "probeName": "Matt Smith",
+        "topId": "hyun-bin",
+        "topName": "Hyun Bin",
+        "distance": 0.3232426729584166,
+        "hillPercent": 92.4,
+        "matchPercent": 92.4,
+        "rankMargin": 0.3376373189386708,
+        "band": "strong"
+      },
+      {
+        "probeId": "milly-alcock",
+        "probeName": "Milly Alcock",
+        "topId": "ali-wong",
+        "topName": "Ali Wong",
+        "distance": 0.13143553469220015,
+        "hillPercent": 99.8,
+        "matchPercent": 99.8,
+        "rankMargin": 0.5272168223891662,
+        "band": "strong"
+      },
+      {
+        "probeId": "manu-bennett",
+        "probeName": "Manu Bennett",
+        "topId": "jeffrey-c-robinson",
+        "topName": "Jeffrey C. Robinson",
+        "distance": 0.23576475719643186,
+        "hillPercent": 97.8,
+        "matchPercent": 97.8,
+        "rankMargin": 0.3758398000234548,
+        "band": "strong"
+      },
+      {
+        "probeId": "jeffrey-c-robinson",
+        "probeName": "Jeffrey C. Robinson",
+        "topId": "manu-bennett",
+        "topName": "Manu Bennett",
+        "distance": 0.23576475719643186,
+        "hillPercent": 97.8,
+        "matchPercent": 97.8,
+        "rankMargin": 0.3866986537145832,
+        "band": "strong"
+      }
+    ]
+  },
+  "demotionIds": [
+    "adam-sandler",
+    "aishwarya-rai",
+    "al-pacino",
+    "ali-wong",
+    "allu-arjun",
+    "anitta",
+    "anne-hathaway",
+    "anthony-mackie",
+    "anushka-sharma",
+    "barry-keoghan",
+    "bella-ramsey",
+    "ben-affleck",
+    "bill-gates",
+    "bill-skarsgard",
+    "brendan-fraser",
+    "brie-larson",
+    "cara-delevingne",
+    "cha-eun-woo",
+    "chris-pine",
+    "chris-pratt",
+    "christian-bale",
+    "colin-firth",
+    "colman-domingo",
+    "dakota-johnson",
+    "daniel-kaluuya",
+    "daniel-radcliffe",
+    "dhanush",
+    "diego-luna",
+    "drew-barrymore",
+    "emilia-clarke",
+    "emma-darcy",
+    "evangeline-lilly",
+    "fahadh-faasil",
+    "finn-wolfhard",
+    "gael-garcia-bernal",
+    "george-clooney",
+    "gong-yoo",
+    "greta-gerwig",
+    "gwenyth-paltrow",
+    "gwyneth-paltrow",
+    "halle-bailey",
+    "harrison-ford",
+    "hayao-miyazaki",
+    "hrithik-roshan",
+    "hugh-grant",
+    "hyun-bin",
+    "ian-somerhalder",
+    "iu",
+    "j-balvin",
+    "jack-black",
+    "jacob-elordi",
+    "jeff-bezos",
+    "jeffrey-c-robinson",
+    "jenna-ortega",
+    "jennifer-aniston",
+    "jodie-comer",
+    "johnny-depp",
+    "jungkook",
+    "justin-bieber",
+    "kareena-kapoor",
+    "ke-huy-quan",
+    "ken-watanabe",
+    "kit-harington",
+    "lana-condor",
+    "lebron-james",
+    "lily-gladstone",
+    "lisa",
+    "mahershala-ali",
+    "maitreyi-ramakrishnan",
+    "maluma",
+    "manu-bennett",
+    "mark-ruffalo",
+    "martin-scorsese",
+    "matt-smith",
+    "mia-goth",
+    "mike-faist",
+    "miley-cyrus",
+    "milly-alcock",
+    "mohanlal",
+    "nawazuddin-siddiqui",
+    "nicolas-cage",
+    "novak-djokovic",
+    "olivia-cooke",
+    "paul-giamatti",
+    "paul-wesley",
+    "penelope-cruz",
+    "prabhas",
+    "radhika-apte",
+    "rafael-nadal",
+    "ralph-fiennes",
+    "rami-malek",
+    "regina-king",
+    "robert-de-niro",
+    "roger-federer",
+    "rosalia",
+    "rose-blackpink",
+    "ryan-reynolds",
+    "sadie-sink",
+    "samantha-ruth-prabhu",
+    "samuel-l-jackson",
+    "sandra-oh",
+    "simone-biles",
+    "sofia-vergara",
+    "son-ye-jin",
+    "song-hye-kyo",
+    "sterling-k-brown",
+    "steve-carell",
+    "theo-james",
+    "tilda-swinton",
+    "tim-cook",
+    "tom-hiddleston",
+    "uma-thurman",
+    "venus-williams",
+    "vicky-kaushal",
+    "vijay-sethupathi",
+    "vin-diesel",
+    "wang-yibo",
+    "xiao-zhan",
+    "yara-shahidi",
+    "yash",
+    "zoe-kravitz"
+  ],
+  "recommendations": [
+    "CRITICAL: 1 exact/near-exact cross-id clones — review exact/near-exact cross-id clone",
+    "HIGH: 73 identity-range pairs (d ≤ 0.4) — likely donor clones / same-person collisions",
+    "Look-alike-range pair count modest",
+    "LOO strong-band 109/968 — inspect strongHits before calling them doppelgängers",
+    "No suspect vectors",
+    "Do not rewrite embeddings.v4.q8.bin from this report. Feed demotionIds into enroll-gallery-onnx + write-gallery-v4 after review."
+  ]
+}
