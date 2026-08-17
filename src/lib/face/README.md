@@ -25,6 +25,7 @@
 - Encode labeled civilians: `scripts/encode-gold-probe.mjs` or batch via `scripts/encode-gold-batch.mjs --labels fixtures/gold/labels.json`
 - Valid celeb slugs for labels: `fixtures/gold/gallery-ids.tsv` (`scripts/list-gallery-ids.mjs`)
 - Grok Bot brief (photo collection): `fixtures/gold/GROK_BOT.md`
+- Watched inbox (poll this): `handoff/grok-bot/WATCH.md`
 - Open-set leave-one-out: `scripts/evaluate-open-set-loo.mjs [--json]` (each gallery id vs the rest)
 
 ## Studio re-enroll (review file is already filled)

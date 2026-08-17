@@ -1,4 +1,6 @@
-# Paste this to Grok Bot (civilian gold + Studio rebuild)
+# Grok Bot brief (civilian gold + Studio rebuild)
+
+Watchable inbox (preferred): [`handoff/grok-bot/WATCH.md`](../../handoff/grok-bot/WATCH.md). This file is the long form of that ticket.
 
 You are helping Damian finish **twinframe** open-set look-alike gold. Twinframe is an on-device celebrity face matcher. Closed-set identity ranking is already strong. The product gap is **honest look-alike scoring for regular people**.
 

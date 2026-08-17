@@ -2,7 +2,7 @@
 
 This folder has no photos yet — that is intentional. Do not invent faces or look-alike labels.
 
-1. Collect ~12 real frontals + ~4 human “no doppelgänger” refuses (see `GROK_BOT.md`).
+1. Collect ~12 real frontals + ~4 human “no doppelgänger” refuses (see `GROK_BOT.md`, or the watched inbox `handoff/grok-bot/WATCH.md`).
 2. Copy `labels.example.json` → `labels.json` and fill exact gallery slugs from `gallery-ids.tsv`.
 3. Encode, then measure. Do not retune ranking before those numbers exist.
 
