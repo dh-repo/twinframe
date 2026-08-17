@@ -10,6 +10,17 @@ export function isHeicFile(file: File): boolean {
   );
 }
 
+/**
+ * iOS Photos often hands over HEIC with an empty MIME type, and some Android
+ * WebViews omit type entirely. Do not require `image/*`.
+ */
+export function isLikelyPhotoFile(file: File): boolean {
+  const type = (file.type || "").toLowerCase();
+  if (type.startsWith("image/")) return true;
+  if (isHeicFile(file)) return true;
+  return /\.(jpe?g|png|webp|gif|avif|bmp|heic|heif)$/i.test(file.name || "");
+}
+
 export const HEIC_UNSUPPORTED_MESSAGE =
   "This iPhone format isn't supported here — in Photos, tap Share → Save as JPEG, then upload that file.";
 

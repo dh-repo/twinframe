@@ -190,7 +190,7 @@ export function ComparisonView({
             }}
             onTouchMove={onTouchMove}
             onTouchEnd={() => setIsDragging(false)}
-            className="relative aspect-[4/3] w-full max-w-md mx-auto overflow-hidden rounded-2xl border border-match/30 bg-bg-subtle select-none cursor-ew-resize shadow-lg"
+            className="relative mx-auto aspect-[4/3] w-full max-w-md cursor-ew-resize touch-none select-none overflow-hidden rounded-2xl border border-match/30 bg-bg-subtle shadow-lg"
           >
             {/* Background Layer: Celebrity Face */}
             <div className="absolute inset-0 h-full w-full">

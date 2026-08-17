@@ -3,6 +3,7 @@ import { X, Download, Share2, Sparkles, Check, ScanFace } from "lucide-react";
 import type { CelebrityMatch } from "@/lib/face/types";
 import { Button } from "@/components/ui/button";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
+import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
 
 export interface ShareCardModalProps {
   open: boolean;
@@ -20,6 +21,7 @@ export function ShareCardModal({
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  useLockBodyScroll(open);
 
   useEffect(() => {
     if (!open) setCopied(false);
@@ -135,10 +137,29 @@ export function ShareCardModal({
       ctx.font = "500 20px monospace";
       ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE-M 256-D BIOMETRICS", width / 2, 980);
 
+      const filename = `twinframe-${topMatch.name.toLowerCase().replace(/\s+/g, "-")}-match.png`;
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/png"),
+      );
+      if (!blob) throw new Error("Could not create share image");
+      const file = new File([blob], filename, { type: "image/png" });
+      const nav = navigator as Navigator & {
+        canShare?: (data: ShareData) => boolean;
+      };
+      const sharePayload: ShareData = {
+        files: [file],
+        title: "My Twinframe match",
+        text: `I matched ${topMatch.matchPercent}% with ${topMatch.name} on Twinframe`,
+      };
+      if (typeof nav.share === "function" && nav.canShare?.(sharePayload)) {
+        await nav.share(sharePayload);
+        return;
+      }
       const link = document.createElement("a");
-      link.download = `twinframe-${topMatch.name.toLowerCase().replace(/\s+/g, "-")}-match.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.download = filename;
+      link.href = URL.createObjectURL(blob);
       link.click();
+      window.setTimeout(() => URL.revokeObjectURL(link.href), 2000);
     } catch (err) {
       console.error("Failed to generate share card", err);
     } finally {
@@ -171,16 +192,16 @@ export function ShareCardModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-fade-up">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6 animate-fade-up">
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
         onClick={onClose}
         aria-hidden
       />
 
-      <div className="relative z-10 flex w-full max-w-md flex-col overflow-hidden rounded-3xl border border-white/15 bg-[#121420]/95 text-white shadow-2xl backdrop-blur-2xl">
+      <div className="relative z-10 flex w-full max-w-md flex-col overflow-hidden rounded-t-3xl border border-white/15 bg-[#121420]/95 text-white shadow-2xl backdrop-blur-2xl sm:rounded-3xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-white/10 px-5 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 sm:py-4">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20 text-indigo-400">
               <Sparkles className="h-4 w-4" />
@@ -192,7 +213,8 @@ export function ShareCardModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+            aria-label="Close share card"
           >
             <X className="h-4 w-4" />
           </button>
@@ -252,7 +274,7 @@ export function ShareCardModal({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 border-t border-white/10 bg-white/[0.02] px-6 py-4">
+        <div className="flex gap-3 border-t border-white/10 bg-white/[0.02] px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
           <Button
             variant="secondary"
             size="md"

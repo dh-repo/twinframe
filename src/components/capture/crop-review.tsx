@@ -62,6 +62,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
   const [dragging, setDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0, ox: 0, oy: 0, moved: false });
   const [imageSize, setImageSize] = useState({ w: 0, h: 0 });
+  const [stageSize, setStageSize] = useState(320);
   const [isApproving, setIsApproving] = useState(false);
 
   // Multi-face candidate selection states
@@ -79,7 +80,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       zoom = scale,
     ) => {
       if (!iw || !ih) return;
-      const containerSize = 320;
+      const containerSize = stageSize || 320;
       const drawScale = Math.max(containerSize / iw, containerSize / ih) * zoom;
       const fcx = box.x + box.width / 2;
       const fcy = box.y + box.height / 2;
@@ -94,7 +95,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
         y: Math.max(-max, Math.min(max, oy)),
       });
     },
-    [scale],
+    [scale, stageSize],
   );
 
   const centerCropOnBoxRef = useRef(centerCropOnBox);
@@ -223,6 +224,19 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
     };
   }, [imageSrc]);
 
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const apply = () => {
+      const w = el.clientWidth;
+      if (w > 0) setStageSize(w);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [imageSrc]);
+
   const handleSelectCandidate = useCallback(
     (c: FaceCandidateUI) => {
       setSelectedFaceId(c.id);
@@ -318,8 +332,8 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
         ctx.drawImage(img, sx, sy, cropSide, cropSide, 0, 0, size, size);
       } else {
         // Manual pan/zoom path (no detection): rasterize the square viewfinder
-        const containerSize = 320;
-        const cropSize = 260;
+        const containerSize = stageSize || 320;
+        const cropSize = Math.round(containerSize * (260 / 320));
         const baseScale = Math.max(containerSize / iw, containerSize / ih);
         const drawScale = baseScale * scale;
         const drawW = iw * drawScale;
@@ -357,7 +371,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       console.error(e);
       setIsApproving(false);
     }
-  }, [offset, scale, onApprove, isApproving, isDetectingFaces, candidates, selectedFaceId]);
+  }, [offset, scale, stageSize, onApprove, isApproving, isDetectingFaces, candidates, selectedFaceId]);
 
   const qualityHint = (() => {
     if (!imageSize.w) return null;
@@ -498,7 +512,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
 
           <div
             ref={containerRef}
-            className="relative mx-auto h-[320px] w-[320px] max-w-full overflow-hidden rounded-[var(--radius-lg)] border border-border bg-bg-subtle touch-none select-none"
+            className="relative mx-auto aspect-square w-full max-w-[min(320px,calc(100vw-2.5rem))] overflow-hidden rounded-[var(--radius-lg)] border border-border bg-bg-subtle touch-none select-none"
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
@@ -513,7 +527,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
                 backgroundPosition: `calc(50% + ${offset.x}px) calc(50% + ${offset.y}px)`,
                 backgroundSize: (() => {
                   if (!imageSize.w) return "cover";
-                  const base = Math.max(320 / imageSize.w, 320 / imageSize.h);
+                  const base = Math.max(stageSize / imageSize.w, stageSize / imageSize.h);
                   const s = base * scale;
                   return `${imageSize.w * s}px ${imageSize.h * s}px`;
                 })(),
@@ -523,7 +537,13 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             {/* Overlay outside crop (under face hits so boxes stay tappable) */}
             <div className="pointer-events-none absolute inset-0 z-[1]">
               <div className="absolute inset-0 bg-[color-mix(in_oklab,#000_55%,transparent)]" />
-              <div className="absolute left-1/2 top-1/2 h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-lg)] border-2 border-white/90 shadow-[0_0_0_9999px_color-mix(in_oklab,#000_55%,transparent),0_8px_30px_color-mix(in_oklab,#000_60%,transparent)] overflow-hidden">
+              <div
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-lg)] border-2 border-white/90 shadow-[0_0_0_9999px_color-mix(in_oklab,#000_55%,transparent),0_8px_30px_color-mix(in_oklab,#000_60%,transparent)] overflow-hidden"
+                style={{
+                  width: Math.round(stageSize * (260 / 320)),
+                  height: Math.round(stageSize * (260 / 320)),
+                }}
+              >
                 <div className="absolute left-0 top-0 h-4 w-4 border-l-2 border-t-2 border-white/90 rounded-tl-[6px]" />
                 <div className="absolute right-0 top-0 h-4 w-4 border-r-2 border-t-2 border-white/90 rounded-tr-[6px]" />
                 <div className="absolute left-0 bottom-0 h-4 w-4 border-l-2 border-b-2 border-white/90 rounded-bl-[6px]" />
@@ -540,7 +560,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             {candidates.map((c) => {
               const isSelected = selectedFaceId === c.id;
               if (!imageSize.w || !imageSize.h) return null;
-              const containerSize = 320;
+              const containerSize = stageSize || 320;
               const baseScale = Math.max(containerSize / imageSize.w, containerSize / imageSize.h);
               const drawScale = baseScale * scale;
               const drawW = imageSize.w * drawScale;
@@ -612,7 +632,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
               step={0.02}
               value={scale}
               onChange={(e) => setScale(parseFloat(e.target.value))}
-              className="h-1 w-full accent-[var(--color-fg)]"
+              className="h-11 w-full accent-[var(--color-fg)]"
               aria-label="Zoom"
             />
             <span className="w-9 text-right text-xs tabular-nums text-fg-subtle">{Math.round(scale * 100)}%</span>
@@ -628,7 +648,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
           )}
         </div>
 
-        <div className="flex gap-2.5 border-t border-border bg-bg px-5 py-4 sm:px-6">
+        <div className="flex gap-2.5 border-t border-border bg-bg px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
           <Button variant="secondary" size="md" onClick={onRetake} className="flex-1" disabled={isApproving}>
             <RotateCcw className="h-4 w-4" />
             Retake

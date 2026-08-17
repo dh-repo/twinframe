@@ -95,7 +95,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
             type="button"
             onClick={() => setGenderFilter("all")}
             className={cn(
-              "rounded-full px-2.5 py-0.5 font-medium transition-all",
+              "min-h-10 rounded-full px-3 py-2 font-medium transition-all",
               genderFilter === "all" ? "bg-white text-black font-semibold" : "bg-white/5 text-white/70 hover:bg-white/10"
             )}
           >
@@ -105,7 +105,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
             type="button"
             onClick={() => setGenderFilter("male")}
             className={cn(
-              "rounded-full px-2.5 py-0.5 font-medium transition-all",
+              "min-h-10 rounded-full px-3 py-2 font-medium transition-all",
               genderFilter === "male" ? "bg-white text-black font-semibold" : "bg-white/5 text-white/70 hover:bg-white/10"
             )}
           >
@@ -115,7 +115,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
             type="button"
             onClick={() => setGenderFilter("female")}
             className={cn(
-              "rounded-full px-2.5 py-0.5 font-medium transition-all",
+              "min-h-10 rounded-full px-3 py-2 font-medium transition-all",
               genderFilter === "female" ? "bg-white text-black font-semibold" : "bg-white/5 text-white/70 hover:bg-white/10"
             )}
           >

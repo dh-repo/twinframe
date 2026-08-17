@@ -20,6 +20,12 @@ export const Route = createRootRoute({
           "Find your celebrity doppelgänger. Upload a photo or use your camera — private, on-device face matching.",
       },
       { name: "theme-color", content: "#0a0a0b" },
+      { name: "color-scheme", content: "dark" },
+      { name: "format-detection", content: "telephone=no" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Twinframe" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { property: "og:title", content: APP_NAME },
       {
         property: "og:description",

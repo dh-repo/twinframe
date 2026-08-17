@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
-import { Search, X, Sparkles, User, ShieldCheck, Tag, Info } from "lucide-react";
+import { Search, X, Sparkles, User, ShieldCheck, Tag } from "lucide-react";
 import { loadCelebrityEmbeddings, type CelebrityEmbedding } from "@/lib/face/embeddings";
 import { catalogFor } from "@/lib/celebrities/catalog";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
+import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
 
 interface StarGalleryModalProps {
   open: boolean;
@@ -15,6 +16,8 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [selectedCeleb, setSelectedCeleb] = useState<CelebrityEmbedding | null>(null);
+
+  useLockBodyScroll(open);
 
   useEffect(() => {
     if (!open) {
@@ -72,7 +75,7 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-fade-up">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6 animate-fade-up">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
@@ -81,18 +84,18 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
       />
 
       {/* Modal Card */}
-      <div className="relative z-10 flex h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/15 bg-[#121420]/95 text-white shadow-2xl backdrop-blur-2xl">
+      <div className="relative z-10 flex h-[100dvh] w-full max-w-4xl flex-col overflow-hidden rounded-none border-0 bg-[#121420] text-white shadow-2xl sm:h-[min(88dvh,900px)] sm:rounded-3xl sm:border sm:border-white/15 sm:bg-[#121420]/95 sm:backdrop-blur-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-400/30 bg-gradient-to-b from-indigo-500/20 to-purple-600/20 text-indigo-400">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 sm:py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-indigo-400/30 bg-gradient-to-b from-indigo-500/20 to-purple-600/20 text-indigo-400">
               <Sparkles className="h-5 w-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="text-lg font-bold tracking-tight text-white sm:text-xl">
                 Twinframe Star Gallery
               </h2>
-              <p className="text-xs text-white/60">
+              <p className="truncate text-xs text-white/60">
                 {celebrities.length > 0
                   ? `${celebrities.length.toLocaleString()}+ On-Device Celebrity Biometric Vectors`
                   : "Loading gallery..."}
@@ -102,22 +105,27 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label="Close gallery"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Filter Controls */}
-        <div className="space-y-3 border-b border-white/10 bg-white/[0.02] px-6 py-3.5">
+        <div className="space-y-3 border-b border-white/10 bg-white/[0.02] px-4 py-3.5 sm:px-6">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
             <input
-              type="text"
-              placeholder="Search by star name or tag (e.g., Leonardo DiCaprio, Zendaya, Athlete)..."
+              type="search"
+              inputMode="search"
+              enterKeyHint="search"
+              autoCorrect="off"
+              autoCapitalize="none"
+              placeholder="Search a star name"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-2xl border border-white/15 bg-white/5 py-2 pl-10 pr-4 text-sm text-white placeholder-white/40 outline-none transition-all focus:border-indigo-500/60 focus:bg-white/10 focus:ring-1 focus:ring-indigo-500/50"
+              className="w-full rounded-2xl border border-white/15 bg-white/5 py-3 pl-10 pr-16 text-base text-white placeholder-white/40 outline-none transition-all focus:border-indigo-500/60 focus:bg-white/10 focus:ring-1 focus:ring-indigo-500/50"
             />
             {search && (
               <button
@@ -136,7 +144,7 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
                 key={cat}
                 type="button"
                 onClick={() => setCategory(cat)}
-                className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
+                className={`min-h-10 rounded-full px-3.5 py-2 text-sm font-medium transition-all ${
                   category === cat
                     ? "bg-white text-black font-semibold shadow-md"
                     : "border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
@@ -275,12 +283,43 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
           })()}
         </div>
 
+        {selectedCeleb && (
+          <div className="border-t border-white/10 bg-[#161824] px-4 py-3 md:hidden">
+            <div className="flex items-center gap-3">
+              <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-white/15 bg-black/40">
+                <CelebrityPortrait
+                  initials={selectedCeleb.name.slice(0, 2).toUpperCase()}
+                  accentHue={catalogFor(selectedCeleb.id).accentHue}
+                  photoUrl={selectedCeleb.path}
+                  photoUrl192={selectedCeleb.path192}
+                  size="md"
+                  alt={selectedCeleb.name}
+                  className="h-full w-full rounded-none"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-white">{selectedCeleb.name}</p>
+                <p className="truncate text-xs text-white/60">{catalogFor(selectedCeleb.id).knownFor}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCeleb(null)}
+                className="flex h-11 w-11 items-center justify-center rounded-full text-white/50 hover:text-white"
+                aria-label="Clear selected star"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Footer info bar */}
-        <div className="flex items-center justify-between border-t border-white/10 bg-black/40 px-6 py-3 text-xs text-white/50">
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> 100% On-Device Local Biometrics
+        <div className="flex items-center justify-between gap-3 border-t border-white/10 bg-black/40 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] text-xs text-white/50 sm:px-6">
+          <span className="flex min-w-0 items-center gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+            <span className="truncate">On-device · private</span>
           </span>
-          <span>Showing {filteredCelebs.length} stars</span>
+          <span className="shrink-0">Showing {filteredCelebs.length}</span>
         </div>
       </div>
     </div>

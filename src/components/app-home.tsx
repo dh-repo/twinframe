@@ -103,12 +103,13 @@ export function AppHome() {
         setProgress((prev) => Math.max(prev, currentProgress));
       }, 100);
 
-      // Safety timeout (20s) in case device WASM/WebGL stalls
+      // First model load on mid-range phones can exceed 20s.
+      const timeoutMs = window.matchMedia("(pointer: coarse)").matches ? 45000 : 25000;
       const timeoutId = window.setTimeout(() => {
         cancelled = true;
-        setError("Analysis timed out. Please try a clearer front-facing photo.");
+        setError("Analysis timed out. Please try a clearer front-facing photo on a stronger connection.");
         setPhase("error");
-      }, 20000);
+      }, timeoutMs);
 
       try {
         const img = await loadImageFromBlob(blob);
@@ -239,7 +240,7 @@ export function AppHome() {
 
   return (
     <div className="app-shell min-h-screen bg-[#090a0f] text-white">
-      <div className="app-content mx-auto w-full max-w-xl px-4 pb-16 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-6">
+      <div className="app-content mx-auto w-full max-w-xl px-4 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2rem))] pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.35rem),var(--grok-banner-h,0px))] sm:px-6">
         <header className={showHero ? "mb-8 sm:mb-10" : "mb-5"}>
           <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
             <div className="flex items-center gap-2.5">
@@ -252,7 +253,7 @@ export function AppHome() {
               <button
                 type="button"
                 onClick={reset}
-                className="text-xs text-white/60 transition-colors hover:text-white"
+                className="inline-flex min-h-11 items-center rounded-full px-3 text-sm text-white/70 transition-colors hover:text-white"
               >
                 New photo
               </button>
@@ -260,7 +261,7 @@ export function AppHome() {
               <button
                 type="button"
                 onClick={() => setGalleryModalOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 transition-all hover:bg-white/10 hover:text-white"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 text-sm font-medium text-white/80 transition-all hover:bg-white/10 hover:text-white"
               >
                 <span>Explore {gallerySize.toLocaleString()}+ Stars</span>
               </button>
@@ -269,7 +270,7 @@ export function AppHome() {
 
           {showHero && (
             <div className="text-center space-y-3.5 mb-8">
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              <h1 className="text-[1.65rem] font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
                 Find Your Celebrity Doppelgänger
               </h1>
               <p className="max-w-lg mx-auto text-sm sm:text-base leading-relaxed text-white/70">
