@@ -64,7 +64,7 @@ for (const device of DEVICES) {
 
     await page.getByRole("button", { name: /explore/i }).first().click();
     await page.waitForSelector("text=Star Gallery", { timeout: 10000 });
-    const search = page.getByPlaceholder(/search stars/i);
+    const search = page.getByPlaceholder(/search a star/i);
     assert(await search.isVisible(), `${prefix} gallery search missing`);
     const fontSize = await search.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
     assert(fontSize >= 16, `${prefix} search font ${fontSize}px would zoom iOS`);

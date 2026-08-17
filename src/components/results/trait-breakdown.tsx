@@ -60,13 +60,13 @@ export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
 
   return (
     <div className={cn("space-y-3.5", className)}>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <h4 className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-fg-subtle">
-          <Sparkles className="h-3.5 w-3.5 text-match" />
-          Biometric Feature Breakdown
+          <Sparkles className="h-3.5 w-3.5 shrink-0 text-match" />
+          Feature breakdown
         </h4>
-        <span className="text-[11px] font-mono text-match font-medium">
-          EdgeFace-M 256-d Parity
+        <span className="text-[11px] font-mono font-medium text-match">
+          256-d match
         </span>
       </div>
 

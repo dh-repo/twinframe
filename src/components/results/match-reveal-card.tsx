@@ -53,28 +53,26 @@ export function MatchRevealCard({
 
         {/* Header Banner with Score & Confidence */}
         <div className="relative z-10 border-b border-border bg-gradient-to-b from-bg-subtle/80 to-bg-elevated px-5 py-5 sm:px-6">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.16em] text-match">
-              TOP DOPPELGÄNGER MATCH
+              Top match
             </p>
 
             <div className="flex items-center gap-2">
-              {/* Match Confidence Score Badge */}
-              <div className="flex items-center gap-1.5 rounded-full border border-match/40 bg-match/10 px-2.5 py-0.5 text-[10px] font-mono font-medium text-match shadow-sm">
+              <div className="flex items-center gap-1.5 rounded-full border border-match/40 bg-match/10 px-2.5 py-1.5 text-[10px] font-mono font-medium text-match shadow-sm">
                 <ShieldCheck className="h-3 w-3" />
                 <span>{confidenceRating} ({confidenceScore}%)</span>
               </div>
 
-              {/* Share Card Trigger */}
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={() => setShareOpen(true)}
-                className="h-7 px-2 text-[11px] gap-1 text-match hover:bg-match/10"
-                title="Create Shareable Card"
+                className="h-11 w-11 text-match hover:bg-match/10"
+                title="Create shareable card"
+                aria-label="Share match"
               >
-                <Share2 className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Share</span>
+                <Share2 className="h-4 w-4" />
               </Button>
             </div>
           </div>

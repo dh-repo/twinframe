@@ -74,21 +74,21 @@ export function ComparisonView({
     <div className={cn("space-y-4", className)}>
       {/* Mode Switcher Tabs */}
       <div className="flex items-center justify-center">
-        <div className="inline-flex rounded-lg border border-border bg-bg-subtle p-1" role="tablist" aria-label="Comparison modes">
+        <div className="flex w-full max-w-md rounded-lg border border-border bg-bg-subtle p-1" role="tablist" aria-label="Comparison modes">
           <button
             type="button"
             role="tab"
             aria-selected={mode === "side-by-side"}
             onClick={() => setMode("side-by-side")}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+              "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2 text-xs font-medium transition-all",
               mode === "side-by-side"
                 ? "bg-bg-elevated text-fg shadow-sm"
                 : "text-fg-subtle hover:text-fg-muted"
             )}
           >
-            <Columns className="h-3.5 w-3.5" />
-            <span>Side-by-Side</span>
+            <Columns className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden sm:inline">Side-by-side</span>
           </button>
           <button
             type="button"
@@ -96,14 +96,14 @@ export function ComparisonView({
             aria-selected={mode === "split-slider"}
             onClick={() => setMode("split-slider")}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+              "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2 text-xs font-medium transition-all",
               mode === "split-slider"
                 ? "bg-bg-elevated text-fg shadow-sm"
                 : "text-fg-subtle hover:text-fg-muted"
             )}
           >
-            <Sliders className="h-3.5 w-3.5" />
-            <span>Split Slider</span>
+            <Sliders className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden sm:inline">Slider</span>
           </button>
           <button
             type="button"
@@ -111,14 +111,14 @@ export function ComparisonView({
             aria-selected={mode === "landmarks"}
             onClick={() => setMode("landmarks")}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
+              "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2 text-xs font-medium transition-all",
               mode === "landmarks"
                 ? "bg-bg-elevated text-fg shadow-sm"
                 : "text-fg-subtle hover:text-fg-muted"
             )}
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Landmarks</span>
+            <Sparkles className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden sm:inline">Landmarks</span>
           </button>
         </div>
       </div>

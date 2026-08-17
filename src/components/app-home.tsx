@@ -239,7 +239,7 @@ export function AppHome() {
   const showHero = phase === "capture" || phase === "review";
 
   return (
-    <div className="app-shell min-h-screen bg-[#090a0f] text-white">
+    <div className="app-shell bg-[#090a0f] text-white">
       <div className="app-content mx-auto w-full max-w-xl px-4 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2rem))] pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.35rem),var(--grok-banner-h,0px))] sm:px-6">
         <header className={showHero ? "mb-8 sm:mb-10" : "mb-5"}>
           <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
@@ -442,11 +442,11 @@ export function AppHome() {
                   ))}
                 </ul>
               )}
-              <div className="flex gap-2 pt-1">
-                <Button variant="secondary" size="md" onClick={reset} className="flex-1">
+              <div className="flex flex-col gap-2 pt-1 sm:flex-row">
+                <Button variant="secondary" size="md" onClick={reset} className="w-full sm:flex-1">
                   Retake photo
                 </Button>
-                <Button variant="primary" size="md" onClick={() => setPhase("results")} className="flex-1">
+                <Button variant="primary" size="md" onClick={() => setPhase("results")} className="w-full sm:flex-1">
                   See low-confidence matches
                 </Button>
               </div>
