@@ -37,9 +37,16 @@ function canvasToJpegBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   });
 }
 
+/** Strip a known photo extension so re-encoding never yields `photo.jpg.jpg`. */
+export function jpegOutputName(originalName: string): string {
+  const base =
+    originalName.replace(/\.(heic|heif|jpe?g|png|webp|gif|avif|bmp)$/i, "") ||
+    "photo";
+  return `${base}.jpg`;
+}
+
 function jpegFileFromBlob(blob: Blob, originalName: string): File {
-  const base = originalName.replace(/\.(heic|heif)$/i, "") || "photo";
-  return new File([blob], `${base}.jpg`, { type: "image/jpeg" });
+  return new File([blob], jpegOutputName(originalName), { type: "image/jpeg" });
 }
 
 const MAX_EDGE = 2048;
