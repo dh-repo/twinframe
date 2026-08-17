@@ -33,6 +33,37 @@ export function prefetchModel(): void {
   prefetchEmbeddings();
 }
 
+/** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */
+function padSourceForDetection(
+  source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+  marginRatio = 0.6,
+): HTMLCanvasElement | null {
+  if (typeof document === "undefined") return null;
+  let w = 0;
+  let h = 0;
+  if ("naturalWidth" in source && source.naturalWidth) {
+    w = source.naturalWidth;
+    h = source.naturalHeight;
+  } else if ("videoWidth" in source && source.videoWidth) {
+    w = source.videoWidth;
+    h = source.videoHeight;
+  } else if ("width" in source) {
+    w = source.width as number;
+    h = source.height as number;
+  }
+  if (!w || !h) return null;
+  const margin = Math.round(Math.max(w, h) * marginRatio);
+  const canvas = document.createElement("canvas");
+  canvas.width = w + margin * 2;
+  canvas.height = h + margin * 2;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.fillStyle = "#808080";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(source, margin, margin, w, h);
+  return canvas;
+}
+
 export interface AnalyzeOptions {
   topK?: number;
   selectedCandidateIndex?: number;
@@ -70,12 +101,25 @@ export async function analyzeFaceSource(
 
   onProgress?.(1, 35);
 
-  // 1. Run SCRFD-2.5G face detection pass
+  // 1. Run SCRFD-2.5G face detection pass. The analysis source is usually the
+  // tight face crop approved in crop review; SCRFD misses faces that fill the
+  // whole frame, so retry once on a margin-padded canvas (mirrors enrollment).
   const scrfdStart = performance.now();
-  const scrfdResult = await detectSCRFD(source).catch((err) => {
+  let alignmentSource: typeof source | HTMLCanvasElement | OffscreenCanvas = source;
+  let scrfdResult = await detectSCRFD(source).catch((err) => {
     console.warn("[Pipeline] SCRFD-2.5G detection pass failed; proceeding to fallback:", err);
     return null;
   });
+  if (scrfdResult && !scrfdResult.primary) {
+    const padded = padSourceForDetection(source);
+    if (padded) {
+      const retry = await detectSCRFD(padded).catch(() => null);
+      if (retry?.primary) {
+        scrfdResult = retry;
+        alignmentSource = padded;
+      }
+    }
+  }
   const scrfdPassMs = scrfdResult ? scrfdResult.latencyMs : Math.round(performance.now() - scrfdStart);
 
   // 2. Expression-Aware 3D UV WGSL Frontalization vs 5-Point Similarity Fallback
@@ -91,7 +135,7 @@ export async function analyzeFaceSource(
     if (absYaw > 25) {
       try {
         alignedTensor = await runExpNormFrontalizationWGSL(
-          source,
+          alignmentSource as HTMLImageElement,
           primary.bbox,
           primary.pose,
           primary.landmarks,
@@ -101,11 +145,11 @@ export async function analyzeFaceSource(
         frontalizationMethod = "exp-norm-wgsl";
       } catch (err) {
         console.warn("[Pipeline] ExpNorm WGSL failed; executing 5-point similarity fallback:", err);
-        alignedTensor = align5PointSimilarityTensor(source, primary.landmarks, 112);
+        alignedTensor = align5PointSimilarityTensor(alignmentSource as HTMLImageElement, primary.landmarks, 112);
         frontalizationMethod = "5pt-similarity";
       }
     } else {
-      alignedTensor = align5PointSimilarityTensor(source, primary.landmarks, 112);
+      alignedTensor = align5PointSimilarityTensor(alignmentSource as HTMLImageElement, primary.landmarks, 112);
       frontalizationMethod = "5pt-similarity";
     }
 
@@ -129,11 +173,15 @@ export async function analyzeFaceSource(
     embeddingPassMs = Math.round(performance.now() - tEmbStart);
   }
 
-  // 3b. Biohashing telemetry pass (bypassing destructive Anti-GAN subspace projection)
+  // 3b. Biohashing telemetry pass — never allowed to break the analysis
   let biohashMs = 0;
   if (edgeFaceEmbedding) {
     const tBioStart = performance.now();
-    computeBiohash(edgeFaceEmbedding);
+    try {
+      computeBiohash(edgeFaceEmbedding);
+    } catch (err) {
+      console.warn("[Pipeline] Biohash telemetry failed (non-fatal):", err);
+    }
     biohashMs = Math.round(performance.now() - tBioStart);
   }
 

@@ -149,19 +149,19 @@ export async function extractEdgeFaceEmbedding(
     throw new Error("[EdgeFace] ONNX session returned empty output tensor");
   }
 
-  // 4. Extract raw Float32/Float16 data and convert to Float32Array(256)
+  // 4. Extract raw Float32/Float16 data at the model's native dimension
+  // (EdgeFace-S gamma05 emits 512-d; gallery is enrolled at the same dim).
   const rawData = rawOutput.data as Float32Array | Uint16Array;
-  const rawArray = new Float32Array(256);
+  const outLen = Math.max(1, rawData.length);
+  const rawArray = new Float32Array(outLen);
 
   if (rawData instanceof Float32Array) {
-    const copyLen = Math.min(256, rawData.length);
-    for (let i = 0; i < copyLen; i++) {
+    for (let i = 0; i < outLen; i++) {
       rawArray[i] = rawData[i] ?? 0;
     }
   } else {
     // Decode Float16 (stored in Uint16Array) to Float32 if required by WebGPU EP
-    const copyLen = Math.min(256, rawData.length);
-    for (let i = 0; i < copyLen; i++) {
+    for (let i = 0; i < outLen; i++) {
       rawArray[i] = decodeFloat16(rawData[i]!);
     }
   }

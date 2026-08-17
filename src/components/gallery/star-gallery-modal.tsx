@@ -163,7 +163,7 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
             {loading ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-3 text-white/50">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-400 border-t-transparent" />
-                <p className="text-sm">Loading 1,000+ EdgeFace-M 256-d embeddings...</p>
+                <p className="text-sm">Loading 1,000+ EdgeFace 512-d embeddings...</p>
               </div>
             ) : filteredCelebs.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-2 text-white/50">
@@ -257,7 +257,7 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
                   </div>
                   <div className="flex justify-between text-white/60">
                     <span>Vector Dimension</span>
-                    <span className="text-indigo-300 font-mono">256-d Float16</span>
+                    <span className="text-indigo-300 font-mono">512-d Float32</span>
                   </div>
                 </div>
 

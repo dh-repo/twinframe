@@ -134,30 +134,32 @@ export function getProjectionMatrix(
 }
 
 /**
- * Projects a 256-d EdgeFace embedding into a 512-bit packed binary Biohash (Uint8Array[64]).
+ * Projects an EdgeFace embedding (256-d or 512-d) into a 512-bit packed binary
+ * Biohash (Uint8Array[64]). Projection matrix is derived per input dimension.
  */
 export function computeBiohash(
   embedding: Float32Array | ArrayLike<number>,
   options: BiohashOptions = {}
 ): BiohashResult {
   const t0 = performance.now();
-  if (!embedding || embedding.length !== 256) {
+  if (!embedding || (embedding.length !== 256 && embedding.length !== 512)) {
     throw new Error(
-      `[Biohash] Input embedding must be non-null Float32Array of length 256 (got ${embedding?.length})`
+      `[Biohash] Input embedding must be non-null Float32Array of length 256 or 512 (got ${embedding?.length})`
     );
   }
+  const dimIn = embedding.length;
 
   const key = options.secretKey ?? "twinframe-accuface-v4-biohash-seed";
-  const matrix = getProjectionMatrix(key, 512, 256);
+  const matrix = getProjectionMatrix(key, 512, dimIn);
   const packedHash = new Uint8Array(64);
 
   // Perform matrix-vector projection b = R * v and sign binarization
   for (let bitIdx = 0; bitIdx < 512; bitIdx++) {
-    const rowOffset = bitIdx * 256;
+    const rowOffset = bitIdx * dimIn;
     let sum = 0;
 
     // 8-way unrolled inner dot product loop
-    for (let j = 0; j < 256; j += 8) {
+    for (let j = 0; j < dimIn; j += 8) {
       sum +=
         matrix[rowOffset + j]! * (embedding[j] ?? 0) +
         matrix[rowOffset + j + 1]! * (embedding[j + 1] ?? 0) +

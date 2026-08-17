@@ -280,7 +280,7 @@ export function AppHome() {
                 Find Your Celebrity Doppelgänger
               </h1>
               <p className="max-w-lg mx-auto text-sm sm:text-base leading-relaxed text-white/70">
-                Upload a selfie or use your camera. Instant, on-device matching with EdgeFace-M 256-d & SCRFD-2.5G against{" "}
+                Upload a selfie or use your camera. Instant, on-device matching with EdgeFace 512-d & SCRFD-2.5G against{" "}
                 <button
                   type="button"
                   onClick={() => setGalleryModalOpen(true)}

@@ -19,12 +19,13 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
 /**
  * Max adjusted cosine distance still treated as a presentable look-alike.
  * Beyond this, rankByDescriptor returns [] (no forced top-K).
- * Tuned with HILL_D0=0.10 / HILL_N=3.8 → ~P(0.16) ≈ 14%.
+ * EdgeFace-512 calibration: best-of-1000 impostor p90 ≈ 0.67; refusing past
+ * 0.72 (≈32% on the Hill map) keeps genuinely-far probes out of top-K.
  */
-export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.16;
+export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.72;
 
 /** Match percent below this is not shown as a look-alike top-K. */
-export const LOOKALIKE_MIN_PERCENT = 35;
+export const LOOKALIKE_MIN_PERCENT = 32;
 
 export interface PoseGateInput {
   yaw?: number | null;

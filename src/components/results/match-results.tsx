@@ -202,7 +202,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
       </Button>
 
       <p className="pb-1 text-center text-[11px] leading-relaxed text-fg-subtle">
-        EdgeFace-M 256-d Float16 · ExpNorm 3D UV · On-device engine v{result.engineVersion}
+        EdgeFace 512-d · SCRFD-2.5G · On-device engine v{result.engineVersion}
       </p>
     </section>
   );

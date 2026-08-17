@@ -60,10 +60,10 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     const header = parseV4BinaryHeader(arrayBuf);
     assert.ok(header, "Production binary file header must be valid");
     assert.equal(header.magic, "AFv4");
-    assert.equal(header.dimension, 256);
+    assert.equal(header.dimension, 512);
     assert.equal(header.vectorCount, 1000);
     assert.ok(header.globalScale > 0 && header.globalScale < 0.01);
-    assert.equal(fileBuf.byteLength, 32 + 1000 * 256, "File byte size must be header (32) + 1000 * 256 = 256032");
+    assert.equal(fileBuf.byteLength, 32 + 1000 * 512, "File byte size must be header (32) + 1000 * 512 = 512032");
   });
 
   test("4. Vector Math & Hill Curve Calibration Precision", () => {
@@ -75,9 +75,9 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     assert.ok(Math.abs(cosineDistance256(v1, v2) - 0.0) < 1e-5);
     assert.ok(Math.abs(cosineDistance256(v1, v3) - 1.0) < 1e-4);
 
-    // Hill: P(0) = 100%, P(HILL_D0=0.1) = 50%
+    // Hill: P(0) = 100%, P(HILL_D0=0.6) = 50%
     assert.equal(distanceToMatchPercent(0.0), 100.0);
-    assert.equal(distanceToMatchPercent(0.1), 50.0);
+    assert.equal(distanceToMatchPercent(0.6), 50.0);
   });
 
   test("5. Catalog Synchronization Audit across Binary and JSON", () => {
@@ -185,21 +185,21 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
   });
 
   test("9. Recalibrated Hill Curve Monotonicity, Boundaries, & Empirical Distance Mapping", () => {
-    // 1. Exact Hill curve calibration check (d0=0.12, n=3.2)
+    // 1. Exact Hill curve calibration check (d0=0.60, n=4.1 — EdgeFace-512)
     assert.equal(distanceToMatchPercent(0.0), 100.0);
-    assert.equal(distanceToMatchPercent(0.038), 97.5);
-    assert.equal(distanceToMatchPercent(0.083), 67.0);
-    assert.equal(distanceToMatchPercent(0.1), 50.0);
-    assert.equal(distanceToMatchPercent(0.20), 6.7);
-    assert.equal(distanceToMatchPercent(0.30), 1.5);
+    assert.equal(distanceToMatchPercent(0.30), 94.5);
+    assert.equal(distanceToMatchPercent(0.45), 76.5);
+    assert.equal(distanceToMatchPercent(0.6), 50.0);
+    assert.equal(distanceToMatchPercent(0.85), 19.3);
+    assert.equal(distanceToMatchPercent(1.2), 5.5);
 
-    // 2. High match percent for genuine same-person distances (held-out self ≈ 0.038)
-    const pTop = distanceToMatchPercent(0.038);
-    assert.ok(pTop >= 90.0 && pTop <= 99.0, `Expected genuine self in 90-99%, got ${pTop}%`);
+    // 2. High match percent for genuine same-person distances (EdgeFace-512 unseen photo p50 ≈ 0.37)
+    const pTop = distanceToMatchPercent(0.37);
+    assert.ok(pTop >= 80.0 && pTop <= 95.0, `Expected genuine self in 80-95%, got ${pTop}%`);
 
-    // 3. Low match percent for random background faces (gallery median ≈ 0.96)
-    const pBackground = distanceToMatchPercent(0.55);
-    assert.ok(pBackground < 35.0, `Expected background match < 35%, got ${pBackground}%`);
+    // 3. Low match percent for random background faces (EdgeFace random impostor ≈ 0.9+)
+    const pBackground = distanceToMatchPercent(0.9);
+    assert.ok(pBackground < 20.0, `Expected background match < 20%, got ${pBackground}%`);
 
     // 4. Strict monotonic decrease
     let prev = distanceToMatchPercent(0);

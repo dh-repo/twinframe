@@ -147,12 +147,13 @@ export function isPaddedFaceNetDescriptor(
 }
 
 /**
- * Collapse multi-shot rows into a centroid primary + up to `maxExtraPrototypes`
- * farthest distinct views (small prototype set for open-set ranking).
+ * Multi-shot prototype set per id: keep every distinct real template (matching
+ * is best-of-N per id) and append the normalized centroid as one extra
+ * prototype. Never drop the primary — off-angle extras must not replace the
+ * clean frontal enrollment.
  */
 export function buildMultiShotCentroidGallery(
   gallery: CelebrityEmbedding[],
-  maxExtraPrototypes = 2,
 ): CelebrityEmbedding[] {
   const byId = new Map<string, CelebrityEmbedding[]>();
   for (const entry of gallery) {
@@ -162,7 +163,7 @@ export function buildMultiShotCentroidGallery(
     byId.set(entry.id, list);
   }
 
-  // Preserve singles that were only padded FaceNet (fall back to original row)
+  // Preserve ids whose only rows were padded FaceNet (fall back to original row)
   for (const entry of gallery) {
     if (byId.has(entry.id)) continue;
     byId.set(entry.id, [entry]);
@@ -171,37 +172,21 @@ export function buildMultiShotCentroidGallery(
   const result: CelebrityEmbedding[] = [];
   for (const [, entries] of byId.entries()) {
     const distinct = collapseSameIdDescriptorClones(entries);
-    if (distinct.length === 1) {
-      result.push(distinct[0]!);
-      continue;
-    }
+    result.push(...distinct);
+    if (distinct.length < 2) continue;
 
-    const primary = distinct[0]!;
     const centroidDesc = Array.from(
       computeCentroidEmbedding(distinct.map((e) => e.descriptor)),
     );
-    result.push({
-      ...primary,
-      descriptor: centroidDesc,
-    });
-
-    const ranked = distinct
-      .map((entry) => ({
-        entry,
-        dist: cosineDistance256(centroidDesc, entry.descriptor),
-      }))
-      .sort((a, b) => b.dist - a.dist);
-
-    const extras: CelebrityEmbedding[] = [];
-    for (const { entry } of ranked) {
-      if (extras.length >= maxExtraPrototypes) break;
-      // Skip near-centroid clones
-      if (cosineDistance256(centroidDesc, entry.descriptor) < GALLERY_CLONE_EPS) {
-        continue;
-      }
-      extras.push(entry);
+    const isClone = distinct.some(
+      (e) => cosineDistance256(centroidDesc, e.descriptor) < GALLERY_CLONE_EPS,
+    );
+    if (!isClone) {
+      result.push({
+        ...distinct[0]!,
+        descriptor: centroidDesc,
+      });
     }
-    result.push(...extras);
   }
   return result;
 }

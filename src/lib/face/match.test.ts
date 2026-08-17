@@ -32,11 +32,11 @@ describe("euclideanDistance / calibration", () => {
   });
 
   it("calibrates Hill curve at live FaceNet distance anchors", () => {
-    assert.equal(distanceToMatchPercent(0.1), 50.0);
-    assert.equal(distanceToMatchPercent(0.038), 97.5);
-    assert.equal(distanceToMatchPercent(0.083), 67.0);
-    assert.equal(distanceToMatchPercent(0.20), 6.7);
-    assert.equal(distanceToMatchPercent(0.30), 1.5);
+    assert.equal(distanceToMatchPercent(0.6), 50.0);
+    assert.equal(distanceToMatchPercent(0.30), 94.5);
+    assert.equal(distanceToMatchPercent(0.45), 76.5);
+    assert.equal(distanceToMatchPercent(0.85), 19.3);
+    assert.equal(distanceToMatchPercent(1.2), 5.5);
   });
 
   it("maintains strict non-increasing monotonicity across d in [0, 1.5]", () => {

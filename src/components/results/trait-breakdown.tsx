@@ -66,7 +66,7 @@ export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
           Feature breakdown
         </h4>
         <span className="text-[11px] font-mono font-medium text-match">
-          256-d match
+          512-d match
         </span>
       </div>
 

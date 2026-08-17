@@ -39,3 +39,4 @@ public/enroll.html
 .idea/
 .vscode/
 *.swp
+.vercel

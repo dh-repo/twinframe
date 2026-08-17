@@ -27,17 +27,18 @@ function loadV4Gallery() {
   const buf = fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin"));
   const arrayBuf = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
   const header = parseV4BinaryHeader(arrayBuf);
-  if (!header || header.magic !== "AFv4" || header.dimension !== 256) {
+  if (!header || header.magic !== "AFv4" || (header.dimension !== 256 && header.dimension !== 512)) {
     throw new Error("Invalid embeddings.v4.q8.bin header");
   }
+  const dim = header.dimension;
   const payload = new Uint8Array(arrayBuf, 32);
   const scale = header.globalScale;
   const out = [];
   for (let i = 0; i < buckets.length; i++) {
     const b = buckets[i];
-    const raw = new Float32Array(256);
-    const off = i * 256;
-    for (let j = 0; j < 256; j++) {
+    const raw = new Float32Array(dim);
+    const off = i * dim;
+    for (let j = 0; j < dim; j++) {
       raw[j] = (payload[off + j] - 128) * scale;
     }
     out.push({
@@ -89,8 +90,11 @@ function main() {
   for (const c of set.cases) {
     const k = c.acceptableTopK ?? 5;
     const expectRefuse = Boolean(c.expectRefuse) || c.acceptableTopIds.length === 0;
-    if (!c.queryDescriptor || c.queryDescriptor.length !== 256) {
-      console.log(`SKIP ${c.id} — needs queryDescriptor[256]`);
+    if (
+      !c.queryDescriptor ||
+      (c.queryDescriptor.length !== 256 && c.queryDescriptor.length !== 512)
+    ) {
+      console.log(`SKIP ${c.id} — needs queryDescriptor[256|512]`);
       skipped++;
       continue;
     }

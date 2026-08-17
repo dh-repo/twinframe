@@ -1,13 +1,14 @@
 {
-  "version": "4.0.0",
-  "model": "EdgeFace-M-256d",
-  "dim": 256,
+  "version": "5.0.0",
+  "model": "EdgeFace-S-gamma05-512d",
+  "dim": 512,
   "countCelebs": 1000,
   "countBuckets": 1000,
   "quantization": "int8-symmetric-header",
-  "scale": 0.0029234712518106296,
-  "maxAbs": 0.37128084897994995,
+  "scale": 0.004664374200782558,
+  "maxAbs": 0.5923755234993848,
   "headerSize": 32,
+  "detector": "SCRFD-2.5G-bnkps",
   "files": {
     "q8": "/celebs/embeddings.v4.q8.bin",
     "biohash": "/celebs/embeddings.v4.biohash.bin",
@@ -15,5 +16,5 @@
     "index": "/celebs/index.json",
     "buckets": "/celebs/gallery.buckets.json"
   },
-  "enrolledAt": "2026-08-14T17:37:48.513Z"
+  "enrolledAt": "2026-08-17T16:51:25.777Z"
 }

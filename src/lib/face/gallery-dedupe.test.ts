@@ -35,17 +35,20 @@ describe("multi-shot prototypes", () => {
     assert.equal(isPaddedFaceNetDescriptor(oneHot), false);
   });
 
-  it("builds centroid + farthest prototypes per id", () => {
+  it("keeps all real templates and appends the centroid prototype", () => {
     const a = Array.from(l2Normalize(Float32Array.from({ length: 256 }, (_, i) => (i === 0 ? 1 : 0))));
     const b = Array.from(l2Normalize(Float32Array.from({ length: 256 }, (_, i) => (i === 1 ? 1 : 0))));
     const c = Array.from(l2Normalize(Float32Array.from({ length: 256 }, (_, i) => (i === 2 ? 1 : 0))));
     const gallery = [emb("x", a), emb("x", b), emb("x", c), emb("y", a)];
-    const out = buildMultiShotCentroidGallery(gallery, 2);
+    const out = buildMultiShotCentroidGallery(gallery);
     const xs = out.filter((e) => e.id === "x");
     const ys = out.filter((e) => e.id === "y");
     assert.equal(ys.length, 1);
-    assert.ok(xs.length >= 1 && xs.length <= 3);
+    // 3 originals + 1 centroid
+    assert.equal(xs.length, 4);
+    // Primary template must survive untouched (best-of-N matching relies on it)
+    assert.ok(xs.some((e) => cosineDistance256(e.descriptor, a) < 1e-6));
     const centroid = computeCentroidEmbedding([a, b, c]);
-    assert.ok(cosineDistance256(xs[0]!.descriptor, centroid) < 1e-5);
+    assert.ok(xs.some((e) => cosineDistance256(e.descriptor, centroid) < 1e-5));
   });
 });

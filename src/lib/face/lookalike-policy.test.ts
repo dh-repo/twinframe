@@ -57,11 +57,12 @@ describe("lookalike-policy gates", () => {
   });
 
   it("distanceLookalikeGate refuses far neighbors", () => {
-    assert.equal(distanceLookalikeGate(0.05, 90).pass, true);
+    assert.equal(distanceLookalikeGate(0.45, 76).pass, true);
     assert.equal(
       distanceLookalikeGate(LOOKALIKE_MAX_ADJUSTED_DISTANCE + 0.01, 20).pass,
       false,
     );
-    assert.equal(distanceLookalikeGate(0.08, 30).pass, false);
+    // Percent floor refuses even when distance squeaks under the max
+    assert.equal(distanceLookalikeGate(0.7, 30).pass, false);
   });
 });

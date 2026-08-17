@@ -244,50 +244,56 @@ export async function detectSCRFD(
   // Generate anchors for strides 8, 16, 32
   const anchorsByStride = generateAnchors(inputDim, inputDim);
 
-  // Group outputs by stride using shape and length matching
+  // Group outputs by stride. Raw lengths collide across roles (e.g. score_8 and
+  // bbox_16 are both 12,800 floats), so use tensor dims: [1, anchors, channels]
+  // where channels 1|2 = score, 4 = bbox, 10 = kps, and anchors → stride.
   const parsedOutputs: Record<number, { scoreData?: Float32Array; bboxData?: Float32Array; kpsData?: Float32Array; scoreStride?: number }> = {
     8: {},
     16: {},
     32: {},
   };
 
+  const anchorsToStride: Record<number, number> = { 12800: 8, 3200: 16, 800: 32 };
+
   for (const name of Object.keys(outputMap)) {
     const outTensor = outputMap[name];
     const data = outTensor.data as Float32Array;
-    const len = data.length;
+    const dims = outTensor.dims ?? [];
 
-    // Check stride 8 (12,800 anchors)
-    if (len === 12800) {
-      parsedOutputs[8].scoreData = data;
-    } else if (len === 25600) {
-      parsedOutputs[8].scoreData = data; // 2-class
-      parsedOutputs[8].scoreStride = 2;
-    } else if (len === 51200) {
-      parsedOutputs[8].bboxData = data;
-    } else if (len === 128000) {
-      parsedOutputs[8].kpsData = data;
+    let anchorCount: number | undefined;
+    let channels: number | undefined;
+    if (dims.length === 3) {
+      anchorCount = Number(dims[1]);
+      channels = Number(dims[2]);
+    } else if (dims.length === 2) {
+      anchorCount = Number(dims[0]);
+      channels = Number(dims[1]);
     }
-    // Check stride 16 (3,200 anchors)
-    else if (len === 3200) {
-      parsedOutputs[16].scoreData = data;
-    } else if (len === 6400) {
-      parsedOutputs[16].scoreData = data; // 2-class
-      parsedOutputs[16].scoreStride = 2;
-    } else if (len === 12800) {
-      parsedOutputs[16].bboxData = data;
-    } else if (len === 32000) {
-      parsedOutputs[16].kpsData = data;
+
+    // Name-based hint as a fallback for exports with flattened dims
+    if ((!anchorCount || !channels) && /(score|bbox|kps)[_-]?(8|16|32)/.test(name)) {
+      const m = name.match(/(score|bbox|kps)[_-]?(8|16|32)/)!;
+      const role = m[1];
+      const stride = Number(m[2]);
+      const perAnchor = role === "score" ? 1 : role === "bbox" ? 4 : 10;
+      anchorCount = data.length / perAnchor;
+      channels = perAnchor;
+      void stride;
     }
-    // Check stride 32 (800 anchors)
-    else if (len === 800) {
-      parsedOutputs[32].scoreData = data;
-    } else if (len === 1600) {
-      parsedOutputs[32].scoreData = data; // 2-class
-      parsedOutputs[32].scoreStride = 2;
-    } else if (len === 3200) {
-      parsedOutputs[32].bboxData = data;
-    } else if (len === 8000) {
-      parsedOutputs[32].kpsData = data;
+
+    if (!anchorCount || !channels) continue;
+    const stride = anchorsToStride[anchorCount];
+    if (!stride) continue;
+
+    if (channels === 1) {
+      parsedOutputs[stride].scoreData = data;
+    } else if (channels === 2) {
+      parsedOutputs[stride].scoreData = data;
+      parsedOutputs[stride].scoreStride = 2;
+    } else if (channels === 4) {
+      parsedOutputs[stride].bboxData = data;
+    } else if (channels === 10) {
+      parsedOutputs[stride].kpsData = data;
     }
   }
 

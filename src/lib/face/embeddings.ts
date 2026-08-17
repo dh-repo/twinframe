@@ -136,36 +136,40 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
   } catch {}
 }
 
-/** Load precomputed FaceNet/EdgeFace 256-d celebrity descriptors. */
+/** Gallery cache-busting version — bump when the binary gallery is re-enrolled. */
+const GALLERY_VERSION = "5.0.0";
+
+/** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
   if (galleryCache) return galleryCache;
   if (galleryPromise) return galleryPromise;
 
   galleryPromise = (async () => {
-    // 1. Primary Path: AccuFace v4.0 Binary Gallery (embeddings.v4.q8.bin)
+    // 1. Primary Path: AccuFace Binary Gallery (embeddings.v4.q8.bin, AFv4 header)
     try {
-      const cachedV4 = await idbGet("4.0.0");
-      if (cachedV4 && cachedV4.length > 0 && cachedV4[0]?.descriptor.length === 256) {
+      const cachedV4 = await idbGet(GALLERY_VERSION);
+      if (cachedV4 && cachedV4.length > 0 && (cachedV4[0]?.descriptor.length ?? 0) >= 256) {
         galleryCache = await mergeExtraTemplates(cachedV4);
         return galleryCache;
       }
 
       const [bucketsRes, binRes] = await Promise.all([
-        fetch("/celebs/gallery.buckets.json?v=4.0.0", { cache: "force-cache" }),
-        fetch("/celebs/embeddings.v4.q8.bin?v=4.0.0", { cache: "force-cache" }),
+        fetch(`/celebs/gallery.buckets.json?v=${GALLERY_VERSION}`, { cache: "force-cache" }),
+        fetch(`/celebs/embeddings.v4.q8.bin?v=${GALLERY_VERSION}`, { cache: "force-cache" }),
       ]);
 
       if (bucketsRes.ok && binRes.ok) {
         const buckets = (await bucketsRes.json()) as BucketEntry[];
         const arrayBuf = await binRes.arrayBuffer();
         const header = parseV4BinaryHeader(arrayBuf);
+        const dim = header?.dimension ?? 0;
 
         if (
           header &&
           header.magic === "AFv4" &&
-          header.dimension === 256 &&
+          (dim === 256 || dim === 512) &&
           header.vectorCount === buckets.length &&
-          arrayBuf.byteLength === 32 + buckets.length * 256
+          arrayBuf.byteLength === 32 + buckets.length * dim
         ) {
           const payloadUint8 = new Uint8Array(arrayBuf, 32);
           const scale = header.globalScale;
@@ -173,9 +177,9 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
 
           for (let i = 0; i < buckets.length; i++) {
             const b = buckets[i]!;
-            const off = i * 256;
-            const raw = new Float32Array(256);
-            for (let j = 0; j < 256; j++) {
+            const off = i * dim;
+            const raw = new Float32Array(dim);
+            for (let j = 0; j < dim; j++) {
               const u = payloadUint8[off + j]! - 128;
               raw[j] = u * scale;
             }
@@ -193,7 +197,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
             };
           }
           galleryCache = await mergeExtraTemplates(out);
-          void idbSet("4.0.0", out);
+          void idbSet(GALLERY_VERSION, out);
           return galleryCache;
         }
       }
@@ -317,7 +321,7 @@ async function mergeExtraTemplates(base: CelebrityEmbedding[]): Promise<Celebrit
     "./gallery-dedupe.ts"
   );
   try {
-    const res = await fetch("/celebs/extra-templates.json?v=1.1.0", { cache: "force-cache" });
+    const res = await fetch("/celebs/extra-templates.json?v=2.0.0", { cache: "force-cache" });
     if (!res.ok) return buildMultiShotCentroidGallery(base);
     const data = (await res.json()) as ExtraTemplateFile;
     if (!data.templates?.length) return buildMultiShotCentroidGallery(base);
@@ -369,21 +373,15 @@ export function euclideanDistance(a: ArrayLike<number>, b: ArrayLike<number>): n
 }
 
 /**
- * 8-way loop unrolled dot product for 256-d Float32 vectors.
- * Breaks instruction latency chain and maximizes parallel FMA operations.
+ * 8-way loop unrolled dot product over the full shared vector length
+ * (256-d or 512-d). Breaks instruction latency chain for parallel FMA.
  */
 export function dotProduct256(a: ArrayLike<number>, b: ArrayLike<number>): number {
   const len = Math.min(a.length, b.length);
-  if (len < 256) {
-    let dot = 0;
-    for (let i = 0; i < len; i++) {
-      dot += (a[i] ?? 0) * (b[i] ?? 0);
-    }
-    return dot;
-  }
+  const blocked = len - (len % 8);
   let sum0 = 0, sum1 = 0, sum2 = 0, sum3 = 0;
   let sum4 = 0, sum5 = 0, sum6 = 0, sum7 = 0;
-  for (let i = 0; i < 256; i += 8) {
+  for (let i = 0; i < blocked; i += 8) {
     sum0 += (a[i] ?? 0) * (b[i] ?? 0);
     sum1 += (a[i + 1] ?? 0) * (b[i + 1] ?? 0);
     sum2 += (a[i + 2] ?? 0) * (b[i + 2] ?? 0);
@@ -393,7 +391,11 @@ export function dotProduct256(a: ArrayLike<number>, b: ArrayLike<number>): numbe
     sum6 += (a[i + 6] ?? 0) * (b[i + 6] ?? 0);
     sum7 += (a[i + 7] ?? 0) * (b[i + 7] ?? 0);
   }
-  return sum0 + sum1 + sum2 + sum3 + sum4 + sum5 + sum6 + sum7;
+  let tail = 0;
+  for (let i = blocked; i < len; i++) {
+    tail += (a[i] ?? 0) * (b[i] ?? 0);
+  }
+  return sum0 + sum1 + sum2 + sum3 + sum4 + sum5 + sum6 + sum7 + tail;
 }
 
 /**
@@ -409,10 +411,10 @@ export function cosineDistance256(a: ArrayLike<number>, b: ArrayLike<number>): n
   return Math.max(0.0, Math.min(2.0, dist));
 }
 
-/** Cosine distance in [0,2] (0=identical). Uses 8-way unrolled dot product for 256-d vectors. */
+/** Cosine distance in [0,2] (0=identical). Uses 8-way unrolled dot product for L2-normalized vectors. */
 export function cosineDistance(a: ArrayLike<number>, b: ArrayLike<number>): number {
   if (!a || !b || a.length === 0 || b.length === 0) return 1.0;
-  if (a.length === 256 && b.length === 256) {
+  if (a.length === b.length && (a.length === 256 || a.length === 512)) {
     return cosineDistance256(a, b);
   }
   const n = Math.min(a.length, b.length);
@@ -442,13 +444,14 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
 }
 
 /**
- * Hill half-saturation and steepness for open-set look-alike percents.
- * Conservative so 70%+ is rare and meaningful:
- * enrolled self ≈ 0.016–0.038 stay high; non-celeb neighbors ≈ 0.083 land soft (<70);
- * random-gallery distances stay weak.
+ * Hill half-saturation and steepness for open-set look-alike percents,
+ * calibrated on real EdgeFace-512 cosine distances (scripts/calibrate-edgeface.mjs):
+ * same person unseen photo p50 ≈ 0.37 → ~88%; strong look-alike ≈ 0.45 → ~77%;
+ * typical best-of-1000 impostor p50 ≈ 0.60 → 50%; 70%+ needs d ≤ 0.49 (rarer
+ * than the p10 best-impostor 0.54), keeping high scores meaningful.
  */
-export const HILL_D0 = 0.1;
-export const HILL_N = 3.8;
+export const HILL_D0 = 0.6;
+export const HILL_N = 4.1;
 
 /**
  * Convert L2-normalized cosine distance (d = 1 - a_hat^T b_hat) to a match percentage
