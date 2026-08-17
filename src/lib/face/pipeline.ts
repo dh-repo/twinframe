@@ -8,6 +8,7 @@ import {
   prefetchFaceApi,
   assessDetectionQuality,
   logFaceTelemetry,
+  type FaceDetectionResult,
 } from "./faceapi-engine.ts";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
 import { detectSCRFD } from "./scrfd.ts";
@@ -15,6 +16,7 @@ import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
 import { extractEdgeFaceEmbedding } from "./edgeface.ts";
 import { computeBiohash } from "./biohash.ts";
+import { detectionFromAccuFace, pipelineLog, sourceDimensions, unpadScrfdDetections } from "./accuface-detection.ts";
 import {
   hardQualityRefuseGate,
   poseRefuseGate,
@@ -96,32 +98,44 @@ export async function analyzeFaceSource(
 ): Promise<MatchResult> {
   const topK = options.topK ?? 5;
   const onProgress = options.onProgress;
+  const tPipeline = performance.now();
+  pipelineLog("start");
 
-  onProgress?.(0, 15);
+  onProgress?.(0, 12);
   const galleryPromise = loadCelebrityEmbeddings();
 
-  onProgress?.(1, 35);
+  onProgress?.(1, 28);
+  pipelineLog("scrfd:start");
 
   // 1. Run SCRFD-2.5G face detection pass. The analysis source is usually the
   // tight face crop approved in crop review; SCRFD misses faces that fill the
   // whole frame, so retry once on a margin-padded canvas (mirrors enrollment).
   const scrfdStart = performance.now();
   let alignmentSource: typeof source | HTMLCanvasElement | OffscreenCanvas = source;
+  let padMargin = 0;
   let scrfdResult = await detectSCRFD(source).catch((err) => {
     console.warn("[Pipeline] SCRFD-2.5G detection pass failed; proceeding to fallback:", err);
     return null;
   });
   if (scrfdResult && !scrfdResult.primary) {
+    pipelineLog("scrfd:pad-retry");
     const padded = padSourceForDetection(source);
     if (padded) {
       const retry = await detectSCRFD(padded).catch(() => null);
       if (retry?.primary) {
         scrfdResult = retry;
         alignmentSource = padded;
+        padMargin = Math.round((padded.width - sourceDimensions(source).w) / 2);
       }
     }
   }
   const scrfdPassMs = scrfdResult ? scrfdResult.latencyMs : Math.round(performance.now() - scrfdStart);
+  pipelineLog("scrfd:done", {
+    ms: scrfdPassMs,
+    faces: scrfdResult?.detections.length ?? 0,
+    hasPrimary: Boolean(scrfdResult?.primary),
+    yaw: scrfdResult?.primary?.pose.yaw ?? null,
+  });
 
   // 2. Expression-Aware 3D UV WGSL Frontalization vs 5-Point Similarity Fallback
   let alignedTensor: Float32Array | null = null;
@@ -134,6 +148,7 @@ export async function analyzeFaceSource(
     const tFrontStart = performance.now();
 
     if (absYaw > 25) {
+      pipelineLog("frontalize:wgsl", { yaw: primary.pose.yaw });
       try {
         alignedTensor = await runExpNormFrontalizationWGSL(
           alignmentSource as HTMLImageElement,
@@ -150,11 +165,13 @@ export async function analyzeFaceSource(
         frontalizationMethod = "5pt-similarity";
       }
     } else {
+      pipelineLog("frontalize:5pt", { yaw: primary.pose.yaw });
       alignedTensor = align5PointSimilarityTensor(alignmentSource as HTMLImageElement, primary.landmarks, 112);
       frontalizationMethod = "5pt-similarity";
     }
 
     frontalizationMs = Math.round(performance.now() - tFrontStart);
+    pipelineLog("frontalize:done", { ms: frontalizationMs, method: frontalizationMethod });
   }
 
   // 3. Execute EdgeFace-M 256-d feature extraction pass
@@ -163,16 +180,21 @@ export async function analyzeFaceSource(
   let embeddingPassMs = 0;
 
   try {
+    pipelineLog("edgeface:start", { hasAlignedTensor: Boolean(alignedTensor) });
     const efRes = await extractEdgeFaceEmbedding(
       alignedTensor ?? source,
       scrfdResult?.primary?.landmarks
     );
     edgeFaceEmbedding = efRes.embedding;
     embeddingPassMs = efRes.latencyMs;
+    pipelineLog("edgeface:done", { ms: embeddingPassMs, dim: edgeFaceEmbedding.length });
   } catch (err) {
     console.warn("[Pipeline] EdgeFace-M extraction failed; falling back:", err);
     embeddingPassMs = Math.round(performance.now() - tEmbStart);
+    pipelineLog("edgeface:fail", { ms: embeddingPassMs });
   }
+
+  onProgress?.(2, 62);
 
   // 3b. Biohashing telemetry pass — never allowed to break the analysis
   let biohashMs = 0;
@@ -186,14 +208,50 @@ export async function analyzeFaceSource(
     biohashMs = Math.round(performance.now() - tBioStart);
   }
 
-  // 4. Execute detection & age/gender analysis pass.
-  // When EdgeFace already produced the matching descriptor, skip the FaceNet
-  // descriptor extraction and flip-TTA second pass — this detection only
-  // supplies box/landmarks/age/gender/quality and was the dominant CPU cost.
-  // The source is the approved face crop, so 512px detection is plenty.
-  const det = edgeFaceEmbedding
-    ? await detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
-    : await detectAndDescribeWithTTA(source, options);
+  const accufaceLatencies = {
+    modelLoadMs: 0,
+    downscaleMs: 0,
+    scrfdPassMs,
+    frontalizationMs,
+    embeddingMs: embeddingPassMs,
+    embeddingPassMs,
+    biohashMs,
+    totalMs: Math.round(performance.now() - tPipeline),
+    ssdPassMs: 0,
+    claheMs: 0,
+  };
+
+  // AccuFace already has box + landmarks + the matching embedding. FaceAPI
+  // SSD/age/FaceNet is a second detector that parked the UI at step 2
+  // (ticker capped at 88%) for tens of seconds on CPU-only devices.
+  let det: FaceDetectionResult | null = null;
+  if (edgeFaceEmbedding && scrfdResult?.primary) {
+    pipelineLog("faceapi:skip", { reason: "edgeface+scrfd", padMargin });
+    const orig = sourceDimensions(source);
+    const detections =
+      padMargin > 0
+        ? unpadScrfdDetections(scrfdResult.detections, padMargin, orig.w, orig.h)
+        : scrfdResult.detections;
+    const primaryIndex = scrfdResult.detections.indexOf(scrfdResult.primary);
+    const primary = detections[primaryIndex] ?? detections[0]!;
+    det = detectionFromAccuFace({
+      source,
+      embedding: edgeFaceEmbedding,
+      detections,
+      primary,
+      latencies: accufaceLatencies,
+      frontalizationMethod,
+    });
+  } else {
+    pipelineLog("faceapi:fallback", {
+      hasEdgeFace: Boolean(edgeFaceEmbedding),
+      hasScrfd: Boolean(scrfdResult?.primary),
+    });
+    det = edgeFaceEmbedding
+      ? await detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
+      : await detectAndDescribeWithTTA(source, options);
+    pipelineLog("faceapi:fallback-done");
+  }
 
   // 5. Update stage latencies and telemetry metadata
   if (det) {
@@ -227,7 +285,7 @@ export async function analyzeFaceSource(
   }
 
   if (det) {
-    onProgress?.(1, 55, {
+    onProgress?.(2, 72, {
       normalizedBox: det.normalizedBox,
       normalizedLandmarks: det.normalizedLandmarks,
       croppedLandmarks: det.croppedLandmarks,
@@ -242,10 +300,12 @@ export async function analyzeFaceSource(
     }
   }
 
-  onProgress?.(2, 75);
+  onProgress?.(3, 84);
+  pipelineLog("gallery:wait");
   const gallery = await galleryPromise;
+  pipelineLog("gallery:ready", { n: gallery.length });
 
-  onProgress?.(3, 90);
+  onProgress?.(3, 92);
 
   if (!det) {
     onProgress?.(3, 100);
@@ -307,8 +367,8 @@ export async function analyzeFaceSource(
       analyzedAt: Date.now(),
       engineVersion: ENGINE_VERSION,
       facePreviewUrl,
-      estimatedAge: Math.round(det.age),
-      estimatedGender: det.gender,
+      estimatedAge: Number.isFinite(det.age) ? Math.round(det.age) : undefined,
+      estimatedGender: det.gender === "male" || det.gender === "female" ? det.gender : undefined,
       telemetry: det.telemetry,
     };
   }
@@ -348,11 +408,17 @@ export async function analyzeFaceSource(
       analyzedAt: Date.now(),
       engineVersion: ENGINE_VERSION,
       facePreviewUrl,
-      estimatedAge: Math.round(det.age),
-      estimatedGender: det.gender,
+      estimatedAge: Number.isFinite(det.age) ? Math.round(det.age) : undefined,
+      estimatedGender: det.gender === "male" || det.gender === "female" ? det.gender : undefined,
       telemetry: det.telemetry,
     };
   }
+
+  pipelineLog("rank:done", {
+    matches: matches.length,
+    top: matches[0]?.name ?? null,
+    totalMs: Math.round(performance.now() - tPipeline),
+  });
 
   return {
     features,
@@ -361,8 +427,8 @@ export async function analyzeFaceSource(
     analyzedAt: Date.now(),
     engineVersion: ENGINE_VERSION,
     facePreviewUrl,
-    estimatedAge: Math.round(det.age),
-    estimatedGender: det.gender,
+    estimatedAge: Number.isFinite(det.age) ? Math.round(det.age) : undefined,
+    estimatedGender: det.gender === "male" || det.gender === "female" ? det.gender : undefined,
     telemetry: det.telemetry,
   };
 }

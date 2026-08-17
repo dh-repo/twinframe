@@ -40,7 +40,7 @@ export function AnalyzingState({
   const STEPS = [
     { label: "Initializing AccuFace engine", detail: "ONNX WebGPU / WASM SIMD execution" },
     { label: "Detecting & aligning face", detail: "SCRFD-2.5G · 5-pt landmarks & 3D Pose" },
-    { label: "Extracting EdgeFace-M embedding", detail: "256-d Float16 & Anti-GAN Biohash" },
+    { label: "Extracting EdgeFace-S embedding", detail: "512-d Float16 & Anti-GAN Biohash" },
     { label: "Ranking celebrity gallery", detail: `${gallerySize.toLocaleString()} stars · WASM Biohash & Cosine matching` },
   ];
 
