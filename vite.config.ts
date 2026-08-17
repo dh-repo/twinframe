@@ -116,6 +116,9 @@ function authPopupPlugin(): Plugin {
 const faceApiEsm = path.resolve(
   "node_modules/@vladmandic/face-api/dist/face-api.esm.js",
 );
+const ortWasmEsm = path.resolve(
+  "node_modules/onnxruntime-web/dist/ort.wasm.bundle.min.mjs",
+);
 
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // Keep `nitro` gated to `build` (the Vercel deploy target): enabled in dev it
@@ -132,6 +135,7 @@ export default defineConfig(({ command }) => ({
     alias: {
       // Force browser ESM build — package "main" points at Node (tfjs-node).
       "@vladmandic/face-api": faceApiEsm,
+      "onnxruntime-web": ortWasmEsm,
     },
   },
   optimizeDeps: {
@@ -141,8 +145,8 @@ export default defineConfig(({ command }) => ({
     },
   },
   ssr: {
-    // Don't SSR-bundle face-api (heavy TFJS + browser-only).
-    external: ["@vladmandic/face-api"],
+    // Don't SSR-bundle face-api and ONNX runtime (heavy TFJS/WASM + browser-only).
+    external: ["@vladmandic/face-api", "onnxruntime-web"],
   },
   plugins: [
     pgliteBootstrapPlugin(),

@@ -5,7 +5,7 @@ import appCss from "@/styles.css?url";
 const APP_NAME = "Twinframe — Celebrity Look-Alike Finder";
 const host = typeof process !== "undefined" ? process.env?.VITE_PUBLIC_HOSTNAME : undefined;
 const ogImage = host
-  ? `https://og.grok.me/v1/card.png?host=${encodeURIComponent(host)}&title=${encodeURIComponent(APP_NAME)}`
+  ? `https://${host}/og.jpg`
   : "/og.jpg";
 
 export const Route = createRootRoute({

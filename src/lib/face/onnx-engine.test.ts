@@ -16,7 +16,11 @@ describe("onnx-engine: Environment Initialization", () => {
 
   it("configures wasmPaths to /models/ort/", () => {
     initOnnxEngine();
-    assert.equal(ort.env.wasm.wasmPaths, "/models/ort/");
+    assert.ok(
+      ort.env.wasm.wasmPaths === "/models/ort/" ||
+        (typeof ort.env.wasm.wasmPaths === "object" &&
+          (ort.env.wasm.wasmPaths as any).wasm?.includes("/models/ort/"))
+    );
   });
 
   it("falls back to 1 thread when crossOriginIsolated is false or undefined", () => {

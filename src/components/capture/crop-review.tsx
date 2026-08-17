@@ -145,34 +145,47 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       };
 
       try {
-        setDetectStatus("Loading AccuFace detector…");
-        const { detectSCRFD } = await import("@/lib/face/scrfd");
-        if (!isMounted || finished) return;
+        let list: FaceCandidateUI[] = [];
 
-        setDetectStatus("Scanning for faces (SCRFD-2.5G)…");
-        const scrfdResult = await detectSCRFD(img, { scoreThreshold: 0.35 });
-        if (!isMounted || finished) return;
+        // 1. Attempt SCRFD-2.5G face detection if available
+        try {
+          setDetectStatus("Scanning for faces…");
+          const { detectSCRFD } = await import("@/lib/face/scrfd");
+          if (!isMounted || finished) return;
 
-        let list: FaceCandidateUI[] = scrfdResult.detections.map((d, idx) => ({
-          id: idx,
-          label: `Face ${idx + 1}`,
-          box: {
-            x: d.normalizedBox.x * 100,
-            y: d.normalizedBox.y * 100,
-            width: d.normalizedBox.width * 100,
-            height: d.normalizedBox.height * 100,
-          },
-          unscaledBox: d.bbox,
-          isPrimary: d === scrfdResult.primary,
-          score: d.score,
-          thumbUrl: makeFaceThumb(img, d.bbox),
-        }));
+          const scrfdResult = await detectSCRFD(img, { scoreThreshold: 0.35 }).catch((err) => {
+            console.warn("[CropReview] SCRFD detection failed, falling back to FaceAPI:", err);
+            return null;
+          });
+          if (!isMounted || finished) return;
 
+          if (scrfdResult && scrfdResult.detections && scrfdResult.detections.length > 0) {
+            list = scrfdResult.detections.map((d, idx) => ({
+              id: idx,
+              label: `Face ${idx + 1}`,
+              box: {
+                x: d.normalizedBox.x * 100,
+                y: d.normalizedBox.y * 100,
+                width: d.normalizedBox.width * 100,
+                height: d.normalizedBox.height * 100,
+              },
+              unscaledBox: d.bbox,
+              isPrimary: d === scrfdResult.primary,
+              score: d.score,
+              thumbUrl: makeFaceThumb(img, d.bbox),
+            }));
+          }
+        } catch (scrfdErr) {
+          console.warn("[CropReview] SCRFD unavailable, falling back to FaceAPI:", scrfdErr);
+        }
+
+        // 2. Robust multi-scale FaceAPI (SSD MobileNet V1 / TinyFaceDetector)
         if (list.length === 0) {
           setDetectStatus("Scanning for faces…");
           const { detectFacesOnly } = await import("@/lib/face/faceapi-engine");
           if (!isMounted || finished) return;
           const ssd = await detectFacesOnly(img);
+          if (!isMounted || finished) return;
           list = ssd.faces.map((d, idx) => ({
             id: idx,
             label: `Face ${idx + 1}`,

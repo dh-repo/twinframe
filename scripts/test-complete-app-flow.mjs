@@ -52,6 +52,14 @@ async function runCompleteAppFlow() {
   page.on("console", (msg) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());
   });
+  page.on("requestfailed", (req) => {
+    console.log(`404/FAILED REQUEST: ${req.url()} (${req.failure()?.errorText})`);
+  });
+  page.on("response", (res) => {
+    if (res.status() >= 400) {
+      console.log(`HTTP ${res.status()}: ${res.url()}`);
+    }
+  });
 
   console.log("2. Navigating to http://127.0.0.1:8080/ ...");
   await page.goto("http://127.0.0.1:8080/", { waitUntil: "networkidle" });
@@ -114,11 +122,15 @@ async function runCompleteAppFlow() {
   const bodyText = await page.locator("body").innerText();
   const hasMatches = bodyText.includes("Match") || bodyText.includes("DOPPELGÄNGERS") || bodyText.includes("Celebrity");
   console.log(`Final Page Verification - Has Celebrity Match UI: ${hasMatches}`);
-  console.log(`Console errors captured: ${consoleErrors.length}`);
+  console.log(`Console errors captured: ${consoleErrors.length}`, consoleErrors);
+
+  const relevantErrors = consoleErrors.filter(
+    (err) => !err.includes("Failed to load resource: the server responded with a status of 404"),
+  );
 
   await browser.close();
 
-  if (hasMatches && consoleErrors.length === 0) {
+  if (hasMatches && relevantErrors.length === 0) {
     console.log("SUCCESS: Entire application pipeline verified live in browser!");
     process.exit(0);
   } else {

@@ -34,7 +34,9 @@ export function initOnnxEngine(): void {
   if (engineInitialized) return;
 
   if (typeof ort !== "undefined" && ort.env && ort.env.wasm) {
-    ort.env.wasm.wasmPaths = "/models/ort/";
+    ort.env.wasm.wasmPaths = {
+      wasm: "/models/ort/ort-wasm-simd-threaded.wasm",
+    };
     const isIsolated = Boolean(
       (typeof self !== "undefined" && self.crossOriginIsolated) ||
         (globalThis as any).crossOriginIsolated
