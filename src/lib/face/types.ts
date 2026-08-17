@@ -159,6 +159,66 @@ export interface SCRFDPose {
   roll: number;
 }
 
+export interface SmileMetrics {
+  /** Mouth width to inter-ocular distance ratio */
+  smileRatio: number;
+  /** Oral commissure elevation delta (un-rolled) relative to nose base */
+  commissureElevation: number;
+  /** Estimated smile expression intensity [0.0..1.0] */
+  smileIntensity: number;
+}
+
+/**
+ * Computes smile and oral deformation metrics from 5 canonical landmarks.
+ */
+export function estimateSmileMetrics(landmarks: Float32Array | number[][]): SmileMetrics {
+  let lx: number, ly: number, rx: number, ry: number, nx: number, ny: number, lmx: number, lmy: number, rmx: number, rmy: number;
+
+  if (Array.isArray(landmarks)) {
+    [lx, ly] = landmarks[0];
+    [rx, ry] = landmarks[1];
+    [nx, ny] = landmarks[2];
+    [lmx, lmy] = landmarks[3];
+    [rmx, rmy] = landmarks[4];
+  } else {
+    lx = landmarks[0]; ly = landmarks[1];
+    rx = landmarks[2]; ry = landmarks[3];
+    nx = landmarks[4]; ny = landmarks[5];
+    lmx = landmarks[6]; lmy = landmarks[7];
+    rmx = landmarks[8]; rmy = landmarks[9];
+  }
+
+  const dxEye = rx - lx;
+  const dyEye = ry - ly;
+  const iod = Math.sqrt(dxEye * dxEye + dyEye * dyEye);
+  const safeIod = Math.max(1e-5, iod);
+  const rollRad = Math.atan2(dyEye, dxEye);
+  const sinR = Math.sin(-rollRad);
+  const cosR = Math.cos(-rollRad);
+
+  // Mouth width
+  const dxMouth = rmx - lmx;
+  const dyMouth = rmy - lmy;
+  const mouthWidth = Math.sqrt(dxMouth * dxMouth + dyMouth * dyMouth);
+  const smileRatio = mouthWidth / safeIod;
+
+  // Un-rolled mouth corner vertical positions relative to nose
+  const lCornerDy = (lmx - nx) * sinR + (lmy - ny) * cosR;
+  const rCornerDy = (rmx - nx) * sinR + (rmy - ny) * cosR;
+  const avgCornerDy = (lCornerDy + rCornerDy) / 2;
+
+  // Neutral mouth width ratio is ~0.65-0.75. Wide smile is > 0.82.
+  // Commissure elevation pulls mouth corners up towards nose.
+  const rawSmile = (smileRatio - 0.72) / 0.20;
+  const smileIntensity = Math.max(0.0, Math.min(1.0, rawSmile));
+
+  return {
+    smileRatio: Math.round(smileRatio * 100) / 100,
+    commissureElevation: Math.round(avgCornerDy * 100) / 100,
+    smileIntensity: Math.round(smileIntensity * 100) / 100,
+  };
+}
+
 export interface SCRFDDetectionResult {
   bbox: SCRFDBoundingBox;
   normalizedBox: SCRFDBoundingBox;
@@ -167,6 +227,7 @@ export interface SCRFDDetectionResult {
   landmarks: Float32Array; // 5x2 landmarks as flat Float32Array(10)
   normalizedLandmarks: SCRFDLandmark[];
   pose: SCRFDPose;
+  smile?: SmileMetrics;
 }
 
 export interface ExpNormOptions {
@@ -201,6 +262,8 @@ export interface FaceTelemetry {
   estimatedPitch?: number;
   /** Estimated head roll angle in degrees */
   estimatedRoll?: number;
+  /** Estimated smile intensity [0.0..1.0] */
+  smileIntensity?: number;
 }
 
 export interface MatchResult {
