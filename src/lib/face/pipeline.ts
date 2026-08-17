@@ -3,6 +3,7 @@ import { ENGINE_VERSION } from "./types.ts";
 import { emptyFeatures } from "./math.ts";
 import { rankByDescriptor } from "./match.ts";
 import {
+  detectAndDescribe,
   detectAndDescribeWithTTA,
   prefetchFaceApi,
   assessDetectionQuality,
@@ -185,8 +186,14 @@ export async function analyzeFaceSource(
     biohashMs = Math.round(performance.now() - tBioStart);
   }
 
-  // 4. Execute detection & age/gender analysis pass
-  const det = await detectAndDescribeWithTTA(source, options);
+  // 4. Execute detection & age/gender analysis pass.
+  // When EdgeFace already produced the matching descriptor, skip the FaceNet
+  // descriptor extraction and flip-TTA second pass — this detection only
+  // supplies box/landmarks/age/gender/quality and was the dominant CPU cost.
+  // The source is the approved face crop, so 512px detection is plenty.
+  const det = edgeFaceEmbedding
+    ? await detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
+    : await detectAndDescribeWithTTA(source, options);
 
   // 5. Update stage latencies and telemetry metadata
   if (det) {

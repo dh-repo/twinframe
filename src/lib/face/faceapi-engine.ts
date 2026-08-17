@@ -234,6 +234,12 @@ export interface DetectOptions {
   fastExitConfidence?: number;
   /** Use the lightweight TinyFace crop-review path instead of robust SSD passes. */
   fastCrop?: boolean;
+  /**
+   * Skip the FaceNet descriptor extraction (heaviest pass). Used when the
+   * EdgeFace ONNX embedding already provides the matching descriptor and this
+   * detection only supplies box/landmarks/age/gender/quality.
+   */
+  skipDescriptor?: boolean;
 }
 
 export interface FaceCandidateInput {
@@ -1230,30 +1236,33 @@ export async function detectAndDescribe(
     /* landmarks optional */
   }
 
-  // FaceNet descriptor — landmark-aligned on the detection canvas (gallery enrollment parity)
+  // FaceNet descriptor — landmark-aligned on the detection canvas (gallery
+  // enrollment parity). Skipped entirely when EdgeFace provides the descriptor.
   let rawDesc: Float32Array | null = null;
-  try {
-    const targetBox = {
-      x: origBox.x * detectionScale,
-      y: origBox.y * detectionScale,
-      width: origBox.width * detectionScale,
-      height: origBox.height * detectionScale,
-    };
-    rawDesc = await extractAlignedFaceNet(api, detectionCanvas, targetBox);
-  } catch {
-    rawDesc = null;
-  }
-  if (!rawDesc) {
+  if (!options.skipDescriptor) {
     try {
-      if (typeof api.computeFaceDescriptor === "function") {
-        rawDesc = await api.computeFaceDescriptor(faceCanvas);
-      } else if (api.nets.faceRecognitionNet?.isLoaded) {
-        rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(faceCanvas);
-      } else {
+      const targetBox = {
+        x: origBox.x * detectionScale,
+        y: origBox.y * detectionScale,
+        width: origBox.width * detectionScale,
+        height: origBox.height * detectionScale,
+      };
+      rawDesc = await extractAlignedFaceNet(api, detectionCanvas, targetBox);
+    } catch {
+      rawDesc = null;
+    }
+    if (!rawDesc) {
+      try {
+        if (typeof api.computeFaceDescriptor === "function") {
+          rawDesc = await api.computeFaceDescriptor(faceCanvas);
+        } else if (api.nets.faceRecognitionNet?.isLoaded) {
+          rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(faceCanvas);
+        } else {
+          rawDesc = generateImageRegionDescriptor(faceCanvas);
+        }
+      } catch {
         rawDesc = generateImageRegionDescriptor(faceCanvas);
       }
-    } catch {
-      rawDesc = generateImageRegionDescriptor(faceCanvas);
     }
   }
   const descriptor = rawDesc ? l2NormalizeVec(rawDesc) : new Float32Array(128);
