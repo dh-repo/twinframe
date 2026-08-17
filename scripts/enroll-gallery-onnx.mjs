@@ -10,35 +10,50 @@
  * full-512 L2-normalized vectors per id, for calibration analysis before the
  * binary gallery is written by write-gallery-v4.mjs.
  *
- * Usage: node --experimental-strip-types scripts/enroll-gallery-onnx.mjs [--limit N]
+ * Usage:
+ *   node --experimental-strip-types scripts/enroll-gallery-onnx.mjs [--limit N] [--concurrency N]
  */
-import * as ort from "onnxruntime-web";
 import { createCanvas, loadImage } from "canvas";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { compute5PointSimilarityMatrix } from "../src/lib/face/similarity-transform.ts";
 import { generateAnchors, nmsFaceBoxes } from "../src/lib/face/scrfd.ts";
 import { estimateSmileMetrics } from "../src/lib/face/types.ts";
-
-ort.env.wasm.numThreads = 1;
+import { collectEnrollJobs } from "./lib/enroll-jobs.mjs";
+import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
 
 const ROOT = process.cwd();
 const CELEBS = path.join(ROOT, "public/celebs");
 const THUMB_PNG = "/tmp/twinframe-thumbs-png";
 const OUT_DIR = "/tmp/twinframe-enroll";
-fs.mkdirSync(OUT_DIR, { recursive: true });
+const EMBED_WORKER = path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/embed-worker.mjs");
 
 const limitIdx = process.argv.indexOf("--limit");
 const LIMIT = limitIdx >= 0 ? Number(process.argv[limitIdx + 1]) : Infinity;
 
-const scrfdSession = await ort.InferenceSession.create(
-  new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/scrfd_2.5g.onnx"))),
-  { executionProviders: ["wasm"] },
-);
-const edgeSession = await ort.InferenceSession.create(
-  new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/edgeface_m.onnx"))),
-  { executionProviders: ["wasm"] },
-);
+/** @type {Promise<{ ort: typeof import("onnxruntime-web"), scrfdSession: any, edgeSession: any }> | null} */
+let sessionsPromise = null;
+
+export function ensureSessions() {
+  if (!sessionsPromise) sessionsPromise = loadSessions();
+  return sessionsPromise;
+}
+
+async function loadSessions() {
+  // Parent enroll/calibrate stay model-free; only embed workers load ORT.
+  const ort = await import("onnxruntime-web");
+  ort.env.wasm.numThreads = 1;
+  const scrfdSession = await ort.InferenceSession.create(
+    new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/scrfd_2.5g.onnx"))),
+    { executionProviders: ["wasm"] },
+  );
+  const edgeSession = await ort.InferenceSession.create(
+    new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/edgeface_m.onnx"))),
+    { executionProviders: ["wasm"] },
+  );
+  return { ort, scrfdSession, edgeSession };
+}
 
 const anchorsByStride = generateAnchors(640, 640);
 
@@ -66,6 +81,7 @@ function imageToLetterboxTensor(img) {
 }
 
 async function detectFaces(img, scoreThreshold = 0.4) {
+  const { ort, scrfdSession } = await ensureSessions();
   const { data, scale, padX, padY, origW, origH } = imageToLetterboxTensor(img);
   const tensor = new ort.Tensor("float32", data, [1, 3, 640, 640]);
   const outputMap = await scrfdSession.run({ [scrfdSession.inputNames[0]]: tensor });
@@ -151,6 +167,7 @@ function l2(v) {
 }
 
 async function embed(tensorData) {
+  const { ort, edgeSession } = await ensureSessions();
   const tensor = new ort.Tensor("float32", tensorData, [1, 3, 112, 112]);
   const out = await edgeSession.run({ [edgeSession.inputNames[0]]: tensor });
   const raw = out[edgeSession.outputNames[0]].data;
@@ -201,87 +218,79 @@ export async function embedImageFile(filePath) {
   };
 }
 
-/** Extra enrollment views per id: held-out 002+ (001 is eval-only) and extra-photos. */
-function extraImagePaths(id) {
-  const out = [];
-  const heldOutDir = path.join(CELEBS, "held-out", id);
-  if (fs.existsSync(heldOutDir)) {
-    for (const f of fs.readdirSync(heldOutDir).sort()) {
-      if (/^0*1\.(jpe?g|png)$/i.test(f) || f.startsWith("001.")) continue;
-      if (/\.(jpe?g|png)$/i.test(f)) out.push(path.join(heldOutDir, f));
-    }
-  }
-  const extraDir = path.join(CELEBS, "extra-photos", id);
-  if (fs.existsSync(extraDir)) {
-    for (const f of fs.readdirSync(extraDir).sort()) {
-      if (/\.(jpe?g|png)$/i.test(f)) out.push(path.join(extraDir, f));
-    }
-  }
-  return out.slice(0, 3);
-}
-
 async function main() {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
   const buckets = JSON.parse(
     fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
   );
+  const list = buckets.slice(0, LIMIT === Infinity ? buckets.length : LIMIT);
+  const allJobs = collectEnrollJobs(list, { celebsDir: CELEBS, thumbDir: THUMB_PNG });
+  const embedJobs = allJobs.filter((j) => j.kind !== "missing");
+  const concurrency = parseConcurrencyArg();
+  const t0 = Date.now();
+
+  console.log(
+    `enroll jobs=${embedJobs.length} missingImages=${allJobs.length - embedJobs.length} concurrency=${concurrency}`,
+  );
+
+  const poolResults = await mapProcessPool(embedJobs, {
+    workerPath: EMBED_WORKER,
+    concurrency,
+    onProgress(done, total) {
+      if (done % 50 !== 0 && done !== total) return;
+      const rate = done / Math.max(0.001, (Date.now() - t0) / 1000);
+      process.stdout.write(
+        `\r${done}/${total} (${rate.toFixed(1)}/s, eta ${(Math.max(0, total - done) / rate).toFixed(0)}s)`,
+      );
+    },
+  });
+
   const rows = [];
   const extras = [];
   let detected = 0;
   let fallback = 0;
-  let missing = 0;
-  const t0 = Date.now();
+  let missing = allJobs.length - embedJobs.length;
+  for (const b of allJobs) {
+    if (b.kind === "missing") console.error("no image for", b.id);
+  }
 
-  const list = buckets.slice(0, LIMIT === Infinity ? buckets.length : LIMIT);
-  for (let i = 0; i < list.length; i++) {
-    const b = list[i];
-    const hires = path.join(CELEBS, `${b.id}.jpg`);
-    const thumb = path.join(THUMB_PNG, `${b.id}.png`);
-    const src = fs.existsSync(hires) ? hires : fs.existsSync(thumb) ? thumb : null;
-    if (!src) {
-      missing++;
-      console.error("no image for", b.id);
+  for (let i = 0; i < embedJobs.length; i++) {
+    const job = embedJobs[i];
+    const result = poolResults[i];
+    if (!result?.ok) {
+      if (job.kind === "primary") {
+        missing++;
+        console.error("embed failed", job.id, String(result?.error ?? "").slice(0, 120));
+      }
       continue;
     }
-    try {
-      const r = await embedImageFile(src);
+    const r = result.value;
+    if (job.kind === "primary") {
       if (r.usedDetection) detected++;
       else fallback++;
       rows.push({
-        id: b.id,
-        source: path.basename(src),
+        id: job.id,
+        source: job.source,
         usedDetection: r.usedDetection,
         score: Math.round(r.score * 1000) / 1000,
         d256: r.d256,
         d512: r.d512,
       });
-    } catch (e) {
-      missing++;
-      console.error("embed failed", b.id, String(e).slice(0, 120));
+      continue;
     }
-
-    for (const extraPath of extraImagePaths(b.id)) {
-      try {
-        const r = await embedImageFile(extraPath);
-        // Only keep detector-verified extra views (skip blind whole-crop extras)
-        if (!r.usedDetection) continue;
-        extras.push({
-          id: b.id,
-          source: path.relative(CELEBS, extraPath),
-          score: Math.round(r.score * 1000) / 1000,
-          d256: r.d256,
-          d512: r.d512,
-        });
-      } catch {
-        /* skip broken extras */
-      }
+    if (job.kind === "extra") {
+      if (!r.usedDetection) continue;
+      extras.push({
+        id: job.id,
+        source: job.source,
+        score: Math.round(r.score * 1000) / 1000,
+        d256: r.d256,
+        d512: r.d512,
+      });
+      continue;
     }
-
-    if ((i + 1) % 50 === 0) {
-      const rate = (i + 1) / ((Date.now() - t0) / 1000);
-      process.stdout.write(
-        `\r${i + 1}/${list.length} (${rate.toFixed(1)}/s, eta ${(Math.max(0, list.length - i - 1) / rate).toFixed(0)}s)`,
-      );
-    }
+    const _exhaustive = job.kind;
+    throw new Error(`unknown enroll job kind: ${_exhaustive}`);
   }
 
   console.log(

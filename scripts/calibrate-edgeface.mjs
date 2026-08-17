@@ -7,11 +7,14 @@
  * Compares truncated-256 vs full-512 to pick the shipping dimension and
  * derive HILL_D0 / distance-floor anchors.
  *
- * Usage: node --experimental-strip-types scripts/calibrate-edgeface.mjs [--probes N]
+ * Usage: node --experimental-strip-types scripts/calibrate-edgeface.mjs [--probes N] [--concurrency N]
  */
 import fs from "node:fs";
 import path from "node:path";
-import { embedImageFile } from "./enroll-gallery-onnx.mjs";
+import { fileURLToPath } from "node:url";
+import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
+
+const EMBED_WORKER = path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/embed-worker.mjs");
 
 const ROOT = process.cwd();
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -66,14 +69,26 @@ function stats(values) {
 const report = { d256: { genuine: [], impostorBest: [], rank1: 0 }, d512: { genuine: [], impostorBest: [], rank1: 0 } };
 let processed = 0;
 const t0 = Date.now();
+const concurrency = parseConcurrencyArg();
+console.log(`concurrency=${concurrency}`);
 
-for (const probe of useProbes) {
-  let emb;
-  try {
-    emb = await embedImageFile(probe.img);
-  } catch {
-    continue;
-  }
+const poolResults = await mapProcessPool(
+  useProbes.map((p) => ({ filePath: p.img })),
+  {
+    workerPath: EMBED_WORKER,
+    concurrency,
+    onProgress(done, total) {
+      if (done % 25 !== 0 && done !== total) return;
+      process.stdout.write(`\r${done}/${total} (${((Date.now() - t0) / 1000).toFixed(0)}s)`);
+    },
+  },
+);
+
+for (let i = 0; i < useProbes.length; i++) {
+  const probe = useProbes[i];
+  const result = poolResults[i];
+  if (!result?.ok) continue;
+  const emb = result.value;
   for (const dim of ["d256", "d512"]) {
     const pv = emb[dim];
     let selfD = null;
