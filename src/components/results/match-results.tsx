@@ -1,11 +1,13 @@
 import { useState, useMemo } from "react";
-import { RotateCcw, AlertTriangle, Sparkles, Filter, Check } from "lucide-react";
+import { RotateCcw, AlertTriangle, Filter } from "lucide-react";
 import type { MatchResult, CelebrityMatch } from "@/lib/face/types";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { MatchRevealCard } from "@/components/results/match-reveal-card";
 import { NumberCounter } from "@/components/ui/number-counter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
+import { restListHeading } from "@/lib/ux/honesty";
+import { MatchFeedback } from "@/components/results/match-feedback";
 
 interface MatchResultsProps {
   result: MatchResult;
@@ -137,7 +139,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-              Also close — tap to inspect
+              {restListHeading(activeTop.matchPercent)} — tap to inspect
             </h3>
             <span className="text-[10px] font-mono text-match">{rest.length} contenders</span>
           </div>
@@ -186,6 +188,13 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
           </ul>
         </div>
       )}
+
+      <MatchFeedback
+        topMatch={activeTop}
+        contenders={rest}
+        previewUrl={youUrl}
+        engineVersion={result.engineVersion}
+      />
 
       <Button variant="primary" size="lg" onClick={onReset} className="w-full mt-4">
         <RotateCcw className="h-4 w-4" />

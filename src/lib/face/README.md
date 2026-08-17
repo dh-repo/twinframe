@@ -1,35 +1,32 @@
-# Twinframe matching engine v2
+# Twinframe matching engine (AccuFace v4)
 
 ## Pipeline
 
-1. **Detect** — SSD MobileNet face detector (auto-finds small faces in full-body shots)
-2. **Crop** — expand bounding box → square face portrait
-3. **Describe** — FaceNet 128-d embedding (`faceRecognitionNet`) + age/gender
-4. **Rank** — Euclidean distance vs pre-enrolled celebrity embeddings
-5. **Calibrate** — distance → honest match % (≈0.40 strong, ≈0.55 borderline)
-6. **Explain** — facial structure / age / presentation signals
+1. **Detect** — SCRFD / MediaPipe crop path, FaceAPI fallback for age/gender
+2. **Align** — ExpNorm WGSL frontalization or 5-pt similarity
+3. **Describe** — EdgeFace-M 256-d embedding
+4. **Gate** — quality / pose refuse + look-alike distance floor ([`lookalike-policy.ts`](./lookalike-policy.ts))
+5. **Rank** — cosine distance vs multi-shot prototypes (centroid + sparse extras)
+6. **Calibrate** — conservative Hill map (`HILL_D0=0.10`, `HILL_N=3.8`) + honesty bands
+7. **Feedback** — optional “Not really” / “Better match” stored locally for hard negatives
 
 ## Gallery
 
-- Photos: `public/celebs/*.jpg` (Wikipedia thumbnails)
-- Embeddings: `public/celebs/embeddings.json` (precomputed FaceNet vectors)
-- Re-enroll after adding photos: run the enrollment Playwright script used at build time
+- Primary: `public/celebs/embeddings.v4.q8.bin` + `gallery.buckets.json`
+- Extras → prototypes via `buildMultiShotCentroidGallery` (skips FaceNet-padded 128→256 rows)
+- Enrollment QA: `npm`/`node --experimental-strip-types scripts/audit-gallery-enrollment.mjs`
+- Open-set gold: `public/celebs/lookalike-gold.json` + `scripts/evaluate-lookalike-gold.mjs`
 
 ## Tests
 
 ```bash
-npm run test:match
+npm test
+node --experimental-strip-types scripts/evaluate-lookalike-gold.mjs
 ```
 
-| Suite | Guards |
-| --- | --- |
-| `math.test.ts` | Clamp, Lab, L1/cosine helpers |
-| `geometry.test.ts` | Landmark utilities / quality (legacy path) |
-| `match.test.ts` | Distance calibration, geometry self-ID regression, gallery integrity |
+## Accuracy upgrade path (open-set look-alike)
 
-## Accuracy upgrade path
-
-1. More enrollment photos per celebrity (avg of 3+ embeddings)
-2. ArcFace / InsightFace server for higher quality descriptors
-3. Hard-negative mining from user feedback (“not me”)
-4. Expand gallery; keep self-ID + probe cluster tests green
+1. Multi-shot EdgeFace prototypes (in progress — centroid path live)
+2. Human-ranked non-celebrity gold (seed harness live; fill civilian descriptors)
+3. Cleaner frontal enrollment before growing unique celeb count
+4. Offline hard-negative mining from look-alike feedback events

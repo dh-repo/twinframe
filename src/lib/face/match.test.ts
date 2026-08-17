@@ -32,11 +32,11 @@ describe("euclideanDistance / calibration", () => {
   });
 
   it("calibrates Hill curve at live FaceNet distance anchors", () => {
-    assert.equal(distanceToMatchPercent(0.12), 50.0);
+    assert.equal(distanceToMatchPercent(0.1), 50.0);
     assert.equal(distanceToMatchPercent(0.038), 97.5);
-    assert.equal(distanceToMatchPercent(0.083), 76.5);
-    assert.equal(distanceToMatchPercent(0.20), 16.3);
-    assert.equal(distanceToMatchPercent(0.30), 5.1);
+    assert.equal(distanceToMatchPercent(0.083), 67.0);
+    assert.equal(distanceToMatchPercent(0.20), 6.7);
+    assert.equal(distanceToMatchPercent(0.30), 1.5);
   });
 
   it("maintains strict non-increasing monotonicity across d in [0, 1.5]", () => {
@@ -50,9 +50,10 @@ describe("euclideanDistance / calibration", () => {
     }
     assert.ok(distanceToMatchPercent(0) > distanceToMatchPercent(0.3));
     assert.ok(distanceToMatchPercent(0.3) > distanceToMatchPercent(0.6));
-    assert.ok(distanceToMatchPercent(0.6) > distanceToMatchPercent(0.9));
-    assert.ok(distanceToMatchPercent(0.9) > distanceToMatchPercent(1.2));
-    assert.ok(distanceToMatchPercent(1.2) > distanceToMatchPercent(1.5));
+    // Hill saturates near 0 for large d — allow equality once floored.
+    assert.ok(distanceToMatchPercent(0.6) >= distanceToMatchPercent(0.9));
+    assert.ok(distanceToMatchPercent(0.9) >= distanceToMatchPercent(1.2));
+    assert.ok(distanceToMatchPercent(1.2) >= distanceToMatchPercent(1.5));
   });
 
   it("rank percents preserve distance order", () => {
@@ -60,6 +61,39 @@ describe("euclideanDistance / calibration", () => {
     const p = rankPercentsFromDistances(d);
     assert.ok(p[1]! > p[2]!);
     assert.ok(p[2]! > p[0]!);
+  });
+
+  it("rankByDescriptor refuses far open-set neighbors instead of forcing top-K", () => {
+    const far = Array.from({ length: 256 }, (_, i) => (i === 10 ? 1 : 0));
+    const other = Array.from({ length: 256 }, (_, i) => (i === 200 ? 1 : 0));
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "a",
+        name: "A",
+        path: "/a.jpg",
+        descriptor: far,
+        age: 40,
+        gender: "female",
+        genderProb: 0.9,
+      },
+      {
+        id: "b",
+        name: "B",
+        path: "/b.jpg",
+        descriptor: other,
+        age: 40,
+        gender: "male",
+        genderProb: 0.9,
+      },
+    ];
+    const user: UserFaceQuery = {
+      descriptor: Array.from({ length: 256 }, (_, i) => (i === 0 ? 1 : 0)),
+      age: 35,
+      gender: "female",
+      genderProbability: 0.9,
+    };
+    const matches = rankByDescriptor(user, gallery, 5);
+    assert.equal(matches.length, 0);
   });
 });
 

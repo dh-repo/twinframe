@@ -11,6 +11,7 @@ import {
   computeMatchConfidence,
   mergeWithProfile,
 } from "./embeddings.ts";
+import { distanceLookalikeGate } from "./lookalike-policy.ts";
 
 export { computeMatchConfidence };
 
@@ -72,6 +73,13 @@ export function rankByDescriptor(
   }
   const deduped = Array.from(bestById.values());
   deduped.sort((a, b) => a.adjusted - b.adjusted);
+  if (deduped.length === 0) return [];
+
+  const bestAdjusted = deduped[0]!.adjusted;
+  const previewPercents = rankPercentsFromDistances([bestAdjusted]);
+  const floor = distanceLookalikeGate(bestAdjusted, previewPercents[0]);
+  if (!floor.pass) return [];
+
   const top = deduped.slice(0, topK);
   const percents = rankPercentsFromDistances(top.map((t) => t.adjusted));
   const confScore = computeMatchConfidence(

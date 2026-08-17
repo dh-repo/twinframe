@@ -1,24 +1,25 @@
 {
-  "version": "1.0.0",
-  "description": "Human-labeled look-alike gold set. Copy to gold-set.json and fill paths + acceptable celebrity ids.",
+  "version": "1.0.0-open-set",
+  "description": "Human-labeled open-set look-alike gold. Prefer 256-d AccuFace descriptors. Empty acceptableTopIds + expectRefuse means no good doppelgänger.",
   "cases": [
     {
-      "id": "example-elder-female-01",
-      "imagePath": "fixtures/gold/elder-female-01.jpg",
-      "notes": "Older woman, curly grey hair — acceptable twins by human judgment",
-      "acceptableTopIds": ["nonnie-griffin", "beth-broderick"],
+      "id": "example-civilian-female-01",
+      "imagePath": "fixtures/gold/civilian-female-01.jpg",
+      "notes": "Non-celebrity probe with human-ranked acceptable celebs",
+      "acceptableTopIds": ["ana-de-armas", "margot-robbie"],
       "acceptableTopK": 5,
       "expectedGender": "female",
-      "expectedAgeRange": [60, 85]
+      "expectedAgeRange": [25, 40],
+      "queryDescriptor": []
     },
     {
-      "id": "example-mid-male-01",
-      "imagePath": "fixtures/gold/mid-male-01.jpg",
-      "notes": "Mid-30s male — face structure must dominate age/gender",
+      "id": "example-no-match-01",
+      "imagePath": "fixtures/gold/no-match-01.jpg",
+      "notes": "Human judgment: no good doppelgänger — model should refuse top-K",
       "acceptableTopIds": [],
+      "expectRefuse": true,
       "acceptableTopK": 5,
-      "expectedGender": "male",
-      "expectedAgeRange": [30, 50]
+      "queryDescriptor": []
     }
   ]
 }

@@ -142,12 +142,13 @@ export function AppHome() {
 
         // --- High-accuracy quality gate ---
         const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
-        const sharpness = (q as unknown as { sharpness: number }).sharpness ?? 60;
+        const sharpness = q.sharpness ?? 60;
         const noFace =
           !matchResult.matches.length &&
           (!matchResult.quality.ok || matchResult.quality.faceCoverage <= 0);
 
         const isLowQuality =
+          noFace ||
           !matchResult.matches.length ||
           !matchResult.quality.ok ||
           matchResult.quality.score < 0.45 ||
@@ -158,7 +159,9 @@ export function AppHome() {
               i.includes("blurry") ||
               i.includes("Low face confidence") ||
               i.includes("Dim lighting") ||
-              i.includes("No face"),
+              i.includes("No face") ||
+              i.includes("too extreme") ||
+              i.includes("No close look-alike"),
           );
 
         // Keep a short beat for polish before showing results
@@ -168,7 +171,7 @@ export function AppHome() {
         setProgress(100);
         setResult(matchResult);
 
-        if (!matchResult.matches || matchResult.matches.length === 0) {
+        if (isLowQuality || !matchResult.matches.length) {
           setPhase("quality-blocked");
         } else {
           playMatchChime();
@@ -395,15 +398,24 @@ export function AppHome() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-sm font-medium leading-tight text-white">Photo quality too low for high-accuracy match</h2>
+                  <h2 className="text-sm font-medium leading-tight text-white">
+                    {result.matches.length === 0 &&
+                    result.quality.issues.some((i) => i.includes("look-alike"))
+                      ? "No close look-alike found"
+                      : result.quality.issues.some((i) => i.includes("angle") || i.includes("extreme"))
+                        ? "Photo angle not suitable"
+                        : "Photo quality too low for high-accuracy match"}
+                  </h2>
                   <p className="mt-1 text-xs leading-relaxed text-white/70 text-pretty">
                     {(() => {
                       const q = result.quality as unknown as { sharpness?: number };
+                      const firstIssue = result.quality.issues[0];
+                      if (firstIssue) return firstIssue;
                       if (result.quality.faceCoverage < 0.03) return "Face is too small — move closer and fill the square.";
                       if ((q.sharpness ?? 60) < 42) return "Photo is blurry — hold steady and tap to focus.";
                       if (result.quality.score < 0.45) return "Low confidence — use front-facing, even lighting.";
                       return "Soft quality — a sharper, centered selfie gives the most accurate match.";
-                    })()} High-accuracy mode requires crisp focus and 4%+ face coverage.
+                    })()}
                   </p>
                 </div>
               </div>
@@ -451,11 +463,19 @@ export function AppHome() {
                 <Button variant="secondary" size="md" onClick={reset} className="w-full sm:flex-1">
                   Retake photo
                 </Button>
-                <Button variant="primary" size="md" onClick={() => setPhase("results")} className="w-full sm:flex-1">
-                  See low-confidence matches
-                </Button>
+                {result.matches.length > 0 ? (
+                  <Button variant="primary" size="md" onClick={() => setPhase("results")} className="w-full sm:flex-1">
+                    See low-confidence matches
+                  </Button>
+                ) : null}
               </div>
-              <p className="text-center text-[11px] text-white/50">Low-confidence matches may be inaccurate — use for fun only.</p>
+              {result.matches.length > 0 ? (
+                <p className="text-center text-[11px] text-white/50">Low-confidence matches may be inaccurate — use for fun only.</p>
+              ) : (
+                <p className="text-center text-[11px] text-white/50">
+                  Open-set look-alikes need a clear, front-facing photo — we won&apos;t force a weak match.
+                </p>
+              )}
             </div>
           </section>
         )}

@@ -75,9 +75,9 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     assert.ok(Math.abs(cosineDistance256(v1, v2) - 0.0) < 1e-5);
     assert.ok(Math.abs(cosineDistance256(v1, v3) - 1.0) < 1e-4);
 
-    // Hill: P(0) = 100%, P(HILL_D0=0.12) = 50%
+    // Hill: P(0) = 100%, P(HILL_D0=0.1) = 50%
     assert.equal(distanceToMatchPercent(0.0), 100.0);
-    assert.equal(distanceToMatchPercent(0.12), 50.0);
+    assert.equal(distanceToMatchPercent(0.1), 50.0);
   });
 
   test("5. Catalog Synchronization Audit across Binary and JSON", () => {
@@ -188,10 +188,10 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     // 1. Exact Hill curve calibration check (d0=0.12, n=3.2)
     assert.equal(distanceToMatchPercent(0.0), 100.0);
     assert.equal(distanceToMatchPercent(0.038), 97.5);
-    assert.equal(distanceToMatchPercent(0.083), 76.5);
-    assert.equal(distanceToMatchPercent(0.12), 50.0);
-    assert.equal(distanceToMatchPercent(0.20), 16.3);
-    assert.equal(distanceToMatchPercent(0.30), 5.1);
+    assert.equal(distanceToMatchPercent(0.083), 67.0);
+    assert.equal(distanceToMatchPercent(0.1), 50.0);
+    assert.equal(distanceToMatchPercent(0.20), 6.7);
+    assert.equal(distanceToMatchPercent(0.30), 1.5);
 
     // 2. High match percent for genuine same-person distances (held-out self ≈ 0.038)
     const pTop = distanceToMatchPercent(0.038);

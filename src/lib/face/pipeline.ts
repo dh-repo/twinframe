@@ -14,6 +14,10 @@ import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
 import { extractEdgeFaceEmbedding } from "./edgeface.ts";
 import { computeBiohash } from "./biohash.ts";
+import {
+  hardQualityRefuseGate,
+  poseRefuseGate,
+} from "./lookalike-policy.ts";
 
 export type PipelineStatus =
   | "idle"
@@ -213,13 +217,53 @@ export async function analyzeFaceSource(
   const faceCoverage =
     (det.box.width * det.box.height) /
     Math.max(1, det.imageWidth * det.imageHeight);
+
+  const poseGate = poseRefuseGate({
+    yaw: det.telemetry?.estimatedYaw ?? scrfdResult?.primary?.pose.yaw,
+    pitch: det.telemetry?.estimatedPitch ?? scrfdResult?.primary?.pose.pitch,
+  });
+  const hardGate = hardQualityRefuseGate({
+    ok: quality.ok,
+    score: quality.score,
+    faceCoverage,
+    sharpness: quality.sharpness,
+    illumination: quality.illumination,
+    confidence: det.confidence,
+    issues: quality.issues,
+  });
+
+  const features: FaceFeatures = emptyFeatures();
+
+  if (!poseGate.pass || !hardGate.pass) {
+    const refuse = !poseGate.pass ? poseGate : hardGate;
+    const issues = [...quality.issues];
+    if (refuse.message && !issues.includes(refuse.message)) {
+      issues.unshift(refuse.message);
+    }
+    onProgress?.(3, 100);
+    return {
+      features,
+      quality: {
+        ...quality,
+        ok: false,
+        issues,
+      },
+      matches: [],
+      analyzedAt: Date.now(),
+      engineVersion: ENGINE_VERSION,
+      facePreviewUrl,
+      estimatedAge: Math.round(det.age),
+      estimatedGender: det.gender,
+      telemetry: det.telemetry,
+    };
+  }
+
   const matches = rankByDescriptor(
     {
       descriptor: det.descriptor,
       age: det.age,
       gender: det.gender,
       genderProbability: det.genderProbability,
-      // Feed real detection quality into match confidence (was defaulting to optimistic values)
       detConfidence: det.confidence,
       sharpness: det.sharpness,
       faceCoverage,
@@ -232,8 +276,28 @@ export async function analyzeFaceSource(
 
   onProgress?.(3, 98);
 
-  // Geometry features left empty for embedding path (traits come from age/gender/embedding)
-  const features: FaceFeatures = emptyFeatures();
+  // Distance floor emptied the top-K — surface as a soft open-set miss.
+  if (matches.length === 0) {
+    const issues = [...quality.issues];
+    const miss =
+      "No close look-alike in the gallery — try another photo or angle.";
+    if (!issues.includes(miss)) issues.unshift(miss);
+    return {
+      features,
+      quality: {
+        ...quality,
+        ok: false,
+        issues,
+      },
+      matches: [],
+      analyzedAt: Date.now(),
+      engineVersion: ENGINE_VERSION,
+      facePreviewUrl,
+      estimatedAge: Math.round(det.age),
+      estimatedGender: det.gender,
+      telemetry: det.telemetry,
+    };
+  }
 
   return {
     features,

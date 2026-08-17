@@ -1,5 +1,9 @@
 import type { CelebrityEmbedding } from "./embeddings.ts";
-import { ensembleDistance, l2Normalize } from "./embeddings.ts";
+import {
+  cosineDistance256,
+  ensembleDistance,
+  l2Normalize,
+} from "./embeddings.ts";
 
 /** Near-zero ensemble distance treats gallery vectors as clones. */
 export const GALLERY_CLONE_EPS = 1e-4;
@@ -123,35 +127,81 @@ export function computeCentroidEmbedding(vectors: ArrayLike<number>[]): Float32A
 }
 
 /**
- * Merge and compute multi-shot centroids for celebrities with multiple templates.
+ * FaceNet→256 pad heuristic: trailing half near-zero **and** a dense lower
+ * half (real 128-d FaceNet). Sparse one-hot EdgeFace probes must not match.
  */
-export function buildMultiShotCentroidGallery(gallery: CelebrityEmbedding[]): CelebrityEmbedding[] {
+export function isPaddedFaceNetDescriptor(
+  descriptor: ArrayLike<number>,
+  eps = 1e-6,
+): boolean {
+  if (descriptor.length < 256) return descriptor.length > 0 && descriptor.length <= 128;
+  let energyHigh = 0;
+  let nonzeroLow = 0;
+  for (let i = 0; i < 128; i++) {
+    const lo = descriptor[i] ?? 0;
+    const hi = descriptor[i + 128] ?? 0;
+    energyHigh += hi * hi;
+    if (Math.abs(lo) > eps) nonzeroLow++;
+  }
+  return energyHigh <= eps && nonzeroLow >= 32;
+}
+
+/**
+ * Collapse multi-shot rows into a centroid primary + up to `maxExtraPrototypes`
+ * farthest distinct views (small prototype set for open-set ranking).
+ */
+export function buildMultiShotCentroidGallery(
+  gallery: CelebrityEmbedding[],
+  maxExtraPrototypes = 2,
+): CelebrityEmbedding[] {
   const byId = new Map<string, CelebrityEmbedding[]>();
   for (const entry of gallery) {
+    if (isPaddedFaceNetDescriptor(entry.descriptor)) continue;
     const list = byId.get(entry.id) ?? [];
     list.push(entry);
     byId.set(entry.id, list);
   }
 
+  // Preserve singles that were only padded FaceNet (fall back to original row)
+  for (const entry of gallery) {
+    if (byId.has(entry.id)) continue;
+    byId.set(entry.id, [entry]);
+  }
+
   const result: CelebrityEmbedding[] = [];
-  for (const [id, entries] of byId.entries()) {
-    if (entries.length === 1) {
-      result.push(entries[0]!);
-    } else {
-      // Primary entry (base metadata)
-      const primary = entries[0]!;
-      // Compute centroid of all views/shots
-      const centroidDesc = Array.from(computeCentroidEmbedding(entries.map((e) => e.descriptor)));
-      result.push({
-        ...primary,
-        descriptor: centroidDesc,
-      });
-      // Keep distinct multi-view templates if they are not clones
-      const distinct = collapseSameIdDescriptorClones(entries);
-      for (const d of distinct) {
-        result.push(d);
-      }
+  for (const [, entries] of byId.entries()) {
+    const distinct = collapseSameIdDescriptorClones(entries);
+    if (distinct.length === 1) {
+      result.push(distinct[0]!);
+      continue;
     }
+
+    const primary = distinct[0]!;
+    const centroidDesc = Array.from(
+      computeCentroidEmbedding(distinct.map((e) => e.descriptor)),
+    );
+    result.push({
+      ...primary,
+      descriptor: centroidDesc,
+    });
+
+    const ranked = distinct
+      .map((entry) => ({
+        entry,
+        dist: cosineDistance256(centroidDesc, entry.descriptor),
+      }))
+      .sort((a, b) => b.dist - a.dist);
+
+    const extras: CelebrityEmbedding[] = [];
+    for (const { entry } of ranked) {
+      if (extras.length >= maxExtraPrototypes) break;
+      // Skip near-centroid clones
+      if (cosineDistance256(centroidDesc, entry.descriptor) < GALLERY_CLONE_EPS) {
+        continue;
+      }
+      extras.push(entry);
+    }
+    result.push(...extras);
   }
   return result;
 }

@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-08-17T14:17:51.373Z",
+  "summary": {
+    "celebs": 1000,
+    "multiShot": 202,
+    "singleShot": 798,
+    "needsMoreViews": 798,
+    "countsByPolicy": {
+      "prototype-ready": 194,
+      "single-shot-primary": 798,
+      "needs-one-more-view": 8
+    },
+    "target": "Prefer N≥2–3 real EdgeFace frontals per head celeb before adding more unique ids. Drop non-frontal / expressive primaries on rebuild."
+  },
+  "enrollmentGates": {
+    "maxYawDeg": 18,
+    "maxPitchDeg": 15,
+    "maxSmile": 0.55,
+    "minSharpness": 48,
+    "minCoverage": 0.08
+  },
+  "sampleSingleShot": [
+    "mahershala-ali",
+    "rihanna",
+    "zoe-kravitz",
+    "serena-williams",
+    "jenna-ortega",
+    "ali-wong",
+    "sandra-oh",
+    "yara-shahidi",
+    "uzo-aduba",
+    "daniel-kaluuya",
+    "jacob-elordi",
+    "adam-sandler",
+    "aishwarya-rai",
+    "al-pacino",
+    "ansel-elgort",
+    "anthony-mackie",
+    "ben-affleck",
+    "bill-gates",
+    "bill-skarsgard",
+    "blake-lively"
+  ]
+}
