@@ -104,8 +104,9 @@ export function AppHome() {
         setProgress((prev) => Math.max(prev, currentProgress));
       }, 100);
 
-      // First model load on mid-range phones can exceed 20s.
-      const timeoutMs = window.matchMedia("(pointer: coarse)").matches ? 45000 : 25000;
+      // First model load + CPU-only detection can exceed 25s even on desktops
+      // without WebGPU/WebGL (software rendering, older laptops).
+      const timeoutMs = window.matchMedia("(pointer: coarse)").matches ? 60000 : 45000;
       const timeoutId = window.setTimeout(() => {
         cancelled = true;
         setError("Analysis timed out. Please try a clearer front-facing photo on a stronger connection.");
