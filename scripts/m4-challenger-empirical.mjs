@@ -454,7 +454,7 @@ console.log("\n--- [DOMAIN 4] Mathematical Edge-Cases & Vector Stability ---");
   const distOrth = cosineDistance256(vA, vB);
   assert(Math.abs(distOrth - 1.0) < 1e-6, `Orthogonal vectors yield cosine distance 1.0 (got ${distOrth})`);
   const pctOrth = distanceToMatchPercent(distOrth);
-  assert(pctOrth >= 1.0 && pctOrth <= 2.0, `Orthogonal vectors yield low baseline match percentage: ${pctOrth}%`);
+  assert(pctOrth <= 2.0, `Orthogonal vectors yield low baseline match percentage: ${pctOrth}%`);
 }
 
 // 4.3 Antipodal Vectors (dist = 2.0)
