@@ -6,6 +6,8 @@ import {
   ensembleDistance,
   l2Normalize,
   distanceToMatchPercent,
+  HILL_D0,
+  HILL_N,
   rankPercentsFromDistances,
   ageAffinity,
   genderAffinity,
@@ -21,10 +23,9 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.equal(res, 100.0, `Expected 100.0 at d=0, got ${res}`);
     });
 
-    it("evaluates Hill Equation exact value at half-saturation threshold d = 0.38", () => {
-      // P(0.38) = 100.0 / (1 + (0.38/0.38)^4.5) = 100.0 / 2 = 50.0
-      const res = distanceToMatchPercent(0.38);
-      assert.equal(res, 50.0, `Expected 50.0 at d=0.38, got ${res}`);
+    it("evaluates Hill Equation exact value at half-saturation threshold d = 0.12", () => {
+      const res = distanceToMatchPercent(0.12);
+      assert.equal(res, 50.0, `Expected 50.0 at d=0.12, got ${res}`);
     });
 
     it("verifies strict monotonicity for fine distance steps across [0, 3.0]", () => {
@@ -40,10 +41,9 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
     });
 
     it("verifies unrounded Hill curve continuous derivative is strictly negative for d > 0", () => {
-      // hill(d) = 100 / (1 + (d/0.38)^4.5)
       for (let d = 0.01; d <= 2.0; d += 0.05) {
-        const hill1 = 100.0 / (1 + Math.pow(d / 0.38, 4.5));
-        const hill2 = 100.0 / (1 + Math.pow((d + 1e-5) / 0.38, 4.5));
+        const hill1 = 100.0 / (1 + Math.pow(d / HILL_D0, HILL_N));
+        const hill2 = 100.0 / (1 + Math.pow((d + 1e-5) / HILL_D0, HILL_N));
         assert.ok(hill2 < hill1, `Hill curve derivative not strictly negative at d=${d}`);
       }
     });

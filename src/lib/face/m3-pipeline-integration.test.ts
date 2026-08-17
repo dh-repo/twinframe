@@ -75,21 +75,21 @@ describe("Milestone 3 Phase 3 AccuFace v4.0 Pipeline & Metric Recalibration Suit
     });
   });
 
-  describe("3. Recalibrated Hill Curve Parameters (d0 = 0.38, n = 4.5)", () => {
+  describe("3. Recalibrated Hill Curve Parameters (d0 = 0.12, n = 3.2)", () => {
     it("returns exactly 100.0 at d = 0.0", () => {
       assert.equal(distanceToMatchPercent(0), 100.0);
     });
 
-    it("returns exactly 50.0 at half-saturation decision boundary d = 0.38", () => {
-      const p = distanceToMatchPercent(0.38);
-      assert.equal(p, 50.0, `Expected 50.0 at d=0.38, got ${p}`);
+    it("returns exactly 50.0 at half-saturation decision boundary d = 0.12", () => {
+      const p = distanceToMatchPercent(0.12);
+      assert.equal(p, 50.0, `Expected 50.0 at d=0.12, got ${p}`);
     });
 
     it("evaluates expected recalibrated match percentages at key distance points", () => {
-      assert.equal(distanceToMatchPercent(0.20), 94.7);
-      assert.equal(distanceToMatchPercent(0.30), 74.3);
-      assert.equal(distanceToMatchPercent(0.45), 31.8);
-      assert.equal(distanceToMatchPercent(0.50), 22.5);
+      assert.equal(distanceToMatchPercent(0.038), 97.5);
+      assert.equal(distanceToMatchPercent(0.083), 76.5);
+      assert.equal(distanceToMatchPercent(0.20), 16.3);
+      assert.equal(distanceToMatchPercent(0.30), 5.1);
     });
 
     it("enforces strict monotonicity across distance range [0.0, 2.0]", () => {

@@ -31,12 +31,12 @@ describe("euclideanDistance / calibration", () => {
     assert.equal(distanceToMatchPercent(0), 100);
   });
 
-  it("calibrates AccuFace v4.0 Hill Equation curve at key sample points", () => {
-    assert.equal(distanceToMatchPercent(0.38), 50.0);
-    assert.equal(distanceToMatchPercent(0.20), 94.7);
-    assert.equal(distanceToMatchPercent(0.30), 74.3);
-    assert.equal(distanceToMatchPercent(0.45), 31.8);
-    assert.equal(distanceToMatchPercent(0.50), 22.5);
+  it("calibrates Hill curve at live FaceNet distance anchors", () => {
+    assert.equal(distanceToMatchPercent(0.12), 50.0);
+    assert.equal(distanceToMatchPercent(0.038), 97.5);
+    assert.equal(distanceToMatchPercent(0.083), 76.5);
+    assert.equal(distanceToMatchPercent(0.20), 16.3);
+    assert.equal(distanceToMatchPercent(0.30), 5.1);
   });
 
   it("maintains strict non-increasing monotonicity across d in [0, 1.5]", () => {

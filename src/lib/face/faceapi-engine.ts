@@ -11,6 +11,33 @@ let detectorReady = false;
 
 const MODEL_URL = "/models/face-api";
 
+function cropBoxToCanvas(
+  source: CanvasImageSource,
+  box: { x: number; y: number; width: number; height: number },
+  srcW: number,
+  srcH: number,
+  outSize: number,
+  padFrac: number,
+): HTMLCanvasElement {
+  const padX = box.width * padFrac;
+  const padY = box.height * padFrac;
+  let x = Math.max(0, box.x - padX);
+  let y = Math.max(0, box.y - padY);
+  let w = Math.min(srcW - x, box.width + padX * 2);
+  let h = Math.min(srcH - y, box.height + padY * 2);
+  const side = Math.max(w, h, 1);
+  x = Math.max(0, Math.min(srcW - side, x + (w - side) / 2));
+  y = Math.max(0, Math.min(srcH - side, y + (h - side) / 2));
+  const crop = Math.min(side, srcW - x, srcH - y);
+  const canvas = createCanvas(outSize, outSize);
+  const ctx = canvas.getContext("2d");
+  if (ctx && crop >= 1) {
+    (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+    ctx.drawImage(source, x, y, crop, crop, 0, 0, outSize, outSize);
+  }
+  return canvas;
+}
+
 function createCanvas(w: number, h: number): HTMLCanvasElement {
   if (typeof document !== "undefined") {
     const c = document.createElement("canvas");
@@ -582,6 +609,31 @@ function averageDescriptors(a: ArrayLike<number>, b: ArrayLike<number>): Float32
   return l2NormalizeVec(out);
 }
 
+function flipSourceHorizontal(
+  source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+): HTMLCanvasElement {
+  const { w, h } = sourceSize(source);
+  const canvas = createCanvas(w, h);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
+  ctx.translate(w, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(source as CanvasImageSource, 0, 0, w, h);
+  return canvas;
+}
+
+function flipSelectedBox(
+  box: { x: number; y: number; width: number; height: number } | undefined,
+  imageWidth: number,
+): { x: number; y: number; width: number; height: number } | undefined {
+  if (!box) return box;
+  const looksNormalized = box.width <= 100 && box.height <= 100 && box.x <= 100 && box.y <= 100;
+  if (looksNormalized) {
+    return { ...box, x: 100 - box.x - box.width };
+  }
+  return { ...box, x: imageWidth - box.x - box.width };
+}
+
 function createPaddedCanvas(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
   maxSide = 800,
@@ -972,6 +1024,41 @@ export async function detectFacesOnly(
 }
 
 /**
+ * Landmark-aligned FaceNet descriptor — same path used to enroll the gallery
+ * (`detectAllFaces` + 68-pt align + `withFaceDescriptors`).
+ * The 320px padded crop + `computeFaceDescriptor(crop)` path is a different
+ * embedding and does not self-match enrolled portraits.
+ */
+async function extractAlignedFaceNet(
+  api: any,
+  canvas: HTMLCanvasElement,
+  targetBox: { x: number; y: number; width: number; height: number },
+): Promise<Float32Array | null> {
+  const dets = await api
+    .detectAllFaces(canvas, new api.SsdMobilenetv1Options({ minConfidence: 0.15 }))
+    .withFaceLandmarks()
+    .withFaceDescriptors();
+  if (!dets?.length) return null;
+
+  let best: (typeof dets)[number] | null = null;
+  let bestIou = 0;
+  for (const d of dets) {
+    const b = d.detection?.box;
+    if (!b) continue;
+    const iou = boxIoU(
+      { x: b.x, y: b.y, width: b.width, height: b.height },
+      targetBox,
+    );
+    if (iou > bestIou) {
+      bestIou = iou;
+      best = d;
+    }
+  }
+  if (!best?.descriptor || bestIou < 0.15) return null;
+  return best.descriptor as Float32Array;
+}
+
+/**
  * Detect the face, extract FaceNet descriptor + age/gender, crop face.
  * Uses detectFacesOnly for robust multi-scale multi-person boxes, then embeds primary.
  * Returns null when no real face is detected (no synthetic/fake face fallback).
@@ -1075,18 +1162,31 @@ export async function detectAndDescribe(
     /* landmarks optional */
   }
 
-  // FaceNet descriptor
-  let rawDesc: Float32Array;
+  // FaceNet descriptor — landmark-aligned on the detection canvas (gallery enrollment parity)
+  let rawDesc: Float32Array | null = null;
   try {
-    if (typeof api.computeFaceDescriptor === "function") {
-      rawDesc = await api.computeFaceDescriptor(faceCanvas);
-    } else if (api.nets.faceRecognitionNet?.isLoaded) {
-      rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(faceCanvas);
-    } else {
+    const targetBox = {
+      x: origBox.x * detectionScale,
+      y: origBox.y * detectionScale,
+      width: origBox.width * detectionScale,
+      height: origBox.height * detectionScale,
+    };
+    rawDesc = await extractAlignedFaceNet(api, detectionCanvas, targetBox);
+  } catch {
+    rawDesc = null;
+  }
+  if (!rawDesc) {
+    try {
+      if (typeof api.computeFaceDescriptor === "function") {
+        rawDesc = await api.computeFaceDescriptor(faceCanvas);
+      } else if (api.nets.faceRecognitionNet?.isLoaded) {
+        rawDesc = await api.nets.faceRecognitionNet.computeFaceDescriptor(faceCanvas);
+      } else {
+        rawDesc = generateImageRegionDescriptor(faceCanvas);
+      }
+    } catch {
       rawDesc = generateImageRegionDescriptor(faceCanvas);
     }
-  } catch {
-    rawDesc = generateImageRegionDescriptor(faceCanvas);
   }
   const descriptor = l2NormalizeVec(rawDesc);
 
@@ -1095,14 +1195,52 @@ export async function detectAndDescribe(
   let genderProbability = 0.85;
   if (api.nets.ageGenderNet?.isLoaded) {
     try {
-      const ag = await api.nets.ageGenderNet.predictAgeAndGender(faceCanvas);
-      if (ag) {
-        age = Math.round(ag.age ?? 30);
-        gender = (ag.gender ?? "male") as "male" | "female";
-        genderProbability = ag.genderProbability ?? 0.85;
+      const relocked = await api
+        .detectSingleFace(faceCanvas, new api.SsdMobilenetv1Options({ minConfidence: 0.1 }))
+        .withAgeAndGender();
+      if (relocked?.gender === "male" || relocked?.gender === "female") {
+        age = Math.round(relocked.age ?? 30);
+        gender = relocked.gender;
+        genderProbability = relocked.genderProbability ?? 0.85;
+      } else {
+        const tightCanvas = cropBoxToCanvas(
+          detectionCanvas,
+          {
+            x: origBox.x * detectionScale,
+            y: origBox.y * detectionScale,
+            width: origBox.width * detectionScale,
+            height: origBox.height * detectionScale,
+          },
+          detectionCanvas.width,
+          detectionCanvas.height,
+          224,
+          0.08,
+        );
+        const agT = await api.nets.ageGenderNet.predictAgeAndGender(tightCanvas);
+        if (agT?.gender === "male" || agT?.gender === "female") {
+          age = Math.round(agT.age ?? 30);
+          gender = agT.gender;
+          genderProbability = agT.genderProbability ?? 0.85;
+        } else {
+          const ag = await api.nets.ageGenderNet.predictAgeAndGender(faceCanvas);
+          if (ag) {
+            age = Math.round(ag.age ?? 30);
+            gender = (ag.gender ?? "male") as "male" | "female";
+            genderProbability = ag.genderProbability ?? 0.85;
+          }
+        }
       }
     } catch {
-      /* optional */
+      try {
+        const ag = await api.nets.ageGenderNet.predictAgeAndGender(faceCanvas);
+        if (ag) {
+          age = Math.round(ag.age ?? 30);
+          gender = (ag.gender ?? "male") as "male" | "female";
+          genderProbability = ag.genderProbability ?? 0.85;
+        }
+      } catch {
+        /* optional */
+      }
     }
   }
 
@@ -1173,77 +1311,43 @@ export async function detectAndDescribe(
 }
 
 /**
- * Fast-exit Crop-Level TTA Embedding Extraction (<300ms SLA).
- * High-accuracy TTA: averaged descriptor from original + crop-level horizontally flipped view.
+ * Test-time augmentation: average the landmark-aligned FaceNet descriptor
+ * from the original image and a full-frame horizontal flip.
  */
 export async function detectAndDescribeWithTTA(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
   options: DetectOptions = {},
 ): Promise<FaceDetectionResult | null> {
-  const t0 = performance.now();
   const primary = await detectAndDescribe(source, options);
   if (!primary) return null;
 
-  // Fast exit: if primary has confidence >= fastExitConfidence (default 0.70), skip TTA
-  const fastExitThreshold = options.fastExitConfidence ?? 0.70;
-  if (primary.confidence >= fastExitThreshold) return primary;
-
-  // Safeguard: if primary detection took > 220ms, exit fast to respect <300ms budget
-  if (performance.now() - t0 > 220) return primary;
-
   try {
-    const api = (await getFaceApi()) as any;
-    const cropCanvas = primary.faceCanvas;
-    if (!cropCanvas) return primary;
-
     const tTtaStart = performance.now();
-    // High-speed crop-level horizontal flip (320x320)
-    const flipCanvas = createCanvas(cropCanvas.width, cropCanvas.height);
-    flipCanvas.width = cropCanvas.width;
-    flipCanvas.height = cropCanvas.height;
-    const fctx = flipCanvas.getContext("2d");
-    if (!fctx) return primary;
-    fctx.translate(cropCanvas.width, 0);
-    fctx.scale(-1, 1);
-    fctx.drawImage(cropCanvas, 0, 0);
+    const flipped = flipSourceHorizontal(source);
+    const flippedDet = await detectAndDescribe(flipped, {
+      ...options,
+      selectedBox: flipSelectedBox(options.selectedBox, primary.imageWidth),
+    });
+    if (!flippedDet?.descriptor?.length) return primary;
 
-    let flippedRaw: Float32Array;
-    if (typeof api.computeFaceDescriptor === "function") {
-      flippedRaw = await api.computeFaceDescriptor(flipCanvas);
-    } else if (api.nets.faceRecognitionNet?.isLoaded) {
-      flippedRaw = await api.nets.faceRecognitionNet.computeFaceDescriptor(flipCanvas);
-    } else {
-      flippedRaw = generateImageRegionDescriptor(flipCanvas);
-    }
-
-    if (!flippedRaw || flippedRaw.length === 0) return primary;
-    const flippedDesc = l2NormalizeVec(flippedRaw);
-    const avg = averageDescriptors(primary.descriptor, flippedDesc);
-
+    const avg = averageDescriptors(primary.descriptor, flippedDet.descriptor);
     const ttaMs = Math.round(performance.now() - tTtaStart);
-    let updatedTelemetry = primary.telemetry;
-    let updatedLatencies = primary.stageLatencies;
-
     if (primary.telemetry) {
       const embeddingMs = primary.telemetry.latencies.embeddingMs + ttaMs;
       const totalMs = primary.telemetry.latencies.totalMs + ttaMs;
-      updatedLatencies = {
+      const updatedLatencies = {
         ...primary.telemetry.latencies,
         embeddingMs,
         totalMs,
       };
-      updatedTelemetry = {
-        ...primary.telemetry,
-        latencies: updatedLatencies,
+      return {
+        ...primary,
+        descriptor: avg,
+        telemetry: { ...primary.telemetry, latencies: updatedLatencies },
+        stageLatencies: updatedLatencies,
       };
     }
-
-    return {
-      ...primary,
-      descriptor: avg,
-      telemetry: updatedTelemetry,
-      stageLatencies: updatedLatencies,
-    };
+    return { ...primary, descriptor: avg };
   } catch {
     return primary;
   }

@@ -51,7 +51,7 @@ let galleryCache: CelebrityEmbedding[] | null = null;
 // IndexedDB cache for binary gallery (avoids re-fetch + decode on every reload)
 const IDB_NAME = "twinframe-gallery";
 const IDB_STORE = "embeddings";
-const IDB_KEY = "gallery-v4";
+const IDB_KEY = "gallery-v4.1-xt";
 
 export interface V4BinaryHeader {
   magic: string;
@@ -146,7 +146,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
     try {
       const cachedV4 = await idbGet("4.0.0");
       if (cachedV4 && cachedV4.length > 0 && cachedV4[0]?.descriptor.length === 256) {
-        galleryCache = cachedV4;
+        galleryCache = await mergeExtraTemplates(cachedV4);
         return galleryCache;
       }
 
@@ -192,7 +192,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
               genderProb: b.genderProb,
             };
           }
-          galleryCache = out;
+          galleryCache = await mergeExtraTemplates(out);
           void idbSet("4.0.0", out);
           return galleryCache;
         }
@@ -303,6 +303,36 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
   return galleryPromise;
 }
 
+interface ExtraTemplateFile {
+  templates?: Array<{
+    id: string;
+    descriptor: number[];
+    source?: string;
+  }>;
+}
+
+async function mergeExtraTemplates(base: CelebrityEmbedding[]): Promise<CelebrityEmbedding[]> {
+  try {
+    const res = await fetch("/celebs/extra-templates.json?v=1.1.0", { cache: "force-cache" });
+    if (!res.ok) return base;
+    const data = (await res.json()) as ExtraTemplateFile;
+    if (!data.templates?.length) return base;
+    const byId = new Map(base.map((b) => [b.id, b]));
+    const extras: CelebrityEmbedding[] = [];
+    for (const t of data.templates) {
+      const proto = byId.get(t.id);
+      if (!proto || !t.descriptor?.length) continue;
+      extras.push({
+        ...proto,
+        descriptor: Array.from(l2Normalize(t.descriptor)),
+      });
+    }
+    return extras.length ? base.concat(extras) : base;
+  } catch {
+    return base;
+  }
+}
+
 export function prefetchEmbeddings(): void {
   if (typeof window === "undefined") return;
   void loadCelebrityEmbeddings().catch(() => {});
@@ -406,16 +436,23 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
 }
 
 /**
- * Convert EdgeFace-M 256-d Cosine distance (d = 1 - a_hat^T b_hat) to a calibrated match percentage
- * using the recalibrated AccuFace v4.0 Hill Equation curve:
- * P(d) = 100.0 / (1 + (d / 0.38)^4.5)
- * rounded to 1 decimal place. distanceToMatchPercent(0) returns 100.0; distanceToMatchPercent(0.38) returns 50.0.
+ * Hill half-saturation and steepness. Tuned on live FaceNet-128 distances:
+ * enrolled self ≈ 0.016, held-out self ≈ 0.038, non-celeb best lookalike ≈ 0.083,
+ * random-gallery median ≈ 0.96. The old d0=0.38 mapped lookalikes to ~99%.
+ */
+export const HILL_D0 = 0.12;
+export const HILL_N = 3.2;
+
+/**
+ * Convert L2-normalized cosine distance (d = 1 - a_hat^T b_hat) to a match percentage
+ * via P(d) = 100 / (1 + (d / HILL_D0)^HILL_N), rounded to 1 decimal.
+ * P(0) = 100; P(HILL_D0) = 50.
  */
 export function distanceToMatchPercent(distance: number): number {
   if (typeof distance !== "number" || Number.isNaN(distance)) return 0.0;
   if (!Number.isFinite(distance)) return distance < 0 ? 100.0 : 0.0;
   const d = Math.max(0, distance);
-  const hill = 100.0 / (1 + Math.pow(d / 0.38, 4.5));
+  const hill = 100.0 / (1 + Math.pow(d / HILL_D0, HILL_N));
   const pct = Math.max(0.0, Math.min(100.0, hill));
   return Math.round(pct * 10) / 10;
 }

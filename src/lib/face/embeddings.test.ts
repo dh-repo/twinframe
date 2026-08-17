@@ -75,9 +75,9 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     assert.ok(Math.abs(cosineDistance256(v1, v2) - 0.0) < 1e-5);
     assert.ok(Math.abs(cosineDistance256(v1, v3) - 1.0) < 1e-4);
 
-    // AccuFace v4.0 Hill Equation: P(0) = 100%, P(0.38) = 50%
+    // Hill: P(0) = 100%, P(HILL_D0=0.12) = 50%
     assert.equal(distanceToMatchPercent(0.0), 100.0);
-    assert.equal(distanceToMatchPercent(0.38), 50.0);
+    assert.equal(distanceToMatchPercent(0.12), 50.0);
   });
 
   test("5. Catalog Synchronization Audit across Binary and JSON", () => {
@@ -185,19 +185,19 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
   });
 
   test("9. Recalibrated Hill Curve Monotonicity, Boundaries, & Empirical Distance Mapping", () => {
-    // 1. Exact Hill curve calibration check
+    // 1. Exact Hill curve calibration check (d0=0.12, n=3.2)
     assert.equal(distanceToMatchPercent(0.0), 100.0);
-    assert.equal(distanceToMatchPercent(0.20), 94.7);
-    assert.equal(distanceToMatchPercent(0.30), 74.3);
-    assert.equal(distanceToMatchPercent(0.38), 50.0);
-    assert.equal(distanceToMatchPercent(0.45), 31.8);
-    assert.equal(distanceToMatchPercent(0.50), 22.5);
+    assert.equal(distanceToMatchPercent(0.038), 97.5);
+    assert.equal(distanceToMatchPercent(0.083), 76.5);
+    assert.equal(distanceToMatchPercent(0.12), 50.0);
+    assert.equal(distanceToMatchPercent(0.20), 16.3);
+    assert.equal(distanceToMatchPercent(0.30), 5.1);
 
-    // 2. High match percent (80% - 99%) for genuine top matches (d in [0.05, 0.28])
-    const pTop = distanceToMatchPercent(0.15);
-    assert.ok(pTop >= 80.0 && pTop <= 99.0, `Expected top match in 80-99%, got ${pTop}%`);
+    // 2. High match percent for genuine same-person distances (held-out self ≈ 0.038)
+    const pTop = distanceToMatchPercent(0.038);
+    assert.ok(pTop >= 90.0 && pTop <= 99.0, `Expected genuine self in 90-99%, got ${pTop}%`);
 
-    // 3. Low match percent (< 35%) for random background faces (d >= 0.45, mean NN is 0.5557)
+    // 3. Low match percent for random background faces (gallery median ≈ 0.96)
     const pBackground = distanceToMatchPercent(0.55);
     assert.ok(pBackground < 35.0, `Expected background match < 35%, got ${pBackground}%`);
 

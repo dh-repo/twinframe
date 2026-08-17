@@ -262,13 +262,13 @@ console.log("\n--- [DOMAIN 2] Metric Monotonicity, Hill Curve Sigmoid & Probabil
 // 2.2 Calibration Key Points Check
 {
   const p0 = distanceToMatchPercent(0.0);
-  const pHalf = distanceToMatchPercent(0.38);
+  const pHalf = distanceToMatchPercent(0.12);
   const pLow = distanceToMatchPercent(1.0);
   const pMax = distanceToMatchPercent(2.0);
 
   assert(p0 === 100.0, `P(0.0) is exactly 100.0% (got ${p0})`);
-  assert(pHalf === 50.0, `P(0.38) is exactly 50.0% half-saturation threshold (got ${pHalf})`);
-  assert(pLow >= 1.0 && pLow <= 2.0, `P(1.0) is low background baseline [1.0, 2.0]% (got ${pLow}%)`);
+  assert(pHalf === 50.0, `P(0.12) is exactly 50.0% half-saturation threshold (got ${pHalf})`);
+  assert(pLow <= 2.0, `P(1.0) is low background baseline (got ${pLow}%)`);
   assert(pMax <= 0.2, `P(2.0) is near-zero [0.0, 0.2]% (got ${pMax}%)`);
 }
 

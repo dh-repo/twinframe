@@ -152,7 +152,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
         const scrfdResult = await detectSCRFD(img, { scoreThreshold: 0.35 });
         if (!isMounted || finished) return;
 
-        const list: FaceCandidateUI[] = scrfdResult.detections.map((d, idx) => ({
+        let list: FaceCandidateUI[] = scrfdResult.detections.map((d, idx) => ({
           id: idx,
           label: `Face ${idx + 1}`,
           box: {
@@ -166,6 +166,22 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
           score: d.score,
           thumbUrl: makeFaceThumb(img, d.bbox),
         }));
+
+        if (list.length === 0) {
+          setDetectStatus("Scanning for faces…");
+          const { detectFacesOnly } = await import("@/lib/face/faceapi-engine");
+          if (!isMounted || finished) return;
+          const ssd = await detectFacesOnly(img);
+          list = ssd.faces.map((d, idx) => ({
+            id: idx,
+            label: `Face ${idx + 1}`,
+            box: d.normalizedBox,
+            unscaledBox: d.box,
+            isPrimary: d.isPrimary,
+            score: d.score,
+            thumbUrl: makeFaceThumb(img, d.box),
+          }));
+        }
 
         if (list.length > 0) {
           applyList(list);
@@ -265,7 +281,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
   }, []);
 
   const handleApprove = useCallback(async () => {
-    if (isApproving) return;
+    if (isApproving || isDetectingFaces) return;
     setIsApproving(true);
     try {
       const img = imgRef.current;
@@ -291,17 +307,9 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
         const cx = face.x + face.width / 2;
         const cy = face.y + face.height / 2;
         const side = Math.max(face.width, face.height) * (1 + pad * 2);
-        // Keep crop inside image bounds
-        let cropSide = Math.min(side, Math.min(iw, ih));
-        // If user zoomed, tighten/loosen crop a bit (scale 1 = default face pad)
-        cropSide = Math.min(Math.min(iw, ih), cropSide / Math.max(0.85, Math.min(2, scale)));
+        const cropSide = Math.min(side, Math.min(iw, ih));
         let sx = cx - cropSide / 2;
         let sy = cy - cropSide / 2;
-        // Apply pan offset (viewfinder is 320px; map px drag → image pixels)
-        const containerSize = 320;
-        const baseScale = Math.max(containerSize / iw, containerSize / ih) * scale;
-        sx -= offset.x / baseScale;
-        sy -= offset.y / baseScale;
         sx = Math.max(0, Math.min(iw - cropSide, sx));
         sy = Math.max(0, Math.min(ih - cropSide, sy));
 
@@ -349,7 +357,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       console.error(e);
       setIsApproving(false);
     }
-  }, [offset, scale, onApprove, isApproving, candidates, selectedFaceId]);
+  }, [offset, scale, onApprove, isApproving, isDetectingFaces, candidates, selectedFaceId]);
 
   const qualityHint = (() => {
     if (!imageSize.w) return null;
@@ -625,13 +633,15 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             <RotateCcw className="h-4 w-4" />
             Retake
           </Button>
-          <Button variant="primary" size="md" onClick={handleApprove} className="flex-[1.4]" disabled={isApproving}>
+          <Button variant="primary" size="md" onClick={handleApprove} className="flex-[1.4]" disabled={isApproving || isDetectingFaces}>
             <Check className="h-4 w-4" />
             {isApproving
               ? "Preparing…"
-              : selectedFaceId !== null && candidates.length > 1
-                ? `Match ${candidates.find((c) => c.id === selectedFaceId)?.label ?? "face"}`
-                : "Approve & Match"}
+              : isDetectingFaces
+                ? "Finding face…"
+                : selectedFaceId !== null && candidates.length > 1
+                  ? `Match ${candidates.find((c) => c.id === selectedFaceId)?.label ?? "face"}`
+                  : "Approve & Match"}
           </Button>
         </div>
       </div>

@@ -166,13 +166,13 @@ describe("Milestone 3 Empirical Challenger Stress Suite", () => {
 
   describe("4. Recalibrated Hill Curve Monotonicity & Boundary Oracle", () => {
     it("verifies Hill Curve match percentages at critical milestone checkpoints", () => {
-      // P(d) = 100 / (1 + (d / 0.38)^4.5)
+      // P(d) = 100 / (1 + (d / 0.12)^3.2)
       assert.equal(distanceToMatchPercent(0.0), 100.0);
-      assert.equal(distanceToMatchPercent(0.38), 50.0);
-      assert.equal(distanceToMatchPercent(0.20), 94.7);
-      assert.equal(distanceToMatchPercent(0.30), 74.3);
-      assert.equal(distanceToMatchPercent(0.45), 31.8);
-      assert.equal(distanceToMatchPercent(0.50), 22.5);
+      assert.equal(distanceToMatchPercent(0.12), 50.0);
+      assert.equal(distanceToMatchPercent(0.038), 97.5);
+      assert.equal(distanceToMatchPercent(0.083), 76.5);
+      assert.equal(distanceToMatchPercent(0.20), 16.3);
+      assert.equal(distanceToMatchPercent(0.30), 5.1);
     });
 
     it("evaluates strict monotonic decay over 10,000 fine-grained distance steps in [0.0, 2.0]", () => {
