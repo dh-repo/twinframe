@@ -16,6 +16,8 @@ describe("honesty bands", () => {
     assert.equal(honestyBand(55), "soft");
     assert.equal(honestyBand(69.9), "soft");
     assert.equal(honestyBand(70), "strong");
+    assert.equal(honestyBand(74, 0.02), "soft");
+    assert.equal(honestyBand(74, 0.08), "strong");
   });
 
   it("keeps share / list copy aligned with the top-card bands", () => {

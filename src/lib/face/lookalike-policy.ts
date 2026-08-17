@@ -2,6 +2,7 @@
  * Open-set look-alike policy: quality/pose refuse gates and distance floors.
  * Verification Top-1 on enrolled celebs is a different objective — these gates
  * keep the product from presenting weak nearest neighbors as doppelgängers.
+ * Displayed percents are further calibrated by open-set-score.ts (Hill × margin).
  */
 
 /** Absolute yaw (degrees) beyond which we refuse ranking. */

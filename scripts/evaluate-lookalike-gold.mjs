@@ -136,7 +136,7 @@ function main() {
       if (hit1) calNum++;
     }
     console.log(
-      `${hit1 ? "PASS" : hit5 ? "SOFT" : "FAIL"} ${c.id} top=${ids[0] ?? "—"} pct=${matches[0]?.matchPercent ?? 0}`,
+      `${hit1 ? "PASS" : hit5 ? "SOFT" : "FAIL"} ${c.id} top=${ids[0] ?? "—"} pct=${matches[0]?.matchPercent ?? 0} hill=${matches[0]?.hillPercent ?? 0} margin=${(matches[0]?.rankMargin ?? 0).toFixed(3)}`,
     );
   }
 

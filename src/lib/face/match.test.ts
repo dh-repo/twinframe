@@ -487,3 +487,91 @@ describe("Demographic Prior Softening & Uncertainty Scaling (R3 Recalibration)",
   });
 });
 
+function axisVector(index: number, dim = 256): Float32Array {
+  const v = new Float32Array(dim);
+  v[index] = 1;
+  return v;
+}
+
+function vectorAtCosineDistance(distance: number, dim = 256): Float32Array {
+  const v = new Float32Array(dim);
+  const cos = 1 - distance;
+  v[0] = cos;
+  v[1] = Math.sqrt(Math.max(0, 1 - cos * cos));
+  return v;
+}
+
+describe("open-set margin calibration in rankByDescriptor", () => {
+  it("keeps identity-range percents at full Hill even with a nearby distractor", () => {
+    const user: UserFaceQuery = {
+      descriptor: axisVector(0),
+      age: 30,
+      gender: "female",
+      genderProbability: 0.95,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "self",
+        name: "Self",
+        path: "/self.webp",
+        descriptor: Array.from(vectorAtCosineDistance(0.1)),
+        age: 30,
+        gender: "female",
+        genderProb: 0.95,
+      },
+      {
+        id: "near",
+        name: "Near",
+        path: "/near.webp",
+        descriptor: Array.from(vectorAtCosineDistance(0.18)),
+        age: 30,
+        gender: "female",
+        genderProb: 0.95,
+      },
+    ];
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(matches[0]?.celebrityId, "self");
+    assert.equal(matches[0]?.matchPercent, matches[0]?.hillPercent);
+    assert.ok((matches[0]?.matchPercent ?? 0) >= 90);
+  });
+
+  it("pulls a crowded open-set nearest-neighbor out of the 60–75% band", () => {
+    const user: UserFaceQuery = {
+      descriptor: axisVector(0),
+      age: 35,
+      gender: "unknown",
+      genderProbability: 0.5,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "emma-style",
+        name: "Crowded Neighbor",
+        path: "/a.webp",
+        descriptor: Array.from(vectorAtCosineDistance(0.54)),
+        age: 35,
+        gender: "female",
+        genderProb: 0.9,
+      },
+      {
+        id: "almost-as-close",
+        name: "Runner Up",
+        path: "/b.webp",
+        descriptor: Array.from(vectorAtCosineDistance(0.56)),
+        age: 35,
+        gender: "female",
+        genderProb: 0.9,
+      },
+    ];
+    const matches = rankByDescriptor(user, gallery, 2);
+    assert.equal(matches.length, 2);
+    assert.equal(matches[0]?.celebrityId, "emma-style");
+    assert.ok((matches[0]?.rankMargin ?? 1) < 0.05);
+    assert.ok((matches[0]?.hillPercent ?? 0) >= 55);
+    assert.ok(
+      (matches[0]?.matchPercent ?? 100) < 55,
+      `crowded open-set should display as weak, got ${matches[0]?.matchPercent}% (hill ${matches[0]?.hillPercent}%)`,
+    );
+    assert.ok((matches[0]?.matchPercent ?? 0) < (matches[0]?.hillPercent ?? 0));
+  });
+});
+
