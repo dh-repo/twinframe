@@ -55,7 +55,14 @@ async function run() {
       "--enable-unsafe-swiftshader",
     ],
   });
-  const page = await browser.newPage({ viewport: { width: 1024, height: 1100 } });
+  const mobile = process.env.CROP_TEST_MOBILE === "1";
+  const requireFace = process.env.CROP_REQUIRE_FACE === "1";
+  const context = await browser.newContext({
+    viewport: { width: 1024, height: 1100 },
+    hasTouch: mobile,
+    isMobile: mobile,
+  });
+  const page = await context.newPage();
   const startedAt = Date.now();
   const requests = [];
 
@@ -82,22 +89,20 @@ async function run() {
     const uploadStartedAt = Date.now();
     await page.locator("input[type='file']").first().setInputFiles(imagePath);
     await page.waitForSelector("h2:has-text('Choose a face')", { timeout: 10_000 });
-    const approveButton = page
-      .locator("button:has-text('Approve'), button:has-text('Use Crop')")
-      .last();
-    if (await approveButton.isDisabled()) {
-      throw new Error("Manual crop approval is disabled while detection runs.");
-    }
 
     await page.waitForFunction(
       () => {
         const body = document.body.innerText;
         return (
           body.includes("Face selected") ||
+          /found \d+ faces/.test(body) ||
           body.includes("face found") ||
           body.includes("faces found") ||
           body.includes("No face locked") ||
+          body.includes("No face found") ||
           body.includes("Detection failed") ||
+          body.includes("Face detection failed") ||
+          body.includes("Face detection timed out") ||
           body.includes("Timed out")
         );
       },
@@ -110,7 +115,7 @@ async function run() {
     const timedOut = bodyText.includes("Timed out");
     const foundFaces =
       bodyText.includes("Face selected") ||
-      /(?:\d+ face found|\d+ faces found)/.test(bodyText);
+      /(?:\d+ face found|\d+ faces found|found \d+ faces)/.test(bodyText);
 
     await page.screenshot({
       path: join(screenshotsDir, "crop-detection-result.png"),
@@ -122,6 +127,22 @@ async function run() {
     if (timedOut) {
       throw new Error(
         `Crop detection reached its timeout after ${elapsedMs}ms.`,
+      );
+    }
+    if (requireFace && !foundFaces) {
+      throw new Error("Automatic crop detection did not select a face.");
+    }
+    if (requireFace) {
+      const approveButton = page
+        .locator("button:has-text('Approve'), button:has-text('Match')")
+        .last();
+      if (await approveButton.isDisabled()) {
+        throw new Error("Matching stayed disabled after detecting a face.");
+      }
+    }
+    if (mobile && elapsedMs > 10_000) {
+      throw new Error(
+        `Mobile crop review took ${elapsedMs}ms to detect a face.`,
       );
     }
   } catch (error) {
