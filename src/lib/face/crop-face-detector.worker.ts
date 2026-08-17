@@ -67,7 +67,9 @@ workerScope.onmessage = async (event) => {
     if (!context) {
       throw new Error("Could not prepare the detection canvas.");
     }
-    context.putImageData(new ImageData(pixels, width, height), 0, 0);
+    const imagePixels = new Uint8ClampedArray(pixels.length);
+    imagePixels.set(pixels);
+    context.putImageData(new ImageData(imagePixels, width, height), 0, 0);
     const result = detector.detect(canvas);
     const detections = result.detections.flatMap((detection) => {
       const box = detection.boundingBox;
