@@ -139,7 +139,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-              {restListHeading(activeTop.matchPercent)} — tap to inspect
+              {restListHeading(activeTop.matchPercent, activeTop.rankMargin)} — tap to inspect
             </h3>
             <span className="text-[10px] font-mono text-match">{rest.length} contenders</span>
           </div>

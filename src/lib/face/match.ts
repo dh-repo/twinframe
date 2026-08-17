@@ -12,6 +12,7 @@ import {
   mergeWithProfile,
 } from "./embeddings.ts";
 import { distanceLookalikeGate } from "./lookalike-policy.ts";
+import { applyOpenSetLookalikePercents, rankMargin } from "./open-set-score.ts";
 
 export { computeMatchConfidence };
 
@@ -81,7 +82,9 @@ export function rankByDescriptor(
   if (!floor.pass) return [];
 
   const top = deduped.slice(0, topK);
-  const percents = rankPercentsFromDistances(top.map((t) => t.adjusted));
+  const hillPercents = rankPercentsFromDistances(top.map((t) => t.adjusted));
+  const margin = rankMargin(deduped.map((t) => t.adjusted));
+  const percents = applyOpenSetLookalikePercents(hillPercents, margin, bestAdjusted);
   const confScore = computeMatchConfidence(
     user.detConfidence ?? 0.92,
     user.sharpness ?? 0.85,
@@ -101,6 +104,8 @@ export function rankByDescriptor(
       name: displayName,
       knownFor: meta.knownFor,
       matchPercent: percents[i] ?? 0,
+      hillPercent: hillPercents[i] ?? percents[i] ?? 0,
+      rankMargin: margin,
       rawScore: 1 / (1 + t.adjusted),
       confidenceScore: confScore,
       traits: buildDescriptorTraits(user, t.celeb, t.dist),

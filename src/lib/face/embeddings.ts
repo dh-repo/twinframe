@@ -449,6 +449,8 @@ export function ensembleDistance(a: ArrayLike<number>, b: ArrayLike<number>): nu
  * same person unseen photo p50 ≈ 0.37 → ~88%; strong look-alike ≈ 0.45 → ~77%;
  * typical best-of-1000 impostor p50 ≈ 0.60 → 50%; 70%+ needs d ≤ 0.49 (rarer
  * than the p10 best-impostor 0.54), keeping high scores meaningful.
+ * rankByDescriptor then applies open-set margin suppression (open-set-score.ts)
+ * so a crowded nearest-neighbor is not shown as a 60–75% doppelgänger.
  */
 export const HILL_D0 = 0.6;
 export const HILL_N = 4.1;

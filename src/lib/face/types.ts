@@ -113,6 +113,10 @@ export interface CelebrityMatch {
   photoUrl192?: string;
   fallbackPhotoUrl?: string;
   distance?: number;
+  /** Hill percent before open-set margin suppression. */
+  hillPercent?: number;
+  /** Adjusted d2 − d1. Small values mean a crowded nearest-neighbor, not a doppelgänger. */
+  rankMargin?: number;
 }
 
 /**

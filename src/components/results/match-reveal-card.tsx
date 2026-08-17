@@ -35,7 +35,7 @@ export function MatchRevealCard({
     return () => clearTimeout(timer);
   }, []);
 
-  const band = honestyBand(topMatch.matchPercent);
+  const band = honestyBand(topMatch.matchPercent, topMatch.rankMargin);
   const confidenceScore =
     topMatch.confidenceScore ?? Math.round(topMatch.matchPercent * 0.95);
   const confidenceRating = honestyRating(band, confidenceScore);
@@ -80,16 +80,18 @@ export function MatchRevealCard({
                 </span>
               </div>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShareOpen(true)}
-                className="h-11 w-11 text-match hover:bg-match/10"
-                title="Create shareable card"
-                aria-label="Share match"
-              >
-                <Share2 className="h-4 w-4" />
-              </Button>
+              {band !== "weak" && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShareOpen(true)}
+                  className="h-11 w-11 text-match hover:bg-match/10"
+                  title="Create shareable card"
+                  aria-label="Share match"
+                >
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
 
@@ -114,7 +116,7 @@ export function MatchRevealCard({
                 <span className="text-xl font-bold">%</span>
               </div>
               <p className="mt-0.5 text-[10px] uppercase font-mono tracking-widest text-fg-subtle">
-                SIMILARITY
+                {band === "weak" ? "NEAREST" : "SIMILARITY"}
               </p>
             </div>
           </div>

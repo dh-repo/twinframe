@@ -4,6 +4,7 @@ import type { CelebrityMatch } from "@/lib/face/types";
 import { Button } from "@/components/ui/button";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
+import { shareText } from "@/lib/ux/honesty";
 
 export interface ShareCardModalProps {
   open: boolean;
@@ -149,7 +150,7 @@ export function ShareCardModal({
       const sharePayload: ShareData = {
         files: [file],
         title: "My Twinframe match",
-        text: `I matched ${topMatch.matchPercent}% with ${topMatch.name} on Twinframe`,
+        text: shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin),
       };
       if (typeof nav.share === "function" && nav.canShare?.(sharePayload)) {
         await nav.share(sharePayload);
@@ -170,7 +171,7 @@ export function ShareCardModal({
   const handleShare = async () => {
     const shareData = {
       title: "My Twinframe Celebrity Match",
-      text: `I just matched ${topMatch.matchPercent}% with ${topMatch.name} on Twinframe!`,
+      text: shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin),
       url: window.location.href,
     };
 
@@ -182,7 +183,7 @@ export function ShareCardModal({
       }
     } else {
       await navigator.clipboard.writeText(
-        `I matched ${topMatch.matchPercent}% with ${topMatch.name} on Twinframe! Find your twin at ${window.location.href}`
+        `${shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin)} Find your twin at ${window.location.href}`
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
