@@ -117,8 +117,8 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       if (!isMounted || finished) return;
       finished = true;
       setIsDetectingFaces(false);
-      setDetectStatus("Timed out — drag to frame a face, then Approve");
-      setDetectError("Detection took too long. You can still crop manually.");
+      setDetectStatus("Face detection timed out — Retake and try again");
+      setDetectError("Automatic face detection took too long.");
     }, 20000);
 
     const img = new Image();
@@ -128,17 +128,6 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
       setImageSize({ w: iw, h: ih });
-
-      // Synchronous TFJS detection can monopolize the main thread on mobile
-      // browsers. Keep touch devices immediately usable and let the approved
-      // crop feed the full matching pipeline instead.
-      if (window.matchMedia("(pointer: coarse)").matches) {
-        finished = true;
-        clearTimeout(safetyTimer);
-        setIsDetectingFaces(false);
-        setDetectStatus("No face locked — drag & zoom, then Approve");
-        return;
-      }
 
       const applyList = (list: FaceCandidateUI[]) => {
         if (!isMounted || list.length === 0) return;
@@ -157,9 +146,11 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
 
       try {
         setDetectStatus("Scanning for faces…");
-        const { detectFacesOnly } = await import("@/lib/face/faceapi-engine");
+        const { detectCropFaces } = await import(
+          "@/lib/face/crop-face-detector"
+        );
         if (!isMounted || finished) return;
-        const detection = await detectFacesOnly(img, { fastCrop: true });
+        const detection = await detectCropFaces(img);
         if (!isMounted || finished) return;
         const list: FaceCandidateUI[] = detection.faces.map((face, idx) => ({
           id: idx,
@@ -179,8 +170,8 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
               : `${list.length} faces found — tap who to match`,
           );
         } else {
-          setDetectStatus("No face locked — drag & zoom, then Approve");
-          setDetectError(null);
+          setDetectStatus("No face found — Retake and try another photo");
+          setDetectError("Automatic detection could not find a clear face.");
         }
       } catch (e) {
         console.warn("Face candidate detection in CropReview failed:", e);
@@ -188,7 +179,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
           setDetectError(
             e instanceof Error ? e.message : "Face model failed to load",
           );
-          setDetectStatus("Detection failed — crop manually, then Approve");
+          setDetectStatus("Face detection failed — Retake and try again");
         }
       } finally {
         finished = true;
@@ -640,15 +631,23 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             <RotateCcw className="h-4 w-4" />
             Retake
           </Button>
-          <Button variant="primary" size="md" onClick={handleApprove} className="flex-[1.4]" disabled={isApproving}>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleApprove}
+            className="flex-[1.4]"
+            disabled={isApproving || isDetectingFaces || candidates.length === 0}
+          >
             <Check className="h-4 w-4" />
             {isApproving
               ? "Preparing…"
               : isDetectingFaces
-                ? "Use Crop & Match"
+                ? "Finding face…"
                 : selectedFaceId !== null && candidates.length > 1
                   ? `Match ${candidates.find((c) => c.id === selectedFaceId)?.label ?? "face"}`
-                  : "Approve & Match"}
+                  : candidates.length === 0
+                    ? "No face found"
+                    : "Approve & Match"}
           </Button>
         </div>
       </div>
