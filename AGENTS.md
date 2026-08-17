@@ -634,3 +634,14 @@ never:     delete or abandon /workspace/startup.sh
 - Use ESM `import` and `export` syntax with `@/*` alias for source imports.
 - Use `.ts` and `.tsx` extensions for source files and `.mjs` for scripts.
 - Name test files as `*.test.ts` and `*.test.mjs`.
+
+## Cursor Cloud specific instructions
+
+This app (`twinframe`) is a client-side celebrity face-matching web app (TanStack Start + Vite; on-device face-api/tfjs + onnxruntime-web). Standard commands live in `README.md` / `package.json` (`npm run dev|build|typecheck|test|lint`). Notes below are the non-obvious gotchas for this environment.
+
+- ONNX Runtime WASM assets are placeholders in git. The committed `public/models/ort/*.wasm` files are 24-byte placeholders. The real ~78MB WASM is copied from `node_modules/onnxruntime-web/dist` by `npm run copy:ort` (`node scripts/copy-ort-assets.mjs`). Only `npm run build` runs this automatically — plain `npm run dev` does NOT. The startup update script runs `copy:ort` after `npm install`, so the dev server has real assets. This leaves `public/models/ort/*.wasm` showing as modified/untracked in git — that is expected; do NOT commit those large regenerated binaries.
+- Live in-browser matching times out in this VM (no GPU). The CV pipeline expects WebGPU/WebGL + cross-origin isolation. Headless cloud Chrome only has SwiftShader WebGL (rejected by face-api's tfjs) and no cross-origin isolation, so it falls back to the CPU backend where face detection alone is ~21s/face — past the hard-coded 20s analysis timeout in `src/components/app-home.tsx`. The landing page, photo upload, and crop-review UI work; the final match just times out here. This is a hardware limitation, not a setup bug — don't try to "fix" it by editing app code.
+- Verify core matching via the Node harness instead of the browser: `node scripts/evaluate-accuracy.mjs --tier 1 --limit 8 --concurrency 4 --verbose`. It runs the real detect→align→embed→gallery-match pipeline on CPU (~25s/face) and reports Top-1/Top-5 accuracy + per-probe matches (small samples score 100% Top-1). A full 270-probe run takes ~30+ min on CPU, so use `--limit`.
+- `npm test` (283 tests) uses `node --experimental-strip-types` and needs no browser. `npm run lint` and `npm run typecheck` currently report pre-existing errors in app code (e.g. `src/lib/face/faceapi-engine.ts`, `src/routes/re-encode.tsx`) — these are not environment problems.
+- Browser test/verify scripts (`scripts/*.mjs`, `tests/`) use Playwright; the update script runs `npx playwright install chromium`. For software rendering in headless runs, launch Chromium with `--use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader`.
+- Use `npm install` (not `npm ci`): the committed `package-lock.json` is slightly out of sync with `package.json`, so `npm ci` fails while `npm install` succeeds.
