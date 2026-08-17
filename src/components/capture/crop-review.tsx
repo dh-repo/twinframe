@@ -129,6 +129,17 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       const ih = img.naturalHeight;
       setImageSize({ w: iw, h: ih });
 
+      // Synchronous TFJS detection can monopolize the main thread on mobile
+      // browsers. Keep touch devices immediately usable and let the approved
+      // crop feed the full matching pipeline instead.
+      if (window.matchMedia("(pointer: coarse)").matches) {
+        finished = true;
+        clearTimeout(safetyTimer);
+        setIsDetectingFaces(false);
+        setDetectStatus("No face locked — drag & zoom, then Approve");
+        return;
+      }
+
       const applyList = (list: FaceCandidateUI[]) => {
         if (!isMounted || list.length === 0) return;
         setCandidates(list);

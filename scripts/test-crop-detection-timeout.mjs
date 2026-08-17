@@ -55,7 +55,13 @@ async function run() {
       "--enable-unsafe-swiftshader",
     ],
   });
-  const page = await browser.newPage({ viewport: { width: 1024, height: 1100 } });
+  const mobile = process.env.CROP_TEST_MOBILE === "1";
+  const context = await browser.newContext({
+    viewport: { width: 1024, height: 1100 },
+    hasTouch: mobile,
+    isMobile: mobile,
+  });
+  const page = await context.newPage();
   const startedAt = Date.now();
   const requests = [];
 
@@ -122,6 +128,11 @@ async function run() {
     if (timedOut) {
       throw new Error(
         `Crop detection reached its timeout after ${elapsedMs}ms.`,
+      );
+    }
+    if (mobile && elapsedMs > 2_500) {
+      throw new Error(
+        `Mobile crop review took ${elapsedMs}ms to enable manual cropping.`,
       );
     }
   } catch (error) {
