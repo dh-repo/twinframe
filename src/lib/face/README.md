@@ -15,6 +15,7 @@
 - Primary: `public/celebs/embeddings.v4.q8.bin` + `gallery.buckets.json`
 - Extras → prototypes via `buildMultiShotCentroidGallery` (skips FaceNet-padded 128→256 rows)
 - Enrollment QA: `npm`/`node --experimental-strip-types scripts/audit-gallery-enrollment.mjs`
+- Re-enroll (process pool): `scripts/enroll-gallery-onnx.mjs [--concurrency N]` — independent JPEGs in parallel child processes (default `min(16, CPU count)`). One 112×112 EdgeFace pass will not fill a big GPU.
 - Gallery collision audit: `scripts/audit-gallery-v4.mjs` → `public/celebs/gallery-audit-v4.json` (demotion list only; does not rewrite the binary)
 - Open-set gold: `public/celebs/lookalike-gold.json` + `scripts/evaluate-lookalike-gold.mjs`
 - Encode a labeled civilian photo: `scripts/encode-gold-probe.mjs --image fixtures/gold/….jpg --id … --accept id,id` (or `--refuse`)
@@ -27,6 +28,7 @@ npm test
 node --experimental-strip-types scripts/audit-gallery-v4.mjs
 node --experimental-strip-types scripts/evaluate-lookalike-gold.mjs
 node --experimental-strip-types scripts/evaluate-open-set-loo.mjs
+node --experimental-strip-types scripts/enroll-gallery-onnx.mjs --limit 8 --concurrency 4
 ```
 
 ## Civilian gold labeling protocol
