@@ -7,6 +7,8 @@ let faceApiMod: FaceApiModule | null = null;
 let loadPromise: Promise<FaceApiModule> | null = null;
 let detectorApi: FaceApiModule | null = null;
 let detectorOnlyPromise: Promise<FaceApiModule> | null = null;
+let fastDetectorApi: FaceApiModule | null = null;
+let fastDetectorPromise: Promise<FaceApiModule> | null = null;
 let detectorReady = false;
 
 const MODEL_URL = "/models/face-api";
@@ -56,6 +58,46 @@ async function importFaceApi(): Promise<any> {
   return (mod as any).default?.nets ? (mod as any).default : mod;
 }
 
+async function configureFaceApiBackend(api: any): Promise<void> {
+  try {
+    const tf = api.tf;
+    if (tf?.setBackend) {
+      await tf.setBackend("webgl").catch(() => tf.setBackend("cpu"));
+      await tf.ready?.();
+    }
+  } catch {
+    /* backend optional */
+  }
+}
+
+/**
+ * Crop-review path: TinyFace only. It is intentionally separate from the
+ * heavier SSD/landmark loader so choosing a face stays responsive on phones.
+ */
+async function getFastFaceApiDetector(): Promise<FaceApiModule> {
+  if (typeof window === "undefined") {
+    throw new Error("Face recognition only runs in the browser.");
+  }
+  if (faceApiMod) return faceApiMod;
+  if (fastDetectorApi) return fastDetectorApi;
+  if (fastDetectorPromise) return fastDetectorPromise;
+
+  fastDetectorPromise = (async () => {
+    const api = await importFaceApi();
+    await configureFaceApiBackend(api);
+    if (!api.nets.tinyFaceDetector.isLoaded) {
+      await api.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+    }
+    fastDetectorApi = api as FaceApiModule;
+    return fastDetectorApi;
+  })().catch((err) => {
+    fastDetectorPromise = null;
+    throw err;
+  });
+
+  return fastDetectorPromise;
+}
+
 /**
  * Fast path: SSD (+ Tiny) only — enough for crop-review face boxes.
  * Avoids downloading ~7MB of recognition/age nets before the user even approves.
@@ -70,20 +112,17 @@ async function getFaceApiDetector(): Promise<FaceApiModule> {
 
   detectorOnlyPromise = (async () => {
     const api = await importFaceApi();
-    // Prefer WebGL; fall back silently
-    try {
-      const tf = (api as any).tf;
-      if (tf?.setBackend) {
-        await tf.setBackend("webgl").catch(() => tf.setBackend("cpu"));
-        await tf.ready?.();
-      }
-    } catch {
-      /* backend optional */
-    }
+    await configureFaceApiBackend(api);
     await Promise.all([
-      api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-      api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-      api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
+      api.nets.ssdMobilenetv1.isLoaded
+        ? Promise.resolve()
+        : api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+      api.nets.faceLandmark68Net.isLoaded
+        ? Promise.resolve()
+        : api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+      api.nets.tinyFaceDetector.isLoaded
+        ? Promise.resolve()
+        : api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
     ]);
     detectorReady = true;
     detectorApi = api as FaceApiModule;
@@ -104,26 +143,31 @@ async function getFaceApi(): Promise<FaceApiModule> {
   if (loadPromise) return loadPromise;
 
   loadPromise = (async () => {
-    const api = await importFaceApi();
-    try {
-      const tf = (api as any).tf;
-      if (tf?.setBackend) {
-        await tf.setBackend("webgl").catch(() => tf.setBackend("cpu"));
-        await tf.ready?.();
-      }
-    } catch {
-      /* optional */
+    if (fastDetectorPromise) {
+      await fastDetectorPromise.catch(() => null);
     }
+    const api = await importFaceApi();
+    await configureFaceApiBackend(api);
     // Ensure detector nets first, then the rest
     await Promise.all([
-      api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-      api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
+      api.nets.ssdMobilenetv1.isLoaded
+        ? Promise.resolve()
+        : api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+      api.nets.tinyFaceDetector.isLoaded
+        ? Promise.resolve()
+        : api.nets.tinyFaceDetector.loadFromUri(MODEL_URL).catch(() => {}),
     ]);
     detectorReady = true;
     await Promise.all([
-      api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-      api.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-      api.nets.ageGenderNet.loadFromUri(MODEL_URL),
+      api.nets.faceLandmark68Net.isLoaded
+        ? Promise.resolve()
+        : api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+      api.nets.faceRecognitionNet.isLoaded
+        ? Promise.resolve()
+        : api.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+      api.nets.ageGenderNet.isLoaded
+        ? Promise.resolve()
+        : api.nets.ageGenderNet.loadFromUri(MODEL_URL),
     ]);
     faceApiMod = api as FaceApiModule;
     return faceApiMod;
@@ -141,8 +185,8 @@ export async function loadFaceApi(): Promise<FaceApiModule> {
 
 export function prefetchFaceApi(): void {
   if (typeof window === "undefined") return;
-  // Prefetch detector nets only — keeps first paint snappy
-  void getFaceApiDetector().catch(() => {});
+  // Warm the tiny crop detector first; the full matcher loads after approval.
+  void getFastFaceApiDetector().catch(() => {});
 }
 
 /** Yield so React can paint progress between heavy passes. */
@@ -188,6 +232,8 @@ export interface DetectOptions {
   enableContrastBoost?: boolean;
   /** Fast-exit confidence threshold (default: 0.70) */
   fastExitConfidence?: number;
+  /** Use the lightweight TinyFace crop-review path instead of robust SSD passes. */
+  fastCrop?: boolean;
 }
 
 export interface FaceCandidateInput {
@@ -826,12 +872,16 @@ export async function detectFacesOnly(
 ): Promise<DetectFacesOnlyResult> {
   const t0 = performance.now();
   const tModel = performance.now();
-  // Detector-only nets — do NOT wait on FaceNet/age models for crop UI
-  const api = (await getFaceApiDetector()) as any;
+  const fastCrop = options.fastCrop === true;
+  const api = (await (fastCrop
+    ? getFastFaceApiDetector()
+    : getFaceApiDetector())) as any;
   const modelLoadMs = Math.round(performance.now() - tModel);
 
-  // Cap hard — 800 is enough for SSD group faces and keeps 24MP phone photos snappy
-  const maxSide = Math.min(options.maxSide ?? 800, 960);
+  // TinyFace needs fewer pixels and stays responsive on CPU-only mobile browsers.
+  const maxSide = fastCrop
+    ? Math.min(options.maxSide ?? 384, 384)
+    : Math.min(options.maxSide ?? 800, 960);
   const enableClahe = options.enableContrastBoost !== false;
 
   await yieldToUi();
@@ -897,15 +947,33 @@ export async function detectFacesOnly(
 
   const tDetect = performance.now();
 
+  if (fastCrop) {
+    await yieldToUi();
+    try {
+      const tiny = await api.detectAllFaces(
+        primaryCanvas,
+        new api.TinyFaceDetectorOptions({
+          inputSize: 128,
+          scoreThreshold: 0.2,
+        }),
+      );
+      pushRaw(tiny, primaryScale, 0, 0, 0.2);
+    } catch {
+      /* manual crop remains available */
+    }
+  }
+
   // Pass 1 — single full-frame SSD (the common case)
-  await yieldToUi();
-  pushRaw(await runSsd(primaryCanvas, 0.15), primaryScale, 0, 0, 0.12);
-  if (collected.length === 0) {
-    pushRaw(await runSsd(primaryCanvas, 0.05), primaryScale, 0, 0, 0.05);
+  if (!fastCrop) {
+    await yieldToUi();
+    pushRaw(await runSsd(primaryCanvas, 0.15), primaryScale, 0, 0, 0.12);
+    if (collected.length === 0) {
+      pushRaw(await runSsd(primaryCanvas, 0.05), primaryScale, 0, 0, 0.05);
+    }
   }
 
   // Pass 2 — CLAHE for sunset / backlit outdoor
-  if (collected.length === 0 && enableClahe) {
+  if (!fastCrop && collected.length === 0 && enableClahe) {
     await yieldToUi();
     try {
       const boosted = applyLocalContrastBoost(primaryCanvas, 2.5, 6, 512);
@@ -917,7 +985,7 @@ export async function detectFacesOnly(
   }
 
   // Pass 3 — TinyFace
-  if (collected.length === 0 && api.nets.tinyFaceDetector?.isLoaded) {
+  if (!fastCrop && collected.length === 0 && api.nets.tinyFaceDetector?.isLoaded) {
     await yieldToUi();
     try {
       const tiny = await api.detectAllFaces(
@@ -931,7 +999,7 @@ export async function detectFacesOnly(
   }
 
   // Pass 4 — 3 column tiles only if still empty (group / outdoor miss)
-  if (collected.length === 0 && Math.max(w, h) >= 900) {
+  if (!fastCrop && collected.length === 0 && Math.max(w, h) >= 900) {
     await yieldToUi();
     const pcW = primaryCanvas.width;
     const pcH = primaryCanvas.height;
