@@ -10,7 +10,7 @@ import {
   computeMatchConfidence,
   type CelebrityEmbedding,
 } from "./embeddings.ts";
-import { rankByDescriptor, type UserFaceQuery } from "./match.ts";
+import { rankByDescriptor, selectPresentableRanks, type UserFaceQuery } from "./match.ts";
 import { mergeFeatures, emptyFeatures } from "./math.ts";
 import { CELEBRITIES, getCelebrityById } from "../celebrities/database.ts";
 import { catalogFor } from "../celebrities/catalog.ts";
@@ -409,6 +409,32 @@ describe("Demographic Prior Softening & Uncertainty Scaling (R3 Recalibration)",
     assert.ok(
       matches[0]!.matchPercent > matches[1]!.matchPercent,
       "True visual match percent must be higher than distractor",
+    );
+  });
+
+  it("keeps a visual #1 of any gender but fills #2+ from the probe gender", () => {
+    const rows = [
+      { celeb: { id: "millie", gender: "female" } },
+      { celeb: { id: "idris", gender: "male" } },
+      { celeb: { id: "eva", gender: "female" } },
+      { celeb: { id: "halle", gender: "female" } },
+    ];
+    const picked = selectPresentableRanks(rows, 5, "female", 0.92);
+    assert.deepEqual(
+      picked.map((r) => r.celeb.id),
+      ["millie", "eva", "halle"],
+    );
+  });
+
+  it("does not gender-filter when the probe gender is unknown", () => {
+    const rows = [
+      { celeb: { id: "a", gender: "male" } },
+      { celeb: { id: "b", gender: "female" } },
+    ];
+    const picked = selectPresentableRanks(rows, 2, "unknown", 0.99);
+    assert.deepEqual(
+      picked.map((r) => r.celeb.id),
+      ["a", "b"],
     );
   });
 

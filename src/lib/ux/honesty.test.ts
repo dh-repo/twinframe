@@ -5,6 +5,7 @@ import {
   honestyHeadline,
   honestyShareLabel,
   restListHeading,
+  shouldShowContenders,
   shareText,
   shouldShowEstimatedAge,
 } from "./honesty.ts";
@@ -25,6 +26,10 @@ describe("honesty bands", () => {
     assert.equal(honestyHeadline("strong"), "TOP DOPPELGÄNGER MATCH");
     assert.equal(restListHeading(48), "OTHER NEAREST NEIGHBORS");
     assert.equal(restListHeading(72), "ALSO CLOSE");
+    assert.equal(shouldShowContenders(29), false);
+    assert.equal(shouldShowContenders(48), false);
+    assert.equal(shouldShowContenders(62), true);
+    assert.equal(shouldShowContenders(74, 0.02), true);
     assert.match(shareText("Zendaya", 48), /not a strong look-alike/i);
     assert.match(shareText("Zendaya", 81), /Zendaya at 81%/);
   });

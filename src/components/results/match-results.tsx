@@ -6,7 +6,7 @@ import { MatchRevealCard } from "@/components/results/match-reveal-card";
 import { NumberCounter } from "@/components/ui/number-counter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
-import { restListHeading } from "@/lib/ux/honesty";
+import { restListHeading, shouldShowContenders } from "@/lib/ux/honesty";
 import { MatchFeedback } from "@/components/results/match-feedback";
 
 interface MatchResultsProps {
@@ -17,7 +17,10 @@ interface MatchResultsProps {
 
 export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps) {
   const [selectedMatch, setSelectedMatch] = useState<CelebrityMatch | null>(null);
-  const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">("all");
+  const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">(() => {
+    const g = result.estimatedGender;
+    return g === "male" || g === "female" ? g : "all";
+  });
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   const filteredMatches = useMemo(() => {
@@ -31,6 +34,10 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
 
   const activeTop = selectedMatch || filteredMatches[0] || result.matches[0];
   const rest = filteredMatches.filter((m) => m.celebrityId !== activeTop?.celebrityId);
+  const showContenders =
+    Boolean(activeTop) &&
+    shouldShowContenders(activeTop.matchPercent, activeTop.rankMargin);
+  const listedRest = showContenders ? rest : [];
   const youUrl = result.facePreviewUrl || previewUrl;
 
   const qualityNote = useMemo(() => {
@@ -134,18 +141,24 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         estimatedAge={result.estimatedAge}
       />
 
-      {/* Contenders list with interactive click-to-promote */}
-      {rest.length > 0 && (
+      {/* Contenders: hide the crowded pack when the top is only a nearest neighbor */}
+      {!showContenders && rest.length > 0 && (
+        <p className="px-1 text-center text-xs text-fg-muted text-pretty">
+          No distinctive runner-up — everyone else in the gallery is just as far. This is a nearest
+          neighbor, not a look-alike list.
+        </p>
+      )}
+      {listedRest.length > 0 && (
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
               {restListHeading(activeTop.matchPercent, activeTop.rankMargin)} — tap to inspect
             </h3>
-            <span className="text-[10px] font-mono text-match">{rest.length} contenders</span>
+            <span className="text-[10px] font-mono text-match">{listedRest.length} contenders</span>
           </div>
 
           <ul className="space-y-2.5">
-            {rest.map((m, i) => (
+            {listedRest.map((m, i) => (
               <li key={m.celebrityId}>
                 <button
                   type="button"
@@ -191,7 +204,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
 
       <MatchFeedback
         topMatch={activeTop}
-        contenders={rest}
+        contenders={listedRest}
         previewUrl={youUrl}
         engineVersion={result.engineVersion}
       />
