@@ -42,26 +42,52 @@ function jpegFileFromBlob(blob: Blob, originalName: string): File {
   return new File([blob], `${base}.jpg`, { type: "image/jpeg" });
 }
 
-/** Try native decode (Safari can often read HEIC). Returns null if it cannot. */
-async function nativeDecodeToJpeg(file: File): Promise<File | null> {
+const MAX_EDGE = 2048;
+const MIN_BYTES = 32;
+const MAX_BYTES = 25 * 1024 * 1024;
+
+async function canvasFromSize(
+  draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void,
+  srcW: number,
+  srcH: number,
+  name: string,
+): Promise<File> {
+  const scale = Math.min(1, MAX_EDGE / Math.max(srcW, srcH));
+  const w = Math.max(1, Math.round(srcW * scale));
+  const h = Math.max(1, Math.round(srcH * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not prepare that photo.");
+  ctx.imageSmoothingEnabled = true;
+  (ctx as CanvasRenderingContext2D & { imageSmoothingQuality?: string }).imageSmoothingQuality =
+    "high";
+  draw(ctx, w, h);
+  const blob = await canvasToJpegBlob(canvas);
+  return jpegFileFromBlob(blob, name);
+}
+
+/** Decode, honor EXIF orientation, and cap long edge so phones do not OOM. */
+async function rasterizeToJpeg(file: File): Promise<File | null> {
   if (typeof createImageBitmap === "function") {
     try {
-      const bitmap = await createImageBitmap(file);
-      const canvas = document.createElement("canvas");
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return null;
-      ctx.drawImage(bitmap, 0, 0);
+      const bitmap = await createImageBitmap(file, {
+        imageOrientation: "from-image",
+      } as ImageBitmapOptions);
+      const out = await canvasFromSize(
+        (ctx, w, h) => ctx.drawImage(bitmap, 0, 0, w, h),
+        bitmap.width,
+        bitmap.height,
+        file.name,
+      );
       bitmap.close();
-      const blob = await canvasToJpegBlob(canvas);
-      return jpegFileFromBlob(blob, file.name);
+      return out;
     } catch {
       /* fall through */
     }
   }
 
-  // Last native try: <img> + object URL (Safari HEIC)
   try {
     const url = URL.createObjectURL(file);
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -70,37 +96,41 @@ async function nativeDecodeToJpeg(file: File): Promise<File | null> {
       el.onerror = () => reject(new Error("img decode failed"));
       el.src = url;
     });
-    const canvas = document.createElement("canvas");
-    canvas.width = img.naturalWidth || img.width;
-    canvas.height = img.naturalHeight || img.height;
-    if (canvas.width < 2 || canvas.height < 2) {
+    const srcW = img.naturalWidth || img.width;
+    const srcH = img.naturalHeight || img.height;
+    if (srcW < 2 || srcH < 2) {
       URL.revokeObjectURL(url);
       return null;
     }
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      URL.revokeObjectURL(url);
-      return null;
-    }
-    ctx.drawImage(img, 0, 0);
+    const out = await canvasFromSize(
+      (ctx, w, h) => ctx.drawImage(img, 0, 0, w, h),
+      srcW,
+      srcH,
+      file.name,
+    );
     URL.revokeObjectURL(url);
-    const blob = await canvasToJpegBlob(canvas);
-    return jpegFileFromBlob(blob, file.name);
+    return out;
   } catch {
     return null;
   }
 }
 
 /**
- * Return a crop-review-safe image file. JPEG/PNG/WebP pass through.
- * HEIC is re-encoded to JPEG when the browser can decode it.
+ * Return a crop-review-safe JPEG: oriented, HEIC decoded when possible,
+ * and downscaled so 12–48MP camera-roll photos do not crash Safari.
  */
 export async function normalizeImageFile(file: File): Promise<File> {
-  if (!file.type.startsWith("image/") && !isHeicFile(file)) {
+  if (file.size < MIN_BYTES) {
+    throw new Error("That file is empty. Choose a photo.");
+  }
+  if (file.size > MAX_BYTES) {
+    throw new Error("That photo is too large. Try a smaller one or take a new selfie.");
+  }
+  if (!isLikelyPhotoFile(file)) {
     throw new Error("Please choose a photo (JPG, PNG, or HEIC).");
   }
-  if (!isHeicFile(file)) return file;
-  const decoded = await nativeDecodeToJpeg(file);
+  const decoded = await rasterizeToJpeg(file);
   if (decoded) return decoded;
-  throw new Error(HEIC_UNSUPPORTED_MESSAGE);
+  if (isHeicFile(file)) throw new Error(HEIC_UNSUPPORTED_MESSAGE);
+  throw new Error("Could not read that photo. Try JPG or PNG.");
 }

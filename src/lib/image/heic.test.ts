@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { HEIC_UNSUPPORTED_MESSAGE, isHeicFile, isLikelyPhotoFile } from "./heic.ts";
+import { HEIC_UNSUPPORTED_MESSAGE, isHeicFile, isLikelyPhotoFile, normalizeImageFile } from "./heic.ts";
 
 function fakeFile(name: string, type: string): File {
   return new File([new Uint8Array([0xff, 0xd8])], name, { type });
@@ -28,5 +28,12 @@ describe("isLikelyPhotoFile", () => {
   it("accepts extension-only JPEGs from Android WebViews", () => {
     assert.equal(isLikelyPhotoFile(fakeFile("IMG_0001.JPG", "")), true);
     assert.equal(isLikelyPhotoFile(fakeFile("notes.pdf", "")), false);
+  });
+});
+
+describe("normalizeImageFile", () => {
+  it("rejects empty files", async () => {
+    const empty = new File([new Uint8Array(8)], "empty.jpg", { type: "image/jpeg" });
+    await assert.rejects(() => normalizeImageFile(empty), /empty/i);
   });
 });

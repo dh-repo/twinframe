@@ -4,43 +4,36 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { playShutterSound } from "@/lib/utils/feedback";
 import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
+import {
+  cameraErrorMessage,
+  openCameraStream,
+  waitForVideoFrame,
+  type CameraFacing,
+} from "@/lib/ux/open-camera";
 import { isLikelyPhotoFile, normalizeImageFile } from "@/lib/image/heic";
 
 interface WebcamCaptureProps {
   open: boolean;
   onClose: () => void;
   onCapture: (blob: Blob) => void;
+  /** Stream acquired in the tap that opened the sheet (iOS gesture-safe). */
+  presetStream?: MediaStream | null;
 }
 
 const PHOTO_ACCEPT = "image/*,image/heic,image/heif,.heic,.heif,.jpg,.jpeg,.png,.webp";
 
-async function openCameraStream(facing: "user" | "environment"): Promise<MediaStream> {
-  if (!navigator.mediaDevices?.getUserMedia) {
-    throw new Error("unsupported");
-  }
-  const attempts: MediaStreamConstraints[] = [
-    { audio: false, video: { facingMode: { ideal: facing } } },
-    { audio: false, video: { facingMode: facing } },
-    { audio: false, video: true },
-  ];
-  let last: unknown;
-  for (const constraints of attempts) {
-    try {
-      return await navigator.mediaDevices.getUserMedia(constraints);
-    } catch (err) {
-      last = err;
-    }
-  }
-  throw last instanceof Error ? last : new Error("Could not open the camera.");
-}
-
-export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) {
+export function WebcamCapture({
+  open,
+  onClose,
+  onCapture,
+  presetStream = null,
+}: WebcamCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const nativeInputRef = useRef<HTMLInputElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
+  const [facingMode, setFacingMode] = useState<CameraFacing>("user");
   const [capturing, setCapturing] = useState(false);
 
   useLockBodyScroll(open);
@@ -51,33 +44,50 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
     setReady(false);
   }, []);
 
-  const start = useCallback(async () => {
-    setError(null);
-    setReady(false);
-    stop();
-    try {
-      const stream = await openCameraStream(facingMode);
-      streamRef.current = stream;
-      const video = videoRef.current;
-      if (video) {
-        video.srcObject = stream;
-        video.muted = true;
-        video.playsInline = true;
-        await video.play();
-        setReady(true);
+  const attach = useCallback(async (stream: MediaStream) => {
+    streamRef.current = stream;
+    const video = videoRef.current;
+    if (!video) return;
+    video.setAttribute("playsinline", "true");
+    video.setAttribute("webkit-playsinline", "true");
+    video.muted = true;
+    video.playsInline = true;
+    video.srcObject = stream;
+    await video.play();
+    await waitForVideoFrame(video);
+    setReady(true);
+  }, []);
+
+  const start = useCallback(
+    async (facing: CameraFacing) => {
+      setError(null);
+      setReady(false);
+      stop();
+      await new Promise((r) => window.setTimeout(r, 150));
+      try {
+        const stream = await openCameraStream(facing);
+        await attach(stream);
+      } catch (err) {
+        setError(cameraErrorMessage(err));
       }
-    } catch {
-      setError(
-        "Could not open the live camera. Use your phone’s camera instead, or pick a photo from your library.",
-      );
-    }
-  }, [facingMode, stop]);
+    },
+    [attach, stop],
+  );
 
   useEffect(() => {
-    if (open) void start();
-    else stop();
+    if (!open) {
+      stop();
+      return;
+    }
+    if (presetStream) {
+      void attach(presetStream).catch((err) => setError(cameraErrorMessage(err)));
+    } else {
+      void start(facingMode);
+    }
     return () => stop();
-  }, [open, start, stop]);
+    // Only (re)start when the sheet opens. Flip calls start() directly.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const capture = useCallback(async () => {
     const video = videoRef.current;
@@ -139,19 +149,19 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
       aria-label="Camera capture"
     >
       <div className="flex max-h-[100dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-[var(--radius-2xl)] border border-border bg-bg-elevated shadow-[var(--shadow-soft)] sm:rounded-[var(--radius-2xl)]">
-        <div className="flex items-center justify-between px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] border-b border-border">
+        <div className="flex items-center justify-between border-b border-border px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
           <p className="text-sm font-medium">Camera</p>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] text-fg-muted hover:text-fg hover:bg-bg-subtle"
+            className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] text-fg-muted hover:bg-bg-subtle hover:text-fg"
             aria-label="Close camera"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="relative min-h-0 flex-1 overflow-hidden bg-bg aspect-[3/4] max-h-[min(68dvh,560px)] sm:aspect-[4/3]">
+        <div className="relative aspect-[3/4] max-h-[min(68dvh,560px)] min-h-0 flex-1 overflow-hidden bg-bg sm:aspect-[4/3]">
           <video
             ref={videoRef}
             autoPlay
@@ -193,9 +203,11 @@ export function WebcamCapture({ open, onClose, onCapture }: WebcamCaptureProps) 
             variant="ghost"
             size="icon"
             aria-label="Flip camera"
-            onClick={() =>
-              setFacingMode((m) => (m === "user" ? "environment" : "user"))
-            }
+            onClick={() => {
+              const next = facingMode === "user" ? "environment" : "user";
+              setFacingMode(next);
+              void start(next);
+            }}
           >
             <SwitchCamera className="h-5 w-5" />
           </Button>

@@ -2,10 +2,11 @@ import { useCallback, useRef, useState } from "react";
 import { Camera, FolderUp, UploadCloud, Upload } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { isLikelyPhotoFile, normalizeImageFile } from "@/lib/image/heic";
+import { openCameraStream } from "@/lib/ux/open-camera";
 
 interface PhotoUploaderProps {
   onFile: (file: File) => void;
-  onCameraClick?: () => void;
+  onCameraClick?: (stream: MediaStream | null) => void;
   disabled?: boolean;
 }
 
@@ -89,7 +90,16 @@ export function PhotoUploader({ onFile, onCameraClick, disabled }: PhotoUploader
             <button
               type="button"
               disabled={disabled || busy}
-              onClick={onCameraClick}
+              onClick={() => {
+                void (async () => {
+                  try {
+                    const stream = await openCameraStream("user");
+                    onCameraClick?.(stream);
+                  } catch {
+                    onCameraClick?.(null);
+                  }
+                })();
+              }}
               className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-base font-bold text-black shadow-md transition-all hover:bg-neutral-100 active:scale-[0.98]"
             >
               <Camera className="h-4 w-4 stroke-[2.2]" />

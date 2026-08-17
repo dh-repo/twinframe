@@ -21,6 +21,7 @@ type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality
 export function AppHome() {
   const [phase, setPhase] = useState<Phase>("capture");
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [result, setResult] = useState<MatchResult | null>(null);
@@ -206,6 +207,7 @@ export function AppHome() {
       setReview(url, "camera.jpg");
       setPhase("review");
       setCameraOpen(false);
+      setCameraStream(null);
     },
     [setReview],
   );
@@ -307,7 +309,10 @@ export function AppHome() {
           <div className="animate-fade-up space-y-8">
             <PhotoUploader
               onFile={onFile}
-              onCameraClick={() => setCameraOpen(true)}
+              onCameraClick={(stream) => {
+                setCameraStream(stream);
+                setCameraOpen(true);
+              }}
             />
 
             {/* Teaser Sample Match Preview Showcase */}
@@ -483,7 +488,11 @@ export function AppHome() {
 
       <WebcamCapture
         open={cameraOpen}
-        onClose={() => setCameraOpen(false)}
+        presetStream={cameraStream}
+        onClose={() => {
+          setCameraOpen(false);
+          setCameraStream(null);
+        }}
         onCapture={onCapture}
       />
 
