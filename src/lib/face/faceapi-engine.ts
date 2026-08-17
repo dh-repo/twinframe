@@ -259,7 +259,7 @@ export interface SortedFaceCandidate extends FaceCandidateInput {
 export interface FaceDetectionResult {
   descriptor: Float32Array | number[];
   age: number;
-  gender: "male" | "female";
+  gender: "male" | "female" | "unknown";
   genderProbability: number;
   faceCanvas: HTMLCanvasElement;
   confidence: number;
@@ -1142,13 +1142,24 @@ export async function detectAndDescribe(
   options: DetectOptions = {},
 ): Promise<FaceDetectionResult | null> {
   const tTotalStart = performance.now();
+  console.info("[FaceAPI] detectAndDescribe start", {
+    tMs: Math.round(tTotalStart),
+    skipDescriptor: Boolean(options.skipDescriptor),
+    maxSide: options.maxSide ?? null,
+  });
   const tModelStart = performance.now();
   const api = (await getFaceApi()) as any;
   const modelLoadMs = Math.round(performance.now() - tModelStart);
+  console.info("[FaceAPI] models ready", { modelLoadMs });
 
   const tDown = performance.now();
   const detection = await detectFacesOnly(source, options);
   const downscaleMs = Math.round(performance.now() - tDown);
+  console.info("[FaceAPI] detectFacesOnly done", {
+    downscaleMs,
+    faces: detection.faces.length,
+    detectMs: detection.latencies.detectMs,
+  });
   const { faces, imageWidth: w, imageHeight: h, detectionCanvas, detectionScale } = detection;
 
   if (!faces.length) return null;
@@ -1341,6 +1352,7 @@ export async function detectAndDescribe(
   }));
 
   const totalMs = Math.round(performance.now() - tTotalStart);
+  console.info("[FaceAPI] detectAndDescribe done", { totalMs, modelLoadMs, embeddingMs });
   const stageLatencies: FaceStageLatencies = {
     modelLoadMs,
     downscaleMs,

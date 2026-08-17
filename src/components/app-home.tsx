@@ -100,15 +100,17 @@ export function AppHome() {
       let cancelled = false;
       const ticker = window.setInterval(() => {
         if (cancelled) return;
-        currentProgress = Math.min(88, currentProgress + 1);
+        currentProgress = Math.min(96, currentProgress + 1);
         setProgress((prev) => Math.max(prev, currentProgress));
       }, 100);
 
       // First model load + CPU-only detection can exceed 25s even on desktops
       // without WebGPU/WebGL (software rendering, older laptops).
       const timeoutMs = window.matchMedia("(pointer: coarse)").matches ? 60000 : 45000;
+      console.info("[Analyze] start", { timeoutMs, blobBytes: blob.size });
       const timeoutId = window.setTimeout(() => {
         cancelled = true;
+        console.warn("[Analyze] timeout", { timeoutMs });
         setError("Analysis timed out. Please try a clearer front-facing photo on a stronger connection.");
         setPhase("error");
       }, timeoutMs);
@@ -122,6 +124,7 @@ export function AppHome() {
           selectedBox,
           onProgress: (stepIdx, pct, details) => {
             if (cancelled) return;
+            console.info("[Analyze] progress", { stepIdx, pct, hasDetails: Boolean(details) });
             setStepIndex(stepIdx);
             if (details) {
               setDetectedDetails(details);
@@ -134,6 +137,12 @@ export function AppHome() {
         });
 
         if (cancelled) return;
+
+        console.info("[Analyze] pipeline returned", {
+          matches: matchResult.matches.length,
+          ok: matchResult.quality.ok,
+          issues: matchResult.quality.issues,
+        });
 
         clearInterval(ticker);
         // Step to 100% when finished
