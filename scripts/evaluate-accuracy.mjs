@@ -193,13 +193,12 @@ Options:
                          the leading N, which is what --limit used to do.
   --probe-sources <s>    Probe renditions to use: root | thumbs | all (default: root),
                          or a comma list of root-jpg,thumb-192,thumb-96.
-                         "root" is the 271 ids that ship a full-size portrait.
-                         Thumbnail probes are the catalog's own gallery renditions,
-                         so they measure a same-image upper bound rather than held-out
-                         accuracy — and for ids with no root JPG they mismatch their
-                         own gallery vector outright. See the per-rendition breakdown
-                         in the report, and scripts/evaluate-held-out.ts for the
-                         honest held-out number.
+                         "root" is the 271 ids that ship a full-size portrait;
+                         "all" adds thumbnail probes for the ids without one.
+                         Every rendition here is an image the gallery was enrolled
+                         from, so widening this widens coverage of the enrollment
+                         check, not of the accuracy claim. For accuracy on an unseen
+                         photo run scripts/evaluate-held-out.ts.
   --tier2-count <N>      Number of perturbed probes for Tier 2 (default: 40)
   --json [path]          Export metrics to JSON file (default: reports/accuracy-benchmark.json)
   --markdown [path]      Export metrics to Markdown file (default: reports/accuracy-benchmark.md)

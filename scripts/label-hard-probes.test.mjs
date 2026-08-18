@@ -13,6 +13,7 @@ import {
   parseProbeKey,
   probeKeyFor,
   summarizeConditionCounts,
+  unknownFlags,
 } from "./label-hard-probes.mjs";
 
 function tempTree() {
@@ -111,5 +112,23 @@ describe("condition summary", () => {
   it("flags the saturating smile proxy but not the geometric conditions", () => {
     assert.deepEqual(lowConfidenceFor(["big-smile", "yaw-gt-25"]), ["big-smile"]);
     assert.deepEqual(lowConfidenceFor(["low-light", "phone-closeup"]), []);
+  });
+});
+
+describe("option parsing", () => {
+  it("accepts every documented flag", () => {
+    assert.deepEqual(
+      unknownFlags(["--limit", "8", "--concurrency", "4", "--force", "--dir", "x", "--out", "y"]),
+      [],
+    );
+  });
+
+  it("catches a mistyped flag rather than starting a silent full pass", () => {
+    assert.deepEqual(unknownFlags(["--concurency", "4"]), ["--concurency"]);
+    assert.deepEqual(unknownFlags(["--limit", "8", "--dryrun"]), ["--dryrun"]);
+  });
+
+  it("does not mistake a negative or path-like value for a flag", () => {
+    assert.deepEqual(unknownFlags(["--dir", "public/celebs/held-out"]), []);
   });
 });

@@ -141,6 +141,29 @@ export function summarizeConditionCounts(probes) {
   return { images, detected, easyImages: easy, byCondition };
 }
 
+const FLAGS = ["--limit", "--concurrency", "--dir", "--out", "--overrides", "--force", "--help", "-h"];
+
+export function unknownFlags(argv) {
+  return argv.filter((arg) => arg.startsWith("-") && !FLAGS.includes(arg));
+}
+
+const USAGE = `Label held-out probe images with hard-probe conditions.
+
+Usage:
+  node --experimental-strip-types scripts/label-hard-probes.mjs [options]
+
+Options:
+  --limit <N>          Label only the first N images (cheap smoke test)
+  --concurrency <N>    Worker processes running SCRFD (default: 4)
+  --dir <path>         Image tree to walk (default: public/celebs/held-out)
+  --out <path>         Output JSON (default: <dir>/hard-probes.json)
+  --overrides <path>   Hand-label file (default: <dir>/hard-probes.overrides.json)
+  --force              Re-analyze every image, ignoring the cache
+  --help, -h           Show this message
+
+Auto-derived: low-light, yaw-gt-25, phone-closeup, and big-smile (a low-fidelity
+proxy). "glasses" is never guessed — add it by hand in the overrides file.`;
+
 function parseArgs(argv) {
   const options = {
     limit: Infinity,
@@ -148,7 +171,14 @@ function parseArgs(argv) {
     out: DEFAULT_OUT,
     overrides: DEFAULT_OVERRIDES,
     force: false,
+    help: false,
   };
+  if (argv.includes("--help") || argv.includes("-h")) options.help = true;
+  const unknown = unknownFlags(argv.slice(2));
+  if (unknown.length > 0) {
+    // A mistyped flag would otherwise start a silent full pass over 742 images.
+    throw new Error(`Unknown option${unknown.length > 1 ? "s" : ""}: ${unknown.join(", ")}\n\n${USAGE}`);
+  }
   const limitIdx = argv.indexOf("--limit");
   if (limitIdx >= 0) {
     const n = Number(argv[limitIdx + 1]);
@@ -177,6 +207,10 @@ function readJson(file, fallback) {
 
 async function main() {
   const options = parseArgs(process.argv);
+  if (options.help) {
+    console.log(USAGE);
+    return;
+  }
   const concurrency = parseConcurrencyArg();
   const celebsDir = path.dirname(options.dir);
   const overrides = readJson(options.overrides, {});
@@ -310,5 +344,10 @@ function relabel(record, override) {
 }
 
 if (process.argv[1] && process.argv[1].endsWith("label-hard-probes.mjs")) {
-  await main();
+  try {
+    await main();
+  } catch (err) {
+    console.error(err instanceof Error ? err.message : err);
+    process.exitCode = 1;
+  }
 }
