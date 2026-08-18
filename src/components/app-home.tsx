@@ -293,14 +293,12 @@ export function AppHome() {
         lastApprovedBlobRef.current = blob;
         lastSelectedBoxRef.current = selectedBox;
 
-        if (playModeRef.current === "friend") {
-          replacePerson(targetSlot, {
-            blob,
-            selectedBox,
-            previewUrl: URL.createObjectURL(blob),
-            result: matchResult,
-          });
-        }
+        replacePerson(targetSlot, {
+          blob,
+          selectedBox,
+          previewUrl: URL.createObjectURL(blob),
+          result: matchResult,
+        });
 
         const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
         const sharpness = q.sharpness ?? 60;
@@ -449,6 +447,17 @@ export function AppHome() {
   }, []);
 
   const addFriend = useCallback(() => {
+    const existing = personARef.current;
+    const blob = existing?.blob ?? lastApprovedBlobRef.current;
+    const snapshot = existing?.result ?? result;
+    if (blob && snapshot && !existing) {
+      replacePerson("a", {
+        blob,
+        selectedBox: lastSelectedBoxRef.current,
+        previewUrl: snapshot.facePreviewUrl || previewUrl || URL.createObjectURL(blob),
+        result: snapshot,
+      });
+    }
     playModeRef.current = "friend";
     setPlayMode("friend");
     friendSlotRef.current = "b";
@@ -460,7 +469,7 @@ export function AppHome() {
     setPreview(null);
     setStepIndex(0);
     setProgress(0);
-  }, [setPreview]);
+  }, [result, previewUrl, replacePerson, setPreview]);
 
   const retryCapture = useCallback(() => {
     setError(null);

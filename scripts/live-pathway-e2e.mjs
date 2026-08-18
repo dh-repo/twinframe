@@ -24,7 +24,7 @@ const IMAGE = resolve(
   arg("image", "public/celebs/held-out/kate-winslet/001.jpg"),
 );
 const FRIEND = resolve(
-  arg("friend", "public/celebs/held-out/billie-eilish/004.jpg"),
+  arg("friend", "public/celebs/held-out/billie-eilish/001.jpg"),
 );
 const BASE = arg("url", "http://127.0.0.1:8080/");
 const OUT = resolve("screenshots/live-pathway");
@@ -186,18 +186,28 @@ async function main() {
       percent: /%/.test(shareText),
     };
     await page.keyboard.press("Escape").catch(() => {});
+    await page.locator("[role='dialog']").waitFor({ state: "hidden", timeout: 2000 }).catch(() => {});
   }
 
   // Friend from the first good match (solo results now expose Add a friend).
   const addFriend = page.getByRole("button", { name: /^Add a friend/i }).first();
   if ((await addFriend.count()) > 0) {
-    await addFriend.click();
+    const clicked = await page.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((el) =>
+        /^Add a friend/i.test((el.textContent || "").trim()),
+      );
+      if (!btn) return false;
+      btn.scrollIntoView({ block: "center", inline: "nearest" });
+      btn.click();
+      return true;
+    });
+    if (!clicked) throw new Error("Add a friend button was in the DOM but not clickable");
     await sleep(400);
     await uploadPhoto(page, FRIEND);
     await approveCrop(page);
     const friendText = await waitForBody(
       page,
-      (t) => /Closer twin|CLOSER TWIN|You share|DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN/i.test(t),
+      (t) => /Friend mode/i.test(t) && /Closer twin:|Tied Twins|It's a tie/i.test(t),
       { timeoutMs: ANALYZE_WAIT_MS, label: "friend-b" },
     );
     await page.screenshot({ path: join(OUT, "06-friend.png"), fullPage: true });
