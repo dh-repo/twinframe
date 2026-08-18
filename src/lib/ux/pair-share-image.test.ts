@@ -4,6 +4,7 @@ import {
   PAIR_SHARE_HEIGHT,
   PAIR_SHARE_WIDTH,
   pairShareFilename,
+  pairShareHeadline,
   pairShareText,
   pairShareWinner,
 } from "./pair-share-image.ts";
@@ -50,6 +51,31 @@ describe("pairShareText", () => {
         bPercent: 54,
       }),
       /Tied twins[\s\S]*Keanu Reeves 54%[\s\S]*Dev Patel 54%/,
+    );
+  });
+
+  it("does not say a Dead Ringer beat a Distant Twin", () => {
+    const text = pairShareText({
+      winner: "b",
+      aName: "Moira Kirland",
+      bName: "Kate Winslet",
+      aPercent: 32,
+      bPercent: 90,
+      aVerdict: "distant-twin",
+      bVerdict: "dead-ringer",
+    });
+    assert.match(text, /Distant Twin at 32%/);
+    assert.match(text, /Kate Winslet 90%/);
+    assert.ok(!/beats/i.test(text));
+    assert.equal(
+      pairShareHeadline({
+        winner: "b",
+        aName: "Moira Kirland",
+        bName: "Kate Winslet",
+        aVerdict: "distant-twin",
+        bVerdict: "dead-ringer",
+      }),
+      "Closer twin: Kate Winslet",
     );
   });
 });

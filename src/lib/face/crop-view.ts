@@ -9,6 +9,10 @@
 export const CROP_ZOOM_MIN = 0.85;
 export const CROP_ZOOM_MAX = 6;
 
+/** Hint when the detector found a small face in a tall standing / full-body frame. */
+export const STANDING_SHOT_HINT =
+  "Standing photo — we zoomed in on your face. Drag if we framed the wrong person.";
+
 export interface CropBox {
   x: number;
   y: number;
@@ -47,6 +51,18 @@ export function zoomToFillFace(
 ): number {
   const target = Math.min(imageW, imageH) * fill;
   return clamp(target / Math.max(faceSidePx, 1), 1, CROP_ZOOM_MAX);
+}
+
+/** Tall frame + small face: the swing / standing-civilian case. */
+export function isStandingFullBodyShot(
+  faceSidePx: number,
+  imageW: number,
+  imageH: number,
+): boolean {
+  if (imageW <= 0 || imageH <= 0 || faceSidePx <= 0) return false;
+  const shortSide = Math.min(imageW, imageH);
+  const tall = imageH / imageW >= 1.2;
+  return tall && faceSidePx / shortSide < 0.22;
 }
 
 /** How far the user can drag before the image edge leaves the square. */

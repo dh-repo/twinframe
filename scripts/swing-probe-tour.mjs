@@ -97,6 +97,11 @@ async function openShare(page, report) {
   report.share = {
     stamp: /DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN|CLOSER TWIN|TIED TWINS/i.test(shareText),
     percent: /%/.test(shareText),
+    nearestNeighborTitle: /Share nearest neighbor/i.test(shareText),
+    doppelgangerTitle: /Share Your Doppelgänger/i.test(shareText),
+    nearGlyph: /\bNEAR\b/.test(shareText),
+    beats: /\bbeats\b/i.test(shareText),
+    closerHeadline: /Closer twin:/i.test(shareText),
   };
   await page.keyboard.press("Escape").catch(() => {});
   await page.locator("[role='dialog']").waitFor({ state: "hidden", timeout: 2000 }).catch(() => {});
@@ -156,6 +161,7 @@ async function addFriendFromResults(page, report) {
   };
   if (report.friend.closerTwin) {
     await openShare(page, report);
+    await shot(page, "friend-share.png");
   }
 }
 
@@ -236,12 +242,22 @@ async function main() {
     const cropText = await page.locator("body").innerText();
     report.steps.crop = {
       closeUpHint: /Hold the phone a bit further/i.test(cropText),
+      standingHint: /Standing photo/i.test(cropText),
       foundFace: /Face selected|faces found|Approve & Match|Use this crop/i.test(cropText),
       excerpt: cropText.slice(0, 500),
     };
     await approveCrop(page);
     report.steps.results = await waitForResults(page);
+    report.steps.results.traitOversell = /You share (her|his|their) /i.test(
+      report.steps.results.text,
+    );
     await shot(page, "03-results.png");
+    if (
+      report.steps.results.verdict === "DISTANT TWIN" &&
+      report.steps.results.traitOversell
+    ) {
+      throw new Error("Distant Twin still sells shared-trait copy on the swing fixture");
+    }
 
     if (report.steps.results.timedOut) {
       console.warn("Analysis timed out in the UI. Crop + upload path still recorded.");
@@ -251,6 +267,14 @@ async function main() {
     if (MODE === "solo" || MODE === "packs") {
       await openShare(page, report.steps);
       await shot(page, "04-share.png");
+      if (
+        report.steps.results.verdict === "DISTANT TWIN" &&
+        report.steps.share &&
+        !report.steps.share.skipped &&
+        (report.steps.share.doppelgangerTitle || !report.steps.share.nearestNeighborTitle)
+      ) {
+        throw new Error("Distant Twin share card still reads as a doppelgänger");
+      }
     }
 
     if (MODE === "packs") {
@@ -259,6 +283,9 @@ async function main() {
 
     if (MODE === "friend" || MODE === "friend-start") {
       await addFriendFromResults(page, report.steps);
+      if (report.steps.share && !report.steps.share.skipped && report.steps.share.beats) {
+        throw new Error("Pair share still says a Dead Ringer beats a Distant Twin");
+      }
     }
   } finally {
     report.consoleErrors = consoleErrors.slice(0, 30);

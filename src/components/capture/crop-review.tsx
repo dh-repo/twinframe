@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import {
   CROP_ZOOM_MAX,
   CROP_ZOOM_MIN,
+  STANDING_SHOT_HINT,
+  isStandingFullBodyShot,
   maxCropPan,
   offsetToCenterBox,
   zoomToFillFace,
@@ -360,6 +362,16 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       if (coverage >= PHONE_CLOSEUP_MIN_COVERAGE) {
         return { tone: "warn" as const, text: PHONE_CLOSEUP_HINT };
       }
+      if (
+        imageSize.w > 0 &&
+        isStandingFullBodyShot(
+          Math.max(selected.unscaledBox.width, selected.unscaledBox.height),
+          imageSize.w,
+          imageSize.h,
+        )
+      ) {
+        return { tone: "info" as const, text: STANDING_SHOT_HINT };
+      }
     }
     if (!imageSize.w) return null;
     const mp = (imageSize.w * imageSize.h) / 1e6;
@@ -629,7 +641,13 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
           </div>
 
           {qualityHint && (
-            <div className="mx-auto mt-4 max-w-[320px] rounded-[var(--radius-md)] border border-warn/30 bg-warn/10 px-3 py-2.5 text-xs leading-snug text-warn">
+            <div
+              className={
+                qualityHint.tone === "warn"
+                  ? "mx-auto mt-4 max-w-[320px] rounded-[var(--radius-md)] border border-warn/30 bg-warn/10 px-3 py-2.5 text-xs leading-snug text-warn"
+                  : "mx-auto mt-4 max-w-[320px] rounded-[var(--radius-md)] border border-white/15 bg-white/5 px-3 py-2.5 text-xs leading-snug text-white/75"
+              }
+            >
               {qualityHint.text}
             </div>
           )}

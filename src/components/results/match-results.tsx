@@ -20,6 +20,8 @@ interface MatchResultsProps {
 export function MatchResults({ result, previewUrl, onReset, onAddFriend }: MatchResultsProps) {
   const [selectedMatch, setSelectedMatch] = useState<CelebrityMatch | null>(null);
   const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">(() => {
+    // Distant twins are a nearest neighbor, not a gendered look-alike list.
+    if (result.matches[0]?.verdict === "distant-twin") return "all";
     const g = result.estimatedGender;
     return g === "male" || g === "female" ? g : "all";
   });

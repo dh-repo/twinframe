@@ -15,6 +15,8 @@ export interface ComparisonViewProps {
   celebrityInitials: string;
   accentHue?: number;
   traits?: TraitInsight[];
+  /** Distant twins use NEAR instead of ≈. */
+  pairGlyph?: string;
   className?: string;
 }
 
@@ -27,6 +29,7 @@ export function ComparisonView({
   celebrityInitials,
   accentHue = 180,
   traits = [],
+  pairGlyph = "≈",
   className,
 }: ComparisonViewProps) {
   const [mode, setMode] = useState<ComparisonMode>("side-by-side");
@@ -148,10 +151,14 @@ export function ComparisonView({
 
           {/* Glowing Match Connector Badge */}
           <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-match/40 bg-bg text-sm font-semibold text-match shadow-[0_0_12px_color-mix(in_oklab,var(--color-match)_30%,transparent)]"
+            className={
+              pairGlyph.length > 1
+                ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-match/40 bg-bg text-[8px] font-extrabold tracking-wide text-match shadow-[0_0_12px_color-mix(in_oklab,var(--color-match)_30%,transparent)]"
+                : "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-match/40 bg-bg text-sm font-semibold text-match shadow-[0_0_12px_color-mix(in_oklab,var(--color-match)_30%,transparent)]"
+            }
             aria-hidden
           >
-            ≈
+            {pairGlyph}
           </div>
 
           {/* Celebrity Portrait Card */}

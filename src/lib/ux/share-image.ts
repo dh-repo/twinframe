@@ -1,5 +1,10 @@
 import { verdictLabel, type VerdictTier } from "../face/verdict.ts";
-import { resolveShareVerdict, shareCardBlurb } from "./share-copy.ts";
+import {
+  resolveShareVerdict,
+  shareCardBlurb,
+  sharePairGlyph,
+  sharePercentCaption,
+} from "./share-copy.ts";
 
 /** Square Instagram / meme card. Preview DOM is 1:1 to match. */
 export const SHARE_CARD_WIDTH = 1080;
@@ -251,6 +256,7 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
     top + cardH - 30,
   );
 
+  const glyph = sharePairGlyph(verdict);
   ctx.beginPath();
   ctx.arc(width / 2, top + cardH / 2, 40, 0, Math.PI * 2);
   ctx.fillStyle = "#090a0f";
@@ -259,15 +265,18 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
   ctx.lineWidth = 4;
   ctx.stroke();
   ctx.fillStyle = style.fill;
-  ctx.font = "700 32px system-ui, sans-serif";
+  ctx.font = glyph.length > 1 ? "800 16px system-ui, sans-serif" : "700 32px system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("≈", width / 2, top + cardH / 2);
+  ctx.fillText(glyph, width / 2, top + cardH / 2);
 
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = style.fill;
   ctx.font = "800 168px system-ui, sans-serif";
   ctx.fillText(`${pct}%`, width / 2, 680);
+  ctx.font = "700 22px system-ui, sans-serif";
+  ctx.fillStyle = "rgba(244, 244, 245, 0.55)";
+  ctx.fillText(sharePercentCaption(verdict), width / 2, 718);
 
   drawVerdictStamp(ctx, verdictLabel(verdict).toUpperCase(), width / 2, 770, style);
 

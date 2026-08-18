@@ -55,8 +55,9 @@ export function TraitBreakdown({
       composeBreakdownRows(match.traits, {
         userFeatures,
         celebFeatures,
+        verdict: match.verdict,
       }),
-    [match.traits, userFeatures, celebFeatures],
+    [match.traits, userFeatures, celebFeatures, match.verdict],
   );
 
   return (
