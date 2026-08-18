@@ -3,7 +3,16 @@
  * Client-only; no server round-trip in v1.
  */
 
-export type LookalikeFeedbackVerdict = "not_really" | "better_match";
+import type { VerdictTier } from "./verdict.ts";
+
+export type LookalikeFeedbackVerdict = "not_really" | "better_match" | "fair_nearest";
+
+export interface LookalikeFeedbackCopy {
+  prompt: string;
+  negativeLabel: string;
+  /** Distant Twin only — confirm the nearest face is at least plausible. */
+  fairNearestLabel: string | null;
+}
 
 export interface LookalikeFeedbackEvent {
   id: string;
@@ -66,4 +75,64 @@ export function hashProbeKey(input: string): string {
     h = Math.imul(h, 16777619);
   }
   return (h >>> 0).toString(16);
+}
+
+function feedbackTier(verdict?: VerdictTier): VerdictTier {
+  return verdict ?? "soft-match";
+}
+
+/** Prompt + buttons. Distant Twin asks about nearest-neighbor honesty, not look-alikes. */
+export function lookalikeFeedbackCopy(verdict?: VerdictTier): LookalikeFeedbackCopy {
+  switch (feedbackTier(verdict)) {
+    case "distant-twin":
+      return {
+        prompt: "Was the nearest face at least plausible?",
+        negativeLabel: "Wrong nearest",
+        fairNearestLabel: "Fair nearest",
+      };
+    case "dead-ringer":
+    case "strong-resemblance":
+    case "soft-match":
+      return {
+        prompt: "Was this a good look-alike?",
+        negativeLabel: "Not really",
+        fairNearestLabel: null,
+      };
+    default: {
+      const _exhaustive: never = feedbackTier(verdict);
+      return _exhaustive;
+    }
+  }
+}
+
+export function lookalikeFeedbackThanks(
+  verdict: VerdictTier | undefined,
+  sent: LookalikeFeedbackVerdict,
+): string {
+  if (feedbackTier(verdict) === "distant-twin") {
+    switch (sent) {
+      case "fair_nearest":
+        return "Thanks — noted as a fair nearest neighbor.";
+      case "not_really":
+        return "Thanks — marked as the wrong nearest face.";
+      case "better_match":
+        return "Thanks — noted a closer nearest neighbor.";
+      default: {
+        const _exhaustive: never = sent;
+        return _exhaustive;
+      }
+    }
+  }
+  switch (sent) {
+    case "better_match":
+      return "Thanks — that helps tune future look-alikes (better match saved).";
+    case "not_really":
+      return "Thanks — that helps tune future look-alikes (hard negative saved).";
+    case "fair_nearest":
+      return "Thanks — that helps tune future look-alikes.";
+    default: {
+      const _exhaustive: never = sent;
+      return _exhaustive;
+    }
+  }
 }
