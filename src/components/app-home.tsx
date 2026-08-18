@@ -6,6 +6,7 @@ import { CropReview } from "@/components/capture/crop-review";
 import { MatchResults } from "@/components/results/match-results";
 import { AnalyzingState } from "@/components/analyzing-state";
 import { StarGalleryModal } from "@/components/gallery/star-gallery-modal";
+import { PackPicker } from "@/components/pack-picker";
 import { Button } from "@/components/ui/button";
 import {
   analyzeFaceSource,
@@ -15,6 +16,12 @@ import {
 import type { FaceQuality, FaceTelemetry, MatchResult } from "@/lib/face/types";
 import { loadCelebrityEmbeddings } from "@/lib/face/embeddings";
 import { playMatchChime } from "@/lib/utils/feedback";
+import { DEFAULT_PACK, packDefinition, type PackId } from "@/lib/celebrities/packs";
+import {
+  loadCuratedPacks,
+  readStoredPack,
+  writeStoredPack,
+} from "@/lib/celebrities/load-packs";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
 
@@ -29,14 +36,21 @@ export function AppHome() {
   const [stepIndex, setStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [gallerySize, setGallerySize] = useState(1000);
+  const [pack, setPack] = useState<PackId>(DEFAULT_PACK);
   const previewRef = useRef<string | null>(null);
   // review state
   const [reviewSrc, setReviewSrc] = useState<string | null>(null);
   const [reviewFileName, setReviewFileName] = useState<string | undefined>(undefined);
   const reviewSrcRef = useRef<string | null>(null);
+  const lastApprovedBlobRef = useRef<Blob | null>(null);
+  const lastSelectedBoxRef = useRef<
+    { x: number; y: number; width: number; height: number } | undefined
+  >(undefined);
 
   useEffect(() => {
     prefetchModel();
+    void loadCuratedPacks();
+    setPack(readStoredPack());
     void loadCelebrityEmbeddings()
       .then((g) => setGallerySize(new Set(g.map((c) => c.id)).size))
       .catch(() => {});
@@ -80,10 +94,16 @@ export function AppHome() {
     telemetry?: FaceTelemetry;
   } | null>(null);
 
+  const persistPack = useCallback((next: PackId) => {
+    setPack(next);
+    writeStoredPack(next);
+  }, []);
+
   const runAnalysis = useCallback(
     async (
       blob: Blob,
       selectedBox?: { x: number; y: number; width: number; height: number },
+      packOverride?: PackId,
     ) => {
       setError(null);
       setResult(null);
@@ -121,6 +141,7 @@ export function AppHome() {
 
         const matchResult = await analyzeFaceSource(img, {
           topK: 6,
+          pack: packOverride ?? pack,
           selectedBox,
           onProgress: (stepIdx, pct, details) => {
             if (cancelled) return;
@@ -200,7 +221,7 @@ export function AppHome() {
         clearTimeout(timeoutId);
       }
     },
-    [setPreview],
+    [setPreview, pack],
   );
 
   const onFile = useCallback(
@@ -230,10 +251,24 @@ export function AppHome() {
       croppedBlob: Blob,
       selectedBox?: { x: number; y: number; width: number; height: number },
     ) => {
+      lastApprovedBlobRef.current = croppedBlob;
+      lastSelectedBoxRef.current = selectedBox;
       clearReview();
       void runAnalysis(croppedBlob, selectedBox);
     },
     [clearReview, runAnalysis],
+  );
+
+  const onPackChange = useCallback(
+    (next: PackId) => {
+      persistPack(next);
+      const blob = lastApprovedBlobRef.current;
+      if (!blob) return;
+      if (phase === "results" || phase === "quality-blocked") {
+        void runAnalysis(blob, lastSelectedBoxRef.current, next);
+      }
+    },
+    [persistPack, phase, runAnalysis],
   );
 
   const onRetake = useCallback(() => {
@@ -242,6 +277,8 @@ export function AppHome() {
   }, [clearReview]);
 
   const reset = useCallback(() => {
+    lastApprovedBlobRef.current = null;
+    lastSelectedBoxRef.current = undefined;
     setPhase("capture");
     setResult(null);
     setError(null);
@@ -320,6 +357,16 @@ export function AppHome() {
 
         {phase === "capture" && (
           <div className="animate-fade-up space-y-8">
+            <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
+              <div className="text-center space-y-1">
+                <h2 className="text-sm font-semibold text-white">Match me with</h2>
+                <p className="text-xs text-white/55">
+                  {packDefinition(pack)?.label ?? "Everyone"} — pick a gallery, then take a photo.
+                </p>
+              </div>
+              <PackPicker value={pack} onChange={onPackChange} />
+            </section>
+
             <PhotoUploader
               onFile={onFile}
               onCameraClick={(stream) => {
@@ -391,11 +438,28 @@ export function AppHome() {
         )}
 
         {phase === "results" && result && (
-          <MatchResults
-            result={result}
-            previewUrl={previewUrl}
-            onReset={reset}
-          />
+          <div className="space-y-5">
+            <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
+              <div className="text-center space-y-1">
+                <p className="text-[11px] font-mono uppercase tracking-[0.14em] text-white/45">
+                  Active pack
+                </p>
+                <h2 className="text-sm font-semibold text-white">
+                  {packDefinition(pack)?.label ?? "Everyone"}
+                </h2>
+                <p className="text-xs text-white/55">{packDefinition(pack)?.blurb}</p>
+              </div>
+              <PackPicker value={pack} onChange={onPackChange} compact />
+              <p className="text-center text-[11px] text-white/45">
+                Switch packs to rematch this photo — no new selfie needed.
+              </p>
+            </section>
+            <MatchResults
+              result={result}
+              previewUrl={previewUrl}
+              onReset={reset}
+            />
+          </div>
         )}
 
         {phase === "quality-blocked" && result && (
@@ -469,6 +533,12 @@ export function AppHome() {
                   ))}
                 </ul>
               )}
+              <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3">
+                <p className="text-center text-[11px] text-white/50">
+                  Try a different pack with the same photo
+                </p>
+                <PackPicker value={pack} onChange={onPackChange} compact />
+              </div>
               <div className="flex flex-col gap-2 pt-1 sm:flex-row">
                 <Button variant="secondary" size="md" onClick={reset} className="w-full sm:flex-1">
                   Retake photo

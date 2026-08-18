@@ -91,6 +91,44 @@ export function registerPackIds(pack: PackId, ids: Iterable<string>): void {
   CURATED_PACK_IDS.set(pack, new Set(ids));
 }
 
+export type PackManifest = Partial<Record<PackId, readonly string[]>>;
+
+function asIdList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((id): id is string => typeof id === "string" && id.length > 0);
+}
+
+/**
+ * Register curated id lists from `public/celebs/packs.json`.
+ * Unknown keys and non-array values are ignored so the file can grow.
+ */
+export function applyPackManifest(manifest: unknown): void {
+  if (!manifest || typeof manifest !== "object") return;
+  for (const [key, value] of Object.entries(manifest as Record<string, unknown>)) {
+    if (!isPackId(key)) continue;
+    registerCuratedPack(key, asIdList(value));
+  }
+}
+
+function registerCuratedPack(pack: PackId, ids: readonly string[]): void {
+  switch (pack) {
+    case "all":
+      return;
+    case "nineties-icons":
+    case "athletes":
+    case "musicians":
+    case "actors":
+    case "models":
+    case "public-figures":
+      registerPackIds(pack, ids);
+      return;
+    default: {
+      const _exhaustive: never = pack;
+      return _exhaustive;
+    }
+  }
+}
+
 export function clearRegisteredPackIds(): void {
   CURATED_PACK_IDS.clear();
 }
