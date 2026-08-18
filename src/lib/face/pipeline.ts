@@ -20,6 +20,7 @@ import { extractEdgeFaceEmbedding } from "./edgeface.ts";
 import { computeBiohash } from "./biohash.ts";
 import { detectionFromAccuFace, pipelineLog, sourceDimensions, unpadScrfdDetections } from "./accuface-detection.ts";
 import {
+  GENDER_CONFLICT_MIN_PROB,
   hardQualityRefuseGate,
   poseRefuseGate,
 } from "./lookalike-policy.ts";
@@ -326,11 +327,15 @@ export async function analyzeFaceSource(
       ms: Math.round(performance.now() - tAg),
       age: ag?.age ?? null,
       gender: ag?.gender ?? null,
+      p: ag?.genderProbability ?? null,
     });
     if (det && ag) {
-      det.age = ag.age;
-      det.gender = ag.gender;
-      det.genderProbability = ag.genderProbability;
+      if (Number.isFinite(ag.age)) det.age = ag.age;
+      // Low-confidence gender is worse than unknown (it hard-steers ranking).
+      if (ag.genderProbability >= GENDER_CONFLICT_MIN_PROB) {
+        det.gender = ag.gender;
+        det.genderProbability = ag.genderProbability;
+      }
     }
   }
 

@@ -17,10 +17,8 @@ interface MatchResultsProps {
 
 export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps) {
   const [selectedMatch, setSelectedMatch] = useState<CelebrityMatch | null>(null);
-  const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">(() => {
-    const g = result.estimatedGender;
-    return g === "male" || g === "female" ? g : "all";
-  });
+  // Inferred gender is a soft prior, never a hard results filter (user can click Male/Female Only).
+  const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   const filteredMatches = useMemo(() => {

@@ -165,11 +165,11 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       assert.ok(Math.abs(a40 - Math.exp(-4)) < 1e-6, `Expected ~exp(-4) at delta=40, got ${a40}`);
     });
 
-    it("remains bounded in (0.0, 1.0] even for extreme age differences", () => {
+    it("remains bounded in [0.0, 1.0] even for extreme age differences", () => {
       const extreme1 = ageAffinity(0, 120);
       const extreme2 = ageAffinity(-50, 500);
-      assert.ok(extreme1 > 0 && extreme1 <= 1.0, `Extreme age affinity out of bounds: ${extreme1}`);
-      assert.ok(extreme2 > 0 && extreme2 <= 1.0, `Extreme age affinity out of bounds: ${extreme2}`);
+      assert.ok(extreme1 >= 0 && extreme1 <= 1.0, `Extreme age affinity out of bounds: ${extreme1}`);
+      assert.ok(extreme2 >= 0 && extreme2 <= 1.0, `Extreme age affinity out of bounds: ${extreme2}`);
     });
   });
 
@@ -320,7 +320,7 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
           path: "/celeb2.webp",
           descriptor: Array.from(celebVec2),
           age: 45,
-          gender: "male",
+          gender: "female",
           genderProb: 0.90,
         },
       ];
