@@ -175,6 +175,15 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+/** One wedged celebrity must not eat the whole crawl budget. */
+function withDeadline<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: NodeJS.Timeout;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} exceeded ${ms}ms`)), ms);
+  });
+  return Promise.race([work, deadline]).finally(() => clearTimeout(timer)) as Promise<T>;
+}
+
 const LIMIT = Number(process.env.EXTRAS_LIMIT || 40);
 const TARGET = Math.min(MAX_EXTRA_PHOTOS, Number(process.env.EXTRAS_TARGET || 4));
 const DELAY_MS = Number(process.env.EXTRAS_DELAY_MS || 300);
@@ -182,6 +191,7 @@ const MAX_SECONDS = Number(process.env.EXTRAS_MAX_SECONDS ?? 300);
 const SKIP_EXISTING = process.env.EXTRAS_SKIP_EXISTING !== "0";
 const REQUEST_TIMEOUT_MS = Number(process.env.EXTRAS_TIMEOUT_MS || 20_000);
 const MAX_BACKOFF_MS = 10_000;
+const CELEB_DEADLINE_MS = Number(process.env.EXTRAS_CELEB_DEADLINE_MS || 120_000);
 const MAX_EXISTING =
   process.env.EXTRAS_MAX_EXISTING === undefined
     ? Infinity
@@ -254,7 +264,14 @@ async function resolveCategory(name: string): Promise<string | null> {
   return hit?.title ?? null;
 }
 
-async function categoryFiles(category: string, depth = 1): Promise<string[]> {
+/** "<Person> by year" / "in 2016" containers hold the era spread; plain subcats rarely do. */
+export function rankSubcategories(subcats: string[]): string[] {
+  const weight = (title: string) =>
+    /by year|by decade|in the \d{4}s|in \d{4}/i.test(title) ? 0 : 1;
+  return [...subcats].sort((a, b) => weight(a) - weight(b) || a.localeCompare(b));
+}
+
+async function categoryFiles(category: string, depth = 2): Promise<string[]> {
   const j = await api(COMMONS_API, {
     action: "query",
     list: "categorymembers",
@@ -264,13 +281,14 @@ async function categoryFiles(category: string, depth = 1): Promise<string[]> {
   });
   const members = (j.query?.categorymembers ?? []) as Array<{ title: string; ns: number }>;
   const files = members.filter((m) => m.ns === 6).map((m) => m.title);
-  const subcats = members.filter((m) => m.ns === 14).map((m) => m.title);
+  const subcats = rankSubcategories(members.filter((m) => m.ns === 14).map((m) => m.title));
 
-  // One level of "<Person> in <year>" subcategories is where era diversity lives.
-  if (depth > 0 && files.length < 40 && subcats.length > 0) {
-    for (const sub of subcats.slice(0, 4)) {
+  // Big categories keep their photos two levels down under "by year" containers.
+  if (depth > 0 && files.length < 30 && subcats.length > 0) {
+    for (const sub of subcats.slice(0, depth > 1 ? 5 : 3)) {
+      if (files.length >= 40) break;
       await sleep(DELAY_MS);
-      files.push(...(await categoryFiles(sub, 0)));
+      files.push(...(await categoryFiles(sub, depth - 1)));
     }
   }
   return files;
@@ -382,57 +400,16 @@ async function main(): Promise<void> {
     }
 
     try {
-      const category = await resolveCategory(entry.name);
-      await sleep(DELAY_MS);
-      if (!category) {
-        console.log(`- no commons category  ${entry.id}`);
-        failed++;
-        continue;
-      }
-      const titles = (await categoryFiles(category)).filter(
-        (t) => isLikelyPortraitFileName(t) && matchesSubject(t, entry.name),
+      const got = await withDeadline(
+        fetchForCeleb(entry, { destDir, have, want, manifest }),
+        CELEB_DEADLINE_MS,
+        entry.id,
       );
-      await sleep(DELAY_MS);
-      if (titles.length === 0) {
-        console.log(`- no usable files      ${entry.id} (${category})`);
-        failed++;
-        continue;
-      }
-      const infos = await imageInfo(titles.slice(0, 80));
-      // Over-select: some picks fail download or land as a SHA dupe.
-      const picks = selectDiverseCandidates(infos, want * 3);
-      const blocked = knownShas(entry.id);
-
-      let index2 = nextPhotoIndex(have);
-      let got = 0;
-      for (const cand of picks) {
-        if (got >= want) break;
-        await sleep(DELAY_MS);
-        const buf = await download(cand.url);
-        if (!buf) continue;
-        const digest = sha(buf);
-        if (blocked.has(digest)) continue;
-        blocked.add(digest);
-        fs.mkdirSync(destDir, { recursive: true });
-        const file = `${String(index2).padStart(3, "0")}.jpg`;
-        fs.writeFileSync(path.join(destDir, file), buf);
-        manifest.push({
-          id: entry.id,
-          file,
-          commonsTitle: cand.title,
-          sourceUrl: cand.url,
-          fetchedAt: new Date().toISOString(),
-        });
-        index2++;
-        got++;
-        saved++;
-      }
       if (got > 0) {
         celebsTouched++;
-        console.log(`+ ${entry.id}  ${got} view(s) from ${category}`);
+        saved += got;
       } else {
         failed++;
-        console.log(`- nothing landed       ${entry.id} (${category})`);
       }
     } catch (err) {
       failed++;
@@ -465,6 +442,61 @@ async function main(): Promise<void> {
     `done saved=${saved} celebs=${celebsTouched} skipped=${skipped} failed=${failed} ` +
       `elapsed=${Math.round((Date.now() - startedAt) / 1000)}s${budgetHit ? " (budget)" : ""}`,
   );
+}
+
+async function fetchForCeleb(
+  entry: IndexEntry,
+  ctx: { destDir: string; have: string[]; want: number; manifest: ManifestRow[] },
+): Promise<number> {
+  const { destDir, have, want, manifest } = ctx;
+  const category = await resolveCategory(entry.name);
+  await sleep(DELAY_MS);
+  if (!category) {
+    console.log(`- no commons category  ${entry.id}`);
+    return 0;
+  }
+  const titles = (await categoryFiles(category)).filter(
+    (t) => isLikelyPortraitFileName(t) && matchesSubject(t, entry.name),
+  );
+  await sleep(DELAY_MS);
+  if (titles.length === 0) {
+    console.log(`- no usable files      ${entry.id} (${category})`);
+    return 0;
+  }
+  const infos = await imageInfo(titles.slice(0, 80));
+  // Over-select: some picks fail download or land as a SHA dupe.
+  const picks = selectDiverseCandidates(infos, want * 3);
+  const blocked = knownShas(entry.id);
+
+  let nextIndex = nextPhotoIndex(have);
+  let got = 0;
+  for (const cand of picks) {
+    if (got >= want) break;
+    await sleep(DELAY_MS);
+    const buf = await download(cand.url);
+    if (!buf) continue;
+    const digest = sha(buf);
+    if (blocked.has(digest)) continue;
+    blocked.add(digest);
+    fs.mkdirSync(destDir, { recursive: true });
+    const file = `${String(nextIndex).padStart(3, "0")}.jpg`;
+    fs.writeFileSync(path.join(destDir, file), buf);
+    manifest.push({
+      id: entry.id,
+      file,
+      commonsTitle: cand.title,
+      sourceUrl: cand.url,
+      fetchedAt: new Date().toISOString(),
+    });
+    nextIndex++;
+    got++;
+  }
+  console.log(
+    got > 0
+      ? `+ ${entry.id}  ${got} view(s) from ${category}`
+      : `- nothing landed       ${entry.id} (${category})`,
+  );
+  return got;
 }
 
 if (process.argv[1] && process.argv[1].endsWith("fetch-commons-extras.ts")) {

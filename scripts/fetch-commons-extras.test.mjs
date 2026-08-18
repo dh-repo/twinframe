@@ -8,6 +8,7 @@ import {
   matchesSubject,
   nextPhotoIndex,
   normalizeTitleWords,
+  rankSubcategories,
   selectDiverseCandidates,
 } from "./fetch-commons-extras.ts";
 
@@ -86,6 +87,23 @@ describe("diversity selection", () => {
       1,
     );
     assert.deepEqual(picked.map((c) => c.title), ["File:X 2019.jpg"]);
+  });
+});
+
+describe("subcategory ranking", () => {
+  it("descends into dated containers before generic subcategories", () => {
+    assert.deepEqual(
+      rankSubcategories([
+        "Category:Ryan Reynolds at Comic-Con International",
+        "Category:Ryan Reynolds by year",
+        "Category:Ryan Reynolds by decade",
+      ]),
+      [
+        "Category:Ryan Reynolds by decade",
+        "Category:Ryan Reynolds by year",
+        "Category:Ryan Reynolds at Comic-Con International",
+      ],
+    );
   });
 });
 
