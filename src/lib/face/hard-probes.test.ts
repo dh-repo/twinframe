@@ -2,9 +2,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   HARD_PROBE_CONDITIONS,
+  PHONE_CLOSEUP_HINT,
   classifyHardProbe,
   hardProbeLabel,
   isHardProbeCondition,
+  isPhoneCloseup,
 } from "./hard-probes.ts";
 
 describe("classifyHardProbe", () => {
@@ -49,6 +51,12 @@ describe("classifyHardProbe", () => {
   it("treats yaw exactly at the threshold as easy", () => {
     assert.deepEqual(classifyHardProbe({ yawDeg: 25 }), []);
     assert.deepEqual(classifyHardProbe({ yawDeg: 25.1 }), ["yaw-gt-25"]);
+  });
+
+  it("flags phone close-ups at the coverage floor used by the UX hint", () => {
+    assert.equal(isPhoneCloseup(0.41), false);
+    assert.equal(isPhoneCloseup(0.42), true);
+    assert.match(PHONE_CLOSEUP_HINT, /Hold the phone a bit further/);
   });
 });
 

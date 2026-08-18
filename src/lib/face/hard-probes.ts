@@ -63,6 +63,14 @@ export const YAW_HARD_MIN_DEG = 25;
 export const BIG_SMILE_MIN_INTENSITY = 0.6;
 export const PHONE_CLOSEUP_MIN_COVERAGE = 0.42;
 
+/** Shown in crop-review and quality-blocked — close-range front cameras warp faces. */
+export const PHONE_CLOSEUP_HINT =
+  "Hold the phone a bit further — close-up front cameras warp your face.";
+
+export function isPhoneCloseup(faceCoverage: number): boolean {
+  return Number.isFinite(faceCoverage) && faceCoverage >= PHONE_CLOSEUP_MIN_COVERAGE;
+}
+
 /** Derive every condition a probe satisfies. A probe may be hard in several ways. */
 export function classifyHardProbe(signals: HardProbeSignals): HardProbeCondition[] {
   const out: HardProbeCondition[] = [];

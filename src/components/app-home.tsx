@@ -130,6 +130,7 @@ export function AppHome() {
   const [reviewFileName, setReviewFileName] = useState<string | undefined>(undefined);
   const reviewSrcRef = useRef<string | null>(null);
   const lastApprovedBlobRef = useRef<Blob | null>(null);
+  const lastBurstBlobsRef = useRef<Blob[] | null>(null);
   const lastSelectedBoxRef = useRef<FaceBox | undefined>(undefined);
   const playModeRef = useRef<PlayMode>("solo");
   const friendSlotRef = useRef<FriendSlot>("a");
@@ -319,7 +320,8 @@ export function AppHome() {
               i.includes("Dim lighting") ||
               i.includes("No face") ||
               i.includes("too extreme") ||
-              i.includes("No close look-alike"),
+              i.includes("No close look-alike") ||
+              i.includes("Hold the phone"),
           );
 
         await new Promise((r) => setTimeout(r, 260));
@@ -472,6 +474,7 @@ export function AppHome() {
   const reset = useCallback(() => {
     analyzeGenRef.current += 1;
     lastApprovedBlobRef.current = null;
+    lastBurstBlobsRef.current = null;
     lastSelectedBoxRef.current = undefined;
     playModeRef.current = "solo";
     friendSlotRef.current = "a";
@@ -778,6 +781,8 @@ export function AppHome() {
                     {result.matches.length === 0 &&
                     result.quality.issues.some((i) => i.includes("look-alike"))
                       ? "No close look-alike found"
+                      : result.quality.issues.some((i) => i.includes("Hold the phone"))
+                        ? "Hold the phone a bit further"
                       : result.quality.issues.some((i) => i.includes("angle") || i.includes("extreme"))
                         ? "Photo angle not suitable"
                         : "Photo quality too low for high-accuracy match"}
@@ -787,6 +792,7 @@ export function AppHome() {
                       const q = result.quality as unknown as { sharpness?: number };
                       const firstIssue = result.quality.issues[0];
                       if (firstIssue) return firstIssue;
+                      if (result.quality.faceCoverage >= 0.42) return "Hold the phone a bit further — close-up front cameras warp your face.";
                       if (result.quality.faceCoverage < 0.03) return "Face is too small — move closer and fill the square.";
                       if ((q.sharpness ?? 60) < 42) return "Photo is blurry — hold steady and tap to focus.";
                       if (result.quality.score < 0.45) return "Low confidence — use front-facing, even lighting.";
@@ -909,6 +915,9 @@ export function AppHome() {
           setCameraStream(null);
         }}
         onCapture={onCapture}
+        onBurst={(blobs) => {
+          lastBurstBlobsRef.current = blobs;
+        }}
       />
 
       <StarGalleryModal

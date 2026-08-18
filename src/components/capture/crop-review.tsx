@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, RotateCcw, ZoomIn, Move, Users, ScanFace } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  PHONE_CLOSEUP_HINT,
+  PHONE_CLOSEUP_MIN_COVERAGE,
+} from "@/lib/face/hard-probes";
 
 export interface FaceCandidateUI {
   id: number;
@@ -352,6 +356,13 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
   }, [offset, scale, stageSize, onApprove, isApproving, isDetectingFaces, candidates, selectedFaceId]);
 
   const qualityHint = (() => {
+    const selected = candidates.find((c) => c.id === selectedFaceId) ?? candidates.find((c) => c.isPrimary);
+    if (selected) {
+      const coverage = (selected.box.width / 100) * (selected.box.height / 100);
+      if (coverage >= PHONE_CLOSEUP_MIN_COVERAGE) {
+        return { tone: "warn" as const, text: PHONE_CLOSEUP_HINT };
+      }
+    }
     if (!imageSize.w) return null;
     const mp = (imageSize.w * imageSize.h) / 1e6;
     if (mp < 0.15) return { tone: "warn" as const, text: "Low resolution — a larger photo gives sharper matches." };
