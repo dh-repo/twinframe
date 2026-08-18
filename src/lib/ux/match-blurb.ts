@@ -377,16 +377,24 @@ export function composeBreakdownRows(
     celebFeatures?: Partial<FaceFeatures> | null;
     /** Accepted and ignored — scores must never be derived from hue. */
     accentHue?: number;
-    /** Distant twins keep engine rows only — no 99% "jawline" extras. */
+    /** Distant twins keep structure + lighting only — no 99% extras. */
     verdict?: VerdictTier;
   },
 ): BreakdownRow[] {
   void opts?.accentHue;
   const rows: BreakdownRow[] = [];
   const seen = new Set<string>();
+  const distant = opts?.verdict === "distant-twin";
 
   for (const trait of traits) {
     if (typeof trait.similarity !== "number" || !Number.isFinite(trait.similarity)) {
+      continue;
+    }
+    if (
+      distant &&
+      trait.trait !== "facialStructure" &&
+      trait.trait !== "lightingQuality"
+    ) {
       continue;
     }
     const score = Math.round(Math.max(0, Math.min(1, trait.similarity)) * 100);
@@ -401,7 +409,7 @@ export function composeBreakdownRows(
 
   const user = opts?.userFeatures;
   const celeb = opts?.celebFeatures;
-  if (user && celeb && opts?.verdict !== "distant-twin") {
+  if (user && celeb && !distant) {
     for (const agree of pickAgreeingTraits(user, celeb, 2)) {
       if (seen.has(agree.key)) continue;
       rows.push({

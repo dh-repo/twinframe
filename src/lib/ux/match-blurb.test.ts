@@ -329,7 +329,14 @@ describe("composeBreakdownRows", () => {
       rows.some((r) => r.id === "eyeSpacing" || r.id === "cheekboneProminence"),
       false,
     );
-    assert.equal(rows.length, 4);
+    assert.deepEqual(
+      rows.map((r) => r.id),
+      ["facialStructure", "lightingQuality"],
+    );
+    assert.equal(
+      rows.some((r) => r.id === "ageAffinity" || r.id === "genderPresentation"),
+      false,
+    );
   });
 
   it("survives empty traits without inventing scores", () => {
