@@ -1,10 +1,10 @@
 {
   "version": "2.0.0",
   "description": "Held-out photos on disk. Slot 001 is the eval-only query photo; 002+ are enrolled as extra views.",
-  "generatedAt": "2026-08-18T04:00:50.264Z",
-  "count": 740,
-  "identities": 204,
-  "evalSlotCount": 203,
+  "generatedAt": "2026-08-18T04:44:15.739Z",
+  "count": 742,
+  "identities": 206,
+  "evalSlotCount": 205,
   "cases": [
     {
       "id": "aaron-taylor-johnson",
@@ -3949,6 +3949,16 @@
       "evalSlot": false
     },
     {
+      "id": "mahershala-ali",
+      "name": "Mahershala Ali",
+      "slot": "001",
+      "imagePath": "/celebs/held-out/mahershala-ali/001.jpg",
+      "bytes": 173662,
+      "evalSlot": true,
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Mahershala_Ali_%2829953410761%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Mahershala Ali"
+    },
+    {
       "id": "margot-robbie",
       "name": "Margot Robbie",
       "slot": "001",
@@ -6181,6 +6191,16 @@
       "imagePath": "/celebs/held-out/zhang-ziyi/002.jpg",
       "bytes": 154736,
       "evalSlot": false
+    },
+    {
+      "id": "zoe-kravitz",
+      "name": "Zoë Kravitz",
+      "slot": "001",
+      "imagePath": "/celebs/held-out/zoe-kravitz/001.jpg",
+      "bytes": 122096,
+      "evalSlot": true,
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/32/Zoe_Kravitz_2020_dvna_studio.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "wikiTitle": "Zoë Kravitz"
     },
     {
       "id": "zoe-saldana",

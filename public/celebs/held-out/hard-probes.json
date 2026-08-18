@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "signalsVersion": "1.1.0",
-  "generatedAt": "2026-08-18T03:59:26.787Z",
+  "generatedAt": "2026-08-18T04:44:20.642Z",
   "detector": "SCRFD-2.5G-bnkps (scripts/lib/probe-signals.mjs)",
   "autoDerivedConditions": [
     "low-light",
@@ -18,14 +18,14 @@
   "overridesFile": "/celebs/held-out/hard-probes.overrides.json",
   "overrideCount": 0,
   "counts": {
-    "images": 740,
-    "detected": 740,
+    "images": 742,
+    "detected": 742,
     "easyImages": 174,
     "byCondition": {
       "low-light": 73,
       "glasses": 0,
       "big-smile": 461,
-      "yaw-gt-25": 194,
+      "yaw-gt-25": 196,
       "phone-closeup": 8
     }
   },
@@ -15541,6 +15541,38 @@
         "big-smile"
       ]
     },
+    "/celebs/held-out/mahershala-ali/001.jpg": {
+      "id": "mahershala-ali",
+      "slot": "001",
+      "detected": true,
+      "derivedSignals": {
+        "meanLuma": 0.4029,
+        "faceCoverage": 0.3764,
+        "yawDeg": -52.5,
+        "smileIntensity": 0.54
+      },
+      "diagnostics": {
+        "smileRatio": 0.83,
+        "commissureElevation": 107.96,
+        "pitchDeg": 4.38,
+        "rollDeg": -2.33
+      },
+      "detScore": 0.73,
+      "imageWidth": 769,
+      "imageHeight": 1024,
+      "fingerprint": "1.1.0:173662:1787025670281",
+      "signals": {
+        "meanLuma": 0.4029,
+        "faceCoverage": 0.3764,
+        "yawDeg": -52.5,
+        "smileIntensity": 0.54
+      },
+      "manualSignals": [],
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "lowConfidence": []
+    },
     "/celebs/held-out/margot-robbie/001.jpg": {
       "id": "margot-robbie",
       "slot": "001",
@@ -24353,6 +24385,38 @@
       "lowConfidence": [
         "big-smile"
       ]
+    },
+    "/celebs/held-out/zoe-kravitz/001.jpg": {
+      "id": "zoe-kravitz",
+      "slot": "001",
+      "detected": true,
+      "derivedSignals": {
+        "meanLuma": 0.5498,
+        "faceCoverage": 0.2897,
+        "yawDeg": -45.1,
+        "smileIntensity": 0.09
+      },
+      "diagnostics": {
+        "smileRatio": 0.74,
+        "commissureElevation": 123.14,
+        "pitchDeg": -11.96,
+        "rollDeg": -1.91
+      },
+      "detScore": 0.821,
+      "imageWidth": 805,
+      "imageHeight": 1072,
+      "fingerprint": "1.1.0:122096:1787025671877",
+      "signals": {
+        "meanLuma": 0.5498,
+        "faceCoverage": 0.2897,
+        "yawDeg": -45.1,
+        "smileIntensity": 0.09
+      },
+      "manualSignals": [],
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "lowConfidence": []
     },
     "/celebs/held-out/zoe-saldana/001.jpg": {
       "id": "zoe-saldana",

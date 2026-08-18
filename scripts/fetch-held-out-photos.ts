@@ -11,6 +11,10 @@
  * so expect to run this repeatedly — already-downloaded ids are skipped by
  * looking at the files on disk, not at manifest rows.
  *
+ * Candidates that decode too small or compress like flat art are rejected (see
+ * photoRejectReason) — Wikipedia's image list includes interface chrome, and one
+ * such icon shipped as a celebrity's held-out probe before this guard.
+ *
  * The manifest is rebuilt from the directory tree on every run, so it lists
  * EVERY image slot present (001, 002, 003, …) instead of only the rows this
  * process happened to write. Rebuild it on its own with:
@@ -19,11 +23,15 @@
  * Usage:
  *   node --experimental-strip-types scripts/fetch-held-out-photos.ts [--limit N] [--manifest-only]
  *   HELD_OUT_LIMIT=50 node --experimental-strip-types scripts/fetch-held-out-photos.ts
+ *
+ * --audit re-checks every image already on disk against the same guard, which is
+ * how you find probes an earlier run let through.
  */
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const INDEX = path.join(ROOT, "public/celebs/index.json");
@@ -65,7 +73,41 @@ export interface Manifest {
   cases: ManifestRow[];
 }
 
-const SKIP_NAME = /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram/i;
+const SKIP_NAME =
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow/i;
+
+/**
+ * Shortest side a usable held-out portrait must have. Interface chrome is small
+ * and square; SCRFD needs real pixels to find a face at all.
+ */
+export const PHOTO_MIN_DIMENSION = 200;
+/**
+ * Bytes per pixel below which an image is flat art, not a photograph. A 900px
+ * photograph carries ~0.05-0.3 bytes per pixel; flat vector-ish art rasterized
+ * to the same size lands near 0.008.
+ */
+export const PHOTO_MIN_BYTES_PER_PIXEL = 0.02;
+
+/**
+ * Why a candidate is not a usable portrait, or null when it looks like one.
+ *
+ * Wikipedia's article-image list returns interface chrome alongside photographs,
+ * and a filename blocklist always misses the next one — a 128px microphone icon
+ * shipped as `rihanna/001.jpg`, scoring as a model miss, is how this guard was
+ * found. Both tests run on the decoded bytes rather than on the API's reported
+ * size, because the API described that icon as a 900px thumbnail.
+ */
+export function photoRejectReason(candidate: {
+  bytes: number;
+  width?: number;
+  height?: number;
+}): "too-small" | "flat-art" | null {
+  const { bytes, width, height } = candidate;
+  if (!width || !height || width <= 0 || height <= 0) return null;
+  if (Math.min(width, height) < PHOTO_MIN_DIMENSION) return "too-small";
+  if (bytes / (width * height) < PHOTO_MIN_BYTES_PER_PIXEL) return "flat-art";
+  return null;
+}
 
 /** Full catalog by default; HELD_OUT_LIMIT or --limit narrow it. */
 export function resolveLimit(
@@ -214,7 +256,9 @@ async function pageImageTitle(title: string): Promise<string | null> {
   return page?.pageimage ? `File:${page.pageimage}` : null;
 }
 
-async function pageImages(title: string): Promise<Array<{ url: string; title: string }>> {
+async function pageImages(
+  title: string,
+): Promise<Array<{ url: string; title: string; width: number; height: number }>> {
   const j = await wiki({
     action: "query",
     titles: title,
@@ -225,7 +269,7 @@ async function pageImages(title: string): Promise<Array<{ url: string; title: st
     iiurlwidth: "900",
   });
   const pages = Object.values(j.query?.pages ?? {}) as any[];
-  const out: Array<{ url: string; title: string }> = [];
+  const out: Array<{ url: string; title: string; width: number; height: number }> = [];
   for (const p of pages) {
     const info = p.imageinfo?.[0];
     if (!info) continue;
@@ -235,17 +279,26 @@ async function pageImages(title: string): Promise<Array<{ url: string; title: st
     const w = Number(info.thumbwidth || info.width || 0);
     const h = Number(info.thumbheight || info.height || 0);
     if (Math.min(w, h) < 160) continue;
-    out.push({ url: info.thumburl || info.url, title: p.title });
+    out.push({ url: info.thumburl || info.url, title: p.title, width: w, height: h });
   }
   return out;
 }
 
-async function download(url: string): Promise<Buffer | null> {
+async function download(url: string): Promise<{ buffer: Buffer } | { reject: string } | null> {
   const res = await fetch(url, { headers: { "User-Agent": UA } });
   if (!res.ok) return null;
-  const buf = Buffer.from(await res.arrayBuffer());
-  if (buf.length < 4_000) return null;
-  return buf;
+  const buffer = Buffer.from(await res.arrayBuffer());
+  if (buffer.length < 4_000) return { reject: "too-small" };
+  const meta = await sharp(buffer)
+    .metadata()
+    .catch(() => null);
+  if (!meta) return { reject: "undecodable" };
+  const reason = photoRejectReason({
+    bytes: buffer.length,
+    width: meta.width,
+    height: meta.height,
+  });
+  return reason ? { reject: reason } : { buffer };
 }
 
 function sleep(ms: number) {
@@ -256,6 +309,29 @@ async function main() {
   const index = readJson<IndexEntry[]>(INDEX, []);
   if (index.length === 0) throw new Error(`no catalog at ${INDEX}`);
   const previous = readJson<{ cases?: Array<Partial<ManifestRow>> }>(MANIFEST, { cases: [] });
+
+  if (process.argv.includes("--audit")) {
+    const suspects: string[] = [];
+    for (const slot of listHeldOutSlots(OUT_DIR)) {
+      const meta = await sharp(slot.filePath)
+        .metadata()
+        .catch(() => null);
+      const reason = meta
+        ? photoRejectReason({
+            bytes: fs.statSync(slot.filePath).size,
+            width: meta.width,
+            height: meta.height,
+          })
+        : "undecodable";
+      if (reason) suspects.push(`${slot.id}/${slot.slot}: ${reason} (${meta?.width}x${meta?.height})`);
+    }
+    console.log(
+      suspects.length === 0
+        ? "audit: every held-out image looks like a photograph"
+        : `audit: ${suspects.length} suspect image(s) — delete them and re-fetch:\n  ${suspects.join("\n  ")}`,
+    );
+    return;
+  }
 
   if (process.argv.includes("--manifest-only")) {
     const manifest = rebuildManifestFromDisk({ heldOutDir: OUT_DIR, index, previous });
@@ -312,8 +388,13 @@ async function main() {
 
       let saved = false;
       for (const cand of ordered) {
-        const buf = await download(cand.url);
-        if (!buf) continue;
+        const result = await download(cand.url);
+        if (!result) continue;
+        if ("reject" in result) {
+          console.log(`  skip ${cand.title}: ${result.reject}`);
+          continue;
+        }
+        const buf = result.buffer;
         const sha = crypto.createHash("sha256").update(buf).digest("hex");
         if (enrollSha && sha === enrollSha) continue;
         if (enroll && Math.abs(buf.length - fs.statSync(enroll).size) < 80) continue;

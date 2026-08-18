@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-18T04:39:31.132Z",
+  "generatedAt": "2026-08-18T04:44:29.078Z",
   "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 627 extra templates)",
   "signalsVersion": "1.1.0",
   "hardProbeSignalsVersion": "1.1.0",
@@ -8,7 +8,7 @@
   "galleryIdentities": 999,
   "extraTemplatesMerged": 848,
   "slots": "001 only",
-  "labelledImages": 743,
+  "labelledImages": 742,
   "labelledConditionCounts": {
     "low-light": 73,
     "glasses": 0,
@@ -27,21 +27,21 @@
   "strata": [
     {
       "stratum": "overall",
-      "n": 206,
+      "n": 205,
       "rank1": 169,
       "rank5": 174,
-      "rank1Pct": 82,
-      "rank5Pct": 84.5,
+      "rank1Pct": 82.4,
+      "rank5Pct": 84.9,
       "rank1Ci95": [
-        76.2,
-        86.7
+        76.6,
+        87
       ],
       "rawRank1": 169,
-      "rawRank1Pct": 82,
+      "rawRank1Pct": 82.4,
       "refused": 0,
       "refusedPct": 0,
       "detected": 205,
-      "mrr": 0.8294
+      "mrr": 0.8335
     },
     {
       "stratum": "low-light",
@@ -135,35 +135,35 @@
     },
     {
       "stratum": "no-condition",
-      "n": 58,
+      "n": 57,
       "rank1": 42,
       "rank5": 44,
-      "rank1Pct": 72.4,
-      "rank5Pct": 75.9,
+      "rank1Pct": 73.7,
+      "rank5Pct": 77.2,
       "rank1Ci95": [
-        59.8,
-        82.2
+        61,
+        83.4
       ],
       "rawRank1": 42,
-      "rawRank1Pct": 72.4,
+      "rawRank1Pct": 73.7,
       "refused": 0,
       "refusedPct": 0,
       "detected": 57,
-      "mrr": 0.7333
+      "mrr": 0.7462
     }
   ],
   "distances": {
     "genuine (probe → own identity)": {
-      "n": 206,
-      "mean": 0.3337,
+      "n": 205,
+      "mean": 0.3314,
       "p10": 0.0034,
-      "p50": 0.3271,
+      "p50": 0.3209,
       "p90": 0.8251
     },
     "impostor (probe → best other identity)": {
-      "n": 206,
-      "mean": 0.5848,
-      "p10": 0.5095,
+      "n": 205,
+      "mean": 0.5867,
+      "p10": 0.5119,
       "p50": 0.6038,
       "p90": 0.6634
     }
@@ -172,103 +172,103 @@
     "current": {
       "d0": 0.6,
       "n": 4.1,
-      "logLoss": 0.6353
+      "logLoss": 0.6238
     },
     "fitted": {
       "d0": 0.45,
-      "n": 2.7,
-      "logLoss": 0.5472
+      "n": 2.9,
+      "logLoss": 0.5397
     },
     "grid": [
       {
         "d0": 0.55,
         "n": 1.2,
-        "logLoss": 0.589
+        "logLoss": 0.5859
       },
       {
         "d0": 0.55,
         "n": 1.4,
-        "logLoss": 0.5842
-      },
-      {
-        "d0": 0.55,
-        "n": 1.6,
         "logLoss": 0.5806
       },
       {
         "d0": 0.55,
-        "n": 2,
-        "logLoss": 0.576
-      },
-      {
-        "d0": 0.55,
-        "n": 3,
+        "n": 1.6,
         "logLoss": 0.5764
       },
       {
         "d0": 0.55,
+        "n": 2,
+        "logLoss": 0.5707
+      },
+      {
+        "d0": 0.55,
+        "n": 3,
+        "logLoss": 0.5681
+      },
+      {
+        "d0": 0.55,
         "n": 4.1,
-        "logLoss": 0.5907
+        "logLoss": 0.579
       },
       {
         "d0": 0.6,
         "n": 1.2,
-        "logLoss": 0.5995
+        "logLoss": 0.5965
       },
       {
         "d0": 0.6,
         "n": 1.4,
-        "logLoss": 0.597
+        "logLoss": 0.5934
       },
       {
         "d0": 0.6,
         "n": 1.6,
-        "logLoss": 0.5956
+        "logLoss": 0.5915
       },
       {
         "d0": 0.6,
         "n": 2,
-        "logLoss": 0.5957
+        "logLoss": 0.5905
       },
       {
         "d0": 0.6,
         "n": 3,
-        "logLoss": 0.6082
+        "logLoss": 0.6
       },
       {
         "d0": 0.6,
         "n": 4.1,
-        "logLoss": 0.6353
+        "logLoss": 0.6238
       },
       {
         "d0": 0.65,
         "n": 1.2,
-        "logLoss": 0.6112
+        "logLoss": 0.6081
       },
       {
         "d0": 0.65,
         "n": 1.4,
-        "logLoss": 0.6113
+        "logLoss": 0.6078
       },
       {
         "d0": 0.65,
         "n": 1.6,
-        "logLoss": 0.6128
+        "logLoss": 0.6087
       },
       {
         "d0": 0.65,
         "n": 2,
-        "logLoss": 0.619
+        "logLoss": 0.6137
       },
       {
         "d0": 0.65,
         "n": 3,
-        "logLoss": 0.6479
+        "logLoss": 0.6397
       },
       {
         "d0": 0.65,
         "n": 4.1,
-        "logLoss": 0.6944
+        "logLoss": 0.6829
       }
     ],
     "reliability": {
@@ -310,10 +310,10 @@
         },
         {
           "band": "95-100%",
-          "n": 96,
+          "n": 95,
           "claimedPct": 99.3,
-          "observedPct": 96.9,
-          "gapPct": 2.4
+          "observedPct": 97.9,
+          "gapPct": 1.4
         }
       ],
       "fitted": [
@@ -326,55 +326,55 @@
         },
         {
           "band": "20-40%",
-          "n": 33,
-          "claimedPct": 31.4,
-          "observedPct": 30.3,
-          "gapPct": 1.1
+          "n": 36,
+          "claimedPct": 31,
+          "observedPct": 33.3,
+          "gapPct": -2.3
         },
         {
           "band": "40-60%",
-          "n": 42,
-          "claimedPct": 50.5,
+          "n": 36,
+          "claimedPct": 50.6,
           "observedPct": 83.3,
-          "gapPct": -32.9
+          "gapPct": -32.8
         },
         {
           "band": "60-80%",
-          "n": 40,
+          "n": 41,
           "claimedPct": 69.9,
-          "observedPct": 90,
-          "gapPct": -20.1
+          "observedPct": 90.2,
+          "gapPct": -20.4
         },
         {
           "band": "80-95%",
           "n": 25,
-          "claimedPct": 86.5,
-          "observedPct": 92,
-          "gapPct": -5.5
+          "claimedPct": 87,
+          "observedPct": 96,
+          "gapPct": -9
         },
         {
           "band": "95-100%",
-          "n": 66,
+          "n": 67,
           "claimedPct": 99.9,
           "observedPct": 98.5,
-          "gapPct": 1.4
+          "gapPct": 1.3
         }
       ]
     },
     "calibrationError": {
-      "current": 6.25,
-      "fitted": 11.9
+      "current": 5.8,
+      "fitted": 11.77
     },
     "eer": {
       "distance": 0.5536,
-      "errorRate": 19.9
+      "errorRate": 19.51
     },
     "verdict": "keep-current (refit lowers log-loss only by hedging)"
   },
   "leakage": {
     "maxDistance": 0.05,
     "count": 61,
-    "pct": 29.6,
+    "pct": 29.8,
     "note": "Probes whose distance to their own gallery vector is <= maxDistance are the enrolled photo again (same source file at another resolution). They score Rank-1 for free.",
     "ids": [
       "aaron-taylor-johnson",
@@ -443,21 +443,21 @@
   "strataExcludingNearDuplicates": [
     {
       "stratum": "overall",
-      "n": 145,
+      "n": 144,
       "rank1": 108,
       "rank5": 113,
-      "rank1Pct": 74.5,
-      "rank5Pct": 77.9,
+      "rank1Pct": 75,
+      "rank5Pct": 78.5,
       "rank1Ci95": [
-        66.8,
-        80.9
+        67.3,
+        81.4
       ],
       "rawRank1": 108,
-      "rawRank1Pct": 74.5,
+      "rawRank1Pct": 75,
       "refused": 0,
       "refusedPct": 0,
       "detected": 144,
-      "mrr": 0.7577
+      "mrr": 0.763
     },
     {
       "stratum": "low-light",
@@ -551,36 +551,36 @@
     },
     {
       "stratum": "no-condition",
-      "n": 47,
+      "n": 46,
       "rank1": 31,
       "rank5": 33,
-      "rank1Pct": 66,
-      "rank5Pct": 70.2,
+      "rank1Pct": 67.4,
+      "rank5Pct": 71.7,
       "rank1Ci95": [
-        51.7,
-        77.8
+        53,
+        79.1
       ],
       "rawRank1": 31,
-      "rawRank1Pct": 66,
+      "rawRank1Pct": 67.4,
       "refused": 0,
       "refusedPct": 0,
       "detected": 46,
-      "mrr": 0.6709
+      "mrr": 0.6855
     }
   ],
   "distancesExcludingNearDuplicates": {
     "genuine (probe → own identity)": {
-      "n": 145,
-      "mean": 0.4717,
+      "n": 144,
+      "mean": 0.4694,
       "p10": 0.2278,
       "p50": 0.4165,
       "p90": 0.8858
     },
     "impostor (probe → best other identity)": {
-      "n": 145,
-      "mean": 0.58,
-      "p10": 0.5058,
-      "p50": 0.6014,
+      "n": 144,
+      "mean": 0.5827,
+      "p10": 0.5077,
+      "p50": 0.6018,
       "p90": 0.6639
     }
   },
@@ -588,103 +588,103 @@
     "current": {
       "d0": 0.6,
       "n": 4.1,
-      "logLoss": 0.7422
+      "logLoss": 0.7265
     },
     "fitted": {
       "d0": 0.5,
-      "n": 2.3,
-      "logLoss": 0.6794
+      "n": 2.5,
+      "logLoss": 0.671
     },
     "grid": [
       {
         "d0": 0.55,
         "n": 1.2,
-        "logLoss": 0.6979
+        "logLoss": 0.6943
       },
       {
         "d0": 0.55,
         "n": 1.4,
-        "logLoss": 0.6928
+        "logLoss": 0.6884
       },
       {
         "d0": 0.55,
         "n": 1.6,
-        "logLoss": 0.6889
+        "logLoss": 0.6838
       },
       {
         "d0": 0.55,
         "n": 2,
-        "logLoss": 0.6845
+        "logLoss": 0.6778
       },
       {
         "d0": 0.55,
         "n": 3,
-        "logLoss": 0.6894
+        "logLoss": 0.6785
       },
       {
         "d0": 0.55,
         "n": 4.1,
-        "logLoss": 0.7135
+        "logLoss": 0.6978
       },
       {
         "d0": 0.6,
         "n": 1.2,
+        "logLoss": 0.6986
+      },
+      {
+        "d0": 0.6,
+        "n": 1.4,
+        "logLoss": 0.694
+      },
+      {
+        "d0": 0.6,
+        "n": 1.6,
+        "logLoss": 0.6908
+      },
+      {
+        "d0": 0.6,
+        "n": 2,
+        "logLoss": 0.6881
+      },
+      {
+        "d0": 0.6,
+        "n": 3,
+        "logLoss": 0.6976
+      },
+      {
+        "d0": 0.6,
+        "n": 4.1,
+        "logLoss": 0.7265
+      },
+      {
+        "d0": 0.65,
+        "n": 1.2,
+        "logLoss": 0.7048
+      },
+      {
+        "d0": 0.65,
+        "n": 1.4,
         "logLoss": 0.7022
       },
       {
-        "d0": 0.6,
-        "n": 1.4,
-        "logLoss": 0.6984
-      },
-      {
-        "d0": 0.6,
-        "n": 1.6,
-        "logLoss": 0.696
-      },
-      {
-        "d0": 0.6,
-        "n": 2,
-        "logLoss": 0.6949
-      },
-      {
-        "d0": 0.6,
-        "n": 3,
-        "logLoss": 0.7086
-      },
-      {
-        "d0": 0.6,
-        "n": 4.1,
-        "logLoss": 0.7422
-      },
-      {
-        "d0": 0.65,
-        "n": 1.2,
-        "logLoss": 0.7084
-      },
-      {
-        "d0": 0.65,
-        "n": 1.4,
-        "logLoss": 0.7066
-      },
-      {
         "d0": 0.65,
         "n": 1.6,
-        "logLoss": 0.7065
+        "logLoss": 0.7012
       },
       {
         "d0": 0.65,
         "n": 2,
-        "logLoss": 0.7102
+        "logLoss": 0.7034
       },
       {
         "d0": 0.65,
         "n": 3,
-        "logLoss": 0.7379
+        "logLoss": 0.7269
       },
       {
         "d0": 0.65,
         "n": 4.1,
-        "logLoss": 0.7885
+        "logLoss": 0.7728
       }
     ],
     "reliability": {
@@ -726,10 +726,10 @@
         },
         {
           "band": "95-100%",
-          "n": 35,
+          "n": 34,
           "claimedPct": 98,
-          "observedPct": 91.4,
-          "gapPct": 6.6
+          "observedPct": 94.1,
+          "gapPct": 3.9
         }
       ],
       "fitted": [
@@ -742,48 +742,48 @@
         },
         {
           "band": "20-40%",
-          "n": 18,
-          "claimedPct": 36.1,
-          "observedPct": 5.6,
-          "gapPct": 30.5
+          "n": 19,
+          "claimedPct": 35.2,
+          "observedPct": 10.5,
+          "gapPct": 24.7
         },
         {
           "band": "40-60%",
-          "n": 45,
-          "claimedPct": 50.6,
-          "observedPct": 71.1,
-          "gapPct": -20.5
+          "n": 42,
+          "claimedPct": 50.5,
+          "observedPct": 69,
+          "gapPct": -18.6
         },
         {
           "band": "60-80%",
-          "n": 51,
-          "claimedPct": 69.7,
-          "observedPct": 92.2,
-          "gapPct": -22.4
+          "n": 52,
+          "claimedPct": 70.6,
+          "observedPct": 92.3,
+          "gapPct": -21.8
         },
         {
           "band": "80-95%",
           "n": 26,
-          "claimedPct": 86,
-          "observedPct": 92.3,
-          "gapPct": -6.3
+          "claimedPct": 87.4,
+          "observedPct": 96.2,
+          "gapPct": -8.8
         },
         {
           "band": "95-100%",
           "n": 5,
-          "claimedPct": 98.1,
+          "claimedPct": 98.6,
           "observedPct": 80,
-          "gapPct": 18.1
+          "gapPct": 18.6
         }
       ]
     },
     "calibrationError": {
-      "current": 8.88,
-      "fitted": 19.78
+      "current": 8.26,
+      "fitted": 18.79
     },
     "eer": {
       "distance": 0.5678,
-      "errorRate": 26.9
+      "errorRate": 26.39
     },
     "verdict": "keep-current (refit lowers log-loss only by hedging)"
   },
@@ -1087,16 +1087,6 @@
       "rawRank": 304,
       "genuineDistance": 0.9123,
       "impostorDistance": 0
-    },
-    {
-      "id": "rihanna",
-      "slot": "001",
-      "conditions": [],
-      "topId": "travis-scott",
-      "refused": false,
-      "rawRank": 96,
-      "genuineDistance": 0.8043,
-      "impostorDistance": 0.1981
     },
     {
       "id": "saoirse-ronan",
@@ -3961,21 +3951,6 @@
       "impostorDistance": 0.6024,
       "rawRank": 1,
       "matchPercent": 100
-    },
-    {
-      "imagePath": "/celebs/held-out/rihanna/001.jpg",
-      "id": "rihanna",
-      "slot": "001",
-      "conditions": [],
-      "detected": false,
-      "refused": false,
-      "nearDuplicate": false,
-      "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 0.8043,
-      "impostorDistance": 0.1981,
-      "rawRank": 96,
-      "matchPercent": 98.9
     },
     {
       "imagePath": "/celebs/held-out/riz-ahmed/001.jpg",

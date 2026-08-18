@@ -6,7 +6,10 @@ import { describe, it } from "node:test";
 import {
   EVAL_SLOT,
   MANIFEST_VERSION,
+  PHOTO_MIN_BYTES_PER_PIXEL,
+  PHOTO_MIN_DIMENSION,
   listHeldOutSlots,
+  photoRejectReason,
   rebuildManifestFromDisk,
   resolveLimit,
 } from "./fetch-held-out-photos.ts";
@@ -53,6 +56,36 @@ describe("resolveLimit", () => {
   it("rejects nonsense limits instead of silently fetching everything", () => {
     assert.throws(() => resolveLimit(1000, { HELD_OUT_LIMIT: "zero" }, []), /Invalid held-out limit/);
     assert.throws(() => resolveLimit(1000, {}, ["--limit", "0"]), /Invalid held-out limit/);
+  });
+});
+
+describe("photoRejectReason", () => {
+  it("accepts a normal Commons portrait", () => {
+    assert.equal(photoRejectReason({ bytes: 132_300, width: 960, height: 838 }), null);
+  });
+
+  it("rejects the 128px microphone icon that shipped as a celebrity probe", () => {
+    assert.equal(photoRejectReason({ bytes: 7_162, width: 128, height: 128 }), "too-small");
+  });
+
+  it("rejects flat art delivered at a believable size", () => {
+    // A logo rasterized to 900x900 compresses an order of magnitude below a photo.
+    assert.equal(photoRejectReason({ bytes: 7_000, width: 900, height: 900 }), "flat-art");
+    assert.ok(7_000 / (900 * 900) < PHOTO_MIN_BYTES_PER_PIXEL);
+  });
+
+  it("treats the dimension floor as inclusive", () => {
+    const side = PHOTO_MIN_DIMENSION;
+    assert.equal(photoRejectReason({ bytes: side * side, width: side, height: side }), null);
+    assert.equal(
+      photoRejectReason({ bytes: side * side, width: side - 1, height: side }),
+      "too-small",
+    );
+  });
+
+  it("passes rather than guesses when the size is unknown", () => {
+    assert.equal(photoRejectReason({ bytes: 7_162 }), null);
+    assert.equal(photoRejectReason({ bytes: 7_162, width: 0, height: 0 }), null);
   });
 });
 
