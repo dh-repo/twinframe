@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { emptyFeatures } from "../face/math.ts";
 import type { FaceFeatures, TraitInsight } from "../face/types.ts";
+import { verdictSubtitle } from "../face/verdict.ts";
 import {
   composeBreakdownRows,
   composeMatchBlurb,
@@ -212,6 +213,23 @@ describe("composeMatchBlurb", () => {
     assert.ok(!/\d{2}/.test(a));
   });
 
+  it("does not sell celebrity traits on a distant twin", () => {
+    const blurb = composeMatchBlurb({
+      name: "Moira Kirland",
+      gender: "female",
+      tags: ["high cheekbones", "long face"],
+      celebFeatures: zendaya,
+      userFeatures: feat({
+        eyeSpacing: 0.71,
+        cheekboneProminence: 0.8,
+      }),
+      verdict: "distant-twin",
+    });
+    assert.equal(blurb, verdictSubtitle("distant-twin"));
+    assert.ok(!/You share/i.test(blurb));
+    assert.ok(!/cheekbone/i.test(blurb));
+  });
+
   it("caps the sentence at two traits", () => {
     const blurb = composeMatchBlurb({
       name: "Chris Hemsworth",
@@ -299,6 +317,19 @@ describe("composeBreakdownRows", () => {
     assert.equal(extra.length, 2);
     assert.ok(extra.every((r) => r.score >= 70 && r.score <= 100));
     assert.ok(!rows.some((r) => r.id === "eye-contour"));
+  });
+
+  it("skips agreeing extras on a distant twin", () => {
+    const rows = composeBreakdownRows(traits, {
+      userFeatures: feat({ eyeSpacing: 0.7, cheekboneProminence: 0.76 }),
+      celebFeatures: zendaya,
+      verdict: "distant-twin",
+    });
+    assert.equal(
+      rows.some((r) => r.id === "eyeSpacing" || r.id === "cheekboneProminence"),
+      false,
+    );
+    assert.equal(rows.length, 4);
   });
 
   it("survives empty traits without inventing scores", () => {

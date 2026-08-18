@@ -4,6 +4,9 @@ import {
   distanceLookalikeGate,
   hardQualityRefuseGate,
   LOOKALIKE_MAX_ADJUSTED_DISTANCE,
+  OPEN_SET_MISS_GALLERY,
+  OPEN_SET_MISS_PACK,
+  openSetMissMessage,
   poseRefuseGate,
   softQualityBlockGate,
 } from "./lookalike-policy.ts";
@@ -64,5 +67,9 @@ describe("lookalike-policy gates", () => {
     );
     // Percent floor refuses even when distance squeaks under the max
     assert.equal(distanceLookalikeGate(0.7, 30).pass, false);
+    assert.equal(distanceLookalikeGate(0.8, 20).message, OPEN_SET_MISS_GALLERY);
+    assert.equal(distanceLookalikeGate(0.8, 20, true).message, OPEN_SET_MISS_PACK);
+    assert.equal(openSetMissMessage(false), OPEN_SET_MISS_GALLERY);
+    assert.equal(openSetMissMessage(true), OPEN_SET_MISS_PACK);
   });
 });

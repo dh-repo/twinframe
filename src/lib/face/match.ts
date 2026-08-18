@@ -126,6 +126,11 @@ export function rankByDescriptor(
       t.celeb.name ||
       t.celeb.id;
     const anyPath = t.celeb as CelebrityEmbedding & { path192?: string; fallbackPath?: string };
+    const verdict = verdictFromMatch({
+      adjustedDistance: t.adjusted,
+      rankMargin: margin,
+      matchPercent: percents[i] ?? 0,
+    });
     return {
       celebrityId: t.celeb.id,
       name: displayName,
@@ -134,11 +139,7 @@ export function rankByDescriptor(
       hillPercent: hillPercents[i] ?? percents[i] ?? 0,
       rankMargin: margin,
       adjustedDistance: t.adjusted,
-      verdict: verdictFromMatch({
-        adjustedDistance: t.adjusted,
-        rankMargin: margin,
-        matchPercent: percents[i] ?? 0,
-      }),
+      verdict,
       rawScore: 1 / (1 + t.adjusted),
       confidenceScore: confScore,
       traits: buildDescriptorTraits(user, t.celeb, t.dist),
@@ -149,6 +150,7 @@ export function rankByDescriptor(
         name: displayName,
         gender: t.celeb.gender,
         tags: meta.tags,
+        verdict,
         celebFeatures:
           galleryFeaturesFor(t.celeb.id) ??
           CELEBRITIES.find((c) => c.id === t.celeb.id)?.features ??

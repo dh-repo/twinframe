@@ -21,6 +21,7 @@ import { computeBiohash } from "./biohash.ts";
 import { detectionFromAccuFace, pipelineLog, sourceDimensions, unpadScrfdDetections } from "./accuface-detection.ts";
 import {
   hardQualityRefuseGate,
+  openSetMissMessage,
   poseRefuseGate,
 } from "./lookalike-policy.ts";
 import { averageQueryEmbeddings, burstKeepCount, rankBurstDrawables } from "./query-burst.ts";
@@ -547,8 +548,7 @@ async function completeQueryAnalysis(
   // Distance floor emptied the top-K — surface as a soft open-set miss.
   if (matches.length === 0) {
     const issues = [...quality.issues];
-    const miss =
-      "No close look-alike in the gallery — try another photo or angle.";
+    const miss = openSetMissMessage(Boolean(options.pack && options.pack !== "all"));
     if (!issues.includes(miss)) issues.unshift(miss);
     return {
       features,

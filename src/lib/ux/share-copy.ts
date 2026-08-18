@@ -29,11 +29,12 @@ export function resolveShareVerdict(input: {
   });
 }
 
-/** Blurb if the match has one; otherwise the honest verdict subtitle. */
+/** Blurb if the match has one; distant twins stay on the verdict subtitle. */
 export function shareCardBlurb(
   blurb: string | undefined,
   verdict: VerdictTier,
 ): string {
+  if (verdict === "distant-twin") return verdictSubtitle(verdict);
   const trimmed = blurb?.trim();
   return trimmed ? trimmed : verdictSubtitle(verdict);
 }

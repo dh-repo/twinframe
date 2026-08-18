@@ -62,19 +62,19 @@ export function MatchRevealCard({
 
   const blurb = useMemo(
     () =>
-      topMatch.blurb ??
       composeMatchBlurb({
         name: topMatch.name,
         gender: topMatch.gender,
         tags: topMatch.tags,
         celebFeatures,
         userFeatures,
+        verdict: topMatch.verdict,
       }),
     [
-      topMatch.blurb,
       topMatch.name,
       topMatch.gender,
       topMatch.tags,
+      topMatch.verdict,
       celebFeatures,
       userFeatures,
     ],
@@ -192,21 +192,22 @@ export function MatchRevealCard({
           />
         </div>
 
-        {(estimatedAge != null || topMatch.tags.length > 0) && (
+        {(estimatedAge != null || (band !== "weak" && topMatch.tags.length > 0)) && (
           <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 border-t border-border bg-bg-subtle/50 px-5 py-3 sm:px-6">
             {estimatedAge != null && (
               <span className="rounded-full border border-border bg-bg px-3 py-1 text-xs text-fg-muted tabular-nums shadow-sm">
                 ~{estimatedAge} yrs detected
               </span>
             )}
-            {topMatch.tags.slice(0, 4).map((tag: string) => (
-              <span
-                key={tag}
-                className="rounded-full border border-border bg-bg px-3 py-1 text-xs text-fg-muted shadow-sm"
-              >
-                {tag}
-              </span>
-            ))}
+            {band !== "weak" &&
+              topMatch.tags.slice(0, 4).map((tag: string) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border bg-bg px-3 py-1 text-xs text-fg-muted shadow-sm"
+                >
+                  {tag}
+                </span>
+              ))}
           </div>
         )}
 

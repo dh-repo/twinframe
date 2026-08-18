@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   CROP_ZOOM_MAX,
+  STANDING_SHOT_HINT,
   coverFitScale,
+  isStandingFullBodyShot,
   maxCropPan,
   offsetToCenterBox,
   zoomToFillFace,
@@ -36,5 +38,12 @@ describe("crop-view", () => {
 
   it("cover-fits a portrait so height, not width, sets the base scale", () => {
     assert.equal(coverFitScale(1000, 2000, 320), 320 / 1000);
+  });
+
+  it("flags the standing-swing fixture geometry as a full-body shot", () => {
+    // 1536×2048 swing photo, face ~147×216
+    assert.equal(isStandingFullBodyShot(216, 1536, 2048), true);
+    assert.equal(isStandingFullBodyShot(900, 1080, 1440), false);
+    assert.ok(STANDING_SHOT_HINT.toLowerCase().includes("standing"));
   });
 });

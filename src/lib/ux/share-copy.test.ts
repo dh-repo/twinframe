@@ -46,6 +46,13 @@ describe("shareCardBlurb", () => {
     assert.equal(shareCardBlurb(undefined, "distant-twin"), verdictSubtitle("distant-twin"));
     assert.equal(shareCardBlurb("   ", "dead-ringer"), verdictSubtitle("dead-ringer"));
   });
+
+  it("ignores trait blurbs on a distant twin", () => {
+    assert.equal(
+      shareCardBlurb("You share her high cheekbones and long face.", "distant-twin"),
+      verdictSubtitle("distant-twin"),
+    );
+  });
 });
 
 describe("shareText", () => {

@@ -1,6 +1,7 @@
 import type { FaceFeatures, FeatureKey, TraitInsight } from "../face/types.ts";
 import { FEATURE_KEYS, FEATURE_WEIGHTS } from "../face/types.ts";
 import { traitSimilarity } from "../face/math.ts";
+import { verdictSubtitle, type VerdictTier } from "../face/verdict.ts";
 
 export type BlurbGender = "male" | "female" | "unknown";
 
@@ -10,6 +11,8 @@ export interface ComposeMatchBlurbInput {
   tags?: readonly string[];
   celebFeatures?: Partial<FaceFeatures> | null;
   userFeatures?: Partial<FaceFeatures> | null;
+  /** Distant twins must not sell celebrity traits as shared geometry. */
+  verdict?: VerdictTier;
 }
 
 export interface PickedTrait {
@@ -316,6 +319,10 @@ function lookFallback(name: string): string {
 }
 
 export function composeMatchBlurb(input: ComposeMatchBlurbInput): string {
+  if (input.verdict === "distant-twin") {
+    return verdictSubtitle("distant-twin");
+  }
+
   const pronoun = pronounFromGender(input.gender);
   const user = input.userFeatures;
   const celeb = input.celebFeatures;
@@ -370,6 +377,8 @@ export function composeBreakdownRows(
     celebFeatures?: Partial<FaceFeatures> | null;
     /** Accepted and ignored — scores must never be derived from hue. */
     accentHue?: number;
+    /** Distant twins keep engine rows only — no 99% "jawline" extras. */
+    verdict?: VerdictTier;
   },
 ): BreakdownRow[] {
   void opts?.accentHue;
@@ -392,7 +401,7 @@ export function composeBreakdownRows(
 
   const user = opts?.userFeatures;
   const celeb = opts?.celebFeatures;
-  if (user && celeb) {
+  if (user && celeb && opts?.verdict !== "distant-twin") {
     for (const agree of pickAgreeingTraits(user, celeb, 2)) {
       if (seen.has(agree.key)) continue;
       rows.push({

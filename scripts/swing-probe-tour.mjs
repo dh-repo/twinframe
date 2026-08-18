@@ -236,12 +236,22 @@ async function main() {
     const cropText = await page.locator("body").innerText();
     report.steps.crop = {
       closeUpHint: /Hold the phone a bit further/i.test(cropText),
+      standingHint: /Standing photo/i.test(cropText),
       foundFace: /Face selected|faces found|Approve & Match|Use this crop/i.test(cropText),
       excerpt: cropText.slice(0, 500),
     };
     await approveCrop(page);
     report.steps.results = await waitForResults(page);
+    report.steps.results.traitOversell = /You share (her|his|their) /i.test(
+      report.steps.results.text,
+    );
     await shot(page, "03-results.png");
+    if (
+      report.steps.results.verdict === "DISTANT TWIN" &&
+      report.steps.results.traitOversell
+    ) {
+      throw new Error("Distant Twin still sells shared-trait copy on the swing fixture");
+    }
 
     if (report.steps.results.timedOut) {
       console.warn("Analysis timed out in the UI. Crop + upload path still recorded.");

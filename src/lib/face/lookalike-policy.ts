@@ -121,10 +121,22 @@ export function softQualityBlockGate(q: QualityGateInput): LookalikeGateResult {
   return { pass: true };
 }
 
+export const OPEN_SET_MISS_GALLERY =
+  "No close look-alike in the gallery — try another photo or angle.";
+
+export const OPEN_SET_MISS_PACK =
+  "No close look-alike in this pack — try Everyone or another gallery.";
+
+export function openSetMissMessage(scopedPack: boolean): string {
+  return scopedPack ? OPEN_SET_MISS_PACK : OPEN_SET_MISS_GALLERY;
+}
+
 export function distanceLookalikeGate(
   bestAdjustedDistance: number,
   topMatchPercent?: number,
+  scopedPack = false,
 ): LookalikeGateResult {
+  const message = openSetMissMessage(scopedPack);
   if (
     !Number.isFinite(bestAdjustedDistance) ||
     bestAdjustedDistance > LOOKALIKE_MAX_ADJUSTED_DISTANCE
@@ -132,7 +144,7 @@ export function distanceLookalikeGate(
     return {
       pass: false,
       reason: "distance",
-      message: "No close look-alike in the gallery — try another photo or angle.",
+      message,
     };
   }
   if (
@@ -143,7 +155,7 @@ export function distanceLookalikeGate(
     return {
       pass: false,
       reason: "distance",
-      message: "No close look-alike in the gallery — try another photo or angle.",
+      message,
     };
   }
   return { pass: true };
