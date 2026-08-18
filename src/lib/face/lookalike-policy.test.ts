@@ -4,6 +4,7 @@ import {
   distanceLookalikeGate,
   hardQualityRefuseGate,
   LOOKALIKE_MAX_ADJUSTED_DISTANCE,
+  LOOKALIKE_MIN_PERCENT,
   OPEN_SET_MISS_GALLERY,
   OPEN_SET_MISS_PACK,
   openSetMissMessage,
@@ -65,8 +66,11 @@ describe("lookalike-policy gates", () => {
       distanceLookalikeGate(LOOKALIKE_MAX_ADJUSTED_DISTANCE + 0.01, 20).pass,
       false,
     );
-    // Percent floor refuses even when distance squeaks under the max
+    // Percent floor refuses Distant Twin displays, even when distance squeaks under the max
     assert.equal(distanceLookalikeGate(0.7, 30).pass, false);
+    assert.equal(distanceLookalikeGate(0.65, 31).pass, false);
+    assert.equal(distanceLookalikeGate(0.45, LOOKALIKE_MIN_PERCENT - 1).pass, false);
+    assert.equal(distanceLookalikeGate(0.45, LOOKALIKE_MIN_PERCENT).pass, true);
     assert.equal(distanceLookalikeGate(0.8, 20).message, OPEN_SET_MISS_GALLERY);
     assert.equal(distanceLookalikeGate(0.8, 20, true).message, OPEN_SET_MISS_PACK);
     assert.equal(openSetMissMessage(false), OPEN_SET_MISS_GALLERY);

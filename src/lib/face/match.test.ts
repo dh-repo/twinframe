@@ -561,7 +561,7 @@ describe("open-set margin calibration in rankByDescriptor", () => {
     assert.ok((matches[0]?.matchPercent ?? 0) >= 90);
   });
 
-  it("pulls a crowded open-set nearest-neighbor out of the 60–75% band", () => {
+  it("refuses a crowded open-set nearest-neighbor instead of a Distant Twin card", () => {
     const user: UserFaceQuery = {
       descriptor: axisVector(0),
       age: 35,
@@ -589,15 +589,11 @@ describe("open-set margin calibration in rankByDescriptor", () => {
       },
     ];
     const matches = rankByDescriptor(user, gallery, 2);
-    assert.equal(matches.length, 2);
-    assert.equal(matches[0]?.celebrityId, "emma-style");
-    assert.ok((matches[0]?.rankMargin ?? 1) < 0.05);
-    assert.ok((matches[0]?.hillPercent ?? 0) >= 55);
-    assert.ok(
-      (matches[0]?.matchPercent ?? 100) < 55,
-      `crowded open-set should display as weak, got ${matches[0]?.matchPercent}% (hill ${matches[0]?.hillPercent}%)`,
+    assert.equal(
+      matches.length,
+      0,
+      "Distant Twin / suppressed open-set neighbor must not become a celebrity card",
     );
-    assert.ok((matches[0]?.matchPercent ?? 0) < (matches[0]?.hillPercent ?? 0));
   });
 
   it("scopes ranking to a pack before scoring so #2 is inside the pack", () => {

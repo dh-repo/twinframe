@@ -102,16 +102,15 @@ export function rankByDescriptor(
   if (presentable.length === 0) return [];
 
   const bestAdjusted = presentable[0]!.adjusted;
-  const previewPercents = rankPercentsFromDistances([bestAdjusted]);
-  const floor = distanceLookalikeGate(bestAdjusted, previewPercents[0]);
-  if (!floor.pass) return [];
-
   const top = presentable;
   const hillPercents = rankPercentsFromDistances(top.map((t) => t.adjusted));
   // Margin vs the real gallery #2 (even if we hide them) so dropping a
   // cross-gender neighbor does not invent a distinctive look-alike.
   const margin = rankMargin(deduped.map((t) => t.adjusted));
   const percents = applyOpenSetLookalikePercents(hillPercents, margin, bestAdjusted);
+  const scopedPack = Boolean(pack && pack !== "all");
+  const floor = distanceLookalikeGate(bestAdjusted, percents[0], scopedPack);
+  if (!floor.pass) return [];
   const confScore = computeMatchConfidence(
     user.detConfidence ?? 0.92,
     user.sharpness ?? 0.85,

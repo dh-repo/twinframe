@@ -730,6 +730,18 @@ export function AppHome() {
               </div>
             </div>
             <div className="px-5 py-5 sm:px-6 space-y-3">
+              {result.matches.length === 0 &&
+              result.quality.issues.some((i) => i.includes("look-alike")) ? (
+                <div className="flex gap-3">
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-white/20 bg-black/40">
+                    {previewUrl && <img src={previewUrl} alt="" className="h-full w-full object-cover" />}
+                  </div>
+                  <p className="text-xs leading-relaxed text-white/65 text-pretty">
+                    The nearest famous face is too far to show. We will not put a celebrity
+                    next to you just to fill the card.
+                  </p>
+                </div>
+              ) : (
               <div className="flex gap-2">
                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-white/20 bg-black/40">
                   {previewUrl && <img src={previewUrl} alt="" className="h-full w-full object-cover" />}
@@ -758,6 +770,7 @@ export function AppHome() {
                   </div>
                 </div>
               </div>
+              )}
               {result.quality.issues.length > 0 && (
                 <ul className="space-y-1.5 rounded-[var(--radius-md)] bg-white/5 px-3 py-2.5">
                   {result.quality.issues.map((issue, i) => (
