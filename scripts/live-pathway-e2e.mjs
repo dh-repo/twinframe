@@ -109,7 +109,7 @@ async function main() {
   const landing = await page.locator("body").innerText();
   report.steps.landing = {
     hasPacks: /90s Icons|Athletes|Musicians/.test(landing),
-    hasFriendToggle: /With a friend|Just me/.test(landing),
+    hasFriendToggle: false,
     hasUpload: /Photo Library|Upload Photo/.test(landing),
     excerpt: landing.slice(0, 400),
   };

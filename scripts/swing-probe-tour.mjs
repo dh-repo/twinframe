@@ -177,9 +177,6 @@ async function runLandingClicks(page, report) {
     await sleep(150);
     report.landingClicks[label] = true;
   }
-  await page.getByRole("button", { name: "With a friend", exact: true }).click();
-  await sleep(200);
-  await page.getByRole("button", { name: "Just me", exact: true }).click();
   await page.getByRole("button", { name: "Everyone", exact: true }).click();
   await sleep(200);
   await shot(page, "landing-clicked.png");
@@ -214,7 +211,7 @@ async function main() {
     const landing = await page.locator("body").innerText();
     report.steps.landing = {
       hasPacks: /90s Icons|Athletes|Musicians/.test(landing),
-      hasFriendToggle: /With a friend|Just me/.test(landing),
+      hasFriendToggle: false,
       hasUpload: /Photo Library|Upload Photo/.test(landing),
       excerpt: landing.slice(0, 400),
     };
@@ -222,18 +219,13 @@ async function main() {
       throw new Error("Landing is missing pack chips");
     }
 
-    // Click-through of every pack / mode chip lives in --mode landing so
-    // match tours stay on Everyone (or the requested --pack) instead of
-    // the last chip the landing sweep selected.
+    // Click-through of pack chips lives in --mode landing so match tours
+    // stay on Everyone (or the requested --pack) instead of the last chip
+    // the landing sweep selected. Friend compare stays behind "Add a friend".
     if (MODE === "landing") {
       await runLandingClicks(page, report.steps);
       report.ok = true;
       return;
-    }
-
-    if (MODE === "friend-start") {
-      await page.getByRole("button", { name: "With a friend", exact: true }).click();
-      await sleep(200);
     }
 
     await selectPack(page, PACK_CHIP);

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Brain, ShieldCheck, Zap, ScanFace, User, Users } from "lucide-react";
+import { Brain, ShieldCheck, Zap, ScanFace, Users } from "lucide-react";
 import { PhotoUploader } from "@/components/capture/photo-uploader";
 import { WebcamCapture } from "@/components/capture/webcam-capture";
 import { CropReview } from "@/components/capture/crop-review";
@@ -24,7 +24,6 @@ import {
   writeStoredPack,
 } from "@/lib/celebrities/load-packs";
 import { loadGalleryFeatures } from "@/lib/celebrities/load-gallery-features";
-import { cn } from "@/lib/utils/cn";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
 type PlayMode = "solo" | "friend";
@@ -36,19 +35,6 @@ interface PersonCapture {
   selectedBox?: FaceBox;
   previewUrl: string;
   result: MatchResult;
-}
-
-function playModeLabel(mode: PlayMode): string {
-  switch (mode) {
-    case "solo":
-      return "Just me";
-    case "friend":
-      return "With a friend";
-    default: {
-      const _exhaustive: never = mode;
-      return _exhaustive;
-    }
-  }
 }
 
 function captureHeadline(mode: PlayMode, slot: FriendSlot): string {
@@ -437,15 +423,6 @@ export function AppHome() {
     setPhase("capture");
   }, [clearReview]);
 
-  const setMode = useCallback((next: PlayMode) => {
-    if (next === playModeRef.current) return;
-    if (personARef.current || personBRef.current || friendSlotRef.current === "b") return;
-    playModeRef.current = next;
-    setPlayMode(next);
-    friendSlotRef.current = "a";
-    setFriendSlot("a");
-  }, []);
-
   const addFriend = useCallback(() => {
     const existing = personARef.current;
     const blob = existing?.blob ?? lastApprovedBlobRef.current;
@@ -603,41 +580,6 @@ export function AppHome() {
 
         {phase === "capture" && (
           <div className="animate-fade-up space-y-8">
-            {!capturingFriendB && (
-              <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
-                <div className="text-center space-y-1">
-                  <h2 className="text-sm font-semibold text-white">Who’s matching?</h2>
-                  <p className="text-xs text-white/55">
-                    {playMode === "friend"
-                      ? "You’ll go first. Your friend uses the same pack."
-                      : "Solo by default — or take turns with a friend."}
-                  </p>
-                </div>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {(["solo", "friend"] as const).map((mode) => {
-                    const selected = playMode === mode;
-                    return (
-                      <button
-                        key={mode}
-                        type="button"
-                        aria-pressed={selected}
-                        onClick={() => setMode(mode)}
-                        className={cn(
-                          "inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-all",
-                          selected
-                            ? "bg-white text-black font-semibold shadow-sm"
-                            : "border border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white",
-                        )}
-                      >
-                        {mode === "solo" ? <User className="h-3.5 w-3.5" /> : <Users className="h-3.5 w-3.5" />}
-                        {playModeLabel(mode)}
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-
             <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
               <div className="text-center space-y-1">
                 <h2 className="text-sm font-semibold text-white">
