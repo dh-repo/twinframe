@@ -136,7 +136,7 @@ export function ShareCardModal({
       // Footer
       ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
       ctx.font = "500 20px monospace";
-      ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE-M 256-D BIOMETRICS", width / 2, 980);
+      ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS", width / 2, 980);
 
       const filename = `twinframe-${topMatch.name.toLowerCase().replace(/\s+/g, "-")}-match.png`;
       const blob = await new Promise<Blob | null>((resolve) =>
