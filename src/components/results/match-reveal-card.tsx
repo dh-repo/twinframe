@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { CelebrityMatch } from "@/lib/face/types";
+import { useEffect, useMemo, useState } from "react";
+import type { CelebrityMatch, FaceFeatures } from "@/lib/face/types";
 import { NumberCounter } from "@/components/ui/number-counter";
 import { ComparisonView } from "@/components/results/comparison-view";
 import { TraitBreakdown } from "@/components/results/trait-breakdown";
@@ -10,14 +10,20 @@ import { ShieldCheck, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import {
   honestyBand,
+  honestyBandFromVerdict,
   honestyHeadline,
   honestyRating,
+  honestyShareLabel,
 } from "@/lib/ux/honesty";
+import { composeMatchBlurb } from "@/lib/ux/match-blurb";
+import { verdictLabel, verdictSubtitle } from "@/lib/face/verdict";
+import { getCelebrityById } from "@/lib/celebrities/database";
 
 export interface MatchRevealCardProps {
   topMatch: CelebrityMatch;
   youUrl: string | null;
   estimatedAge?: number | null;
+  userFeatures?: FaceFeatures | null;
   className?: string;
 }
 
@@ -25,6 +31,7 @@ export function MatchRevealCard({
   topMatch,
   youUrl,
   estimatedAge,
+  userFeatures = null,
   className,
 }: MatchRevealCardProps) {
   const [isRevealed, setIsRevealed] = useState(false);
@@ -35,11 +42,44 @@ export function MatchRevealCard({
     return () => clearTimeout(timer);
   }, []);
 
-  const band = honestyBand(topMatch.matchPercent, topMatch.rankMargin);
+  const celebFeatures =
+    getCelebrityById(topMatch.celebrityId)?.features ?? null;
+  const band = topMatch.verdict
+    ? honestyBandFromVerdict(topMatch.verdict)
+    : honestyBand(topMatch.matchPercent, topMatch.rankMargin);
   const confidenceScore =
     topMatch.confidenceScore ?? Math.round(topMatch.matchPercent * 0.95);
   const confidenceRating = honestyRating(band, confidenceScore);
-  const headline = honestyHeadline(band);
+  const headline = topMatch.verdict
+    ? verdictLabel(topMatch.verdict)
+    : honestyHeadline(band);
+  const secondary = topMatch.verdict
+    ? verdictSubtitle(topMatch.verdict)
+    : honestyShareLabel(band);
+
+  const blurb = useMemo(
+    () =>
+      topMatch.blurb ??
+      composeMatchBlurb({
+        name: topMatch.name,
+        gender: topMatch.gender,
+        tags: topMatch.tags,
+        celebFeatures,
+        userFeatures,
+      }),
+    [
+      topMatch.blurb,
+      topMatch.name,
+      topMatch.gender,
+      topMatch.tags,
+      celebFeatures,
+      userFeatures,
+    ],
+  );
+  const matchWithBlurb = useMemo<CelebrityMatch>(
+    () => (topMatch.blurb === blurb ? topMatch : { ...topMatch, blurb }),
+    [topMatch, blurb],
+  );
 
   return (
     <>
@@ -67,9 +107,14 @@ export function MatchRevealCard({
 
         <div className="relative z-10 border-b border-border bg-gradient-to-b from-bg-subtle/80 to-bg-elevated px-5 py-5 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.16em] text-match">
-              {headline}
-            </p>
+            <div className="min-w-0">
+              <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.16em] text-match">
+                {headline}
+              </p>
+              <p className="mt-0.5 text-[10px] font-mono text-fg-subtle">
+                {secondary}
+              </p>
+            </div>
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 rounded-full border border-match/40 bg-match/10 px-2.5 py-1.5 text-[10px] font-mono font-medium text-match shadow-sm">
@@ -80,18 +125,16 @@ export function MatchRevealCard({
                 </span>
               </div>
 
-              {band !== "weak" && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShareOpen(true)}
-                  className="h-11 w-11 text-match hover:bg-match/10"
-                  title="Create shareable card"
-                  aria-label="Share match"
-                >
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShareOpen(true)}
+                className="h-11 w-11 text-match hover:bg-match/10"
+                title="Create shareable card"
+                aria-label="Share match"
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
             </div>
           </div>
 
@@ -100,6 +143,9 @@ export function MatchRevealCard({
               <h2 className="text-[1.75rem] sm:text-[2.25rem] font-bold tracking-tight leading-tight truncate text-fg">
                 {topMatch.name}
               </h2>
+              <p className="mt-1 text-sm text-fg leading-snug text-pretty">
+                {blurb}
+              </p>
               <p className="mt-1 text-xs sm:text-sm text-fg-muted truncate">
                 {topMatch.knownFor}
               </p>
@@ -158,14 +204,18 @@ export function MatchRevealCard({
         )}
 
         <div className="relative z-10 border-t border-border px-5 py-5 sm:px-6">
-          <TraitBreakdown match={topMatch} />
+          <TraitBreakdown
+            match={matchWithBlurb}
+            userFeatures={userFeatures}
+            celebFeatures={celebFeatures}
+          />
         </div>
       </article>
 
       <ShareCardModal
         open={shareOpen}
         onClose={() => setShareOpen(false)}
-        topMatch={topMatch}
+        topMatch={matchWithBlurb}
         userPhotoUrl={youUrl}
       />
     </>

@@ -1,4 +1,5 @@
 import { STRONG_LOOKALIKE_MIN_MARGIN } from "../face/open-set-score.ts";
+import type { VerdictTier } from "../face/verdict.ts";
 
 /** FaceNet mid-scores are not real look-alikes. Shared by results UI + share card. */
 export type HonestyBand = "weak" | "soft" | "strong";
@@ -21,6 +22,48 @@ export function honestyBand(matchPercent: number, rankMargin?: number): HonestyB
     return "soft";
   }
   return band;
+}
+
+/** Named verdict → the share / list honesty band. Dead ringer is still "strong". */
+export function honestyBandFromVerdict(tier: VerdictTier): HonestyBand {
+  switch (tier) {
+    case "distant-twin":
+      return "weak";
+    case "soft-match":
+      return "soft";
+    case "strong-resemblance":
+    case "dead-ringer":
+      return "strong";
+    default: {
+      const _exhaustive: never = tier;
+      return _exhaustive;
+    }
+  }
+}
+
+/** Reverse map for callers that still speak in bands. Strong cannot recover dead-ringer. */
+export function verdictFromHonestyBand(band: HonestyBand): VerdictTier {
+  switch (band) {
+    case "weak":
+      return "distant-twin";
+    case "soft":
+      return "soft-match";
+    case "strong":
+      return "strong-resemblance";
+    default: {
+      const _exhaustive: never = band;
+      return _exhaustive;
+    }
+  }
+}
+
+function bandFromSignals(
+  matchPercent: number,
+  rankMargin?: number,
+  verdict?: VerdictTier,
+): HonestyBand {
+  if (verdict) return honestyBandFromVerdict(verdict);
+  return honestyBand(matchPercent, rankMargin);
 }
 
 export function honestyHeadline(band: HonestyBand): string {
@@ -73,20 +116,36 @@ export function honestyRating(
   }
 }
 
-export function restListHeading(topPercent: number, rankMargin?: number): string {
-  return honestyBand(topPercent, rankMargin) === "weak"
+export function restListHeading(
+  topPercent: number,
+  rankMargin?: number,
+  verdict?: VerdictTier,
+): string {
+  return bandFromSignals(topPercent, rankMargin, verdict) === "weak"
     ? "OTHER NEAREST NEIGHBORS"
     : "ALSO CLOSE";
 }
 
-/** Weak tops are a nearest neighbor, not a look-alike pack — don't list the crowd. */
-export function shouldShowContenders(topPercent: number, rankMargin?: number): boolean {
-  return honestyBand(topPercent, rankMargin) !== "weak";
+/** Weak / distant-twin tops are a nearest neighbor, not a look-alike pack. */
+export function shouldShowContenders(
+  topPercent: number,
+  rankMargin?: number,
+  verdict?: VerdictTier,
+): boolean {
+  return bandFromSignals(topPercent, rankMargin, verdict) !== "weak";
 }
 
-export function shareText(name: string, matchPercent: number, rankMargin?: number): string {
-  const band = honestyBand(matchPercent, rankMargin);
+export function shareText(
+  name: string,
+  matchPercent: number,
+  rankMargin?: number,
+  verdict?: VerdictTier,
+): string {
+  const band = bandFromSignals(matchPercent, rankMargin, verdict);
   const pct = Math.round(matchPercent);
+  if (verdict === "dead-ringer") {
+    return `Dead ringer: I matched ${name} at ${pct}% on Twinframe.`;
+  }
   if (band === "weak") {
     return `Nearest gallery neighbor on Twinframe: ${name} (${pct}% face similarity) — not a strong look-alike.`;
   }
