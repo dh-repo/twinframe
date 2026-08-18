@@ -262,15 +262,9 @@ async function main() {
       /Was the nearest face at least plausible/i.test(report.steps.results.text);
     await shot(page, "03-results.png");
     if (report.steps.results.verdict === "DISTANT TWIN") {
-      if (report.steps.results.traitOversell) {
-        throw new Error("Distant Twin still sells shared-trait copy on the swing fixture");
-      }
-      if (report.steps.results.lookalikeFeedbackPrompt) {
-        throw new Error("Distant Twin still asks if this was a good look-alike");
-      }
-      if (report.steps.results.ageAffinity || report.steps.results.genderPresentation) {
-        throw new Error("Distant Twin still shows Age Affinity / Gender Presentation");
-      }
+      throw new Error(
+        "Distant Twin celebrity card must not be shown — refuse the open-set miss",
+      );
     }
 
     if (report.steps.results.timedOut) {
