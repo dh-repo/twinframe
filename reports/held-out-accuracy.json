@@ -1,7 +1,8 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-18T05:36:30.428Z",
+  "generatedAt": "2026-08-18T05:39:45.386Z",
   "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 724 extra templates)",
+  "legacyProtocol": false,
   "signalsVersion": "1.1.0",
   "hardProbeSignalsVersion": "1.1.0",
   "gallerySize": 1980,

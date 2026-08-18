@@ -1,6 +1,6 @@
 # Twinframe held-out accuracy (stratified)
 
-**Generated** 2026-08-18T05:36:30.428Z  
+**Generated** 2026-08-18T05:39:45.386Z  
 **Engine** EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 724 extra templates)  
 **Gallery** 1980 vectors / 999 identities (980 of them extra templates and centroids, as the browser builds it)  
 **Probes** 205 held-out photos (slot 001 only)  

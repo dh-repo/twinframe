@@ -146,7 +146,8 @@ export interface ProbeRecord {
   topId: string | null;
   genuineDistance: number | null;
   impostorDistance: number | null;
-  rawRank: number;
+  /** Rank before the product's gates and priors, or null where it was not measured. */
+  rawRank: number | null;
   matchPercent: number | null;
 }
 
@@ -189,7 +190,8 @@ export function computeRankStats(stratum: string, records: ProbeRecord[]): RankS
   const n = records.length;
   const rank1 = records.filter((r) => r.rank === 1).length;
   const rank5 = records.filter((r) => r.rank >= 1 && r.rank <= 5).length;
-  const rawRank1 = records.filter((r) => r.rawRank === 1).length;
+  const rawMeasured = records.filter((r) => r.rawRank !== null);
+  const rawRank1 = rawMeasured.filter((r) => r.rawRank === 1).length;
   const refused = records.filter((r) => r.refused).length;
   const detected = records.filter((r) => r.detected).length;
   const mrr = records.reduce((acc, r) => acc + (r.rank > 0 ? 1 / r.rank : 0), 0) / Math.max(1, n);
@@ -203,7 +205,8 @@ export function computeRankStats(stratum: string, records: ProbeRecord[]): RankS
     rank5Pct: rate(rank5),
     rank1Ci95: wilsonInterval(rank1, n),
     rawRank1,
-    rawRank1Pct: rate(rawRank1),
+    // Null, not 0%, when no record carries a raw rank — the legacy path never computes one.
+    rawRank1Pct: rawMeasured.length === 0 ? null : pct(rawRank1, rawMeasured.length),
     refused,
     refusedPct: rate(refused),
     detected,
@@ -712,7 +715,8 @@ function scoreLegacyFacenet(
       topId: rankedIds[0] ?? null,
       genuineDistance: round(ensembleDistance(c.descriptor, enrolled.descriptor), 4),
       impostorDistance: null,
-      rawRank: -1,
+      // This protocol reads pre-computed descriptors, so there is no ungated pass to rank.
+      rawRank: null,
       matchPercent: matches[0]?.matchPercent ?? null,
     });
   }
@@ -847,6 +851,12 @@ export function formatMarkdownReport(report: any): string {
     "Held-out means the photo was never enrolled: a different Wikipedia/Commons image of the same person. Age and gender priors are passed as unknown, because feeding the query the true celebrity's own age and gender leaks the label. Refusals \u2014 the product declining to show any match \u2014 count as misses.",
   );
   lines.push("");
+  if (report.legacyProtocol) {
+    lines.push(
+      "> **Do not quote this run.** It is the retired FaceNet-128 protocol, kept only to compare against old numbers, and it flatters itself three ways the product path does not: it cannot detect near-duplicate leakage (so no leak-free cohort is reported, though roughly 30% of these same photos are the enrolled photo again), it has no ungated pass to report a raw nearest-neighbour rank, and most of the 1000-vector FaceNet gallery it ranks against is random filler rather than real faces, which makes the true identity far easier to find than in the shipping gallery. The number that ships comes from the default EdgeFace-512 path.",
+    );
+    lines.push("");
+  }
   lines.push("## Headline");
   lines.push("");
   lines.push("| Cohort | Probes | Rank-1 | 95% CI | Rank-5 | Refused |");
@@ -866,12 +876,14 @@ export function formatMarkdownReport(report: any): string {
     );
     lines.push("");
   }
-  lines.push(
-    `Raw nearest-neighbour Rank-1 (no gates, no priors): ${pctText(overall.rawRank1Pct)} over all probes${
-      cleanOverall ? `, ${pctText(cleanOverall.rawRank1Pct)} with near-duplicates removed` : ""
-    }.`,
-  );
-  lines.push("");
+  if (overall.rawRank1Pct !== null) {
+    lines.push(
+      `Raw nearest-neighbour Rank-1 (no gates, no priors): ${pctText(overall.rawRank1Pct)} over all probes${
+        cleanOverall ? `, ${pctText(cleanOverall.rawRank1Pct)} with near-duplicates removed` : ""
+      }.`,
+    );
+    lines.push("");
+  }
   lines.push("## Per hard-probe condition");
   lines.push("");
   if (cleanStrata) {
@@ -938,7 +950,7 @@ export function formatMarkdownReport(report: any): string {
     lines.push("| :--- | :--- | :--- | ---: |");
     for (const miss of report.misses.slice(0, 30)) {
       lines.push(
-        `| ${miss.id} (${miss.slot}) | ${miss.conditions.join(", ") || "\u2014"} | ${miss.topId ?? "refused"} | ${miss.rawRank > 0 ? miss.rawRank : "\u2014"} |`,
+        `| ${miss.id} (${miss.slot}) | ${miss.conditions.join(", ") || EM_DASH} | ${miss.topId ?? "refused"} | ${miss.rawRank !== null && miss.rawRank > 0 ? miss.rawRank : EM_DASH} |`,
       );
     }
     if (report.misses.length > 30) {
@@ -1054,6 +1066,7 @@ async function main() {
     version: REPORT_VERSION,
     generatedAt: new Date().toISOString(),
     engine,
+    legacyProtocol: options.legacyFacenet,
     signalsVersion: SIGNALS_VERSION,
     hardProbeSignalsVersion: hardProbeFile.signalsVersion ?? null,
     gallerySize,

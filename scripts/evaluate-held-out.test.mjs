@@ -167,6 +167,16 @@ describe("computeRankStats", () => {
     assert.equal(stats.rank1Pct, 0);
     assert.equal(stats.rawRank1Pct, 100);
   });
+
+  it("reports no raw rank at all rather than 0% when the protocol never measured one", () => {
+    // The legacy FaceNet path reads pre-computed descriptors, so it has no ungated pass.
+    const stats = computeRankStats("overall", [
+      record({ rank: 1, rawRank: null }),
+      record({ rank: 2, rawRank: null }),
+    ]);
+    assert.equal(stats.rank1Pct, 50);
+    assert.equal(stats.rawRank1Pct, null);
+  });
 });
 
 describe("stratify", () => {
