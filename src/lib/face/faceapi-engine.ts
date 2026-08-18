@@ -9,6 +9,8 @@ let detectorApi: FaceApiModule | null = null;
 let detectorOnlyPromise: Promise<FaceApiModule> | null = null;
 let fastDetectorApi: FaceApiModule | null = null;
 let fastDetectorPromise: Promise<FaceApiModule> | null = null;
+let ageGenderApi: FaceApiModule | null = null;
+let ageGenderPromise: Promise<FaceApiModule> | null = null;
 let detectorReady = false;
 
 const MODEL_URL = "/models/face-api";
@@ -187,6 +189,90 @@ export function prefetchFaceApi(): void {
   if (typeof window === "undefined") return;
   // Warm the tiny crop detector first; the full matcher loads after approval.
   void getFastFaceApiDetector().catch(() => {});
+}
+
+const AGE_GENDER_TIMEOUT_MS = 2600;
+const AGE_GENDER_INPUT_SIZE = 112;
+
+function canvasToSquare(source: HTMLCanvasElement, outSize: number): HTMLCanvasElement {
+  if (source.width === outSize && source.height === outSize) return source;
+  const canvas = createCanvas(outSize, outSize);
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    (ctx as unknown as { imageSmoothingQuality: string }).imageSmoothingQuality = "high";
+    ctx.drawImage(source, 0, 0, outSize, outSize);
+  }
+  return canvas;
+}
+
+/**
+ * Age/gender net only. Must not load SSD or FaceNet — those parked analysis
+ * at 88% on CPU-only devices after EdgeFace already had a face.
+ */
+async function getAgeGenderApi(): Promise<FaceApiModule> {
+  if (typeof window === "undefined") {
+    throw new Error("Face recognition only runs in the browser.");
+  }
+  if (faceApiMod?.nets.ageGenderNet?.isLoaded) return faceApiMod;
+  if (ageGenderApi?.nets.ageGenderNet?.isLoaded) return ageGenderApi;
+  if (ageGenderPromise) return ageGenderPromise;
+
+  ageGenderPromise = (async () => {
+    const api = await importFaceApi();
+    await configureFaceApiBackend(api);
+    if (!api.nets.ageGenderNet.isLoaded) {
+      await api.nets.ageGenderNet.loadFromUri(MODEL_URL);
+    }
+    ageGenderApi = api as FaceApiModule;
+    return ageGenderApi;
+  })().catch((err) => {
+    ageGenderPromise = null;
+    throw err;
+  });
+
+  return ageGenderPromise;
+}
+
+export function prefetchAgeGenderNet(): void {
+  if (typeof window === "undefined") return;
+  void getAgeGenderApi().catch(() => {});
+}
+
+export async function estimateAgeGenderFromCanvas(
+  canvas: HTMLCanvasElement,
+  timeoutMs = AGE_GENDER_TIMEOUT_MS,
+): Promise<{
+  age: number;
+  gender: "male" | "female";
+  genderProbability: number;
+} | null> {
+  if (typeof window === "undefined") return null;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const timed = new Promise<null>((resolve) => {
+      timer = setTimeout(() => resolve(null), timeoutMs);
+    });
+    const work = (async () => {
+      const api = await getAgeGenderApi();
+      const input = canvasToSquare(canvas, AGE_GENDER_INPUT_SIZE);
+      const ag = await api.nets.ageGenderNet.predictAgeAndGender(input);
+      if (ag?.gender !== "male" && ag?.gender !== "female") return null;
+      return {
+        age: Math.round(Number.isFinite(ag.age) ? ag.age : 30),
+        gender: ag.gender,
+        genderProbability:
+          typeof ag.genderProbability === "number" && Number.isFinite(ag.genderProbability)
+            ? ag.genderProbability
+            : 0.85,
+      };
+    })();
+    void work.catch(() => {});
+    return await Promise.race([work, timed]);
+  } catch {
+    return null;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 }
 
 /** Yield so React can paint progress between heavy passes. */

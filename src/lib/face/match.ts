@@ -11,7 +11,7 @@ import {
   computeMatchConfidence,
   mergeWithProfile,
 } from "./embeddings.ts";
-import { distanceLookalikeGate } from "./lookalike-policy.ts";
+import { attributeConflictLevel, distanceLookalikeGate } from "./lookalike-policy.ts";
 import { applyOpenSetLookalikePercents, rankMargin } from "./open-set-score.ts";
 
 export { computeMatchConfidence };
@@ -117,6 +117,10 @@ export function rankByDescriptor(
       initials: initials(displayName),
       tags: meta.tags,
       gender: t.celeb.gender as "male" | "female" | "unknown" | undefined,
+      attributeConflict: attributeConflictLevel(
+        { gender: userGender, genderProbability: userGenderProb, age: userAge },
+        { gender: t.celeb.gender, age: t.celeb.age },
+      ),
       photoUrl: t.celeb.path,
       photoUrl192: anyPath.path192,
       fallbackPhotoUrl: anyPath.fallbackPath,

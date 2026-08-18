@@ -6,6 +6,8 @@ import {
   detectAndDescribe,
   detectAndDescribeWithTTA,
   prefetchFaceApi,
+  prefetchAgeGenderNet,
+  estimateAgeGenderFromCanvas,
   assessDetectionQuality,
   logFaceTelemetry,
   type FaceDetectionResult,
@@ -33,6 +35,7 @@ export type PipelineStatus =
 export function prefetchModel(): void {
   if (typeof window === "undefined") return;
   prefetchFaceApi();
+  prefetchAgeGenderNet();
   prefetchEmbeddings();
 }
 
@@ -102,6 +105,7 @@ export async function analyzeFaceSource(
   pipelineLog("start");
 
   onProgress?.(0, 12);
+  prefetchAgeGenderNet();
   const galleryPromise = loadCelebrityEmbeddings();
 
   onProgress?.(1, 28);
@@ -300,10 +304,35 @@ export async function analyzeFaceSource(
     }
   }
 
+  // Age/gender net only — never SSD/FaceNet. Soft priors for honesty copy.
+  const needAgeGender =
+    Boolean(det?.faceCanvas) &&
+    typeof window !== "undefined" &&
+    (det!.gender === "unknown" || !Number.isFinite(det!.age));
+  const ageGenderPromise = needAgeGender
+    ? estimateAgeGenderFromCanvas(det!.faceCanvas)
+    : Promise.resolve(null);
+
   onProgress?.(3, 84);
   pipelineLog("gallery:wait");
   const gallery = await galleryPromise;
   pipelineLog("gallery:ready", { n: gallery.length });
+
+  if (needAgeGender) {
+    pipelineLog("ageGender:start");
+    const tAg = performance.now();
+    const ag = await ageGenderPromise;
+    pipelineLog("ageGender:done", {
+      ms: Math.round(performance.now() - tAg),
+      age: ag?.age ?? null,
+      gender: ag?.gender ?? null,
+    });
+    if (det && ag) {
+      det.age = ag.age;
+      det.gender = ag.gender;
+      det.genderProbability = ag.genderProbability;
+    }
+  }
 
   onProgress?.(3, 92);
 

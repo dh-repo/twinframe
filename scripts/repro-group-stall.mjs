@@ -28,7 +28,7 @@ for (let i = 0; i < 40; i++) {  // 2 min budget
   const text = await page.locator("body").innerText();
   const pct = (text.match(/(\d+)%/) || [])[1] ?? "?";
   if (pct !== lastPct) { console.log(`t=${Math.round((Date.now()-t0)/1000)}s pct=${pct}`); lastPct = pct; }
-  if (/TOP DOPPELGÄNGER|NEAREST GALLERY|POSSIBLE LOOK-ALIKE|No close look-alike|quality too low|not suitable|timed out|Couldn't analyze/i.test(text)) {
+  if (/TOP DOPPELGÄNGER|STRONG VISUAL RESEMBLANCE|CLOSEST AVAILABLE MATCH|NEAREST GALLERY|POSSIBLE LOOK-ALIKE|NO STRONG DOUBLE|No close look-alike|quality too low|not suitable|timed out|Couldn't analyze/i.test(text)) {
     console.log(`TERMINAL t=${Math.round((Date.now()-t0)/1000)}s ::`, text.split("\n").slice(2, 7).join(" | "));
     break;
   }

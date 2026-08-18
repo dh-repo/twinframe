@@ -36,7 +36,11 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
   const rest = filteredMatches.filter((m) => m.celebrityId !== activeTop?.celebrityId);
   const showContenders =
     Boolean(activeTop) &&
-    shouldShowContenders(activeTop.matchPercent, activeTop.rankMargin);
+    shouldShowContenders(
+      activeTop.matchPercent,
+      activeTop.rankMargin,
+      activeTop.attributeConflict,
+    );
   const listedRest = showContenders ? rest : [];
   const youUrl = result.facePreviewUrl || previewUrl;
 
@@ -60,7 +64,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
           <AlertTriangle className="h-7 w-7 text-warn" strokeWidth={1.5} />
           <h2 className="text-lg font-medium">No matches found with current filter</h2>
           <p className="max-w-sm text-sm text-fg-muted text-pretty">
-            Try resetting your gender or category filters to view all top doppelgängers.
+            Try resetting your gender or category filters to view all top matches.
           </p>
           <div className="flex gap-2">
             <Button
@@ -152,7 +156,12 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-              {restListHeading(activeTop.matchPercent, activeTop.rankMargin)} — tap to inspect
+              {restListHeading(
+                activeTop.matchPercent,
+                activeTop.rankMargin,
+                activeTop.attributeConflict,
+              )}{" "}
+              — tap to inspect
             </h3>
             <span className="text-[10px] font-mono text-match">{listedRest.length} contenders</span>
           </div>

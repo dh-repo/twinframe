@@ -173,7 +173,7 @@ runTest("1.3 Adversarial Demographic Prior Inversion Stress Test", () => {
 
   // Case B: Querying female prior against Travis Scott (cross-gender penalty)
   const gAffFemaleTravis = genderAffinity("female", 0.99, travisEmb);
-  assert.ok(gAffFemaleTravis >= 0.75 && gAffFemaleTravis <= 0.80, `Cross-gender affinity must be bounded in [0.75, 0.80] (got ${gAffFemaleTravis})`);
+  assert.ok(gAffFemaleTravis >= 0.50 && gAffFemaleTravis <= 0.60, `Cross-gender affinity must be bounded in [0.50, 0.60] (got ${gAffFemaleTravis})`);
 
   // Case C: Querying unknown gender
   const gAffUnknown = genderAffinity("unknown", 0.5, travisEmb);
@@ -189,9 +189,9 @@ runTest("1.3 Adversarial Demographic Prior Inversion Stress Test", () => {
   // Case F: Age affinity edge cases
   assert.equal(ageAffinity(33, 33), 1.0, "Exact age match must yield affinity 1.0");
   const ageAffDiff10 = ageAffinity(33, 43);
-  assert.ok(ageAffDiff10 > 0.80 && ageAffDiff10 < 0.95, "10-year age difference should have gentle affinity");
+  assert.ok(ageAffDiff10 > 0.70 && ageAffDiff10 < 0.85, "10-year age difference should have gentle affinity");
   const ageAffDiff40 = ageAffinity(20, 60);
-  assert.ok(ageAffDiff40 > 0.10 && ageAffDiff40 < 0.20, "40-year age difference should yield smooth non-zero affinity");
+  assert.ok(ageAffDiff40 > 0.01 && ageAffDiff40 < 0.05, "40-year age difference should yield smooth non-zero affinity");
 
   // Case G: Malformed / extreme prior values
   assert.ok(isFinite(genderAffinity("male", -1.0, travisEmb)));

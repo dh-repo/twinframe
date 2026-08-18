@@ -13,7 +13,7 @@ let outcome = "still-analyzing";
 for (let i = 0; i < 45; i++) {
   await page.waitForTimeout(3000);
   const text = await page.locator("body").innerText();
-  if (/TOP DOPPELGÄNGER|NEAREST GALLERY|POSSIBLE LOOK-ALIKE/i.test(text)) { outcome = "results"; break; }
+  if (/TOP DOPPELGÄNGER|STRONG VISUAL RESEMBLANCE|CLOSEST AVAILABLE MATCH|NEAREST GALLERY|POSSIBLE LOOK-ALIKE|NO STRONG DOUBLE/i.test(text)) { outcome = "results"; break; }
   if (/timed out|Couldn't analyze/i.test(text)) { outcome = "timeout"; break; }
   if (/quality too low|not suitable|No close look-alike/i.test(text)) { outcome = "blocked"; break; }
 }

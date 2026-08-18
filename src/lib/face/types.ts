@@ -117,6 +117,8 @@ export interface CelebrityMatch {
   hillPercent?: number;
   /** Adjusted d2 − d1. Small values mean a crowded nearest-neighbor, not a doppelgänger. */
   rankMargin?: number;
+  /** Soft age/gender clash vs this celebrity — honesty only, never a hard drop. */
+  attributeConflict?: "none" | "partial" | "strong";
 }
 
 /**

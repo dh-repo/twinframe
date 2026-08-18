@@ -259,7 +259,11 @@ describe("R3. Granular Multi-Trait Biometric Breakdown UI (E2E)", () => {
         React.createElement(MatchRevealCard, { topMatch: weakMatch, youUrl: null }),
       );
       assert.ok(
-        html.includes("nearest embedding") || html.includes("No strong doppelgänger") || html.includes("LOW SIMILARITY"),
+        html.includes("CLOSEST AVAILABLE MATCH") ||
+          html.includes("NO STRONG DOUBLE") ||
+          html.includes("nearest embedding") ||
+          html.includes("No strong doppelgänger") ||
+          html.includes("LOW SIMILARITY"),
         "Must render honest weak match disclaimer",
       );
     });

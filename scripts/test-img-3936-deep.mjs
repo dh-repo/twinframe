@@ -74,9 +74,9 @@ function serializeResult(r) {
 async function waitForResults(page, label, maxSec = 90) {
   for (let i = 0; i < maxSec; i++) {
     const text = await page.locator("body").innerText();
-    // Weak cards use NEAREST GALLERY NEIGHBOR / NOT A STRONG MATCH (MatchRevealCard).
+    // Weak cards use CLOSEST AVAILABLE MATCH / NO STRONG DOUBLE (MatchRevealCard).
     if (
-      /SIMILARITY|look-alike|No close|No face|nearest in the gallery|NEAREST GALLERY|NOT A STRONG MATCH|OTHER NEAREST|Match Found/i.test(
+      /SIMILARITY|look-alike|No close|No face|nearest in the gallery|NEAREST|CLOSEST AVAILABLE|NO STRONG DOUBLE|NOT A STRONG MATCH|OTHER NEAREST|Match Found|STRONG VISUAL RESEMBLANCE/i.test(
         text,
       ) &&
       !/Analyzing|Choose a face|Loading face model/i.test(text)
@@ -96,7 +96,9 @@ async function waitForResults(page, label, maxSec = 90) {
 /** Weak path still shows inspect chrome; share twin card is soft/strong only. */
 function summarizeResultsUi(bodyText, landmarksTabCount, sideBySideCount) {
   const honestyWeak =
-    /NEAREST GALLERY NEIGHBOR|NOT A STRONG MATCH|NO CLOSE LOOK-ALIKE/i.test(bodyText);
+    /CLOSEST AVAILABLE MATCH|NO STRONG DOUBLE|NEAREST GALLERY NEIGHBOR|NOT A STRONG MATCH|NO CLOSE LOOK-ALIKE/i.test(
+      bodyText,
+    );
   const qualityNotePresent =
     /blur|dark|bright|angle|partial|occlu|low quality|hard to match|lighting|face is small|too close|cover|mask|glasses/i.test(
       bodyText,
