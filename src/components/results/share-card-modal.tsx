@@ -1,10 +1,22 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Download, Share2, Sparkles, Check, ScanFace } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, Download, Share2, Sparkles, Check } from "lucide-react";
 import type { CelebrityMatch } from "@/lib/face/types";
+import { verdictLabel } from "@/lib/face/verdict";
 import { Button } from "@/components/ui/button";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
-import { shareText } from "@/lib/ux/honesty";
+import {
+  shareCardBlurb,
+  shareCardFilename,
+  shareTextFromMatch,
+  resolveShareVerdict,
+} from "@/lib/ux/share-copy";
+import {
+  composeShareImage,
+  copyShareText,
+  shareOrDownload,
+  verdictStampStyle,
+} from "@/lib/ux/share-image";
 
 export interface ShareCardModalProps {
   open: boolean;
@@ -21,157 +33,52 @@ export function ShareCardModal({
 }: ShareCardModalProps) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
   useLockBodyScroll(open);
+
+  const verdict = resolveShareVerdict(topMatch);
+  const stamp = verdictStampStyle(verdict);
+  const blurb = shareCardBlurb(topMatch.blurb, verdict);
+  const text = shareTextFromMatch(topMatch);
+  const celebSrc =
+    topMatch.photoUrl192 || topMatch.photoUrl || topMatch.fallbackPhotoUrl || null;
+  const celebFirst = topMatch.name.split(" ")[0] ?? topMatch.name;
 
   useEffect(() => {
     if (!open) setCopied(false);
   }, [open]);
 
   const handleDownload = useCallback(async () => {
-    if (!cardRef.current) return;
     setDownloading(true);
-
     try {
-      // Use Canvas to render high-res share card
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      const width = 1080;
-      const height = 1080;
-      canvas.width = width;
-      canvas.height = height;
-
-      // Background Gradient
-      const grad = ctx.createLinearGradient(0, 0, 0, height);
-      grad.addColorStop(0, "#0e1017");
-      grad.addColorStop(1, "#07080b");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-
-      // Header Branding
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 38px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("TWINFRAME", width / 2, 90);
-
-      ctx.fillStyle = "#818cf8";
-      ctx.font = "600 22px monospace";
-      ctx.fillText("CELEBRITY DOPPELGÄNGER MATCH", width / 2, 130);
-
-      // Load Images
-      const loadImg = (src: string) =>
-        new Promise<HTMLImageElement>((resolve, reject) => {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.onload = () => resolve(img);
-          img.onerror = reject;
-          img.src = src;
-        });
-
-      const userImgPromise = userPhotoUrl ? loadImg(userPhotoUrl).catch(() => null) : Promise.resolve(null);
-      const celebSrc = topMatch.photoUrl192 || topMatch.photoUrl || topMatch.fallbackPhotoUrl || "";
-      const celebImgPromise = celebSrc ? loadImg(celebSrc).catch(() => null) : Promise.resolve(null);
-
-      const [userImg, celebImg] = await Promise.all([userImgPromise, celebImgPromise]);
-
-      const photoSize = 360;
-      const photoY = 220;
-
-      // Draw User Photo
-      const userX = width / 2 - photoSize - 30;
-      ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(userX, photoY, photoSize, photoSize, 36);
-      ctx.clip();
-      if (userImg) {
-        ctx.drawImage(userImg, userX, photoY, photoSize, photoSize);
-      } else {
-        ctx.fillStyle = "#1e2235";
-        ctx.fillRect(userX, photoY, photoSize, photoSize);
-      }
-      ctx.restore();
-
-      // Draw Celeb Photo
-      const celebX = width / 2 + 30;
-      ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(celebX, photoY, photoSize, photoSize, 36);
-      ctx.clip();
-      if (celebImg) {
-        ctx.drawImage(celebImg, celebX, photoY, photoSize, photoSize);
-      } else {
-        ctx.fillStyle = "#1e2235";
-        ctx.fillRect(celebX, photoY, photoSize, photoSize);
-      }
-      ctx.restore();
-
-      // Connector Badge
-      ctx.beginPath();
-      ctx.arc(width / 2, photoY + photoSize / 2, 45, 0, Math.PI * 2);
-      ctx.fillStyle = "#090a0f";
-      ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "#818cf8";
-      ctx.stroke();
-
-      ctx.fillStyle = "#818cf8";
-      ctx.font = "bold 36px sans-serif";
-      ctx.fillText("≈", width / 2, photoY + photoSize / 2 + 12);
-
-      // Match Score Banner
-      ctx.fillStyle = "#818cf8";
-      ctx.font = "bold 96px sans-serif";
-      ctx.fillText(`${topMatch.matchPercent}%`, width / 2, 690);
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 44px sans-serif";
-      ctx.fillText(topMatch.name, width / 2, 760);
-
-      ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-      ctx.font = "400 28px sans-serif";
-      ctx.fillText(topMatch.knownFor, width / 2, 810);
-
-      // Footer
-      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-      ctx.font = "500 20px monospace";
-      ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE-M 256-D BIOMETRICS", width / 2, 980);
-
-      const filename = `twinframe-${topMatch.name.toLowerCase().replace(/\s+/g, "-")}-match.png`;
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png"),
-      );
-      if (!blob) throw new Error("Could not create share image");
-      const file = new File([blob], filename, { type: "image/png" });
-      const nav = navigator as Navigator & {
-        canShare?: (data: ShareData) => boolean;
-      };
-      const sharePayload: ShareData = {
-        files: [file],
+      const blob = await composeShareImage({
+        youUrl: userPhotoUrl,
+        celebrityName: topMatch.name,
+        celebrityPhotoUrl: celebSrc,
+        matchPercent: topMatch.matchPercent,
+        verdict,
+        blurb: topMatch.blurb,
+        adjustedDistance: topMatch.adjustedDistance,
+        rankMargin: topMatch.rankMargin,
+      });
+      const filename = shareCardFilename(topMatch.name);
+      await shareOrDownload({
+        blob,
+        filename,
         title: "My Twinframe match",
-        text: shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin),
-      };
-      if (typeof nav.share === "function" && nav.canShare?.(sharePayload)) {
-        await nav.share(sharePayload);
-        return;
-      }
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = URL.createObjectURL(blob);
-      link.click();
-      window.setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+        text,
+      });
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       console.error("Failed to generate share card", err);
     } finally {
       setDownloading(false);
     }
-  }, [topMatch, userPhotoUrl]);
+  }, [celebSrc, text, topMatch, userPhotoUrl, verdict]);
 
   const handleShare = async () => {
     const shareData = {
       title: "My Twinframe Celebrity Match",
-      text: shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin),
+      text,
       url: window.location.href,
     };
 
@@ -182,11 +89,11 @@ export function ShareCardModal({
         // Ignored if cancelled
       }
     } else {
-      await navigator.clipboard.writeText(
-        `${shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin)} Find your twin at ${window.location.href}`
-      );
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const ok = await copyShareText(`${text} Find your twin at ${window.location.href}`);
+      if (ok) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
     }
   };
 
@@ -201,7 +108,6 @@ export function ShareCardModal({
       />
 
       <div className="relative z-10 flex w-full max-w-md flex-col overflow-hidden rounded-t-3xl border border-white/15 bg-[#121420]/95 text-white shadow-2xl backdrop-blur-2xl sm:rounded-3xl">
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-5 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 sm:py-4">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20 text-indigo-400">
@@ -221,36 +127,39 @@ export function ShareCardModal({
           </button>
         </div>
 
-        {/* Card Preview Preview */}
         <div className="p-6">
           <div
-            ref={cardRef}
-            className="relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-b from-[#181a27] to-[#0d0e17] p-5 text-center shadow-xl"
+            className="relative aspect-square overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-b from-[#0e1017] to-[#07080b] px-4 py-3 text-center shadow-xl"
+            style={{ boxShadow: `inset 0 0 80px ${stamp.glow}` }}
           >
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <ScanFace className="h-4 w-4 text-indigo-400" />
-              <span className="text-xs font-mono font-bold tracking-widest text-indigo-300 uppercase">
-                TWINFRAME MATCH
-              </span>
-            </div>
+            <p className="text-[11px] font-bold tracking-[0.28em] text-white">TWINFRAME</p>
 
-            <div className="flex items-center justify-center gap-3">
-              {/* User Avatar */}
-              <div className="h-24 w-24 overflow-hidden rounded-2xl border border-white/20 bg-black/40 shadow-md">
+            <div className="mt-3 flex items-center justify-center gap-3">
+              <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-white/20 bg-black/40 shadow-md">
                 {userPhotoUrl ? (
-                  <img src={userPhotoUrl} alt="You" className="h-full w-full object-cover object-top" />
+                  <img
+                    src={userPhotoUrl}
+                    alt="You"
+                    className="h-full w-full object-cover object-top"
+                  />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-xs text-white/50">You</div>
+                  <div className="flex h-full w-full items-center justify-center text-xs text-white/50">
+                    You
+                  </div>
                 )}
+                <span className="absolute bottom-1.5 left-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-white/70">
+                  YOU
+                </span>
               </div>
 
-              {/* Match Icon */}
-              <div className="flex h-8 w-8 items-center justify-center rounded-full border border-indigo-400/40 bg-indigo-500/10 text-xs font-bold text-indigo-400">
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full border-2 bg-[#090a0f] text-xs font-bold"
+                style={{ borderColor: stamp.fill, color: stamp.fill }}
+              >
                 ≈
               </div>
 
-              {/* Celeb Avatar */}
-              <div className="h-24 w-24 overflow-hidden rounded-2xl border border-white/20 bg-black/40 shadow-md">
+              <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-white/20 bg-black/40 shadow-md">
                 <CelebrityPortrait
                   initials={topMatch.initials}
                   accentHue={topMatch.accentHue}
@@ -261,27 +170,40 @@ export function ShareCardModal({
                   alt={topMatch.name}
                   className="h-full w-full rounded-none"
                 />
+                <span className="absolute bottom-1.5 right-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-white/70">
+                  {celebFirst.toUpperCase()}
+                </span>
               </div>
             </div>
 
-            <div className="mt-4">
-              <div className="text-3xl font-extrabold text-indigo-400 tabular-nums">
-                {topMatch.matchPercent}%
-              </div>
-              <p className="text-base font-bold text-white truncate mt-0.5">{topMatch.name}</p>
-              <p className="text-xs text-white/60 truncate">{topMatch.knownFor}</p>
+            <p
+              className="mt-3 text-5xl font-extrabold tabular-nums leading-none"
+              style={{ color: stamp.fill }}
+            >
+              {Math.round(topMatch.matchPercent)}%
+            </p>
+
+            <div
+              className="mx-auto mt-3 inline-block -rotate-[7deg] rounded-md border-[3px] px-3 py-1 text-[11px] font-black uppercase tracking-widest"
+              style={{
+                color: stamp.fill,
+                borderColor: stamp.fill,
+                background: stamp.wash,
+              }}
+            >
+              {verdictLabel(verdict)}
             </div>
+
+            <p className="mt-3 line-clamp-1 text-[11px] leading-snug text-white/70">{blurb}</p>
+            <p className="mt-1 truncate text-sm font-bold text-white">{topMatch.name}</p>
+            <p className="mt-2 font-mono text-[8px] tracking-wider text-white/45">
+              MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS
+            </p>
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3 border-t border-white/10 bg-white/[0.02] px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={handleShare}
-            className="flex-1 gap-2"
-          >
+          <Button variant="secondary" size="md" onClick={handleShare} className="flex-1 gap-2">
             {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Share2 className="h-4 w-4" />}
             <span>{copied ? "Link Copied!" : "Share Link"}</span>
           </Button>

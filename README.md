@@ -1,22 +1,23 @@
 # Twinframe
 
-**Celebrity look-alike / doppelgänger matcher** — upload a selfie or use your camera, get on-device FaceNet matches against a **267-celebrity** gallery.
+**Celebrity look-alike / doppelgänger matcher** — upload a selfie or use your camera, get on-device EdgeFace matches against a **1,000-celebrity** gallery.
 
 ## Features
 
 - **Upload** or **webcam / phone camera** capture
-- **On-device** face detection + 128-d FaceNet embeddings (no photo upload to a server)
+- **On-device** face detection + 512-d EdgeFace embeddings (no photo upload to a server)
 - Auto face crop for small faces / gym selfies
-- Honest confidence scoring (distance → percent)
+- Honest confidence scoring (distance + top-2 margin → percent and verdict)
 - Mobile-first UI
-- Gallery of **267** pre-embedded celebrities (actors, artists, athletes, public figures)
+- Gallery of **1,000** pre-embedded celebrities (actors, artists, athletes, public figures)
 
 ## Stack
 
 - React 19 · TypeScript · Vite · TanStack Start
 - Tailwind CSS v4
-- `@vladmandic/face-api` (FaceNet-style recognition models)
-- Celebrity embeddings in `public/celebs/embeddings.json`
+- SCRFD detection + EdgeFace-S recognition via `onnxruntime-web`
+- `@vladmandic/face-api` for age/gender estimation and the FaceNet fallback path
+- Celebrity embeddings in `public/celebs/embeddings.v4.q8.bin`
 
 ## Quick start
 
@@ -35,13 +36,15 @@ npm run build
 
 ## How matching works
 
-1. Detect face (SSD MobileNet) and landmarks
-2. Crop / normalize the face
-3. Extract a **128-d** face descriptor
-4. Compare with Euclidean distance to precomputed celebrity descriptors
-5. Rank top matches with age/gender affinity and calibrated match %
+1. Detect face (SCRFD) and 5-point landmarks
+2. Align / frontalize the face to a 112px tensor
+3. Extract a **512-d** EdgeFace descriptor
+4. Compare with cosine distance to precomputed celebrity prototypes (primary + multi-shot centroids)
+5. Rank top matches with age/gender affinity, then calibrate a match % and verdict from the
+   absolute distance and the #1-vs-#2 margin
 
-Models live in `public/models/face-api/`. Portrait thumbnails + embeddings live in `public/celebs/`.
+Models live in `public/models/` (`ort/`, `scrfd/`, `edgeface/`, plus `face-api/` for age/gender).
+Portrait thumbnails + embeddings live in `public/celebs/`.
 
 ## Project layout
 
@@ -51,8 +54,8 @@ src/
   lib/face/       # pipeline, embeddings, scoring, tests
   lib/celebrities/# catalog metadata
 public/
-  celebs/         # portraits + embeddings.json
-  models/face-api/# face-api weights
+  celebs/         # portraits + embeddings.v4.q8.bin + gallery.buckets.json
+  models/         # ONNX runtime, SCRFD, EdgeFace, face-api weights
 ```
 
 ## Privacy

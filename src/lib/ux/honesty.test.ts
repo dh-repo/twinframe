@@ -2,13 +2,16 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   honestyBand,
+  honestyBandFromVerdict,
   honestyHeadline,
   honestyShareLabel,
   restListHeading,
   shouldShowContenders,
   shareText,
   shouldShowEstimatedAge,
+  verdictFromHonestyBand,
 } from "./honesty.ts";
+import type { VerdictTier } from "../face/verdict.ts";
 
 describe("honesty bands", () => {
   it("treats mid FaceNet scores as nearest-neighbor, not look-alikes", () => {
@@ -32,6 +35,35 @@ describe("honesty bands", () => {
     assert.equal(shouldShowContenders(74, 0.02), true);
     assert.match(shareText("Zendaya", 48), /not a strong look-alike/i);
     assert.match(shareText("Zendaya", 81), /Zendaya at 81%/);
+  });
+});
+
+describe("honesty ↔ verdict mapping", () => {
+  it("maps every named verdict onto a share/list band", () => {
+    const tiers: VerdictTier[] = [
+      "dead-ringer",
+      "strong-resemblance",
+      "soft-match",
+      "distant-twin",
+    ];
+    const bands = tiers.map((tier) => honestyBandFromVerdict(tier));
+    assert.deepEqual(bands, ["strong", "strong", "soft", "weak"]);
+  });
+
+  it("maps bands back to the closest named verdict", () => {
+    assert.equal(verdictFromHonestyBand("weak"), "distant-twin");
+    assert.equal(verdictFromHonestyBand("soft"), "soft-match");
+    assert.equal(verdictFromHonestyBand("strong"), "strong-resemblance");
+  });
+
+  it("lets a stamp override percent when writing share / list copy", () => {
+    assert.equal(restListHeading(88, 0.2, "distant-twin"), "OTHER NEAREST NEIGHBORS");
+    assert.equal(restListHeading(40, 0.01, "dead-ringer"), "ALSO CLOSE");
+    assert.equal(shouldShowContenders(88, 0.2, "distant-twin"), false);
+    assert.equal(shouldShowContenders(40, 0.01, "dead-ringer"), true);
+    assert.match(shareText("Zendaya", 48, undefined, "distant-twin"), /not a strong look-alike/i);
+    assert.match(shareText("Zendaya", 91, 0.12, "dead-ringer"), /Dead ringer/i);
+    assert.match(shareText("Zendaya", 74, 0.08, "strong-resemblance"), /Zendaya at 74%/);
   });
 });
 

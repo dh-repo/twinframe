@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { RotateCcw, AlertTriangle, Filter } from "lucide-react";
+import { RotateCcw, AlertTriangle, Filter, Users } from "lucide-react";
 import type { MatchResult, CelebrityMatch } from "@/lib/face/types";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { MatchRevealCard } from "@/components/results/match-reveal-card";
@@ -13,9 +13,11 @@ interface MatchResultsProps {
   result: MatchResult;
   previewUrl: string | null;
   onReset: () => void;
+  /** Friend mode: after person A, the primary CTA captures person B. */
+  onAddFriend?: () => void;
 }
 
-export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps) {
+export function MatchResults({ result, previewUrl, onReset, onAddFriend }: MatchResultsProps) {
   const [selectedMatch, setSelectedMatch] = useState<CelebrityMatch | null>(null);
   const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">(() => {
     const g = result.estimatedGender;
@@ -36,7 +38,11 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
   const rest = filteredMatches.filter((m) => m.celebrityId !== activeTop?.celebrityId);
   const showContenders =
     Boolean(activeTop) &&
-    shouldShowContenders(activeTop.matchPercent, activeTop.rankMargin);
+    shouldShowContenders(
+      activeTop.matchPercent,
+      activeTop.rankMargin,
+      activeTop.verdict,
+    );
   const listedRest = showContenders ? rest : [];
   const youUrl = result.facePreviewUrl || previewUrl;
 
@@ -139,6 +145,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         topMatch={activeTop}
         youUrl={youUrl}
         estimatedAge={result.estimatedAge}
+        userFeatures={result.features}
       />
 
       {/* Contenders: hide the crowded pack when the top is only a nearest neighbor */}
@@ -152,7 +159,12 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-              {restListHeading(activeTop.matchPercent, activeTop.rankMargin)} — tap to inspect
+              {restListHeading(
+                activeTop.matchPercent,
+                activeTop.rankMargin,
+                activeTop.verdict,
+              )}{" "}
+              — tap to inspect
             </h3>
             <span className="text-[10px] font-mono text-match">{listedRest.length} contenders</span>
           </div>
@@ -209,10 +221,23 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         engineVersion={result.engineVersion}
       />
 
-      <Button variant="primary" size="lg" onClick={onReset} className="w-full mt-4">
-        <RotateCcw className="h-4 w-4" />
-        Try another photo
-      </Button>
+      {onAddFriend ? (
+        <div className="mt-4 space-y-2">
+          <Button variant="primary" size="lg" onClick={onAddFriend} className="w-full">
+            <Users className="h-4 w-4" />
+            Add a friend
+          </Button>
+          <Button variant="secondary" size="lg" onClick={onReset} className="w-full">
+            <RotateCcw className="h-4 w-4" />
+            Start over
+          </Button>
+        </div>
+      ) : (
+        <Button variant="primary" size="lg" onClick={onReset} className="w-full mt-4">
+          <RotateCcw className="h-4 w-4" />
+          Try another photo
+        </Button>
+      )}
 
       <p className="pb-1 text-center text-[11px] leading-relaxed text-fg-subtle">
         EdgeFace 512-d · SCRFD-2.5G · On-device engine v{result.engineVersion}

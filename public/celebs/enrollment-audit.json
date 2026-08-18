@@ -1,15 +1,15 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-17T14:17:51.373Z",
+  "generatedAt": "2026-08-18T05:09:40.719Z",
   "summary": {
     "celebs": 1000,
-    "multiShot": 202,
-    "singleShot": 798,
-    "needsMoreViews": 798,
+    "multiShot": 256,
+    "singleShot": 744,
+    "needsMoreViews": 744,
     "countsByPolicy": {
-      "prototype-ready": 194,
-      "single-shot-primary": 798,
-      "needs-one-more-view": 8
+      "prototype-ready": 233,
+      "needs-one-more-view": 23,
+      "single-shot-primary": 744
     },
     "target": "Prefer N≥2–3 real EdgeFace frontals per head celeb before adding more unique ids. Drop non-frontal / expressive primaries on rebuild."
   },
@@ -21,25 +21,25 @@
     "minCoverage": 0.08
   },
   "sampleSingleShot": [
-    "mahershala-ali",
-    "rihanna",
-    "zoe-kravitz",
     "serena-williams",
-    "jenna-ortega",
-    "ali-wong",
-    "sandra-oh",
-    "yara-shahidi",
     "uzo-aduba",
-    "daniel-kaluuya",
-    "jacob-elordi",
     "adam-sandler",
-    "aishwarya-rai",
     "al-pacino",
-    "ansel-elgort",
-    "anthony-mackie",
     "ben-affleck",
-    "bill-gates",
-    "bill-skarsgard",
-    "blake-lively"
+    "bruno-mars",
+    "christian-bale",
+    "colin-firth",
+    "david-beckham",
+    "drew-barrymore",
+    "gong-li",
+    "gong-yoo",
+    "gwenyth-paltrow",
+    "ian-somerhalder",
+    "johnny-depp",
+    "justin-bieber",
+    "lebron-james",
+    "prince-harry",
+    "regé-jean-page",
+    "robert-de-niro"
   ]
 }

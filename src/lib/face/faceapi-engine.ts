@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PHONE_CLOSEUP_HINT, PHONE_CLOSEUP_MIN_COVERAGE } from "./hard-probes.ts";
 import type { FaceStageLatencies, FaceTelemetry } from "./types";
 
 type FaceApiModule = typeof import("@vladmandic/face-api");
@@ -1467,6 +1468,8 @@ export function assessDetectionQuality(det: FaceDetectionResult): {
     issues.push(
       "For a sharper match next time, fill more of the frame with your face.",
     );
+  } else if (faceCoverage >= PHONE_CLOSEUP_MIN_COVERAGE) {
+    issues.push(PHONE_CLOSEUP_HINT);
   }
 
   if (det.confidence < 0.40) {

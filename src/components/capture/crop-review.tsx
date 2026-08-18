@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, RotateCcw, ZoomIn, Move, Users, ScanFace } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  CROP_ZOOM_MAX,
+  CROP_ZOOM_MIN,
+  maxCropPan,
+  offsetToCenterBox,
+  zoomToFillFace,
+} from "@/lib/face/crop-view";
+import {
+  PHONE_CLOSEUP_HINT,
+  PHONE_CLOSEUP_MIN_COVERAGE,
+} from "@/lib/face/hard-probes";
 
 export interface FaceCandidateUI {
   id: number;
@@ -80,20 +91,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       zoom = scale,
     ) => {
       if (!iw || !ih) return;
-      const containerSize = stageSize || 320;
-      const drawScale = Math.max(containerSize / iw, containerSize / ih) * zoom;
-      const fcx = box.x + box.width / 2;
-      const fcy = box.y + box.height / 2;
-      const icx = iw / 2;
-      const icy = ih / 2;
-      // Offset in container px so face center lands on viewfinder center
-      const ox = (icx - fcx) * drawScale;
-      const oy = (icy - fcy) * drawScale;
-      const max = Math.max(80, 120 * zoom);
-      setOffset({
-        x: Math.max(-max, Math.min(max, ox)),
-        y: Math.max(-max, Math.min(max, oy)),
-      });
+      setOffset(offsetToCenterBox(box, iw, ih, zoom, stageSize || 320));
     },
     [scale, stageSize],
   );
@@ -117,8 +115,10 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       if (!isMounted || finished) return;
       finished = true;
       setIsDetectingFaces(false);
-      setDetectStatus("Face detection timed out — Retake and try again");
-      setDetectError("Automatic face detection took too long.");
+      setDetectStatus(
+        "Detection timed out — drag and zoom so the face fills the square, then continue.",
+      );
+      setDetectError("Automatic face detection took too long. You can still crop manually.");
     }, 20000);
 
     const img = new Image();
@@ -138,8 +138,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
         setSelectedFaceId(selIdx);
         const face = list[selIdx]!.unscaledBox;
         const faceSide = Math.max(face.width, face.height);
-        const targetFacePx = Math.min(iw, ih) * 0.45;
-        const zoom = Math.min(2, Math.max(1, targetFacePx / Math.max(faceSide, 1)));
+        const zoom = zoomToFillFace(faceSide, iw, ih);
         setScale(zoom);
         centerCropOnBoxRef.current(face, iw, ih, zoom);
       };
@@ -170,8 +169,12 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
               : `${list.length} faces found — tap who to match`,
           );
         } else {
-          setDetectStatus("No face found — Retake and try another photo");
-          setDetectError("Automatic detection could not find a clear face.");
+          setDetectStatus(
+            "No face found automatically — drag and zoom so the face fills the square, then continue.",
+          );
+          setDetectError(
+            "Automatic detection could not find a clear face. You can still crop manually.",
+          );
         }
       } catch (e) {
         console.warn("Face candidate detection in CropReview failed:", e);
@@ -220,8 +223,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       setSelectedFaceId(c.id);
       if (imageSize.w && imageSize.h) {
         const faceSide = Math.max(c.unscaledBox.width, c.unscaledBox.height);
-        const targetFacePx = Math.min(imageSize.w, imageSize.h) * 0.45;
-        const zoom = Math.min(2, Math.max(1, targetFacePx / Math.max(faceSide, 1)));
+        const zoom = zoomToFillFace(faceSide, imageSize.w, imageSize.h);
         setScale(zoom);
         centerCropOnBox(c.unscaledBox, imageSize.w, imageSize.h, zoom);
       }
@@ -254,13 +256,13 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
       if (Math.hypot(dx, dy) > 4) dragStart.current.moved = true;
-      const max = Math.max(80, 120 * scale);
+      const max = maxCropPan(imageSize.w || 1, imageSize.h || 1, scale, stageSize || 320);
       setOffset({
-        x: Math.max(-max, Math.min(max, dragStart.current.ox + dx)),
-        y: Math.max(-max, Math.min(max, dragStart.current.oy + dy)),
+        x: Math.max(-max.x, Math.min(max.x, dragStart.current.ox + dx)),
+        y: Math.max(-max.y, Math.min(max.y, dragStart.current.oy + dy)),
       });
     },
-    [dragging, scale],
+    [dragging, scale, imageSize.w, imageSize.h, stageSize],
   );
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
@@ -352,6 +354,13 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
   }, [offset, scale, stageSize, onApprove, isApproving, isDetectingFaces, candidates, selectedFaceId]);
 
   const qualityHint = (() => {
+    const selected = candidates.find((c) => c.id === selectedFaceId) ?? candidates.find((c) => c.isPrimary);
+    if (selected) {
+      const coverage = (selected.box.width / 100) * (selected.box.height / 100);
+      if (coverage >= PHONE_CLOSEUP_MIN_COVERAGE) {
+        return { tone: "warn" as const, text: PHONE_CLOSEUP_HINT };
+      }
+    }
     if (!imageSize.w) return null;
     const mp = (imageSize.w * imageSize.h) / 1e6;
     if (mp < 0.15) return { tone: "warn" as const, text: "Low resolution — a larger photo gives sharper matches." };
@@ -605,8 +614,8 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             <ZoomIn className="h-4 w-4 shrink-0 text-fg-subtle" />
             <input
               type="range"
-              min={0.85}
-              max={2}
+              min={CROP_ZOOM_MIN}
+              max={CROP_ZOOM_MAX}
               step={0.02}
               value={scale}
               onChange={(e) => setScale(parseFloat(e.target.value))}
@@ -636,7 +645,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             size="md"
             onClick={handleApprove}
             className="flex-[1.4]"
-            disabled={isApproving || isDetectingFaces || candidates.length === 0}
+            disabled={isApproving || isDetectingFaces}
           >
             <Check className="h-4 w-4" />
             {isApproving
@@ -646,7 +655,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
                 : selectedFaceId !== null && candidates.length > 1
                   ? `Match ${candidates.find((c) => c.id === selectedFaceId)?.label ?? "face"}`
                   : candidates.length === 0
-                    ? "No face found"
+                    ? "Use this crop"
                     : "Approve & Match"}
           </Button>
         </div>

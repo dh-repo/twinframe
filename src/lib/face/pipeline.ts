@@ -1,3 +1,4 @@
+import type { PackId } from "../celebrities/packs.ts";
 import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types.ts";
 import { ENGINE_VERSION } from "./types.ts";
 import { emptyFeatures } from "./math.ts";
@@ -11,16 +12,18 @@ import {
   type FaceDetectionResult,
 } from "./faceapi-engine.ts";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
+import { loadGalleryFeatures } from "../celebrities/load-gallery-features.ts";
 import { detectSCRFD } from "./scrfd.ts";
 import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
-import { extractEdgeFaceEmbedding } from "./edgeface.ts";
+import { extractEdgeFaceEmbeddingWithTta } from "./edgeface.ts";
 import { computeBiohash } from "./biohash.ts";
 import { detectionFromAccuFace, pipelineLog, sourceDimensions, unpadScrfdDetections } from "./accuface-detection.ts";
 import {
   hardQualityRefuseGate,
   poseRefuseGate,
 } from "./lookalike-policy.ts";
+import { averageQueryEmbeddings, burstKeepCount, rankBurstDrawables } from "./query-burst.ts";
 
 export type PipelineStatus =
   | "idle"
@@ -29,11 +32,17 @@ export type PipelineStatus =
   | "analyzing"
   | "error";
 
+export type FaceAnalyzeSource =
+  | HTMLImageElement
+  | HTMLCanvasElement
+  | HTMLVideoElement;
+
 /** Warm models + gallery in the background. */
 export function prefetchModel(): void {
   if (typeof window === "undefined") return;
   prefetchFaceApi();
   prefetchEmbeddings();
+  void loadGalleryFeatures();
 }
 
 /** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */
@@ -69,6 +78,8 @@ function padSourceForDetection(
 
 export interface AnalyzeOptions {
   topK?: number;
+  /** Restrict ranking to a themed pack before scoring. */
+  pack?: PackId;
   selectedCandidateIndex?: number;
   selectedBox?: { x: number; y: number; width: number; height: number };
   onProgress?: (
@@ -87,31 +98,35 @@ export interface AnalyzeOptions {
   ) => void;
 }
 
+interface QueryEmbedPass {
+  source: FaceAnalyzeSource;
+  alignmentSource: FaceAnalyzeSource | HTMLCanvasElement | OffscreenCanvas;
+  padMargin: number;
+  scrfdResult: Awaited<ReturnType<typeof detectSCRFD>> | null;
+  alignedTensor: Float32Array | null;
+  frontalizationMethod: "exp-norm-wgsl" | "5pt-similarity" | "bbox-crop";
+  frontalizationMs: number;
+  scrfdPassMs: number;
+  edgeFaceEmbedding: Float32Array | null;
+  embeddingPassMs: number;
+  ttaApplied: boolean;
+  ttaViews: number;
+}
+
 /**
- * AccuFace v4.0 Pipeline:
- * SCRFD-2.5G Face Detection -> Expression-Aware 3D UV WGSL Frontalization (|yaw| > 25°)
- * / 5-Point Umeyama Similarity Transform (|yaw| <= 25°) -> Embedding Extraction & Matcher.
+ * Detect, align, and embed a single source. Burst ranking happens *before*
+ * this so we never run 10 full SCRFD+EdgeFace passes.
  */
-export async function analyzeFaceSource(
-  source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
-  options: AnalyzeOptions = {},
-): Promise<MatchResult> {
-  const topK = options.topK ?? 5;
-  const onProgress = options.onProgress;
-  const tPipeline = performance.now();
-  pipelineLog("start");
-
-  onProgress?.(0, 12);
-  const galleryPromise = loadCelebrityEmbeddings();
-
-  onProgress?.(1, 28);
+async function runDetectAlignEmbed(
+  source: FaceAnalyzeSource,
+): Promise<QueryEmbedPass> {
   pipelineLog("scrfd:start");
 
   // 1. Run SCRFD-2.5G face detection pass. The analysis source is usually the
   // tight face crop approved in crop review; SCRFD misses faces that fill the
   // whole frame, so retry once on a margin-padded canvas (mirrors enrollment).
   const scrfdStart = performance.now();
-  let alignmentSource: typeof source | HTMLCanvasElement | OffscreenCanvas = source;
+  let alignmentSource: FaceAnalyzeSource | HTMLCanvasElement | OffscreenCanvas = source;
   let padMargin = 0;
   let scrfdResult = await detectSCRFD(source).catch((err) => {
     console.warn("[Pipeline] SCRFD-2.5G detection pass failed; proceeding to fallback:", err);
@@ -174,27 +189,164 @@ export async function analyzeFaceSource(
     pipelineLog("frontalize:done", { ms: frontalizationMs, method: frontalizationMethod });
   }
 
-  // 3. Execute EdgeFace-M 256-d feature extraction pass
+  // 3. Execute EdgeFace-M feature extraction (TTA when the EP is GPU)
   const tEmbStart = performance.now();
   let edgeFaceEmbedding: Float32Array | null = null;
   let embeddingPassMs = 0;
+  let ttaApplied = false;
+  let ttaViews = 0;
 
   try {
     pipelineLog("edgeface:start", { hasAlignedTensor: Boolean(alignedTensor) });
-    const efRes = await extractEdgeFaceEmbedding(
+    const efRes = await extractEdgeFaceEmbeddingWithTta(
       alignedTensor ?? source,
       scrfdResult?.primary?.landmarks
     );
     edgeFaceEmbedding = efRes.embedding;
     embeddingPassMs = efRes.latencyMs;
-    pipelineLog("edgeface:done", { ms: embeddingPassMs, dim: edgeFaceEmbedding.length });
+    ttaApplied = efRes.ttaApplied;
+    ttaViews = efRes.ttaViews;
+    pipelineLog("edgeface:done", {
+      ms: embeddingPassMs,
+      dim: edgeFaceEmbedding.length,
+      ttaApplied,
+      ttaViews,
+      provider: efRes.providerUsed,
+    });
   } catch (err) {
     console.warn("[Pipeline] EdgeFace-M extraction failed; falling back:", err);
     embeddingPassMs = Math.round(performance.now() - tEmbStart);
     pipelineLog("edgeface:fail", { ms: embeddingPassMs });
   }
 
+  return {
+    source,
+    alignmentSource,
+    padMargin,
+    scrfdResult,
+    alignedTensor,
+    frontalizationMethod,
+    frontalizationMs,
+    scrfdPassMs,
+    edgeFaceEmbedding,
+    embeddingPassMs,
+    ttaApplied,
+    ttaViews,
+  };
+}
+
+/**
+ * AccuFace v4.0 Pipeline:
+ * SCRFD-2.5G Face Detection -> Expression-Aware 3D UV WGSL Frontalization (|yaw| > 25°)
+ * / 5-Point Umeyama Similarity Transform (|yaw| <= 25°) -> Embedding Extraction & Matcher.
+ */
+export async function analyzeFaceSource(
+  source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+  options: AnalyzeOptions = {},
+): Promise<MatchResult> {
+  const onProgress = options.onProgress;
+  const tPipeline = performance.now();
+  pipelineLog("start");
+
+  onProgress?.(0, 12);
+  const galleryPromise = loadCelebrityEmbeddings();
+
+  onProgress?.(1, 28);
+  const pass = await runDetectAlignEmbed(source);
+
   onProgress?.(2, 62);
+  return completeQueryAnalysis(pass, options, tPipeline, galleryPromise);
+}
+
+/**
+ * Rank sharpest burst frames (Laplacian, no detector), embed the top 3–5,
+ * then L2-average. Single-image uploads should keep using analyzeFaceSource.
+ */
+export async function analyzeFaceBurst(
+  sources: FaceAnalyzeSource[],
+  options: AnalyzeOptions = {},
+): Promise<MatchResult> {
+  if (sources.length <= 1) {
+    const only = sources[0];
+    if (!only) {
+      return {
+        features: emptyFeatures(),
+        quality: {
+          ok: false,
+          score: 0,
+          faceCoverage: 0,
+          centered: 0,
+          sharpness: 0,
+          illumination: 0,
+          issues: [
+            "No face found. Use a clear photo with your face visible — front-facing works best.",
+          ],
+        },
+        matches: [],
+        analyzedAt: Date.now(),
+        engineVersion: ENGINE_VERSION,
+      };
+    }
+    return analyzeFaceSource(only, options);
+  }
+
+  const onProgress = options.onProgress;
+  const tPipeline = performance.now();
+  pipelineLog("burst:start", { n: sources.length });
+  onProgress?.(0, 10);
+  const galleryPromise = loadCelebrityEmbeddings();
+
+  const ranked = rankBurstDrawables(sources);
+  const selected = ranked.slice(0, burstKeepCount(ranked.length));
+  pipelineLog("burst:ranked", {
+    kept: selected.length,
+    topSharpness: selected[0]?.score.sharpness ?? null,
+  });
+
+  onProgress?.(1, 24);
+  const passes: QueryEmbedPass[] = [];
+  for (let i = 0; i < selected.length; i++) {
+    const row = selected[i]!;
+    const pass = await runDetectAlignEmbed(row.source);
+    passes.push(pass);
+    onProgress?.(1, 24 + Math.round(((i + 1) / selected.length) * 36));
+  }
+
+  const embeddings = passes
+    .map((p) => p.edgeFaceEmbedding)
+    .filter((v): v is Float32Array => Boolean(v));
+  const primary =
+    passes.find((p) => p.edgeFaceEmbedding) ??
+    passes[0] ??
+    (await runDetectAlignEmbed(selected[0]!.source));
+
+  if (embeddings.length >= 2) {
+    primary.edgeFaceEmbedding = averageQueryEmbeddings(embeddings);
+    pipelineLog("burst:centroid", { views: embeddings.length });
+  }
+
+  onProgress?.(2, 62);
+  return completeQueryAnalysis(primary, options, tPipeline, galleryPromise);
+}
+
+async function completeQueryAnalysis(
+  pass: QueryEmbedPass,
+  options: AnalyzeOptions,
+  tPipeline: number,
+  galleryPromise: ReturnType<typeof loadCelebrityEmbeddings>,
+): Promise<MatchResult> {
+  const topK = options.topK ?? 5;
+  const onProgress = options.onProgress;
+  const source = pass.source;
+  const {
+    padMargin,
+    scrfdResult,
+    frontalizationMethod,
+    frontalizationMs,
+    scrfdPassMs,
+    embeddingPassMs,
+  } = pass;
+  const edgeFaceEmbedding = pass.edgeFaceEmbedding;
 
   // 3b. Biohashing telemetry pass — never allowed to break the analysis
   let biohashMs = 0;
@@ -387,6 +539,7 @@ export async function analyzeFaceSource(
     },
     gallery,
     topK,
+    { pack: options.pack },
   );
 
   onProgress?.(3, 98);

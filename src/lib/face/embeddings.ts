@@ -136,8 +136,8 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
   } catch {}
 }
 
-/** Gallery cache-busting version — bump when the binary gallery is re-enrolled. */
-const GALLERY_VERSION = "5.0.0";
+/** Gallery cache-busting version — bump when the binary gallery or its extra templates change. */
+const GALLERY_VERSION = "5.1.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
@@ -321,7 +321,9 @@ async function mergeExtraTemplates(base: CelebrityEmbedding[]): Promise<Celebrit
     "./gallery-dedupe.ts"
   );
   try {
-    const res = await fetch("/celebs/extra-templates.json?v=2.0.0", { cache: "force-cache" });
+    const res = await fetch(`/celebs/extra-templates.json?v=${GALLERY_VERSION}`, {
+      cache: "force-cache",
+    });
     if (!res.ok) return buildMultiShotCentroidGallery(base);
     const data = (await res.json()) as ExtraTemplateFile;
     if (!data.templates?.length) return buildMultiShotCentroidGallery(base);

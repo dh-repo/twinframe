@@ -1,62 +1,63 @@
-import { useMemo } from "react";
-import type { CelebrityMatch } from "@/lib/face/types";
-import { Eye, Smile, Sparkles, UserCheck, Activity } from "lucide-react";
+import { useMemo, type ComponentType } from "react";
+import type { CelebrityMatch, FaceFeatures } from "@/lib/face/types";
+import {
+  Activity,
+  Eye,
+  ScanFace,
+  Sparkles,
+  SunMedium,
+  Users,
+} from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils/cn";
+import { composeBreakdownRows } from "@/lib/ux/match-blurb";
 
 export interface TraitBreakdownProps {
   match: CelebrityMatch;
+  userFeatures?: FaceFeatures | null;
+  celebFeatures?: FaceFeatures | null;
   className?: string;
 }
 
-interface BiometricAttribute {
-  id: string;
-  name: string;
-  score: number;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
+function iconForTrait(id: string): ComponentType<{ className?: string }> {
+  switch (id) {
+    case "facialStructure":
+    case "faceAspect":
+    case "faceRoundness":
+    case "jawWidth":
+    case "chinSharpness":
+      return ScanFace;
+    case "ageAffinity":
+    case "youthfulness":
+      return Activity;
+    case "genderPresentation":
+      return Users;
+    case "lightingQuality":
+      return SunMedium;
+    case "eyeSpacing":
+    case "eyeOpenness":
+    case "eyeSlant":
+    case "browHeight":
+      return Eye;
+    default:
+      return Sparkles;
+  }
 }
 
-export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
-  const attributes = useMemo<BiometricAttribute[]>(() => {
-    // Generate well-distributed, realistic trait scores derived from match percent and celeb traits
-    const base = match.matchPercent;
-    const s1 = Math.min(99, Math.max(65, Math.round(base + (match.accentHue % 11) - 5)));
-    const s2 = Math.min(99, Math.max(68, Math.round(base + ((match.accentHue * 3) % 9) - 4)));
-    const s3 = Math.min(99, Math.max(70, Math.round(base + ((match.accentHue * 7) % 13) - 6)));
-    const s4 = Math.min(99, Math.max(64, Math.round(base + ((match.accentHue * 5) % 11) - 5)));
-
-    return [
-      {
-        id: "eye-contour",
-        name: "Eye Structure & Brow Line",
-        score: s1,
-        description: "Orbital symmetry, eye distance ratio, and brow arch alignment",
-        icon: Eye,
-      },
-      {
-        id: "jaw-cheekbones",
-        name: "Jawline & Cheekbone Profile",
-        score: s2,
-        description: "Mandibular angle, chin definition, and zygomatic arch width",
-        icon: UserCheck,
-      },
-      {
-        id: "facial-proportions",
-        name: "Facial Proportions (Golden Ratio)",
-        score: s3,
-        description: "Vertical facial thirds (forehead to nose tip to chin)",
-        icon: Activity,
-      },
-      {
-        id: "mouth-expression",
-        name: "Smile & Lower Facial Vector",
-        score: s4,
-        description: "Philtrum length, lip curvature, and expression dynamic",
-        icon: Smile,
-      },
-    ];
-  }, [match]);
+export function TraitBreakdown({
+  match,
+  userFeatures = null,
+  celebFeatures = null,
+  className,
+}: TraitBreakdownProps) {
+  const rows = useMemo(
+    () =>
+      composeBreakdownRows(match.traits, {
+        userFeatures,
+        celebFeatures,
+      }),
+    [match.traits, userFeatures, celebFeatures],
+  );
 
   return (
     <div className={cn("space-y-3.5", className)}>
@@ -70,39 +71,45 @@ export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {attributes.map((attr) => {
-          const Icon = attr.icon;
-          return (
-            <div
-              key={attr.id}
-              className="rounded-xl border border-border/80 bg-bg-subtle/70 p-3 shadow-sm transition-colors hover:border-match/30"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-match/30 bg-match/10 text-match">
-                    <Icon className="h-3.5 w-3.5" />
+      {rows.length === 0 ? (
+        <p className="text-[12px] text-fg-muted">
+          No measured trait scores for this match.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {rows.map((row) => {
+            const Icon = iconForTrait(row.id);
+            return (
+              <div
+                key={row.id}
+                className="rounded-xl border border-border/80 bg-bg-subtle/70 p-3 shadow-sm transition-colors hover:border-match/30"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-match/30 bg-match/10 text-match">
+                      <Icon className="h-3.5 w-3.5" />
+                    </div>
+                    <p className="truncate text-xs font-semibold text-fg">
+                      {row.name}
+                    </p>
                   </div>
-                  <p className="truncate text-xs font-semibold text-fg">
-                    {attr.name}
-                  </p>
+                  <span className="font-mono text-xs font-bold text-match tabular-nums shrink-0">
+                    {row.score}%
+                  </span>
                 </div>
-                <span className="font-mono text-xs font-bold text-match tabular-nums shrink-0">
-                  {attr.score}%
-                </span>
-              </div>
 
-              <p className="mt-1.5 text-[11px] leading-snug text-fg-muted line-clamp-1">
-                {attr.description}
-              </p>
+                <p className="mt-1.5 text-[11px] leading-snug text-fg-muted line-clamp-1">
+                  {row.description}
+                </p>
 
-              <div className="mt-2.5">
-                <Progress value={attr.score} className="h-1 bg-border/60" />
+                <div className="mt-2.5">
+                  <Progress value={row.score} className="h-1 bg-border/60" />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

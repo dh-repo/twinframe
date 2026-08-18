@@ -1,6 +1,11 @@
+import { catalogFor } from "../celebrities/catalog.ts";
 import { CELEBRITIES } from "../celebrities/database.ts";
+import { galleryFeaturesFor } from "../celebrities/gallery-features.ts";
+import { celebInPack, type PackId } from "../celebrities/packs.ts";
 import { initials } from "../celebrities/types.ts";
+import { composeMatchBlurb } from "../ux/match-blurb.ts";
 import type { CelebrityMatch, TraitInsight } from "./types.ts";
+import { verdictFromMatch } from "./verdict.ts";
 import {
   type CelebrityEmbedding,
   l2Normalize,
@@ -28,18 +33,36 @@ export interface UserFaceQuery {
   smileIntensity?: number;
 }
 
+export interface RankOptions {
+  /** Matching scope. Applied before scoring so ranks and margins describe this pack. */
+  pack?: PackId;
+  /**
+   * Accepted by the eval harness. Presentable-rank filtering already keeps a
+   * long tail internally for margin; this flag is a no-op reserved for callers.
+   */
+  includeLongTail?: boolean;
+}
+
 /**
- * Rank celebrities by EdgeFace-M 256-d Cosine distance (primary), with soft age/gender priors.
- * Gallery may contain multiple age-buckets per celeb id (e.g. 46/58/72).
- * We score every bucket, then keep only the best bucket per celeb id
+ * Rank celebrities by EdgeFace cosine distance (primary), with soft age/gender priors.
+ * Gallery may contain multiple prototypes per celeb id.
+ * We score every prototype, then keep only the best per celeb id
  * (lowest adjusted distance), so results are diverse and age-aware.
  */
 export function rankByDescriptor(
   user: UserFaceQuery,
   gallery: CelebrityEmbedding[],
   topK = 5,
+  options?: RankOptions,
 ): CelebrityMatch[] {
   if (!gallery || gallery.length === 0) return [];
+  const pack = options?.pack;
+  const scoped =
+    pack && pack !== "all"
+      ? gallery.filter((c) => celebInPack(c.id, catalogFor(c.id).knownFor, pack))
+      : gallery;
+  if (scoped.length === 0) return [];
+  gallery = scoped;
   const userDesc = l2Normalize(user.descriptor);
   const userAge = Number.isFinite(user.age) ? user.age : undefined;
   const userGender = user.gender;
@@ -110,12 +133,27 @@ export function rankByDescriptor(
       matchPercent: percents[i] ?? 0,
       hillPercent: hillPercents[i] ?? percents[i] ?? 0,
       rankMargin: margin,
+      adjustedDistance: t.adjusted,
+      verdict: verdictFromMatch({
+        adjustedDistance: t.adjusted,
+        rankMargin: margin,
+        matchPercent: percents[i] ?? 0,
+      }),
       rawScore: 1 / (1 + t.adjusted),
       confidenceScore: confScore,
       traits: buildDescriptorTraits(user, t.celeb, t.dist),
       accentHue: meta.accentHue,
       initials: initials(displayName),
       tags: meta.tags,
+      blurb: composeMatchBlurb({
+        name: displayName,
+        gender: t.celeb.gender,
+        tags: meta.tags,
+        celebFeatures:
+          galleryFeaturesFor(t.celeb.id) ??
+          CELEBRITIES.find((c) => c.id === t.celeb.id)?.features ??
+          null,
+      }),
       gender: t.celeb.gender as "male" | "female" | "unknown" | undefined,
       photoUrl: t.celeb.path,
       photoUrl192: anyPath.path192,

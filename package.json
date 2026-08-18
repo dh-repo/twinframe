@@ -14,8 +14,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts' 'src/lib/ux/**/*.test.ts' 'scripts/**/*.test.mjs'",
+    "test": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts' 'src/lib/ux/**/*.test.ts' 'src/lib/celebrities/**/*.test.ts' 'scripts/**/*.test.mjs'",
     "test:match": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts'",
+    "test:swing": "node scripts/swing-probe-tour.mjs --mode solo",
+    "test:swing:all": "node scripts/swing-probe-tours.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
