@@ -671,7 +671,7 @@ async function runBenchmark(options) {
       probeSources: options.probeSources,
       probeSourceCounts,
       probeSourceNote:
-        "thumb-192 / thumb-96 probes are the catalog's own gallery renditions, so their accuracy is a same-image upper bound. Held-out accuracy lives in reports/held-out-accuracy.md.",
+        "Every probe source here is an enrolled image (enroll-jobs takes primaries from <id>.jpg, else from a decode of thumbs/192/<id>.webp), so Tier 1 is a self-recognition and enrollment-integrity check. Held-out accuracy lives in reports/held-out-accuracy.md.",
       galleryEnrollment,
       galleryEnrollmentNote:
         "embeddings.json holds real FaceNet-128 descriptors only for the ids that ship a root JPG; the rest are random filler vectors. Probes for those identities are reported as the unenrolled cohort, not as misses.",
@@ -703,7 +703,7 @@ async function runBenchmark(options) {
           name: probe.name,
           groundTruthId: probe.groundTruthId,
           source: probe.source,
-          catalogRendition: probe.catalogRendition,
+          enrollmentRelation: probe.enrollmentRelation,
           groundTruthEnrolled: probe.groundTruthEnrolled,
           detected: false,
           rank: -1,
@@ -739,7 +739,7 @@ async function runBenchmark(options) {
         name: probe.name,
         groundTruthId: probe.groundTruthId,
         source: probe.source,
-        catalogRendition: probe.catalogRendition,
+        enrollmentRelation: probe.enrollmentRelation,
         groundTruthEnrolled: probe.groundTruthEnrolled,
         detected: true,
         rank: targetRank,
@@ -956,7 +956,7 @@ async function runBenchmark(options) {
             name: probe.name,
             groundTruthId: probe.groundTruthId,
             source: probe.source,
-            catalogRendition: probe.catalogRendition,
+            enrollmentRelation: probe.enrollmentRelation,
             groundTruthEnrolled: probe.groundTruthEnrolled,
             detected: false,
             rank: -1,
@@ -993,7 +993,7 @@ async function runBenchmark(options) {
           name: probe.name,
           groundTruthId: probe.groundTruthId,
           source: probe.source,
-          catalogRendition: probe.catalogRendition,
+          enrollmentRelation: probe.enrollmentRelation,
           groundTruthEnrolled: probe.groundTruthEnrolled,
           detected: true,
           rank: targetRank,
@@ -1202,24 +1202,30 @@ function printBenchmarkSummary(results) {
 
   console.log(formatTable(tierHeaders, tierRows, ["left", "right", "right", "right", "right", "right", "right"]));
 
-  // Table 1b: Tier 1 accuracy per probe rendition (same-image vs distinct file)
+  // Table 1b: Tier 1 accuracy per probe rendition, and what each rendition is
   if (results.tier1?.bySource) {
     const sourceRows = Object.values(results.tier1.bySource).map((bucket) => [
       bucket.source,
-      bucket.catalogRendition ? "catalog's own rendition" : "distinct file",
+      bucket.enrollmentRelation,
       bucket.totalProbes.toString(),
       `${bucket.detectionRatePct.toFixed(1)}%`,
       `${bucket.top1AccuracyPct.toFixed(1)}%`,
       `${bucket.top5AccuracyPct.toFixed(1)}%`,
     ]);
     if (sourceRows.length > 0) {
-      console.log("\n--- Tier 1 by probe rendition ---");
+      console.log("\n--- Tier 1 by probe rendition (every rendition here is an enrolled photo) ---");
       console.log(
         formatTable(
-          ["Probe Source", "Relation to Catalog", "Probes", "Detect Rate", "Top-1 Acc", "Top-5 Acc"],
+          ["Probe Source", "Relation to Enrollment", "Probes", "Detect Rate", "Top-1 Acc", "Top-5 Acc"],
           sourceRows,
           ["left", "left", "right", "right", "right", "right"],
         ),
+      );
+      console.log(
+        "  • Tier 1 scores the photos the gallery was built from, so it is a self-recognition and",
+      );
+      console.log(
+        "    enrollment-integrity check. For accuracy on an unseen photo see reports/held-out-accuracy.md.",
       );
     }
   }
@@ -1403,19 +1409,25 @@ function generateMarkdownReport(results) {
     md += `
 ---
 
-## 1b. Tier 1 by probe rendition
+## 1b. Tier 1 by probe rendition — and what Tier 1 actually measures
 
-Only 271 of the 1000 catalog ids ship a full-size portrait at \`public/celebs/<id>.jpg\`.
-\`--probe-sources all\` falls back to the on-disk 192px/96px thumbnails for the rest, but
-those are the renditions the catalog already lists for each celebrity, so they measure a
-same-image upper bound rather than held-out recognition. Root JPGs stay the default.
-For held-out accuracy see \`reports/held-out-accuracy.md\`.
+Every probe here is an enrolled image. \`collectEnrollJobs\` takes each identity's
+primary template from \`public/celebs/<id>.jpg\` when it exists and from a PNG decode of
+\`thumbs/192/<id>.webp\` otherwise, which are the same two files this harness uses as
+probes. **Tier 1 therefore measures whether the engine recognizes its own enrollment
+photo — a self-recognition and enrollment-integrity check, not accuracy on an unseen
+photo.** A miss here means something is broken in the gallery, not that the model is
+weak. For accuracy on a photo the engine has never seen, read
+\`reports/held-out-accuracy.md\`.
 
-| Probe Source | Relation to Catalog | Probes | Detection Rate | Top-1 | Top-5 |
+Only 271 of the 1000 catalog ids ship a full-size portrait, so root JPGs are the default
+probe set; \`--probe-sources all\` falls back to the thumbnails for the rest.
+
+| Probe Source | Relation to Enrollment | Probes | Detection Rate | Top-1 | Top-5 |
 | :--- | :--- | ---: | ---: | ---: | ---: |
 `;
     for (const bucket of Object.values(t1.bySource)) {
-      md += `| ${bucket.source} | ${bucket.catalogRendition ? "catalog's own rendition" : "distinct file"} | ${bucket.totalProbes} | ${bucket.detectionRatePct.toFixed(1)}% | **${bucket.top1AccuracyPct.toFixed(1)}%** | ${bucket.top5AccuracyPct.toFixed(1)}% |\n`;
+      md += `| ${bucket.source} | ${bucket.enrollmentRelation} | ${bucket.totalProbes} | ${bucket.detectionRatePct.toFixed(1)}% | **${bucket.top1AccuracyPct.toFixed(1)}%** | ${bucket.top5AccuracyPct.toFixed(1)}% |\n`;
     }
   }
 

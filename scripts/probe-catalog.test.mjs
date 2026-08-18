@@ -7,6 +7,7 @@ import {
   classifyGalleryDescriptors,
   collectProbeCatalog,
   countBySource,
+  enrollmentRelation,
   parseProbeSourcesArg,
   probeSourceCandidates,
   sampleProbes,
@@ -84,6 +85,23 @@ describe("probe source selection", () => {
   });
 });
 
+describe("enrollmentRelation", () => {
+  test("calls a root JPG the enrolled photo, because enrollment prefers it", () => {
+    assert.equal(enrollmentRelation("root-jpg", true), "enrolled photo");
+    assert.equal(enrollmentRelation("root-jpg", false), "enrolled photo");
+  });
+
+  test("distinguishes a thumbnail that shadows a root JPG from one enrollment used itself", () => {
+    assert.equal(enrollmentRelation("thumb-192", true), "downscale of the enrolled photo");
+    assert.equal(enrollmentRelation("thumb-192", false), "enrolled photo (downscaled)");
+    assert.equal(enrollmentRelation("thumb-96", false), "enrolled photo (downscaled)");
+  });
+
+  test("throws on an unhandled source instead of implying the probe is unseen", () => {
+    assert.throws(() => enrollmentRelation("held-out", false), /Unknown probe source/);
+  });
+});
+
 describe("collectProbeCatalog", () => {
   const onDisk = new Set([
     `${CELEBS}/adele.jpg`,
@@ -119,7 +137,7 @@ describe("collectProbeCatalog", () => {
     );
   });
 
-  test("marks thumbnail probes as the catalog's own rendition and flags transcoding", () => {
+  test("records how each probe relates to enrollment and flags transcoding", () => {
     const catalog = collectProbeCatalog(index("adele", "zendaya"), {
       celebsDir: CELEBS,
       sources: PROBE_SOURCES,
@@ -127,9 +145,13 @@ describe("collectProbeCatalog", () => {
     });
     const adele = catalog.find((p) => p.id === "adele");
     const zendaya = catalog.find((p) => p.id === "zendaya");
-    assert.equal(adele.catalogRendition, false);
+    assert.equal(adele.enrollmentRelation, "enrolled photo");
     assert.equal(adele.needsTranscode, false);
-    assert.equal(zendaya.catalogRendition, true, "path192 rendition is what the catalog already ships");
+    assert.equal(
+      zendaya.enrollmentRelation,
+      "enrolled photo (downscaled)",
+      "with no root JPG, enrollment itself came from this thumbnail",
+    );
     assert.equal(zendaya.needsTranscode, true, "node-canvas cannot decode WebP");
   });
 
@@ -232,20 +254,20 @@ describe("classifyGalleryDescriptors", () => {
 
 describe("summaries", () => {
   const records = [
-    { source: "root-jpg", catalogRendition: false, detected: true, isTop1: true, isTop5: true, groundTruthEnrolled: true },
-    { source: "root-jpg", catalogRendition: false, detected: true, isTop1: false, isTop5: true, groundTruthEnrolled: true },
-    { source: "thumb-192", catalogRendition: true, detected: true, isTop1: false, isTop5: false, groundTruthEnrolled: false },
-    { source: "thumb-192", catalogRendition: true, detected: false, isTop1: false, isTop5: false, groundTruthEnrolled: false },
+    { source: "root-jpg", enrollmentRelation: "enrolled photo", detected: true, isTop1: true, isTop5: true, groundTruthEnrolled: true },
+    { source: "root-jpg", enrollmentRelation: "enrolled photo", detected: true, isTop1: false, isTop5: true, groundTruthEnrolled: true },
+    { source: "thumb-192", enrollmentRelation: "enrolled photo (downscaled)", detected: true, isTop1: false, isTop5: false, groundTruthEnrolled: false },
+    { source: "thumb-192", enrollmentRelation: "enrolled photo (downscaled)", detected: false, isTop1: false, isTop5: false, groundTruthEnrolled: false },
   ];
 
-  test("summarizeBySource reports per-rendition accuracy and keeps the catalog-rendition flag", () => {
+  test("summarizeBySource reports per-rendition accuracy and keeps the enrollment relation", () => {
     const bySource = summarizeBySource(records);
     assert.equal(bySource["root-jpg"].totalProbes, 2);
     assert.equal(bySource["root-jpg"].top1AccuracyPct, 50);
     assert.equal(bySource["root-jpg"].top5AccuracyPct, 100);
-    assert.equal(bySource["root-jpg"].catalogRendition, false);
+    assert.equal(bySource["root-jpg"].enrollmentRelation, "enrolled photo");
     assert.equal(bySource["thumb-192"].detectionRatePct, 50);
-    assert.equal(bySource["thumb-192"].catalogRendition, true);
+    assert.equal(bySource["thumb-192"].enrollmentRelation, "enrolled photo (downscaled)");
   });
 
   test("summarizeByEnrollment keeps never-enrolled identities out of the headline number", () => {

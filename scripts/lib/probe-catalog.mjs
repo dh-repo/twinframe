@@ -6,13 +6,17 @@
  * catalog. The rest do have on-disk renditions — the 192px and 96px WebP
  * thumbnails — and `--probe-sources` can fall back to them.
  *
- * That fallback does not actually buy accuracy coverage, for two reasons, and both
- * are recorded on every probe so a report cannot hide them:
+ * Two facts about this probe set that no report built on it may omit:
  *
- *   1. Thumbnails are the renditions the catalog itself lists for each celebrity
- *      (`path`, `path192`), so they measure a same-image upper bound rather than
- *      held-out recognition. `catalogRendition` marks them.
- *   2. The real ceiling is the gallery, not the probes. The legacy FaceNet-128
+ *   1. Every one of these files is an enrolled image. collectEnrollJobs() in
+ *      scripts/lib/enroll-jobs.mjs takes each identity's primary template from
+ *      `<id>.jpg` when it exists and from a PNG decode of `thumbs/192/<id>.webp`
+ *      otherwise — exactly the two sources here. So Tier 1 measures whether the
+ *      engine recognizes its own enrollment photo: a self-recognition and
+ *      enrollment-integrity check, not accuracy on an unseen photo. Held-out
+ *      accuracy lives in scripts/evaluate-held-out.ts. `enrollmentRelation`
+ *      records which of the two each probe is.
+ *   2. The gallery caps the coverage, not the probe count. The legacy FaceNet-128
  *      gallery this harness scores against (public/celebs/embeddings.json) only
  *      ever enrolled the ids with a root JPG: 265 of its 1000 descriptors are real
  *      face embeddings (pairwise cosine ~0.79, tightly clustered around a shared
@@ -22,10 +26,6 @@
  *      good its photo is: its own "gallery vector" is noise.
  *      classifyGalleryDescriptors() detects that cohort so the harness reports it
  *      as missing enrollment instead of as an accuracy regression.
- *
- * So Tier 1 against this gallery is capped near 265 ids. Scaling honest accuracy
- * toward 1000 needs the product EdgeFace-512 gallery (embeddings.v4.q8.bin, whose
- * 1000 vectors are all real) — that is what scripts/evaluate-held-out.ts scores.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -71,6 +71,24 @@ export function parseProbeSourcesArg(value) {
   return PROBE_SOURCES.filter((s) => requested.includes(s));
 }
 
+/**
+ * How a probe file relates to what was enrolled for that identity. Both answers
+ * mean "the engine has seen this photo"; they differ only in resolution.
+ */
+export function enrollmentRelation(source, hasRootJpg) {
+  switch (source) {
+    case "root-jpg":
+      return "enrolled photo";
+    case "thumb-192":
+    case "thumb-96":
+      return hasRootJpg ? "downscale of the enrolled photo" : "enrolled photo (downscaled)";
+    default: {
+      const exhaustive = source;
+      throw new Error(`Unknown probe source: ${exhaustive}`);
+    }
+  }
+}
+
 /** Candidate probe files for one id, best first, whether or not they exist. */
 export function probeSourceCandidates(id, celebsDir) {
   return [
@@ -108,9 +126,7 @@ export function collectProbeCatalog(index, options) {
 
   for (const entry of index) {
     if (!entry?.id) continue;
-    const galleryRenditions = new Set(
-      [entry.path, entry.path192].filter((p) => typeof p === "string"),
-    );
+    const hasRootJpg = exists(path.join(options.celebsDir, `${entry.id}.jpg`));
     for (const candidate of probeSourceCandidates(entry.id, options.celebsDir)) {
       if (!sources.includes(candidate.source)) continue;
       if (!exists(candidate.filePath)) continue;
@@ -121,7 +137,7 @@ export function collectProbeCatalog(index, options) {
         filePath: candidate.filePath,
         source: candidate.source,
         needsTranscode: candidate.needsTranscode,
-        catalogRendition: galleryRenditions.has(candidate.relPath),
+        enrollmentRelation: enrollmentRelation(candidate.source, hasRootJpg),
         groundTruthId: entry.id,
         baseAge: entry.baseAge ?? entry.ageBuckets?.[1] ?? 40,
         gender: entry.gender ?? "unknown",
@@ -268,8 +284,8 @@ export function countBySource(catalog) {
 }
 
 /**
- * Accuracy per probe source. Records must carry `source` and `catalogRendition`
- * so a reader can tell the held-out-ish cohort from the same-image cohort.
+ * Accuracy per probe source. Records must carry `source` and
+ * `enrollmentRelation` so a reader can see that both cohorts are enrolled images.
  */
 export function summarizeBySource(records) {
   const bySource = {};
@@ -277,7 +293,7 @@ export function summarizeBySource(records) {
     const source = record.source ?? "unknown";
     const bucket = (bySource[source] ??= {
       source,
-      catalogRendition: record.catalogRendition === true,
+      enrollmentRelation: record.enrollmentRelation ?? "unknown",
       totalProbes: 0,
       detectedProbes: 0,
       top1Count: 0,
