@@ -151,6 +151,9 @@ function PersonCard({
         highlighted ? "border-white/30 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]" : "border-white/10",
       )}
       style={highlighted ? { boxShadow: `0 0 32px ${style.glow}` } : undefined}
+      data-friend-card={label}
+      data-match-percent={Math.round(match.matchPercent)}
+      data-verdict={match.verdict ?? ""}
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-white/50">

@@ -5,12 +5,16 @@
  * → friend mode second photo.
  *
  *   node scripts/live-pathway-e2e.mjs \
- *     --image public/celebs/held-out/kate-winslet/001.jpg \
- *     --friend public/celebs/held-out/billie-eilish/004.jpg
+ *     --image fixtures/probes/1000067278.jpeg \
+ *     --friend public/celebs/held-out/kate-winslet/001.jpg
+ *
+ * Defaults to the standing-swing civilian fixture. Kate is person B so
+ * closer-twin is a real contrast, not a second distant neighbor.
  */
 import { mkdirSync, existsSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { chromium } from "playwright";
+import { SWING_FRIEND_PROBE, SWING_PROBE } from "./lib/swing-probe.mjs";
 
 function arg(name, fallback = null) {
   const idx = process.argv.indexOf(`--${name}`);
@@ -20,12 +24,8 @@ function arg(name, fallback = null) {
   return next;
 }
 
-const IMAGE = resolve(
-  arg("image", "public/celebs/held-out/kate-winslet/001.jpg"),
-);
-const FRIEND = resolve(
-  arg("friend", "public/celebs/held-out/billie-eilish/001.jpg"),
-);
+const IMAGE = resolve(arg("image", SWING_PROBE));
+const FRIEND = resolve(arg("friend", SWING_FRIEND_PROBE));
 const PACK_CHIP = String(arg("pack", "Everyone"));
 const BASE = arg("url", "http://127.0.0.1:8080/");
 const OUT = resolve("screenshots/live-pathway");
