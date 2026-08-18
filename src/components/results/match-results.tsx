@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { RotateCcw, AlertTriangle, Filter, Users } from "lucide-react";
+import { RotateCcw, AlertTriangle, Filter } from "lucide-react";
 import type { MatchResult, CelebrityMatch } from "@/lib/face/types";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { MatchRevealCard } from "@/components/results/match-reveal-card";
@@ -13,11 +13,9 @@ interface MatchResultsProps {
   result: MatchResult;
   previewUrl: string | null;
   onReset: () => void;
-  /** Friend mode: after person A, the primary CTA captures person B. */
-  onAddFriend?: () => void;
 }
 
-export function MatchResults({ result, previewUrl, onReset, onAddFriend }: MatchResultsProps) {
+export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps) {
   const [selectedMatch, setSelectedMatch] = useState<CelebrityMatch | null>(null);
   const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">(() => {
     // Distant twins are a nearest neighbor, not a gendered look-alike list.
@@ -223,23 +221,10 @@ export function MatchResults({ result, previewUrl, onReset, onAddFriend }: Match
         engineVersion={result.engineVersion}
       />
 
-      {onAddFriend ? (
-        <div className="mt-4 space-y-2">
-          <Button variant="primary" size="lg" onClick={onAddFriend} className="w-full">
-            <Users className="h-4 w-4" />
-            Add a friend
-          </Button>
-          <Button variant="secondary" size="lg" onClick={onReset} className="w-full">
-            <RotateCcw className="h-4 w-4" />
-            Start over
-          </Button>
-        </div>
-      ) : (
-        <Button variant="primary" size="lg" onClick={onReset} className="w-full mt-4">
-          <RotateCcw className="h-4 w-4" />
-          Try another photo
-        </Button>
-      )}
+      <Button variant="primary" size="lg" onClick={onReset} className="w-full mt-4">
+        <RotateCcw className="h-4 w-4" />
+        Try another photo
+      </Button>
 
       <p className="pb-1 text-center text-[11px] leading-relaxed text-fg-subtle">
         EdgeFace 512-d · SCRFD-2.5G · On-device engine v{result.engineVersion}

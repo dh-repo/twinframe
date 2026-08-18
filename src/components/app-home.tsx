@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Brain, ShieldCheck, Zap, ScanFace, Users } from "lucide-react";
+import { Brain, ShieldCheck, Zap, ScanFace } from "lucide-react";
 import { PhotoUploader } from "@/components/capture/photo-uploader";
 import { WebcamCapture } from "@/components/capture/webcam-capture";
 import { CropReview } from "@/components/capture/crop-review";
@@ -423,31 +423,6 @@ export function AppHome() {
     setPhase("capture");
   }, [clearReview]);
 
-  const addFriend = useCallback(() => {
-    const existing = personARef.current;
-    const blob = existing?.blob ?? lastApprovedBlobRef.current;
-    const snapshot = existing?.result ?? result;
-    if (blob && snapshot && !existing) {
-      replacePerson("a", {
-        blob,
-        selectedBox: lastSelectedBoxRef.current,
-        previewUrl: snapshot.facePreviewUrl || previewUrl || URL.createObjectURL(blob),
-        result: snapshot,
-      });
-    }
-    playModeRef.current = "friend";
-    setPlayMode("friend");
-    friendSlotRef.current = "b";
-    setFriendSlot("b");
-    setPhase("capture");
-    setResult(null);
-    setError(null);
-    setDetectedDetails(null);
-    setPreview(null);
-    setStepIndex(0);
-    setProgress(0);
-  }, [result, previewUrl, replacePerson, setPreview]);
-
   const retryCapture = useCallback(() => {
     setError(null);
     setPhase("capture");
@@ -714,7 +689,6 @@ export function AppHome() {
                 result={result}
                 previewUrl={previewUrl}
                 onReset={reset}
-                onAddFriend={!personB ? addFriend : undefined}
               />
             )}
           </div>
@@ -810,12 +784,6 @@ export function AppHome() {
                   </Button>
                 ) : null}
               </div>
-              {!personB ? (
-                <Button variant="primary" size="md" onClick={addFriend} className="w-full">
-                  <Users className="h-4 w-4" />
-                  {result.matches.length > 0 ? "Add a friend anyway" : "Add a friend"}
-                </Button>
-              ) : null}
               {result.matches.length > 0 ? (
                 <p className="text-center text-[11px] text-white/50">Low-confidence matches may be inaccurate — use for fun only.</p>
               ) : (

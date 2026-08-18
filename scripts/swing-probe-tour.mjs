@@ -3,12 +3,11 @@
  * Recorded Playwright agent for the standing-swing civilian fixture.
  *
  * Click through landing, packs, Photo Library, crop review, match, share,
- * pack rematch, and friend mode. Writes video + screenshots + report.json.
+ * and pack rematch. Writes video + screenshots + report.json.
  *
  *   node scripts/swing-probe-tour.mjs --mode solo
- *   node scripts/swing-probe-tour.mjs --mode friend
  *   node scripts/swing-probe-tour.mjs --mode packs
- *   node scripts/swing-probe-tour.mjs --mode friend-start
+ *   node scripts/swing-probe-tour.mjs --mode landing
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -22,9 +21,7 @@ import {
 } from "./lib/swing-probe.mjs";
 import {
   approveCrop,
-  clickNamedButton,
   cliArg,
-  friendComparePresent,
   launchChromium,
   openAppPage,
   readSettledMatch,
@@ -129,40 +126,8 @@ async function rematchPacks(page, report, { skip = ["Everyone"] } = {}) {
   }
 }
 
-async function addFriendFromResults(page, report) {
-  const addFriend = page.getByRole("button", { name: /^Add a friend/i }).first();
-  if ((await addFriend.count()) === 0) {
-    report.friend = { skipped: "Add a friend button not shown" };
-    return;
-  }
-  const clicked = await clickNamedButton(page, "^Add a friend");
-  if (!clicked) throw new Error("Add a friend button was in the DOM but not clickable");
-  await sleep(400);
-  await enterCrop(page, FRIEND);
-  await shot(page, "friend-crop.png");
-  await approveCrop(page);
-  const friendText = await waitForBody(
-    page,
-    (t) =>
-      friendComparePresent(t) ||
-      /No close look-alike|Photo quality|Retake friend|Friend mode/i.test(t),
-    { timeoutMs: ANALYZE_WAIT_MS, label: "friend-b" },
-  );
-  const cards = page.locator("[data-friend-card]");
-  const you = (await cards.count()) > 0 ? await cards.nth(0).getAttribute("data-match-percent") : null;
-  const friend = (await cards.count()) > 1 ? await cards.nth(1).getAttribute("data-match-percent") : null;
-  await shot(page, "friend.png");
-  report.friend = {
-    closerTwin: friendComparePresent(friendText),
-    qualityBlocked: /No close look-alike|Photo quality/i.test(friendText) && !friendComparePresent(friendText),
-    youPercent: you == null ? null : Number(you),
-    friendPercent: friend == null ? null : Number(friend),
-    excerpt: friendText.slice(0, 800),
-  };
-  if (report.friend.closerTwin) {
-    await openShare(page, report);
-    await shot(page, "friend-share.png");
-  }
+async function addFriendFromResults(_page, report) {
+  report.friend = { skipped: "Friend compare is hidden" };
 }
 
 async function runLandingClicks(page, report) {
@@ -221,7 +186,7 @@ async function main() {
 
     // Click-through of pack chips lives in --mode landing so match tours
     // stay on Everyone (or the requested --pack) instead of the last chip
-    // the landing sweep selected. Friend compare stays behind "Add a friend".
+    // the landing sweep selected. Friend compare is hidden for now.
     if (MODE === "landing") {
       await runLandingClicks(page, report.steps);
       report.ok = true;

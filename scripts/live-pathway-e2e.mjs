@@ -1,20 +1,17 @@
 #!/usr/bin/env node
 /**
  * Drive the REAL app: landing → pack chip → Photo Library upload → crop
- * review → Approve & Match → results (verdict / blurb / share) → pack rematch
- * → friend mode second photo.
+ * review → Approve & Match → results (verdict / blurb / share) → pack rematch.
  *
  *   node scripts/live-pathway-e2e.mjs \
- *     --image fixtures/probes/1000067278.jpeg \
- *     --friend public/celebs/held-out/kate-winslet/001.jpg
+ *     --image fixtures/probes/1000067278.jpeg
  *
- * Defaults to the standing-swing civilian fixture. Kate is person B so
- * closer-twin is a real contrast, not a second distant neighbor.
+ * Defaults to the standing-swing civilian fixture. Friend compare is hidden.
  */
 import { mkdirSync, existsSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { chromium } from "playwright";
-import { SWING_FRIEND_PROBE, SWING_PROBE } from "./lib/swing-probe.mjs";
+import { SWING_PROBE } from "./lib/swing-probe.mjs";
 
 function arg(name, fallback = null) {
   const idx = process.argv.indexOf(`--${name}`);
@@ -25,7 +22,6 @@ function arg(name, fallback = null) {
 }
 
 const IMAGE = resolve(arg("image", SWING_PROBE));
-const FRIEND = resolve(arg("friend", SWING_FRIEND_PROBE));
 const PACK_CHIP = String(arg("pack", "Everyone"));
 const BASE = arg("url", "http://127.0.0.1:8080/");
 const OUT = resolve("screenshots/live-pathway");
@@ -77,11 +73,9 @@ function verdictPresent(text) {
 
 async function main() {
   if (!existsSync(IMAGE)) throw new Error(`Missing --image ${IMAGE}`);
-  if (!existsSync(FRIEND)) throw new Error(`Missing --friend ${FRIEND}`);
 
   const report = {
     image: IMAGE,
-    friend: FRIEND,
     url: BASE,
     steps: {},
   };
@@ -192,35 +186,7 @@ async function main() {
     await page.locator("[role='dialog']").waitFor({ state: "hidden", timeout: 2000 }).catch(() => {});
   }
 
-  // Friend from the first good match (solo results now expose Add a friend).
-  const addFriend = page.getByRole("button", { name: /^Add a friend/i }).first();
-  if ((await addFriend.count()) > 0) {
-    const clicked = await page.evaluate(() => {
-      const btn = [...document.querySelectorAll("button")].find((el) =>
-        /^Add a friend/i.test((el.textContent || "").trim()),
-      );
-      if (!btn) return false;
-      btn.scrollIntoView({ block: "center", inline: "nearest" });
-      btn.click();
-      return true;
-    });
-    if (!clicked) throw new Error("Add a friend button was in the DOM but not clickable");
-    await sleep(400);
-    await uploadPhoto(page, FRIEND);
-    await approveCrop(page);
-    const friendText = await waitForBody(
-      page,
-      (t) => /Friend mode/i.test(t) && /Closer twin:|Tied Twins|It's a tie/i.test(t),
-      { timeoutMs: ANALYZE_WAIT_MS, label: "friend-b" },
-    );
-    await page.screenshot({ path: join(OUT, "06-friend.png"), fullPage: true });
-    report.steps.friend = {
-      closerTwin: /Closer twin|CLOSER TWIN/i.test(friendText),
-      excerpt: friendText.slice(0, 800),
-    };
-  } else {
-    report.steps.friend = { skipped: "Add a friend button not shown" };
-  }
+  report.steps.friend = { skipped: "Friend compare is hidden" };
 
   // Pack rematch without recapture (open-set refuse on a mismatched pack).
   const athletes = page.getByRole("button", { name: "Athletes" });
