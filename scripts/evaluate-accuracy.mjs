@@ -25,6 +25,16 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { performance } from "node:perf_hooks";
+import {
+  DEFAULT_PROBE_SOURCES,
+  classifyGalleryDescriptors,
+  collectProbeCatalog,
+  countBySource,
+  parseProbeSourcesArg,
+  sampleProbes,
+  summarizeByEnrollment,
+  summarizeBySource,
+} from "./lib/probe-catalog.mjs";
 
 // Bootstrap Node environment compatibility for @vladmandic/face-api
 Object.defineProperty(Object.prototype, "TextEncoder", {
@@ -82,7 +92,9 @@ function parseArgs() {
   const options = {
     tier: "all", // "1", "2", "3", "all"
     limit: null, // number of probes per tier, or null for all
+    sample: "spread", // how --limit picks its subset: "spread" or "first"
     tier2Count: 40, // number of Tier 2 perturbed probes
+    probeSources: [...DEFAULT_PROBE_SOURCES], // on-disk renditions eligible as probes
     concurrency: Math.min(8, Math.max(2, Math.floor(NUM_CORES / 4))), // Parallel workers for Mac Studio
     json: null, // output path for JSON metrics
     markdown: null, // output path for Markdown report
@@ -107,6 +119,13 @@ function parseArgs() {
         process.exit(1);
       }
       options.limit = val;
+    } else if (arg === "--sample" && i + 1 < args.length) {
+      const val = args[++i].toLowerCase();
+      if (!["spread", "first"].includes(val)) {
+        console.error(`[Error] Invalid --sample value: "${val}". Must be spread or first.`);
+        process.exit(1);
+      }
+      options.sample = val;
     } else if (arg === "--concurrency" && i + 1 < args.length) {
       const val = parseInt(args[++i], 10);
       if (isNaN(val) || val <= 0) {
@@ -121,6 +140,13 @@ function parseArgs() {
         process.exit(1);
       }
       options.tier2Count = val;
+    } else if (arg === "--probe-sources" && i + 1 < args.length) {
+      try {
+        options.probeSources = parseProbeSourcesArg(args[++i]);
+      } catch (err) {
+        console.error(`[Error] ${err.message}`);
+        process.exit(1);
+      }
     } else if (arg === "--json" || arg === "--save") {
       if (i + 1 < args.length && !args[i + 1].startsWith("--")) {
         options.json = args[++i];
@@ -161,6 +187,19 @@ Usage:
 Options:
   --tier <1|2|3|all>     Select evaluation tier to run (default: all)
   --limit <N>            Limit number of probes evaluated per tier (for quick checks)
+  --sample <spread|first> How --limit picks its N probes (default: spread).
+                         "spread" walks the id-sorted catalog with an even stride so a
+                         limited run is not just the alphabetical head; "first" takes
+                         the leading N, which is what --limit used to do.
+  --probe-sources <s>    Probe renditions to use: root | thumbs | all (default: root),
+                         or a comma list of root-jpg,thumb-192,thumb-96.
+                         "root" is the 271 ids that ship a full-size portrait.
+                         Thumbnail probes are the catalog's own gallery renditions,
+                         so they measure a same-image upper bound rather than held-out
+                         accuracy — and for ids with no root JPG they mismatch their
+                         own gallery vector outright. See the per-rendition breakdown
+                         in the report, and scripts/evaluate-held-out.ts for the
+                         honest held-out number.
   --tier2-count <N>      Number of perturbed probes for Tier 2 (default: 40)
   --json [path]          Export metrics to JSON file (default: reports/accuracy-benchmark.json)
   --markdown [path]      Export metrics to Markdown file (default: reports/accuracy-benchmark.md)
@@ -276,7 +315,7 @@ function computeStats(values) {
 // ==========================================
 // Gallery & Catalog Loader
 // ==========================================
-async function loadGalleryAndProbes() {
+async function loadGalleryAndProbes(options = {}) {
   if (!fs.existsSync(INDEX_PATH)) {
     throw new Error(`index.json not found at ${INDEX_PATH}`);
   }
@@ -309,39 +348,43 @@ async function loadGalleryAndProbes() {
     throw new Error("No celebrity gallery file found in public/celebs/");
   }
 
-  // Discover ground truth probe images
-  const files = fs.readdirSync(CELEBS_DIR);
-  const probeCatalog = [];
+  // A probe whose own gallery entry is a random filler vector cannot rank its
+  // identity above chance, so tag those ids rather than let them read as misses.
+  const enrollment = classifyGalleryDescriptors(gallery.map((c) => c.descriptor));
+  const unenrolledIds = new Set(gallery.filter((c, i) => !enrollment.enrolled[i]).map((c) => c.id));
 
-  for (const f of files) {
-    if (!f.endsWith(".jpg") || f === "sample_user.jpg") continue;
-    const celebId = f.replace(/\.jpg$/, "");
-    if (indexMap.has(celebId)) {
-      const info = indexMap.get(celebId);
-      probeCatalog.push({
-        id: celebId,
-        name: info.name,
-        filename: f,
-        filePath: path.resolve(CELEBS_DIR, f),
-        groundTruthId: celebId,
-        baseAge: info.baseAge ?? info.ageBuckets?.[1] ?? 40,
-        gender: info.gender ?? "unknown",
-      });
-    }
-  }
-
-  probeCatalog.sort((a, b) => a.id.localeCompare(b.id));
+  // Discover ground-truth probe images: full-size portrait per id where one
+  // exists, otherwise the on-disk thumbnail renditions so Tier 1 can cover the
+  // whole catalog rather than the 271 ids that happen to ship a root JPG.
+  const probeCatalog = collectProbeCatalog(index, {
+    celebsDir: CELEBS_DIR,
+    sources: options.probeSources ?? DEFAULT_PROBE_SOURCES,
+  })
+    .filter((probe) => indexMap.has(probe.id) && probe.id !== "sample_user")
+    .map((probe) => ({ ...probe, groundTruthEnrolled: !unenrolledIds.has(probe.groundTruthId) }));
 
   return {
     index,
     gallery,
     probeCatalog,
+    probeSourceCounts: countBySource(probeCatalog),
+    galleryEnrollment: {
+      realVectors: gallery.length - enrollment.syntheticCount,
+      syntheticVectors: enrollment.syntheticCount,
+      alignmentSplitAt: enrollment.splitAt,
+    },
   };
 }
 
 // ==========================================
 // Face Detection & Pipeline Runner
 // ==========================================
+/** node-canvas cannot decode WebP thumbnails; hand it a PNG buffer instead. */
+async function probeInput(probe) {
+  if (!probe.needsTranscode) return probe.filePath;
+  return await sharp(probe.filePath).png().toBuffer();
+}
+
 async function initFaceApi() {
   const tf = faceapi.tf;
   await tf.setBackend("cpu");
@@ -553,9 +596,38 @@ async function runBenchmark(options) {
   if (!options.quiet) console.log("DONE");
 
   if (!options.quiet) process.stdout.write("  [2/4] Loading celebrity gallery and cataloging ground-truth probes... ");
-  const { gallery, probeCatalog } = await loadGalleryAndProbes();
+  const { gallery, probeCatalog, probeSourceCounts, galleryEnrollment } = await loadGalleryAndProbes(options);
   if (!options.quiet) {
-    console.log(`DONE (${gallery.length} enrolled gallery, ${probeCatalog.length} ground-truth portraits)`);
+    const mix = Object.entries(probeSourceCounts)
+      .filter(([, n]) => n > 0)
+      .map(([source, n]) => `${source}=${n}`)
+      .join(" ");
+    console.log(`DONE (${gallery.length} gallery vectors, ${probeCatalog.length} ground-truth probes: ${mix})`);
+    if (galleryEnrollment.syntheticVectors > 0) {
+      const unenrolledProbes = probeCatalog.filter((p) => !p.groundTruthEnrolled).length;
+      console.log(
+        `  Warning: ${galleryEnrollment.syntheticVectors} of ${gallery.length} vectors in ${path.basename(EMBEDDINGS_JSON_PATH)} are random filler, not face embeddings ` +
+          `(alignment split at ${galleryEnrollment.alignmentSplitAt.toFixed(2)}). Those identities were never enrolled, so a probe for one cannot rank itself above chance.`,
+      );
+      if (unenrolledProbes > 0) {
+        console.log(
+          `  Warning: ${unenrolledProbes} of ${probeCatalog.length} probes belong to those unenrolled identities and are reported as a separate cohort below.`,
+        );
+      }
+    }
+    const thumbProbes = probeSourceCounts["thumb-192"] + probeSourceCounts["thumb-96"];
+    if (thumbProbes > 0) {
+      console.log(
+        "  Note: thumbnail probes are the catalog's own gallery renditions - a same-image upper bound, not held-out accuracy.",
+      );
+    }
+    if (!options.limit) {
+      const perProbeSec = 24;
+      const etaMin = Math.round((probeCatalog.length * perProbeSec) / Math.max(1, options.concurrency) / 60);
+      console.log(
+        `  Note: detection runs ~${perProbeSec}s/probe on CPU here, so this pass is ~${etaMin} min. Use --limit N for a quick check.`,
+      );
+    }
   }
 
   const runTier1 = options.tier === "1" || options.tier === "all";
@@ -563,25 +635,20 @@ async function runBenchmark(options) {
   const runTier3 = options.tier === "3" || options.tier === "all";
 
   // Tier 1 probes: Clean frontal
-  let tier1Probes = probeCatalog;
-  if (options.limit && options.limit > 0) {
-    tier1Probes = tier1Probes.slice(0, options.limit);
-  }
+  const tier1Probes = sampleProbes(probeCatalog, options.limit, options.sample);
 
   // Tier 3 standalone probes: Probe catalog
-  let tier3Probes = probeCatalog;
-  if (options.limit && options.limit > 0) {
-    tier3Probes = tier3Probes.slice(0, options.limit);
-  }
+  const tier3Probes = sampleProbes(probeCatalog, options.limit, options.sample);
 
   // Tier 2 probes: Perturbed set
   let tier2Probes = [];
   if (runTier2) {
     const tier2TargetCount = options.limit ?? options.tier2Count ?? 40;
+    const tier2Bases = sampleProbes(probeCatalog, tier2TargetCount, options.sample);
     let pIdx = 0;
     let tIdx = 0;
-    while (tier2Probes.length < tier2TargetCount && pIdx < probeCatalog.length) {
-      const baseProbe = probeCatalog[pIdx];
+    while (tier2Probes.length < tier2TargetCount && pIdx < tier2Bases.length) {
+      const baseProbe = tier2Bases[pIdx];
       const transform = TIER2_TRANSFORMS[tIdx % TIER2_TRANSFORMS.length];
       tier2Probes.push({
         baseProbe,
@@ -601,6 +668,13 @@ async function runBenchmark(options) {
       nodeVersion: process.version,
       gallerySize: gallery.length,
       groundTruthCatalogSize: probeCatalog.length,
+      probeSources: options.probeSources,
+      probeSourceCounts,
+      probeSourceNote:
+        "thumb-192 / thumb-96 probes are the catalog's own gallery renditions, so their accuracy is a same-image upper bound. Held-out accuracy lives in reports/held-out-accuracy.md.",
+      galleryEnrollment,
+      galleryEnrollmentNote:
+        "embeddings.json holds real FaceNet-128 descriptors only for the ids that ship a root JPG; the rest are random filler vectors. Probes for those identities are reported as the unenrolled cohort, not as misses.",
       options,
     },
     tier1: null,
@@ -620,7 +694,7 @@ async function runBenchmark(options) {
 
     let processed = 0;
     const tier1Records = await mapConcurrent(tier1Probes, options.concurrency, async (probe) => {
-      const res = await processFaceProbe(probe.filePath, gallery);
+      const res = await processFaceProbe(await probeInput(probe), gallery);
       processed++;
 
       if (!res.detected) {
@@ -628,6 +702,9 @@ async function runBenchmark(options) {
           probeId: probe.id,
           name: probe.name,
           groundTruthId: probe.groundTruthId,
+          source: probe.source,
+          catalogRendition: probe.catalogRendition,
+          groundTruthEnrolled: probe.groundTruthEnrolled,
           detected: false,
           rank: -1,
           isTop1: false,
@@ -661,6 +738,9 @@ async function runBenchmark(options) {
         probeId: probe.id,
         name: probe.name,
         groundTruthId: probe.groundTruthId,
+        source: probe.source,
+        catalogRendition: probe.catalogRendition,
+        groundTruthEnrolled: probe.groundTruthEnrolled,
         detected: true,
         rank: targetRank,
         isTop1,
@@ -718,6 +798,8 @@ async function runBenchmark(options) {
       cosineMarginStats: marginStats,
       sTrueStats,
       sDistractorStats,
+      bySource: summarizeBySource(tier1Records),
+      byEnrollment: summarizeByEnrollment(tier1Records),
       records: tier1Records,
     };
   }
@@ -865,7 +947,7 @@ async function runBenchmark(options) {
       let processed = 0;
 
       for (const probe of tier3Probes) {
-        const res = await processFaceProbe(probe.filePath, gallery);
+        const res = await processFaceProbe(await probeInput(probe), gallery);
         processed++;
 
         if (!res.detected) {
@@ -873,6 +955,9 @@ async function runBenchmark(options) {
             probeId: probe.id,
             name: probe.name,
             groundTruthId: probe.groundTruthId,
+            source: probe.source,
+            catalogRendition: probe.catalogRendition,
+            groundTruthEnrolled: probe.groundTruthEnrolled,
             detected: false,
             rank: -1,
             isTop1: false,
@@ -907,6 +992,9 @@ async function runBenchmark(options) {
           probeId: probe.id,
           name: probe.name,
           groundTruthId: probe.groundTruthId,
+          source: probe.source,
+          catalogRendition: probe.catalogRendition,
+          groundTruthEnrolled: probe.groundTruthEnrolled,
           detected: true,
           rank: targetRank,
           isTop1,
@@ -1114,6 +1202,50 @@ function printBenchmarkSummary(results) {
 
   console.log(formatTable(tierHeaders, tierRows, ["left", "right", "right", "right", "right", "right", "right"]));
 
+  // Table 1b: Tier 1 accuracy per probe rendition (same-image vs distinct file)
+  if (results.tier1?.bySource) {
+    const sourceRows = Object.values(results.tier1.bySource).map((bucket) => [
+      bucket.source,
+      bucket.catalogRendition ? "catalog's own rendition" : "distinct file",
+      bucket.totalProbes.toString(),
+      `${bucket.detectionRatePct.toFixed(1)}%`,
+      `${bucket.top1AccuracyPct.toFixed(1)}%`,
+      `${bucket.top5AccuracyPct.toFixed(1)}%`,
+    ]);
+    if (sourceRows.length > 0) {
+      console.log("\n--- Tier 1 by probe rendition ---");
+      console.log(
+        formatTable(
+          ["Probe Source", "Relation to Catalog", "Probes", "Detect Rate", "Top-1 Acc", "Top-5 Acc"],
+          sourceRows,
+          ["left", "left", "right", "right", "right", "right"],
+        ),
+      );
+    }
+  }
+
+  // Table 1c: enrolled vs never-enrolled identities
+  const byEnrollment = results.tier1?.byEnrollment;
+  if (byEnrollment?.unenrolled) {
+    console.log("\n--- Tier 1 by gallery enrollment (unenrolled ids have random filler vectors) ---");
+    console.log(
+      formatTable(
+        ["Cohort", "Probes", "Detect Rate", "Top-1 Acc", "Top-5 Acc"],
+        Object.values(byEnrollment).map((bucket) => [
+          bucket.cohort === "enrolled" ? "identity enrolled" : "identity NEVER enrolled",
+          bucket.totalProbes.toString(),
+          `${bucket.detectionRatePct.toFixed(1)}%`,
+          `${bucket.top1AccuracyPct.toFixed(1)}%`,
+          `${bucket.top5AccuracyPct.toFixed(1)}%`,
+        ]),
+        ["left", "right", "right", "right", "right"],
+      ),
+    );
+    console.log(
+      "  • The unenrolled cohort measures missing gallery data, not recognition quality. Quote the enrolled row.",
+    );
+  }
+
   // Table 2: Cosine Similarity Margin Distribution (Tier 3)
   if (results.tier3Margins) {
     console.log("\n--- Tier 3: Cosine Similarity Margin Distribution (Δs = s_true - max_{j != true} s_j) ---");
@@ -1239,7 +1371,7 @@ function generateMarkdownReport(results) {
 **Generated**: ${results.metadata.timestamp}  
 **Platform**: ${results.metadata.platform} (Node.js ${results.metadata.nodeVersion})  
 **Enrolled Gallery**: ${results.metadata.gallerySize} celebrities  
-**Ground-Truth Catalog**: ${results.metadata.groundTruthCatalogSize} high-resolution portraits  
+**Ground-Truth Catalog**: ${results.metadata.groundTruthCatalogSize} probes (${Object.entries(results.metadata.probeSourceCounts ?? {}).filter(([, n]) => n > 0).map(([source, n]) => `${source}: ${n}`).join(", ")})  
 
 ---
 
@@ -1265,6 +1397,55 @@ function generateMarkdownReport(results) {
   }
   if (ov) {
     md += `| **Overall Combined** | ${ov.totalEvaluated} | ${ov.detectionRatePct.toFixed(1)}% | **${ov.top1AccuracyPct.toFixed(1)}%** | **${ov.top5AccuracyPct.toFixed(1)}%** | ${ov.mrr.toFixed(4)} | ${t3 ? t3.positiveMarginPct.toFixed(1) + "%" : "N/A"} |\n`;
+  }
+
+  if (t1?.bySource && Object.keys(t1.bySource).length > 0) {
+    md += `
+---
+
+## 1b. Tier 1 by probe rendition
+
+Only 271 of the 1000 catalog ids ship a full-size portrait at \`public/celebs/<id>.jpg\`.
+\`--probe-sources all\` falls back to the on-disk 192px/96px thumbnails for the rest, but
+those are the renditions the catalog already lists for each celebrity, so they measure a
+same-image upper bound rather than held-out recognition. Root JPGs stay the default.
+For held-out accuracy see \`reports/held-out-accuracy.md\`.
+
+| Probe Source | Relation to Catalog | Probes | Detection Rate | Top-1 | Top-5 |
+| :--- | :--- | ---: | ---: | ---: | ---: |
+`;
+    for (const bucket of Object.values(t1.bySource)) {
+      md += `| ${bucket.source} | ${bucket.catalogRendition ? "catalog's own rendition" : "distinct file"} | ${bucket.totalProbes} | ${bucket.detectionRatePct.toFixed(1)}% | **${bucket.top1AccuracyPct.toFixed(1)}%** | ${bucket.top5AccuracyPct.toFixed(1)}% |\n`;
+    }
+  }
+
+  const enrollment = results.metadata.galleryEnrollment;
+  if (t1?.byEnrollment?.unenrolled) {
+    md += `
+---
+
+## 1c. Tier 1 by gallery enrollment
+
+Growing the probe set cannot grow Tier 1 past the gallery it scores against. This harness
+scores the legacy FaceNet-128 gallery \`public/celebs/embeddings.json\`, and only
+${enrollment.realVectors} of its ${results.metadata.gallerySize} descriptors are real face
+embeddings: they cluster tightly around a shared mean direction (alignment 0.82-0.95, as
+FaceNet descriptors do), while the other ${enrollment.syntheticVectors} are random unit
+vectors with alignment in ±0.31 and pairwise cosine ~0.00. Those identities were never
+enrolled, so their probes rank the true identity in the hundreds no matter how clean the
+photo is. They measure missing data, not recognition quality.
+
+| Cohort | Probes | Detection Rate | Top-1 | Top-5 |
+| :--- | ---: | ---: | ---: | ---: |
+`;
+    for (const bucket of Object.values(t1.byEnrollment)) {
+      md += `| ${bucket.cohort === "enrolled" ? "identity enrolled" : "identity **never enrolled**"} | ${bucket.totalProbes} | ${bucket.detectionRatePct.toFixed(1)}% | **${bucket.top1AccuracyPct.toFixed(1)}%** | ${bucket.top5AccuracyPct.toFixed(1)}% |\n`;
+    }
+    md += `
+Quote the enrolled row. Scaling honest accuracy toward all 1000 identities needs the
+product EdgeFace-512 gallery (\`embeddings.v4.q8.bin\`, whose 1000 vectors are all real) —
+\`scripts/evaluate-held-out.ts\` is the harness that scores it.
+`;
   }
 
   if (t3) {
