@@ -220,8 +220,18 @@ export function FriendShareModal({
               {closerTwinStamp(winner)}
             </div>
 
-            <p className="mt-4 text-xs leading-snug text-white/70">{winnerBanner(winner)}</p>
-            <p className="mt-1 truncate text-sm font-semibold text-white">{headline}</p>
+            {headline.startsWith("Closer twin:") ? null : (
+              <p className="mt-4 text-xs leading-snug text-white/70">{winnerBanner(winner)}</p>
+            )}
+            <p
+              className={
+                headline.startsWith("Closer twin:")
+                  ? "mt-4 truncate text-sm font-semibold text-white"
+                  : "mt-1 truncate text-sm font-semibold text-white"
+              }
+            >
+              {headline}
+            </p>
             <p className="mt-2 font-mono text-[8px] tracking-wider text-white/45">
               MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS
             </p>
