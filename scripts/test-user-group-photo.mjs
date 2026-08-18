@@ -47,9 +47,13 @@ async function runUserPhotoTest() {
       text.includes("TOP CELEBRITY MATCH") ||
       text.includes("Top Celebrity Match") ||
       text.includes("TOP DOPPELGÄNGER MATCH") ||
+      text.includes("STRONG VISUAL RESEMBLANCE") ||
+      text.includes("CLOSEST AVAILABLE MATCH") ||
+      text.includes("POSSIBLE LOOK-ALIKE") ||
       text.includes("DOPPELGÄNGER MATCH") ||
       text.includes("Match Results") ||
       text.includes("SIMILARITY") ||
+      text.includes("NEAREST") ||
       text.includes("Match Found!")
     ) {
       console.log(`Phase finished at iteration ${i}!`);

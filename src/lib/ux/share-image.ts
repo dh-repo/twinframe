@@ -1,3 +1,4 @@
+import type { AttributeConflict } from "../face/lookalike-policy.ts";
 import { honestyBand, honestyShareLabel } from "./honesty";
 
 export interface ShareImageInput {
@@ -5,6 +6,8 @@ export interface ShareImageInput {
   celebrityName: string;
   celebrityPhotoUrl?: string | null;
   matchPercent: number;
+  rankMargin?: number;
+  attributeConflict?: AttributeConflict;
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -88,7 +91,7 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas unavailable");
 
-  const band = honestyBand(input.matchPercent);
+  const band = honestyBand(input.matchPercent, input.rankMargin, input.attributeConflict);
   const pct = Math.round(input.matchPercent);
 
   ctx.fillStyle = "#090a0f";

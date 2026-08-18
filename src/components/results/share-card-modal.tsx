@@ -4,7 +4,7 @@ import type { CelebrityMatch } from "@/lib/face/types";
 import { Button } from "@/components/ui/button";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
-import { shareText } from "@/lib/ux/honesty";
+import { honestyBand, honestyShareLabel, shareText } from "@/lib/ux/honesty";
 
 export interface ShareCardModalProps {
   open: boolean;
@@ -58,7 +58,12 @@ export function ShareCardModal({
 
       ctx.fillStyle = "#818cf8";
       ctx.font = "600 22px monospace";
-      ctx.fillText("CELEBRITY DOPPELGÄNGER MATCH", width / 2, 130);
+      const band = honestyBand(
+        topMatch.matchPercent,
+        topMatch.rankMargin,
+        topMatch.attributeConflict,
+      );
+      ctx.fillText(honestyShareLabel(band).toUpperCase(), width / 2, 130);
 
       // Load Images
       const loadImg = (src: string) =>
@@ -150,7 +155,12 @@ export function ShareCardModal({
       const sharePayload: ShareData = {
         files: [file],
         title: "My Twinframe match",
-        text: shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin),
+        text: shareText(
+          topMatch.name,
+          topMatch.matchPercent,
+          topMatch.rankMargin,
+          topMatch.attributeConflict,
+        ),
       };
       if (typeof nav.share === "function" && nav.canShare?.(sharePayload)) {
         await nav.share(sharePayload);
@@ -171,7 +181,12 @@ export function ShareCardModal({
   const handleShare = async () => {
     const shareData = {
       title: "My Twinframe Celebrity Match",
-      text: shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin),
+      text: shareText(
+        topMatch.name,
+        topMatch.matchPercent,
+        topMatch.rankMargin,
+        topMatch.attributeConflict,
+      ),
       url: window.location.href,
     };
 
@@ -183,7 +198,7 @@ export function ShareCardModal({
       }
     } else {
       await navigator.clipboard.writeText(
-        `${shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin)} Find your twin at ${window.location.href}`
+        `${shareText(topMatch.name, topMatch.matchPercent, topMatch.rankMargin, topMatch.attributeConflict)} Find your twin at ${window.location.href}`
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -208,7 +223,7 @@ export function ShareCardModal({
               <Sparkles className="h-4 w-4" />
             </div>
             <h3 className="text-base font-bold tracking-tight text-white">
-              Share Your Doppelgänger
+              Share Your Match
             </h3>
           </div>
           <button

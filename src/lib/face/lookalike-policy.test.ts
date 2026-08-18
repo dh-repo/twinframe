@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  attributeConflictLevel,
   distanceLookalikeGate,
   hardQualityRefuseGate,
   LOOKALIKE_MAX_ADJUSTED_DISTANCE,
@@ -53,6 +54,51 @@ describe("lookalike-policy gates", () => {
         issues: ["Slightly blurry"],
       }).pass,
       false,
+    );
+  });
+
+  it("attributeConflictLevel is honesty-only and never infers from unknown gender", () => {
+    assert.equal(
+      attributeConflictLevel(
+        { gender: "unknown", genderProbability: 0.99, age: 35 },
+        { gender: "male", age: 30 },
+      ),
+      "none",
+    );
+    assert.equal(
+      attributeConflictLevel(
+        { gender: "unknown", genderProbability: 0.99, age: 70 },
+        { gender: "male", age: 30 },
+      ),
+      "partial",
+    );
+    assert.equal(
+      attributeConflictLevel(
+        { gender: "female", genderProbability: 0.9, age: 70 },
+        { gender: "male", age: 30 },
+      ),
+      "strong",
+    );
+    assert.equal(
+      attributeConflictLevel(
+        { gender: "female", genderProbability: 0.9, age: 70 },
+        { gender: "male", age: 55 },
+      ),
+      "partial",
+    );
+    assert.equal(
+      attributeConflictLevel(
+        { gender: "female", genderProbability: 0.5, age: 35 },
+        { gender: "male", age: 34 },
+      ),
+      "none",
+    );
+    assert.equal(
+      attributeConflictLevel(
+        { gender: "female", genderProbability: 0.9, age: 34 },
+        { gender: "female", age: 36 },
+      ),
+      "none",
     );
   });
 

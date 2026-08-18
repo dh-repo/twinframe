@@ -6,6 +6,8 @@ import {
   detectAndDescribe,
   detectAndDescribeWithTTA,
   prefetchFaceApi,
+  prefetchAgeGenderNet,
+  estimateAgeGenderFromCanvas,
   assessDetectionQuality,
   logFaceTelemetry,
   type FaceDetectionResult,
@@ -18,6 +20,7 @@ import { extractEdgeFaceEmbedding } from "./edgeface.ts";
 import { computeBiohash } from "./biohash.ts";
 import { detectionFromAccuFace, pipelineLog, sourceDimensions, unpadScrfdDetections } from "./accuface-detection.ts";
 import {
+  GENDER_CONFLICT_MIN_PROB,
   hardQualityRefuseGate,
   poseRefuseGate,
 } from "./lookalike-policy.ts";
@@ -33,6 +36,7 @@ export type PipelineStatus =
 export function prefetchModel(): void {
   if (typeof window === "undefined") return;
   prefetchFaceApi();
+  prefetchAgeGenderNet();
   prefetchEmbeddings();
 }
 
@@ -102,6 +106,7 @@ export async function analyzeFaceSource(
   pipelineLog("start");
 
   onProgress?.(0, 12);
+  prefetchAgeGenderNet();
   const galleryPromise = loadCelebrityEmbeddings();
 
   onProgress?.(1, 28);
@@ -300,10 +305,39 @@ export async function analyzeFaceSource(
     }
   }
 
+  // Age/gender net only — never SSD/FaceNet. Soft priors for honesty copy.
+  const needAgeGender =
+    Boolean(det?.faceCanvas) &&
+    typeof window !== "undefined" &&
+    (det!.gender === "unknown" || !Number.isFinite(det!.age));
+  const ageGenderPromise = needAgeGender
+    ? estimateAgeGenderFromCanvas(det!.faceCanvas)
+    : Promise.resolve(null);
+
   onProgress?.(3, 84);
   pipelineLog("gallery:wait");
   const gallery = await galleryPromise;
   pipelineLog("gallery:ready", { n: gallery.length });
+
+  if (needAgeGender) {
+    pipelineLog("ageGender:start");
+    const tAg = performance.now();
+    const ag = await ageGenderPromise;
+    pipelineLog("ageGender:done", {
+      ms: Math.round(performance.now() - tAg),
+      age: ag?.age ?? null,
+      gender: ag?.gender ?? null,
+      p: ag?.genderProbability ?? null,
+    });
+    if (det && ag) {
+      if (Number.isFinite(ag.age)) det.age = ag.age;
+      // Low-confidence gender is worse than unknown (it hard-steers ranking).
+      if (ag.genderProbability >= GENDER_CONFLICT_MIN_PROB) {
+        det.gender = ag.gender;
+        det.genderProbability = ag.genderProbability;
+      }
+    }
+  }
 
   onProgress?.(3, 92);
 

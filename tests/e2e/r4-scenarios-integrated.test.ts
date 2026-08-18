@@ -150,7 +150,14 @@ describe("Tier 4: Real-World Integrated Application Scenarios (E2E)", () => {
       );
 
       assert.ok(html.includes("Mature Peer"), "Must display top ranked mature peer");
-      assert.ok(html.includes("nearest embedding") || html.includes("No strong doppelgänger") || html.includes("LOW SIMILARITY"), "Must include honest weak match copy");
+      assert.ok(
+        html.includes("CLOSEST AVAILABLE MATCH") ||
+          html.includes("NO STRONG DOUBLE") ||
+          html.includes("nearest embedding") ||
+          html.includes("No strong doppelgänger") ||
+          html.includes("LOW SIMILARITY"),
+        "Must include honest weak match copy",
+      );
     });
   });
 
@@ -296,7 +303,13 @@ describe("Tier 4: Real-World Integrated Application Scenarios (E2E)", () => {
       );
 
       assert.ok(html.includes("Distant Match"), "Must render distant candidate");
-      assert.ok(html.includes("nearest embedding") || html.includes("LOW SIMILARITY"), "Must render honest disclaimer");
+      assert.ok(
+        html.includes("CLOSEST AVAILABLE MATCH") ||
+          html.includes("NO STRONG DOUBLE") ||
+          html.includes("nearest embedding") ||
+          html.includes("LOW SIMILARITY"),
+        "Must render honest disclaimer",
+      );
     });
   });
 

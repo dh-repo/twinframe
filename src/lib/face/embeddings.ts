@@ -495,15 +495,16 @@ export function genderAffinity(
   if (userGender === celeb.gender) return 1;
   const rawProb = typeof userProb === "number" && Number.isFinite(userProb) ? userProb : 0.9;
   const prob = Math.max(0, Math.min(1, rawProb));
-  return Math.max(0.75, Math.min(1, 1 - 0.22 * prob));
+  // Soft mismatch penalty (not a hard gate). 0.45 * prob, floor 0.50.
+  return Math.max(0.5, Math.min(1, 1 - 0.45 * prob));
 }
 
-/** Continuous Gaussian age affinity: ageAffinity(userAge, celebAge) = Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2)) */
+/** Continuous Gaussian age affinity: exp(-((|user-celeb|)/20)^2) */
 export function ageAffinity(userAge: number | undefined, celebAge: number | undefined): number {
   if (typeof userAge !== "number" || !Number.isFinite(userAge) || typeof celebAge !== "number" || !Number.isFinite(celebAge)) {
     return 1;
   }
-  return Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 28, 2));
+  return Math.exp(-Math.pow(Math.abs(userAge - celebAge) / 20, 2));
 }
 
 /**

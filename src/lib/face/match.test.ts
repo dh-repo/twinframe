@@ -101,7 +101,7 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
   it("computes continuous Gaussian age affinity smoothly", () => {
     assert.equal(ageAffinity(25, 25), 1.0);
     const a10 = ageAffinity(25, 35);
-    const expected10 = Math.exp(-Math.pow(10 / 28, 2));
+    const expected10 = Math.exp(-Math.pow(10 / 20, 2));
     assert.ok(Math.abs(a10 - expected10) < 1e-6);
 
     // Strict monotonicity with increasing age delta
@@ -126,7 +126,8 @@ describe("Continuous Gaussian Age & Gender Affinity", () => {
 
     assert.ok(g1 >= g2);
     assert.ok(g2 >= g3);
-    assert.ok(g3 >= 0.75 && g3 <= 1.0);
+    assert.ok(g3 >= 0.5 && g3 <= 1.0);
+    assert.ok(Math.abs(g3 - (1 - 0.45 * 0.95)) < 1e-9);
   });
 });
 
@@ -409,6 +410,11 @@ describe("Demographic Prior Softening & Uncertainty Scaling (R3 Recalibration)",
     assert.ok(
       matches[0]!.matchPercent > matches[1]!.matchPercent,
       "True visual match percent must be higher than distractor",
+    );
+    assert.equal(
+      matches[0]?.attributeConflict,
+      "strong",
+      "Cross-gender + large age gap must be flagged for honesty, not dropped from #1",
     );
   });
 

@@ -68,7 +68,7 @@ while (Date.now() - t0 < MAX_MS) {
   } else {
     stuckAt88Since = 0;
   }
-  if (/TOP DOPPELGÄNGER|NEAREST GALLERY|POSSIBLE LOOK-ALIKE|No close look-alike|quality too low|not suitable|timed out|Couldn't analyze/i.test(text)) {
+  if (/TOP DOPPELGÄNGER|STRONG VISUAL RESEMBLANCE|CLOSEST AVAILABLE MATCH|NEAREST GALLERY|POSSIBLE LOOK-ALIKE|NO STRONG DOUBLE|No close look-alike|quality too low|not suitable|timed out|Couldn't analyze/i.test(text)) {
     terminal = text.split("\n").slice(0, 12).join(" | ");
     console.log(`TERMINAL t=${elapsed}s :: ${terminal}`);
     break;

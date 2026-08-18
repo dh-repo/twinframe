@@ -35,21 +35,31 @@ export function MatchRevealCard({
     return () => clearTimeout(timer);
   }, []);
 
-  const band = honestyBand(topMatch.matchPercent, topMatch.rankMargin);
+  const band = honestyBand(
+    topMatch.matchPercent,
+    topMatch.rankMargin,
+    topMatch.attributeConflict,
+  );
   const confidenceScore =
     topMatch.confidenceScore ?? Math.round(topMatch.matchPercent * 0.95);
   const confidenceRating = honestyRating(band, confidenceScore);
   const headline = honestyHeadline(band);
+  const celebrate = band !== "weak";
 
   return (
     <>
       <article
         className={cn(
           "relative overflow-hidden rounded-[var(--radius-xl)] border border-match/40 bg-bg-elevated shadow-2xl transition-all duration-700 perspective-1000",
-          isRevealed ? "animate-card-flip-in animate-glow-aura" : "opacity-0 scale-95",
+          isRevealed
+            ? celebrate
+              ? "animate-card-flip-in animate-glow-aura"
+              : "animate-card-flip-in"
+            : "opacity-0 scale-95",
           className,
         )}
       >
+        {celebrate && (
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
           <div
             className="absolute top-4 left-1/4 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-70"
@@ -64,6 +74,7 @@ export function MatchRevealCard({
             style={{ animationDelay: "1200ms" }}
           />
         </div>
+        )}
 
         <div className="relative z-10 border-b border-border bg-gradient-to-b from-bg-subtle/80 to-bg-elevated px-5 py-5 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-2">

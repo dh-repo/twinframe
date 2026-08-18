@@ -1,12 +1,19 @@
 import { STRONG_LOOKALIKE_MIN_MARGIN } from "../face/open-set-score.ts";
+import type { AttributeConflict } from "../face/lookalike-policy.ts";
 
 /** FaceNet mid-scores are not real look-alikes. Shared by results UI + share card. */
 export type HonestyBand = "weak" | "soft" | "strong";
 
-export const WEAK_MATCH_MAX = 55;
-export const SOFT_MATCH_MAX = 70;
+/** Below this: closest available match, not a look-alike. */
+export const WEAK_MATCH_MAX = 60;
+/** Below this: possible resemblance; at/above: strong visual resemblance (if margin OK). */
+export const SOFT_MATCH_MAX = 80;
 
-export function honestyBand(matchPercent: number, rankMargin?: number): HonestyBand {
+export function honestyBand(
+  matchPercent: number,
+  rankMargin?: number,
+  attributeConflict?: AttributeConflict,
+): HonestyBand {
   let band: HonestyBand;
   if (matchPercent < WEAK_MATCH_MAX) band = "weak";
   else if (matchPercent < SOFT_MATCH_MAX) band = "soft";
@@ -18,19 +25,22 @@ export function honestyBand(matchPercent: number, rankMargin?: number): HonestyB
     Number.isFinite(rankMargin) &&
     rankMargin < STRONG_LOOKALIKE_MIN_MARGIN
   ) {
-    return "soft";
+    band = "soft";
   }
+
+  if (attributeConflict === "strong" && band !== "weak") return "weak";
+  if (attributeConflict === "partial" && band === "strong") return "soft";
   return band;
 }
 
 export function honestyHeadline(band: HonestyBand): string {
   switch (band) {
     case "weak":
-      return "NEAREST GALLERY NEIGHBOR";
+      return "CLOSEST AVAILABLE MATCH";
     case "soft":
       return "POSSIBLE LOOK-ALIKE";
     case "strong":
-      return "TOP DOPPELGÄNGER MATCH";
+      return "STRONG VISUAL RESEMBLANCE";
     default: {
       const _exhaustive: never = band;
       return _exhaustive;
@@ -41,11 +51,11 @@ export function honestyHeadline(band: HonestyBand): string {
 export function honestyShareLabel(band: HonestyBand): string {
   switch (band) {
     case "weak":
-      return "Nearest neighbor";
+      return "Closest available match";
     case "soft":
       return "Possible look-alike";
     case "strong":
-      return "Look-alike";
+      return "Visual resemblance";
     default: {
       const _exhaustive: never = band;
       return _exhaustive;
@@ -59,9 +69,9 @@ export function honestyRating(
 ): string {
   switch (band) {
     case "weak":
-      return "NOT A STRONG MATCH";
+      return "NO STRONG DOUBLE";
     case "soft":
-      return "MODERATE MATCH";
+      return "MODERATE RESEMBLANCE";
     case "strong":
       if (confidenceScore >= 80) return "HIGH CONFIDENCE";
       if (confidenceScore >= 60) return "MODERATE CONFIDENCE";
@@ -73,27 +83,36 @@ export function honestyRating(
   }
 }
 
-export function restListHeading(topPercent: number, rankMargin?: number): string {
-  return honestyBand(topPercent, rankMargin) === "weak"
+export function restListHeading(topPercent: number, rankMargin?: number, attributeConflict?: AttributeConflict): string {
+  return honestyBand(topPercent, rankMargin, attributeConflict) === "weak"
     ? "OTHER NEAREST NEIGHBORS"
     : "ALSO CLOSE";
 }
 
 /** Weak tops are a nearest neighbor, not a look-alike pack — don't list the crowd. */
-export function shouldShowContenders(topPercent: number, rankMargin?: number): boolean {
-  return honestyBand(topPercent, rankMargin) !== "weak";
+export function shouldShowContenders(
+  topPercent: number,
+  rankMargin?: number,
+  attributeConflict?: AttributeConflict,
+): boolean {
+  return honestyBand(topPercent, rankMargin, attributeConflict) !== "weak";
 }
 
-export function shareText(name: string, matchPercent: number, rankMargin?: number): string {
-  const band = honestyBand(matchPercent, rankMargin);
+export function shareText(
+  name: string,
+  matchPercent: number,
+  rankMargin?: number,
+  attributeConflict?: AttributeConflict,
+): string {
+  const band = honestyBand(matchPercent, rankMargin, attributeConflict);
   const pct = Math.round(matchPercent);
   if (band === "weak") {
-    return `Nearest gallery neighbor on Twinframe: ${name} (${pct}% face similarity) — not a strong look-alike.`;
+    return `Closest available celebrity on Twinframe: ${name} (${pct}% resemblance index) — no strong double found.`;
   }
   if (band === "soft") {
-    return `Possible look-alike on Twinframe: ${name} at ${pct}% similarity.`;
+    return `Possible look-alike on Twinframe: ${name} at ${pct}% resemblance.`;
   }
-  return `I matched ${name} at ${pct}% on Twinframe.`;
+  return `Strong visual resemblance to ${name} (${pct}%) on Twinframe.`;
 }
 
 /** Hide age when the estimate is likely junk (cartoons, blur, extreme values). */

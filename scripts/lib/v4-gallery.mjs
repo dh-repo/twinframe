@@ -78,7 +78,7 @@ export function runLeaveOneOut(gallery) {
       continue;
     }
     const top = matches[0];
-    const band = honestyBand(top.matchPercent, top.rankMargin);
+    const band = honestyBand(top.matchPercent, top.rankMargin, top.attributeConflict);
     bands[band] += 1;
     hits.push({
       probeId: probe.id,

@@ -52,6 +52,43 @@ export type LookalikeRefuseReason =
   | "quality"
   | "distance";
 
+export type AttributeConflict = "none" | "partial" | "strong";
+
+/** Soft presentation clash — never a hard rank drop (inferred attributes). */
+export const GENDER_CONFLICT_MIN_PROB = 0.72;
+export const AGE_CONFLICT_DELTA_YRS = 28;
+
+export function attributeConflictLevel(
+  user: {
+    gender?: string;
+    genderProbability?: number;
+    age?: number;
+  },
+  celeb: {
+    gender?: string;
+    age?: number;
+  },
+): AttributeConflict {
+  let clashes = 0;
+  const genderKnown = user.gender === "male" || user.gender === "female";
+  const celebGender = celeb.gender === "male" || celeb.gender === "female" ? celeb.gender : undefined;
+  const gProb =
+    typeof user.genderProbability === "number" && Number.isFinite(user.genderProbability)
+      ? user.genderProbability
+      : 0;
+  if (genderKnown && celebGender && user.gender !== celebGender && gProb >= GENDER_CONFLICT_MIN_PROB) {
+    clashes += 1;
+  }
+  const userAge = typeof user.age === "number" && Number.isFinite(user.age) ? user.age : undefined;
+  const celebAge = typeof celeb.age === "number" && Number.isFinite(celeb.age) ? celeb.age : undefined;
+  if (userAge !== undefined && celebAge !== undefined && Math.abs(userAge - celebAge) > AGE_CONFLICT_DELTA_YRS) {
+    clashes += 1;
+  }
+  if (clashes >= 2) return "strong";
+  if (clashes === 1) return "partial";
+  return "none";
+}
+
 export interface LookalikeGateResult {
   pass: boolean;
   reason?: LookalikeRefuseReason;

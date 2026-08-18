@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, type ComponentType } from "react";
 import type { CelebrityMatch } from "@/lib/face/types";
-import { Eye, Smile, Sparkles, UserCheck, Activity } from "lucide-react";
+import { ScanFace, Calendar, Users, Sun, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils/cn";
 
@@ -14,46 +14,58 @@ interface BiometricAttribute {
   name: string;
   score: number;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
+}
+
+function iconForTrait(trait: string): ComponentType<{ className?: string }> {
+  switch (trait) {
+    case "facialStructure":
+    case "facialThirds":
+      return ScanFace;
+    case "ageAffinity":
+      return Calendar;
+    case "genderPresentation":
+      return Users;
+    case "lightingQuality":
+      return Sun;
+    default:
+      return Sparkles;
+  }
+}
+
+function descriptionForTrait(trait: string, label: string): string {
+  switch (trait) {
+    case "facialStructure":
+      return "Overall EdgeFace embedding similarity — not a regional landmark score";
+    case "ageAffinity":
+      return "Soft age prior vs this celebrity's gallery age";
+    case "genderPresentation":
+      return "Soft presentation prior — never a hard filter";
+    case "lightingQuality":
+      return "Detection confidence, sharpness, and face coverage";
+    default:
+      return label;
+  }
 }
 
 export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
   const attributes = useMemo<BiometricAttribute[]>(() => {
-    // Generate well-distributed, realistic trait scores derived from match percent and celeb traits
-    const base = match.matchPercent;
-    const s1 = Math.min(99, Math.max(65, Math.round(base + (match.accentHue % 11) - 5)));
-    const s2 = Math.min(99, Math.max(68, Math.round(base + ((match.accentHue * 3) % 9) - 4)));
-    const s3 = Math.min(99, Math.max(70, Math.round(base + ((match.accentHue * 7) % 13) - 6)));
-    const s4 = Math.min(99, Math.max(64, Math.round(base + ((match.accentHue * 5) % 11) - 5)));
-
+    if (match.traits.length > 0) {
+      return match.traits.map((t) => ({
+        id: t.trait,
+        name: t.label,
+        score: Math.round(Math.max(0, Math.min(1, t.similarity)) * 100),
+        description: descriptionForTrait(t.trait, t.label),
+        icon: iconForTrait(t.trait),
+      }));
+    }
     return [
       {
-        id: "eye-contour",
-        name: "Eye Structure & Brow Line",
-        score: s1,
-        description: "Orbital symmetry, eye distance ratio, and brow arch alignment",
-        icon: Eye,
-      },
-      {
-        id: "jaw-cheekbones",
-        name: "Jawline & Cheekbone Profile",
-        score: s2,
-        description: "Mandibular angle, chin definition, and zygomatic arch width",
-        icon: UserCheck,
-      },
-      {
-        id: "facial-proportions",
-        name: "Facial Proportions (Golden Ratio)",
-        score: s3,
-        description: "Vertical facial thirds (forehead to nose tip to chin)",
-        icon: Activity,
-      },
-      {
-        id: "mouth-expression",
-        name: "Smile & Lower Facial Vector",
-        score: s4,
-        description: "Philtrum length, lip curvature, and expression dynamic",
-        icon: Smile,
+        id: "embedding",
+        name: "Face embedding",
+        score: Math.round(match.matchPercent),
+        description: "Overall EdgeFace similarity — not a regional trait score",
+        icon: ScanFace,
       },
     ];
   }, [match]);

@@ -235,12 +235,12 @@ function cosineDistance(a, b) {
 function genderAffinity(userGender, userProb, celeb) {
   if (!userGender || userGender === "unknown" || userGender === celeb.gender) return 1.0;
   const prob = Math.max(0, Math.min(1, userProb));
-  return Math.max(0.75, Math.min(1.0, 1.0 - 0.22 * prob));
+  return Math.max(0.5, Math.min(1.0, 1.0 - 0.45 * prob));
 }
 
 function ageAffinity(userAge, celebAge) {
   const diff = Math.abs(userAge - (celebAge ?? 40));
-  return Math.exp(-Math.pow(diff / 28, 2));
+  return Math.exp(-Math.pow(diff / 20, 2));
 }
 
 function percentile(sortedArr, p) {
