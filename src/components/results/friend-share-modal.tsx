@@ -20,6 +20,7 @@ import {
 import {
   composePairShareImage,
   pairShareFilename,
+  pairShareHeadline,
   pairShareText,
   type PairShareSide,
 } from "@/lib/ux/pair-share-image";
@@ -95,6 +96,15 @@ export function FriendShareModal({
     bName: friend.match.name,
     aPercent: you.match.matchPercent,
     bPercent: friend.match.matchPercent,
+    aVerdict: youVerdict,
+    bVerdict: friendVerdict,
+  });
+  const headline = pairShareHeadline({
+    winner,
+    aName: you.match.name,
+    bName: friend.match.name,
+    aVerdict: youVerdict,
+    bVerdict: friendVerdict,
   });
 
   useEffect(() => {
@@ -211,6 +221,7 @@ export function FriendShareModal({
             </div>
 
             <p className="mt-4 text-xs leading-snug text-white/70">{winnerBanner(winner)}</p>
+            <p className="mt-1 truncate text-sm font-semibold text-white">{headline}</p>
             <p className="mt-2 font-mono text-[8px] tracking-wider text-white/45">
               MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS
             </p>

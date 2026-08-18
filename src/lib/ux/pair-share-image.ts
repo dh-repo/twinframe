@@ -42,16 +42,50 @@ export function pairShareText(input: {
   bName: string;
   aPercent: number;
   bPercent: number;
+  aVerdict?: VerdictTier;
+  bVerdict?: VerdictTier;
 }): string {
   const aPct = Math.round(input.aPercent);
   const bPct = Math.round(input.bPercent);
   switch (input.winner) {
     case "a":
+      if (input.bVerdict === "distant-twin") {
+        return `Closer twin: I won on Twinframe — ${input.aName} ${aPct}%. My friend was a Distant Twin at ${bPct}%.`;
+      }
       return `Closer twin: I beat my friend on Twinframe — ${input.aName} ${aPct}% vs ${input.bName} ${bPct}%.`;
     case "b":
+      if (input.aVerdict === "distant-twin") {
+        return `Closer twin: my friend won on Twinframe — ${input.bName} ${bPct}%. I was a Distant Twin at ${aPct}%.`;
+      }
       return `Closer twin: my friend won on Twinframe — ${input.bName} ${bPct}% vs my ${input.aName} ${aPct}%.`;
     case "tie":
       return `Tied twins on Twinframe — ${input.aName} ${aPct}% and ${input.bName} ${bPct}%.`;
+    default: {
+      const _exhaustive: never = input.winner;
+      return _exhaustive;
+    }
+  }
+}
+
+/** Canvas / preview headline. Distant twins are not “beaten”. */
+export function pairShareHeadline(input: {
+  winner: CloserTwinWinner;
+  aName: string;
+  bName: string;
+  aVerdict: VerdictTier;
+  bVerdict: VerdictTier;
+}): string {
+  switch (input.winner) {
+    case "tie":
+      return `${input.aName} & ${input.bName}`;
+    case "a":
+      return input.bVerdict === "distant-twin"
+        ? `Closer twin: ${input.aName}`
+        : `${input.aName} beats ${input.bName}`;
+    case "b":
+      return input.aVerdict === "distant-twin"
+        ? `Closer twin: ${input.bName}`
+        : `${input.bName} beats ${input.aName}`;
     default: {
       const _exhaustive: never = input.winner;
       return _exhaustive;
@@ -360,12 +394,13 @@ export async function composePairShareImage(input: PairShareInput): Promise<Blob
 
   drawWinnerStamp(ctx, closerTwinStamp(winner).toUpperCase(), width / 2, 600, winnerStyle);
 
-  const line =
-    winner === "tie"
-      ? `${input.you.celebrityName} & ${input.friend.celebrityName}`
-      : winner === "a"
-        ? `${input.you.celebrityName} beats ${input.friend.celebrityName}`
-        : `${input.friend.celebrityName} beats ${input.you.celebrityName}`;
+  const line = pairShareHeadline({
+    winner,
+    aName: input.you.celebrityName,
+    bName: input.friend.celebrityName,
+    aVerdict: youVerdict,
+    bVerdict: friendVerdict,
+  });
 
   ctx.fillStyle = "#f4f4f5";
   ctx.font = "700 36px system-ui, sans-serif";

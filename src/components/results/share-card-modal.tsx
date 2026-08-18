@@ -8,6 +8,9 @@ import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
 import {
   shareCardBlurb,
   shareCardFilename,
+  shareModalTitle,
+  sharePairGlyph,
+  sharePercentCaption,
   shareTextFromMatch,
   resolveShareVerdict,
 } from "@/lib/ux/share-copy";
@@ -114,7 +117,7 @@ export function ShareCardModal({
               <Sparkles className="h-4 w-4" />
             </div>
             <h3 className="text-base font-bold tracking-tight text-white">
-              Share Your Doppelgänger
+              {shareModalTitle(verdict)}
             </h3>
           </div>
           <button
@@ -153,10 +156,14 @@ export function ShareCardModal({
               </div>
 
               <div
-                className="flex h-8 w-8 items-center justify-center rounded-full border-2 bg-[#090a0f] text-xs font-bold"
+                className={
+                  sharePairGlyph(verdict).length > 1
+                    ? "flex h-8 w-8 items-center justify-center rounded-full border-2 bg-[#090a0f] text-[8px] font-extrabold tracking-wide"
+                    : "flex h-8 w-8 items-center justify-center rounded-full border-2 bg-[#090a0f] text-xs font-bold"
+                }
                 style={{ borderColor: stamp.fill, color: stamp.fill }}
               >
-                ≈
+                {sharePairGlyph(verdict)}
               </div>
 
               <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-white/20 bg-black/40 shadow-md">
@@ -181,6 +188,9 @@ export function ShareCardModal({
               style={{ color: stamp.fill }}
             >
               {Math.round(topMatch.matchPercent)}%
+            </p>
+            <p className="mt-1 text-[10px] font-mono font-semibold uppercase tracking-[0.18em] text-white/45">
+              {sharePercentCaption(verdict)}
             </p>
 
             <div

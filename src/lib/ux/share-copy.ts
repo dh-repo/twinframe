@@ -77,3 +77,51 @@ export function shareText(
 export function shareTextFromMatch(input: ShareCopyInput): string {
   return shareText(input.name, input.matchPercent, resolveShareVerdict(input));
 }
+
+export function shareModalTitle(verdict: VerdictTier): string {
+  switch (verdict) {
+    case "dead-ringer":
+      return "Share Your Dead Ringer";
+    case "strong-resemblance":
+      return "Share Your Doppelgänger";
+    case "soft-match":
+      return "Share this Soft Match";
+    case "distant-twin":
+      return "Share nearest neighbor";
+    default: {
+      const _exhaustive: never = verdict;
+      return _exhaustive;
+    }
+  }
+}
+
+/** Connector between the two faces. Distant twins are a neighbor, not an equals sign. */
+export function sharePairGlyph(verdict: VerdictTier): string {
+  switch (verdict) {
+    case "distant-twin":
+      return "NEAR";
+    case "soft-match":
+    case "strong-resemblance":
+    case "dead-ringer":
+      return "≈";
+    default: {
+      const _exhaustive: never = verdict;
+      return _exhaustive;
+    }
+  }
+}
+
+export function sharePercentCaption(verdict: VerdictTier): string {
+  switch (verdict) {
+    case "distant-twin":
+      return "NEAREST";
+    case "soft-match":
+    case "strong-resemblance":
+    case "dead-ringer":
+      return "SIMILARITY";
+    default: {
+      const _exhaustive: never = verdict;
+      return _exhaustive;
+    }
+  }
+}

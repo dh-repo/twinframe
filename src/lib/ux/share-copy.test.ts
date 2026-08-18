@@ -4,6 +4,9 @@ import {
   resolveShareVerdict,
   shareCardBlurb,
   shareCardFilename,
+  shareModalTitle,
+  sharePairGlyph,
+  sharePercentCaption,
   shareText,
   shareTextFromMatch,
 } from "./share-copy.ts";
@@ -85,6 +88,17 @@ describe("shareTextFromMatch", () => {
     assert.match(text, /Strong Resemblance/);
     assert.match(text, /88%/);
     assert.match(text, /Florence Pugh/);
+  });
+});
+
+describe("share modal honesty", () => {
+  it("does not call a distant twin a doppelgänger", () => {
+    assert.equal(shareModalTitle("distant-twin"), "Share nearest neighbor");
+    assert.equal(sharePairGlyph("distant-twin"), "NEAR");
+    assert.equal(sharePercentCaption("distant-twin"), "NEAREST");
+    assert.equal(sharePairGlyph("dead-ringer"), "≈");
+    assert.match(shareModalTitle("dead-ringer"), /Dead Ringer/);
+    assert.match(shareModalTitle("strong-resemblance"), /Doppelgänger/);
   });
 });
 

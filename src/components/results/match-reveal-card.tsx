@@ -16,6 +16,7 @@ import {
   honestyShareLabel,
 } from "@/lib/ux/honesty";
 import { composeMatchBlurb } from "@/lib/ux/match-blurb";
+import { sharePairGlyph } from "@/lib/ux/share-copy";
 import { verdictLabel, verdictSubtitle } from "@/lib/face/verdict";
 import { getCelebrityById } from "@/lib/celebrities/database";
 import { galleryFeaturesFor } from "@/lib/celebrities/gallery-features";
@@ -191,6 +192,7 @@ export function MatchRevealCard({
             celebrityInitials={topMatch.initials}
             accentHue={topMatch.accentHue}
             traits={topMatch.traits}
+            pairGlyph={sharePairGlyph(topMatch.verdict ?? "distant-twin")}
           />
         </div>
 
