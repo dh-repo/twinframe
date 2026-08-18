@@ -28,7 +28,7 @@ const only = onlyRaw
       .filter(Boolean)
   : ALL_JOBS.map((j) => j.mode);
 const jobs = ALL_JOBS.filter((j) => only.includes(j.mode));
-const concurrency = Number(cliArg("concurrency", 2));
+const concurrency = Number(cliArg("concurrency", 1));
 
 function runJob(job) {
   return new Promise((resolveJob) => {

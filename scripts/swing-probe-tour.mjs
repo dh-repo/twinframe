@@ -68,9 +68,10 @@ async function waitForResults(page) {
     text,
     timedOut: /timed out/i.test(text),
     verdict: pickVerdict(text),
+    verdictAttr: settled.verdict,
+    matchPercent: settled.matchPercent,
     openSetRefuse: /No close look-alike/i.test(text),
     qualityBlocked: /Photo quality|Hold the phone/i.test(text) && !pickVerdict(text),
-    ...settled,
     excerpt: text.slice(0, 1600),
   };
 }
@@ -105,9 +106,17 @@ async function rematchPacks(page, report, { skip = ["Everyone"] } = {}) {
   report.rematches = {};
   for (const label of PACK_CHIPS) {
     if (skip.includes(label)) continue;
-    const chip = page.getByRole("button", { name: label, exact: true });
-    if ((await chip.count()) === 0) continue;
-    await chip.click();
+    const clicked = await page.evaluate((name) => {
+      const btns = [...document.querySelectorAll("button")].filter(
+        (el) => (el.textContent || "").trim() === name && !el.disabled,
+      );
+      const btn = btns.at(-1);
+      if (!btn) return false;
+      btn.scrollIntoView({ block: "center", inline: "nearest" });
+      btn.click();
+      return true;
+    }, label);
+    if (!clicked) continue;
     const rematch = await waitForResults(page);
     await shot(page, `rematch-${label.replace(/\s+/g, "-").toLowerCase()}.png`);
     report.rematches[label] = rematch;
@@ -127,21 +136,27 @@ async function addFriendFromResults(page, report) {
   await enterCrop(page, FRIEND);
   await shot(page, "friend-crop.png");
   await approveCrop(page);
-  const friendText = await waitForBody(page, friendComparePresent, {
-    timeoutMs: ANALYZE_WAIT_MS,
-    label: "friend-b",
-  });
+  const friendText = await waitForBody(
+    page,
+    (t) =>
+      friendComparePresent(t) ||
+      /No close look-alike|Photo quality|Retake friend|Friend mode/i.test(t),
+    { timeoutMs: ANALYZE_WAIT_MS, label: "friend-b" },
+  );
   const cards = page.locator("[data-friend-card]");
-  const you = await cards.nth(0).getAttribute("data-match-percent").catch(() => null);
-  const friend = await cards.nth(1).getAttribute("data-match-percent").catch(() => null);
+  const you = (await cards.count()) > 0 ? await cards.nth(0).getAttribute("data-match-percent") : null;
+  const friend = (await cards.count()) > 1 ? await cards.nth(1).getAttribute("data-match-percent") : null;
   await shot(page, "friend.png");
   report.friend = {
-    closerTwin: /Closer twin|CLOSER TWIN|Tied Twins/i.test(friendText),
+    closerTwin: friendComparePresent(friendText),
+    qualityBlocked: /No close look-alike|Photo quality/i.test(friendText) && !friendComparePresent(friendText),
     youPercent: you == null ? null : Number(you),
     friendPercent: friend == null ? null : Number(friend),
     excerpt: friendText.slice(0, 800),
   };
-  await openShare(page, report);
+  if (report.friend.closerTwin) {
+    await openShare(page, report);
+  }
 }
 
 async function runLandingClicks(page, report) {
@@ -159,6 +174,7 @@ async function runLandingClicks(page, report) {
   await page.getByRole("button", { name: "With a friend", exact: true }).click();
   await sleep(200);
   await page.getByRole("button", { name: "Just me", exact: true }).click();
+  await page.getByRole("button", { name: "Everyone", exact: true }).click();
   await sleep(200);
   await shot(page, "landing-clicked.png");
 }
@@ -200,8 +216,11 @@ async function main() {
       throw new Error("Landing is missing pack chips");
     }
 
-    await runLandingClicks(page, report.steps);
+    // Click-through of every pack / mode chip lives in --mode landing so
+    // match tours stay on Everyone (or the requested --pack) instead of
+    // the last chip the landing sweep selected.
     if (MODE === "landing") {
+      await runLandingClicks(page, report.steps);
       report.ok = true;
       return;
     }
