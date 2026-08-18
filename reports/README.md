@@ -57,9 +57,11 @@ node scripts/evaluate-accuracy.mjs --tier 1 --concurrency 4 \
   --json reports/tier1-accuracy.json --markdown reports/tier1-accuracy.md
 ```
 
-Detection runs ~24s per probe on CPU, so a full 270-probe pass takes ~50 minutes at
-concurrency 4. Use `--limit N` for a quick check; it samples across the id-sorted
-catalog rather than taking the alphabetical head.
+Detection dominates the cost here (~21s per probe on 4 cores), so a full 270-probe pass
+takes ~35 minutes at concurrency 4 and nothing is cached between runs. Use `--limit N`
+for a quick check; it samples across the id-sorted catalog rather than taking the
+alphabetical head. The held-out harness is far cheaper — it caches EdgeFace descriptors
+per probe, so a re-run is about a minute.
 
 ## Hill calibration
 

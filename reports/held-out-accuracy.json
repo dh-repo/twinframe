@@ -1,12 +1,12 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-18T04:44:29.078Z",
-  "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 627 extra templates)",
+  "generatedAt": "2026-08-18T05:36:30.428Z",
+  "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 724 extra templates)",
   "signalsVersion": "1.1.0",
   "hardProbeSignalsVersion": "1.1.0",
-  "gallerySize": 1848,
+  "gallerySize": 1980,
   "galleryIdentities": 999,
-  "extraTemplatesMerged": 848,
+  "extraTemplatesMerged": 980,
   "slots": "001 only",
   "labelledImages": 742,
   "labelledConditionCounts": {
@@ -29,9 +29,9 @@
       "stratum": "overall",
       "n": 205,
       "rank1": 169,
-      "rank5": 174,
+      "rank5": 173,
       "rank1Pct": 82.4,
-      "rank5Pct": 84.9,
+      "rank5Pct": 84.4,
       "rank1Ci95": [
         76.6,
         87
@@ -41,7 +41,7 @@
       "refused": 0,
       "refusedPct": 0,
       "detected": 205,
-      "mrr": 0.8335
+      "mrr": 0.8325
     },
     {
       "stratum": "low-light",
@@ -66,18 +66,15 @@
       "n": 0,
       "rank1": 0,
       "rank5": 0,
-      "rank1Pct": 0,
-      "rank5Pct": 0,
-      "rank1Ci95": [
-        0,
-        0
-      ],
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
       "rawRank1": 0,
-      "rawRank1Pct": 0,
+      "rawRank1Pct": null,
       "refused": 0,
-      "refusedPct": 0,
+      "refusedPct": null,
       "detected": 0,
-      "mrr": 0
+      "mrr": null
     },
     {
       "stratum": "big-smile",
@@ -120,26 +117,23 @@
       "n": 0,
       "rank1": 0,
       "rank5": 0,
-      "rank1Pct": 0,
-      "rank5Pct": 0,
-      "rank1Ci95": [
-        0,
-        0
-      ],
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
       "rawRank1": 0,
-      "rawRank1Pct": 0,
+      "rawRank1Pct": null,
       "refused": 0,
-      "refusedPct": 0,
+      "refusedPct": null,
       "detected": 0,
-      "mrr": 0
+      "mrr": null
     },
     {
       "stratum": "no-condition",
       "n": 57,
       "rank1": 42,
-      "rank5": 44,
+      "rank5": 43,
       "rank1Pct": 73.7,
-      "rank5Pct": 77.2,
+      "rank5Pct": 75.4,
       "rank1Ci95": [
         61,
         83.4
@@ -149,7 +143,7 @@
       "refused": 0,
       "refusedPct": 0,
       "detected": 57,
-      "mrr": 0.7462
+      "mrr": 0.7427
     }
   ],
   "distances": {
@@ -162,113 +156,113 @@
     },
     "impostor (probe → best other identity)": {
       "n": 205,
-      "mean": 0.5867,
-      "p10": 0.5119,
-      "p50": 0.6038,
-      "p90": 0.6634
+      "mean": 0.5852,
+      "p10": 0.5095,
+      "p50": 0.6031,
+      "p90": 0.6617
     }
   },
   "hill": {
     "current": {
       "d0": 0.6,
       "n": 4.1,
-      "logLoss": 0.6238
+      "logLoss": 0.6263
     },
     "fitted": {
       "d0": 0.45,
       "n": 2.9,
-      "logLoss": 0.5397
+      "logLoss": 0.5408
     },
     "grid": [
       {
         "d0": 0.55,
         "n": 1.2,
-        "logLoss": 0.5859
+        "logLoss": 0.5866
       },
       {
         "d0": 0.55,
         "n": 1.4,
-        "logLoss": 0.5806
+        "logLoss": 0.5814
       },
       {
         "d0": 0.55,
         "n": 1.6,
-        "logLoss": 0.5764
+        "logLoss": 0.5773
       },
       {
         "d0": 0.55,
         "n": 2,
-        "logLoss": 0.5707
+        "logLoss": 0.5718
       },
       {
         "d0": 0.55,
         "n": 3,
-        "logLoss": 0.5681
+        "logLoss": 0.5697
       },
       {
         "d0": 0.55,
         "n": 4.1,
-        "logLoss": 0.579
+        "logLoss": 0.5811
       },
       {
         "d0": 0.6,
         "n": 1.2,
-        "logLoss": 0.5965
+        "logLoss": 0.5972
       },
       {
         "d0": 0.6,
         "n": 1.4,
-        "logLoss": 0.5934
+        "logLoss": 0.5943
       },
       {
         "d0": 0.6,
         "n": 1.6,
-        "logLoss": 0.5915
+        "logLoss": 0.5925
       },
       {
         "d0": 0.6,
         "n": 2,
-        "logLoss": 0.5905
+        "logLoss": 0.5917
       },
       {
         "d0": 0.6,
         "n": 3,
-        "logLoss": 0.6
+        "logLoss": 0.6018
       },
       {
         "d0": 0.6,
         "n": 4.1,
-        "logLoss": 0.6238
+        "logLoss": 0.6263
       },
       {
         "d0": 0.65,
         "n": 1.2,
-        "logLoss": 0.6081
+        "logLoss": 0.6089
       },
       {
         "d0": 0.65,
         "n": 1.4,
-        "logLoss": 0.6078
-      },
-      {
-        "d0": 0.65,
-        "n": 1.6,
         "logLoss": 0.6087
       },
       {
         "d0": 0.65,
+        "n": 1.6,
+        "logLoss": 0.6098
+      },
+      {
+        "d0": 0.65,
         "n": 2,
-        "logLoss": 0.6137
+        "logLoss": 0.615
       },
       {
         "d0": 0.65,
         "n": 3,
-        "logLoss": 0.6397
+        "logLoss": 0.6417
       },
       {
         "d0": 0.65,
         "n": 4.1,
-        "logLoss": 0.6829
+        "logLoss": 0.6858
       }
     ],
     "reliability": {
@@ -282,17 +276,17 @@
         },
         {
           "band": "20-40%",
-          "n": 4,
-          "claimedPct": 37.8,
+          "n": 3,
+          "claimedPct": 37.2,
           "observedPct": 0,
-          "gapPct": 37.8
+          "gapPct": 37.2
         },
         {
           "band": "40-60%",
-          "n": 26,
-          "claimedPct": 49.9,
-          "observedPct": 26.9,
-          "gapPct": 23
+          "n": 27,
+          "claimedPct": 50.3,
+          "observedPct": 25.9,
+          "gapPct": 24.4
         },
         {
           "band": "60-80%",
@@ -327,9 +321,9 @@
         {
           "band": "20-40%",
           "n": 36,
-          "claimedPct": 31,
+          "claimedPct": 31.4,
           "observedPct": 33.3,
-          "gapPct": -2.3
+          "gapPct": -2
         },
         {
           "band": "40-60%",
@@ -362,8 +356,8 @@
       ]
     },
     "calibrationError": {
-      "current": 5.8,
-      "fitted": 11.77
+      "current": 5.9,
+      "fitted": 11.71
     },
     "eer": {
       "distance": 0.5536,
@@ -445,9 +439,9 @@
       "stratum": "overall",
       "n": 144,
       "rank1": 108,
-      "rank5": 113,
+      "rank5": 112,
       "rank1Pct": 75,
-      "rank5Pct": 78.5,
+      "rank5Pct": 77.8,
       "rank1Ci95": [
         67.3,
         81.4
@@ -457,7 +451,7 @@
       "refused": 0,
       "refusedPct": 0,
       "detected": 144,
-      "mrr": 0.763
+      "mrr": 0.7616
     },
     {
       "stratum": "low-light",
@@ -482,18 +476,15 @@
       "n": 0,
       "rank1": 0,
       "rank5": 0,
-      "rank1Pct": 0,
-      "rank5Pct": 0,
-      "rank1Ci95": [
-        0,
-        0
-      ],
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
       "rawRank1": 0,
-      "rawRank1Pct": 0,
+      "rawRank1Pct": null,
       "refused": 0,
-      "refusedPct": 0,
+      "refusedPct": null,
       "detected": 0,
-      "mrr": 0
+      "mrr": null
     },
     {
       "stratum": "big-smile",
@@ -536,26 +527,23 @@
       "n": 0,
       "rank1": 0,
       "rank5": 0,
-      "rank1Pct": 0,
-      "rank5Pct": 0,
-      "rank1Ci95": [
-        0,
-        0
-      ],
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
       "rawRank1": 0,
-      "rawRank1Pct": 0,
+      "rawRank1Pct": null,
       "refused": 0,
-      "refusedPct": 0,
+      "refusedPct": null,
       "detected": 0,
-      "mrr": 0
+      "mrr": null
     },
     {
       "stratum": "no-condition",
       "n": 46,
       "rank1": 31,
-      "rank5": 33,
+      "rank5": 32,
       "rank1Pct": 67.4,
-      "rank5Pct": 71.7,
+      "rank5Pct": 69.6,
       "rank1Ci95": [
         53,
         79.1
@@ -565,7 +553,7 @@
       "refused": 0,
       "refusedPct": 0,
       "detected": 46,
-      "mrr": 0.6855
+      "mrr": 0.6812
     }
   ],
   "distancesExcludingNearDuplicates": {
@@ -578,113 +566,113 @@
     },
     "impostor (probe → best other identity)": {
       "n": 144,
-      "mean": 0.5827,
+      "mean": 0.581,
       "p10": 0.5077,
-      "p50": 0.6018,
-      "p90": 0.6639
+      "p50": 0.601,
+      "p90": 0.6617
     }
   },
   "hillExcludingNearDuplicates": {
     "current": {
       "d0": 0.6,
       "n": 4.1,
-      "logLoss": 0.7265
+      "logLoss": 0.729
     },
     "fitted": {
       "d0": 0.5,
       "n": 2.5,
-      "logLoss": 0.671
+      "logLoss": 0.6722
     },
     "grid": [
       {
         "d0": 0.55,
         "n": 1.2,
-        "logLoss": 0.6943
+        "logLoss": 0.6951
       },
       {
         "d0": 0.55,
         "n": 1.4,
-        "logLoss": 0.6884
+        "logLoss": 0.6893
       },
       {
         "d0": 0.55,
         "n": 1.6,
-        "logLoss": 0.6838
+        "logLoss": 0.6847
       },
       {
         "d0": 0.55,
         "n": 2,
-        "logLoss": 0.6778
+        "logLoss": 0.6789
       },
       {
         "d0": 0.55,
         "n": 3,
-        "logLoss": 0.6785
+        "logLoss": 0.6801
       },
       {
         "d0": 0.55,
         "n": 4.1,
-        "logLoss": 0.6978
+        "logLoss": 0.6999
       },
       {
         "d0": 0.6,
         "n": 1.2,
-        "logLoss": 0.6986
+        "logLoss": 0.6994
       },
       {
         "d0": 0.6,
         "n": 1.4,
-        "logLoss": 0.694
+        "logLoss": 0.695
       },
       {
         "d0": 0.6,
         "n": 1.6,
-        "logLoss": 0.6908
+        "logLoss": 0.6919
       },
       {
         "d0": 0.6,
         "n": 2,
-        "logLoss": 0.6881
+        "logLoss": 0.6894
       },
       {
         "d0": 0.6,
         "n": 3,
-        "logLoss": 0.6976
+        "logLoss": 0.6995
       },
       {
         "d0": 0.6,
         "n": 4.1,
-        "logLoss": 0.7265
+        "logLoss": 0.729
       },
       {
         "d0": 0.65,
         "n": 1.2,
+        "logLoss": 0.7056
+      },
+      {
+        "d0": 0.65,
+        "n": 1.4,
+        "logLoss": 0.7032
+      },
+      {
+        "d0": 0.65,
+        "n": 1.6,
+        "logLoss": 0.7023
+      },
+      {
+        "d0": 0.65,
+        "n": 2,
         "logLoss": 0.7048
       },
       {
         "d0": 0.65,
-        "n": 1.4,
-        "logLoss": 0.7022
-      },
-      {
-        "d0": 0.65,
-        "n": 1.6,
-        "logLoss": 0.7012
-      },
-      {
-        "d0": 0.65,
-        "n": 2,
-        "logLoss": 0.7034
-      },
-      {
-        "d0": 0.65,
         "n": 3,
-        "logLoss": 0.7269
+        "logLoss": 0.729
       },
       {
         "d0": 0.65,
         "n": 4.1,
-        "logLoss": 0.7728
+        "logLoss": 0.7758
       }
     ],
     "reliability": {
@@ -698,17 +686,17 @@
         },
         {
           "band": "20-40%",
-          "n": 4,
-          "claimedPct": 37.8,
+          "n": 3,
+          "claimedPct": 37.2,
           "observedPct": 0,
-          "gapPct": 37.8
+          "gapPct": 37.2
         },
         {
           "band": "40-60%",
-          "n": 26,
-          "claimedPct": 49.9,
-          "observedPct": 26.9,
-          "gapPct": 23
+          "n": 27,
+          "claimedPct": 50.3,
+          "observedPct": 25.9,
+          "gapPct": 24.4
         },
         {
           "band": "60-80%",
@@ -742,17 +730,17 @@
         },
         {
           "band": "20-40%",
-          "n": 19,
-          "claimedPct": 35.2,
-          "observedPct": 10.5,
-          "gapPct": 24.7
+          "n": 18,
+          "claimedPct": 35.5,
+          "observedPct": 11.1,
+          "gapPct": 24.4
         },
         {
           "band": "40-60%",
-          "n": 42,
-          "claimedPct": 50.5,
-          "observedPct": 69,
-          "gapPct": -18.6
+          "n": 43,
+          "claimedPct": 50.3,
+          "observedPct": 67.4,
+          "gapPct": -17.2
         },
         {
           "band": "60-80%",
@@ -778,8 +766,8 @@
       ]
     },
     "calibrationError": {
-      "current": 8.26,
-      "fitted": 18.79
+      "current": 8.4,
+      "fitted": 18.29
     },
     "eer": {
       "distance": 0.5678,
@@ -804,7 +792,7 @@
       "conditions": [],
       "topId": "jason-momoa",
       "refused": false,
-      "rawRank": 217,
+      "rawRank": 223,
       "genuineDistance": 0.9071,
       "impostorDistance": 0.653
     },
@@ -814,7 +802,7 @@
       "conditions": [],
       "topId": "kylian-mbappe",
       "refused": false,
-      "rawRank": 286,
+      "rawRank": 295,
       "genuineDistance": 0.9425,
       "impostorDistance": 0.6009
     },
@@ -826,7 +814,7 @@
       ],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 10,
+      "rawRank": 13,
       "genuineDistance": 0.6355,
       "impostorDistance": 0.3246
     },
@@ -838,7 +826,7 @@
       ],
       "topId": "hugh-jackman",
       "refused": false,
-      "rawRank": 51,
+      "rawRank": 53,
       "genuineDistance": 0.7913,
       "impostorDistance": 0.5142
     },
@@ -850,7 +838,7 @@
       ],
       "topId": "hugh-jackman",
       "refused": false,
-      "rawRank": 42,
+      "rawRank": 44,
       "genuineDistance": 0.7693,
       "impostorDistance": 0.3573
     },
@@ -862,7 +850,7 @@
       ],
       "topId": "jennie-kim",
       "refused": false,
-      "rawRank": 118,
+      "rawRank": 124,
       "genuineDistance": 0.8345,
       "impostorDistance": 0.4425
     },
@@ -885,7 +873,7 @@
       ],
       "topId": "bruno-mars",
       "refused": false,
-      "rawRank": 22,
+      "rawRank": 24,
       "genuineDistance": 0.7204,
       "impostorDistance": 0.5825
     },
@@ -896,11 +884,11 @@
         "low-light",
         "big-smile"
       ],
-      "topId": "kim-sykes",
+      "topId": "regina-king",
       "refused": false,
-      "rawRank": 574,
+      "rawRank": 588,
       "genuineDistance": 0.9729,
-      "impostorDistance": 0.6521
+      "impostorDistance": 0.6085
     },
     {
       "id": "jennifer-lawrence",
@@ -908,7 +896,7 @@
       "conditions": [],
       "topId": "ritchie-montgomery",
       "refused": false,
-      "rawRank": 179,
+      "rawRank": 185,
       "genuineDistance": 0.8663,
       "impostorDistance": 0.6778
     },
@@ -920,7 +908,7 @@
       ],
       "topId": "sarah-jane-redmond",
       "refused": false,
-      "rawRank": 265,
+      "rawRank": 275,
       "genuineDistance": 0.8743,
       "impostorDistance": 0.5451
     },
@@ -933,7 +921,7 @@
       ],
       "topId": "jeffrey-nordling",
       "refused": false,
-      "rawRank": 10,
+      "rawRank": 11,
       "genuineDistance": 0.6955,
       "impostorDistance": 0.6361
     },
@@ -946,7 +934,7 @@
       ],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 369,
+      "rawRank": 382,
       "genuineDistance": 0.911,
       "impostorDistance": 0.3056
     },
@@ -968,7 +956,7 @@
       "conditions": [],
       "topId": "luke-hemsworth",
       "refused": false,
-      "rawRank": 103,
+      "rawRank": 108,
       "genuineDistance": 0.8251,
       "impostorDistance": 0.5077
     },
@@ -981,7 +969,7 @@
       ],
       "topId": "simon-chin",
       "refused": false,
-      "rawRank": 66,
+      "rawRank": 69,
       "genuineDistance": 0.7907,
       "impostorDistance": 0.6342
     },
@@ -991,7 +979,7 @@
       "conditions": [],
       "topId": "will-smith",
       "refused": false,
-      "rawRank": 5,
+      "rawRank": 6,
       "genuineDistance": 0.6655,
       "impostorDistance": 0.5035
     },
@@ -1003,7 +991,7 @@
       ],
       "topId": "jennie-kim",
       "refused": false,
-      "rawRank": 58,
+      "rawRank": 65,
       "genuineDistance": 0.7667,
       "impostorDistance": 0.6058
     },
@@ -1015,7 +1003,7 @@
       ],
       "topId": "elizabeth-olsen",
       "refused": false,
-      "rawRank": 304,
+      "rawRank": 311,
       "genuineDistance": 0.9142,
       "impostorDistance": 0.6683
     },
@@ -1027,7 +1015,7 @@
       ],
       "topId": "billie-eilish",
       "refused": false,
-      "rawRank": 289,
+      "rawRank": 302,
       "genuineDistance": 0.8907,
       "impostorDistance": 0.4693
     },
@@ -1040,7 +1028,7 @@
       ],
       "topId": "rey-lucas",
       "refused": false,
-      "rawRank": 254,
+      "rawRank": 263,
       "genuineDistance": 0.9005,
       "impostorDistance": 0.6538
     },
@@ -1052,7 +1040,7 @@
       ],
       "topId": "kylian-mbappe",
       "refused": false,
-      "rawRank": 333,
+      "rawRank": 346,
       "genuineDistance": 0.9122,
       "impostorDistance": 0.348
     },
@@ -1062,7 +1050,7 @@
       "conditions": [],
       "topId": "ian-butcher",
       "refused": false,
-      "rawRank": 150,
+      "rawRank": 157,
       "genuineDistance": 0.8378,
       "impostorDistance": 0.5793
     },
@@ -1084,7 +1072,7 @@
       "conditions": [],
       "topId": "shah-rukh-khan",
       "refused": false,
-      "rawRank": 304,
+      "rawRank": 314,
       "genuineDistance": 0.9123,
       "impostorDistance": 0
     },
@@ -1096,7 +1084,7 @@
       ],
       "topId": "danny-dworkis",
       "refused": false,
-      "rawRank": 397,
+      "rawRank": 412,
       "genuineDistance": 0.9477,
       "impostorDistance": 0.5991
     },
@@ -1104,11 +1092,11 @@
       "id": "sebastian-stan",
       "slot": "001",
       "conditions": [],
-      "topId": "naomi-osaka",
+      "topId": "lana-condor",
       "refused": false,
-      "rawRank": 278,
+      "rawRank": 286,
       "genuineDistance": 0.9226,
-      "impostorDistance": 0.6639
+      "impostorDistance": 0.6488
     },
     {
       "id": "serena-williams",
@@ -1117,11 +1105,11 @@
         "low-light",
         "big-smile"
       ],
-      "topId": "seth-rogen",
+      "topId": "sza",
       "refused": false,
-      "rawRank": 8,
+      "rawRank": 9,
       "genuineDistance": 0.6964,
-      "impostorDistance": 0.6512
+      "impostorDistance": 0.576
     },
     {
       "id": "shah-rukh-khan",
@@ -1129,7 +1117,7 @@
       "conditions": [],
       "topId": "aishwarya-rai",
       "refused": false,
-      "rawRank": 667,
+      "rawRank": 676,
       "genuineDistance": 1.0193,
       "impostorDistance": 0.6617
     },
@@ -1139,7 +1127,7 @@
       "conditions": [],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 262,
+      "rawRank": 276,
       "genuineDistance": 0.8895,
       "impostorDistance": 0.2105
     },
@@ -1149,7 +1137,7 @@
       "conditions": [],
       "topId": "doja-cat",
       "refused": false,
-      "rawRank": 173,
+      "rawRank": 186,
       "genuineDistance": 0.8696,
       "impostorDistance": 0.6146
     },
@@ -1159,7 +1147,7 @@
       "conditions": [],
       "topId": "seth-rogen",
       "refused": false,
-      "rawRank": 222,
+      "rawRank": 227,
       "genuineDistance": 0.8913,
       "impostorDistance": 0.7
     },
@@ -1181,7 +1169,7 @@
       "conditions": [],
       "topId": "lee-jung-jae",
       "refused": false,
-      "rawRank": 246,
+      "rawRank": 254,
       "genuineDistance": 0.8858,
       "impostorDistance": 0.5516
     },
@@ -1202,7 +1190,7 @@
   "skipped": [],
   "commands": [
     "node --experimental-strip-types scripts/label-hard-probes.mjs --concurrency 4",
-    "node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency 2"
+    "node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency 4"
   ],
   "records": [
     {
@@ -1416,7 +1404,7 @@
       "topId": "jason-momoa",
       "genuineDistance": 0.9071,
       "impostorDistance": 0.653,
-      "rawRank": 217,
+      "rawRank": 223,
       "matchPercent": 37.2
     },
     {
@@ -1482,7 +1470,7 @@
       "topId": "kylian-mbappe",
       "genuineDistance": 0.9425,
       "impostorDistance": 0.6009,
-      "rawRank": 286,
+      "rawRank": 295,
       "matchPercent": 33.9
     },
     {
@@ -1945,7 +1933,7 @@
       "topId": "travis-scott",
       "genuineDistance": 0.6355,
       "impostorDistance": 0.3246,
-      "rawRank": 10,
+      "rawRank": 13,
       "matchPercent": 92.5
     },
     {
@@ -1962,7 +1950,7 @@
       "topId": "hugh-jackman",
       "genuineDistance": 0.7913,
       "impostorDistance": 0.5142,
-      "rawRank": 51,
+      "rawRank": 53,
       "matchPercent": 57.9
     },
     {
@@ -1979,7 +1967,7 @@
       "topId": "hugh-jackman",
       "genuineDistance": 0.7693,
       "impostorDistance": 0.3573,
-      "rawRank": 42,
+      "rawRank": 44,
       "matchPercent": 89.3
     },
     {
@@ -2197,7 +2185,7 @@
       "topId": "jennie-kim",
       "genuineDistance": 0.8345,
       "impostorDistance": 0.4425,
-      "rawRank": 118,
+      "rawRank": 124,
       "matchPercent": 79.8
     },
     {
@@ -2329,9 +2317,9 @@
       "rank": 1,
       "topId": "hailee-steinfeld",
       "genuineDistance": 0.6189,
-      "impostorDistance": 0.6878,
+      "impostorDistance": 0.6615,
       "rawRank": 1,
-      "matchPercent": 44.2
+      "matchPercent": 38.2
     },
     {
       "imagePath": "/celebs/held-out/halle-berry/001.jpg",
@@ -2365,7 +2353,7 @@
       "topId": "bruno-mars",
       "genuineDistance": 0.7204,
       "impostorDistance": 0.5825,
-      "rawRank": 22,
+      "rawRank": 24,
       "matchPercent": 38.7
     },
     {
@@ -2415,11 +2403,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "kim-sykes",
+      "topId": "regina-king",
       "genuineDistance": 0.9729,
-      "impostorDistance": 0.6521,
-      "rawRank": 574,
-      "matchPercent": 30.8
+      "impostorDistance": 0.6085,
+      "rawRank": 588,
+      "matchPercent": 43.3
     },
     {
       "imagePath": "/celebs/held-out/henry-cavill/001.jpg",
@@ -2434,7 +2422,7 @@
       "rank": 1,
       "topId": "henry-cavill",
       "genuineDistance": 0.2079,
-      "impostorDistance": 0.6498,
+      "impostorDistance": 0.6287,
       "rawRank": 1,
       "matchPercent": 98.8
     },
@@ -2614,7 +2602,7 @@
       "topId": "ritchie-montgomery",
       "genuineDistance": 0.8663,
       "impostorDistance": 0.6778,
-      "rawRank": 179,
+      "rawRank": 185,
       "matchPercent": 25.7
     },
     {
@@ -2835,7 +2823,7 @@
       "topId": "sarah-jane-redmond",
       "genuineDistance": 0.8743,
       "impostorDistance": 0.5451,
-      "rawRank": 265,
+      "rawRank": 275,
       "matchPercent": 58.6
     },
     {
@@ -2870,7 +2858,7 @@
       "topId": "jeffrey-nordling",
       "genuineDistance": 0.6955,
       "impostorDistance": 0.6361,
-      "rawRank": 10,
+      "rawRank": 11,
       "matchPercent": 36
     },
     {
@@ -2938,7 +2926,7 @@
       "topId": "travis-scott",
       "genuineDistance": 0.911,
       "impostorDistance": 0.3056,
-      "rawRank": 369,
+      "rawRank": 382,
       "matchPercent": 94.1
     },
     {
@@ -3003,7 +2991,7 @@
       "topId": "luke-hemsworth",
       "genuineDistance": 0.8251,
       "impostorDistance": 0.5077,
-      "rawRank": 103,
+      "rawRank": 108,
       "matchPercent": 66.5
     },
     {
@@ -3038,7 +3026,7 @@
       "topId": "simon-chin",
       "genuineDistance": 0.7907,
       "impostorDistance": 0.6342,
-      "rawRank": 66,
+      "rawRank": 69,
       "matchPercent": 33.6
     },
     {
@@ -3111,11 +3099,11 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 5,
+      "rank": -1,
       "topId": "will-smith",
       "genuineDistance": 0.6655,
       "impostorDistance": 0.5035,
-      "rawRank": 5,
+      "rawRank": 6,
       "matchPercent": 50.4
     },
     {
@@ -3401,7 +3389,7 @@
       "topId": "jennie-kim",
       "genuineDistance": 0.7667,
       "impostorDistance": 0.6058,
-      "rawRank": 58,
+      "rawRank": 65,
       "matchPercent": 35.8
     },
     {
@@ -3418,7 +3406,7 @@
       "topId": "elizabeth-olsen",
       "genuineDistance": 0.9142,
       "impostorDistance": 0.6683,
-      "rawRank": 304,
+      "rawRank": 311,
       "matchPercent": 29.1
     },
     {
@@ -3451,7 +3439,7 @@
       "rank": 1,
       "topId": "michelle-obama",
       "genuineDistance": 0.005,
-      "impostorDistance": 0.6589,
+      "impostorDistance": 0.6331,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3533,7 +3521,7 @@
       "topId": "billie-eilish",
       "genuineDistance": 0.8907,
       "impostorDistance": 0.4693,
-      "rawRank": 289,
+      "rawRank": 302,
       "matchPercent": 60.4
     },
     {
@@ -3550,7 +3538,7 @@
       "rank": 1,
       "topId": "naomi-osaka",
       "genuineDistance": 0.3569,
-      "impostorDistance": 0.6828,
+      "impostorDistance": 0.6621,
       "rawRank": 1,
       "matchPercent": 91.3
     },
@@ -3569,7 +3557,7 @@
       "topId": "rey-lucas",
       "genuineDistance": 0.9005,
       "impostorDistance": 0.6538,
-      "rawRank": 254,
+      "rawRank": 263,
       "matchPercent": 31.4
     },
     {
@@ -3586,7 +3574,7 @@
       "topId": "kylian-mbappe",
       "genuineDistance": 0.9122,
       "impostorDistance": 0.348,
-      "rawRank": 333,
+      "rawRank": 346,
       "matchPercent": 92.3
     },
     {
@@ -3682,7 +3670,7 @@
       "topId": "ian-butcher",
       "genuineDistance": 0.8378,
       "impostorDistance": 0.5793,
-      "rawRank": 150,
+      "rawRank": 157,
       "matchPercent": 47.5
     },
     {
@@ -3853,7 +3841,7 @@
       "topId": "shah-rukh-khan",
       "genuineDistance": 0.9123,
       "impostorDistance": 0,
-      "rawRank": 304,
+      "rawRank": 314,
       "matchPercent": 100
     },
     {
@@ -3869,7 +3857,7 @@
       "rank": 1,
       "topId": "rachel-mcadams",
       "genuineDistance": 0.4424,
-      "impostorDistance": 0.6204,
+      "impostorDistance": 0.5772,
       "rawRank": 1,
       "matchPercent": 81.4
     },
@@ -4046,7 +4034,7 @@
       "rank": 1,
       "topId": "sam-claflin",
       "genuineDistance": 0.0047,
-      "impostorDistance": 0.6221,
+      "impostorDistance": 0.6161,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4096,7 +4084,7 @@
       "topId": "danny-dworkis",
       "genuineDistance": 0.9477,
       "impostorDistance": 0.5991,
-      "rawRank": 397,
+      "rawRank": 412,
       "matchPercent": 39.8
     },
     {
@@ -4125,11 +4113,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "naomi-osaka",
+      "topId": "lana-condor",
       "genuineDistance": 0.9226,
-      "impostorDistance": 0.6639,
-      "rawRank": 278,
-      "matchPercent": 27.9
+      "impostorDistance": 0.6488,
+      "rawRank": 286,
+      "matchPercent": 29.1
     },
     {
       "imagePath": "/celebs/held-out/selena-gomez/001.jpg",
@@ -4160,11 +4148,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "seth-rogen",
+      "topId": "sza",
       "genuineDistance": 0.6964,
-      "impostorDistance": 0.6512,
-      "rawRank": 8,
-      "matchPercent": 30.9
+      "impostorDistance": 0.576,
+      "rawRank": 9,
+      "matchPercent": 57.1
     },
     {
       "imagePath": "/celebs/held-out/seth-rogen/001.jpg",
@@ -4195,7 +4183,7 @@
       "topId": "aishwarya-rai",
       "genuineDistance": 1.0193,
       "impostorDistance": 0.6617,
-      "rawRank": 667,
+      "rawRank": 676,
       "matchPercent": 27.3
     },
     {
@@ -4259,7 +4247,7 @@
       "topId": "travis-scott",
       "genuineDistance": 0.8895,
       "impostorDistance": 0.2105,
-      "rawRank": 262,
+      "rawRank": 276,
       "matchPercent": 98.8
     },
     {
@@ -4341,7 +4329,7 @@
       "topId": "doja-cat",
       "genuineDistance": 0.8696,
       "impostorDistance": 0.6146,
-      "rawRank": 173,
+      "rawRank": 186,
       "matchPercent": 39
     },
     {
@@ -4473,7 +4461,7 @@
       "topId": "seth-rogen",
       "genuineDistance": 0.8913,
       "impostorDistance": 0.7,
-      "rawRank": 222,
+      "rawRank": 227,
       "matchPercent": 23.6
     },
     {
@@ -4506,7 +4494,7 @@
       "rank": 1,
       "topId": "will-smith",
       "genuineDistance": 0.0058,
-      "impostorDistance": 0.5418,
+      "impostorDistance": 0.5003,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4569,7 +4557,7 @@
       "topId": "lee-jung-jae",
       "genuineDistance": 0.8858,
       "impostorDistance": 0.5516,
-      "rawRank": 246,
+      "rawRank": 254,
       "matchPercent": 42.9
     },
     {
