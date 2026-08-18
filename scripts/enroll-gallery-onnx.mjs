@@ -10,8 +10,16 @@
  * full-512 L2-normalized vectors per id, for calibration analysis before the
  * binary gallery is written by write-gallery-v4.mjs.
  *
+ * Newly enrolled extra views pass a same-person gate (scripts/lib/extra-gate.mjs)
+ * before they are written, so a mislabeled Commons photo cannot poison a
+ * celebrity's multi-shot centroid.
+ *
  * Usage:
  *   node --experimental-strip-types scripts/enroll-gallery-onnx.mjs [--limit N] [--concurrency N]
+ *   node --experimental-strip-types scripts/enroll-gallery-onnx.mjs --extras-only [--ids a,b]
+ *
+ * `--extras-only` skips the 1000 primaries entirely (hours of CPU) and gates the
+ * new views against the primaries already stored in embeddings.v4.q8.bin.
  */
 import { createCanvas, loadImage } from "canvas";
 import fs from "node:fs";
@@ -20,7 +28,9 @@ import { fileURLToPath } from "node:url";
 import { compute5PointSimilarityMatrix } from "../src/lib/face/similarity-transform.ts";
 import { generateAnchors, nmsFaceBoxes } from "../src/lib/face/scrfd.ts";
 import { estimateSmileMetrics } from "../src/lib/face/types.ts";
-import { collectEnrollJobs } from "./lib/enroll-jobs.mjs";
+import { collectEnrollJobs, resolveExtraViewCap } from "./lib/enroll-jobs.mjs";
+import { gateExtraCandidates } from "./lib/extra-gate.mjs";
+import { decodeV4Gallery } from "./lib/gallery-binary.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
 
 const ROOT = process.cwd();
@@ -31,6 +41,11 @@ const EMBED_WORKER = path.join(path.dirname(fileURLToPath(import.meta.url)), "li
 
 const limitIdx = process.argv.indexOf("--limit");
 const LIMIT = limitIdx >= 0 ? Number(process.argv[limitIdx + 1]) : Infinity;
+const EXTRAS_ONLY = process.argv.includes("--extras-only");
+const idsIdx = process.argv.indexOf("--ids");
+const ONLY_IDS = new Set(
+  idsIdx >= 0 ? String(process.argv[idsIdx + 1] ?? "").split(",").map((s) => s.trim()).filter(Boolean) : [],
+);
 
 /** @type {Promise<{ ort: typeof import("onnxruntime-web"), scrfdSession: any, edgeSession: any }> | null} */
 let sessionsPromise = null;
@@ -218,20 +233,62 @@ export async function embedImageFile(filePath) {
   };
 }
 
+/** Enrolled primaries straight from the shipping binary — no re-enroll needed. */
+function shippedPrimaries() {
+  const buckets = JSON.parse(fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"));
+  const buf = fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin"));
+  const { header, vectors } = decodeV4Gallery(buf);
+  if (header.vectorCount !== buckets.length) {
+    throw new Error(`binary has ${header.vectorCount} vectors, buckets has ${buckets.length}`);
+  }
+  const byId = new Map();
+  for (let i = 0; i < buckets.length; i++) {
+    if (!byId.has(buckets[i].id)) byId.set(buckets[i].id, vectors[i]);
+  }
+  return byId;
+}
+
+/** Already-shipped extra templates, so a re-fetched duplicate view is rejected. */
+function shippedExtras() {
+  const p = path.join(CELEBS, "extra-templates.json");
+  const byId = new Map();
+  if (!fs.existsSync(p)) return byId;
+  const data = JSON.parse(fs.readFileSync(p, "utf8"));
+  for (const t of data.templates ?? []) {
+    const list = byId.get(t.id) ?? [];
+    list.push(t.descriptor);
+    byId.set(t.id, list);
+  }
+  return byId;
+}
+
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const buckets = JSON.parse(
     fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
   );
-  const list = buckets.slice(0, LIMIT === Infinity ? buckets.length : LIMIT);
-  const allJobs = collectEnrollJobs(list, { celebsDir: CELEBS, thumbDir: THUMB_PNG });
-  const embedJobs = allJobs.filter((j) => j.kind !== "missing");
+  const selected = ONLY_IDS.size > 0 ? buckets.filter((b) => ONLY_IDS.has(b.id)) : buckets;
+  const list = selected.slice(0, LIMIT === Infinity ? selected.length : LIMIT);
+  const extraViewCap = resolveExtraViewCap();
+  const allJobs = collectEnrollJobs(list, {
+    celebsDir: CELEBS,
+    thumbDir: THUMB_PNG,
+    extraViewCap,
+  });
+  const embedJobs = allJobs.filter((j) =>
+    EXTRAS_ONLY ? j.kind === "extra" : j.kind !== "missing",
+  );
   const concurrency = parseConcurrencyArg();
   const t0 = Date.now();
 
   console.log(
-    `enroll jobs=${embedJobs.length} missingImages=${allJobs.length - embedJobs.length} concurrency=${concurrency}`,
+    `enroll jobs=${embedJobs.length} mode=${EXTRAS_ONLY ? "extras-only" : "full"} ` +
+      `extraViewCap=${extraViewCap} concurrency=${concurrency}`,
   );
+  if (embedJobs.length === 0) {
+    console.log("nothing to enroll");
+    return;
+  }
 
   const poolResults = await mapProcessPool(embedJobs, {
     workerPath: EMBED_WORKER,
@@ -246,12 +303,14 @@ async function main() {
   });
 
   const rows = [];
-  const extras = [];
+  const extraCandidates = [];
   let detected = 0;
   let fallback = 0;
-  let missing = allJobs.length - embedJobs.length;
-  for (const b of allJobs) {
-    if (b.kind === "missing") console.error("no image for", b.id);
+  let missing = allJobs.filter((j) => j.kind === "missing").length;
+  if (!EXTRAS_ONLY) {
+    for (const b of allJobs) {
+      if (b.kind === "missing") console.error("no image for", b.id);
+    }
   }
 
   for (let i = 0; i < embedJobs.length; i++) {
@@ -279,26 +338,54 @@ async function main() {
       continue;
     }
     if (job.kind === "extra") {
-      if (!r.usedDetection) continue;
-      extras.push({
+      extraCandidates.push({
         id: job.id,
         source: job.source,
+        usedDetection: r.usedDetection,
         score: Math.round(r.score * 1000) / 1000,
         d256: r.d256,
         d512: r.d512,
+        descriptor: r.d512,
       });
       continue;
     }
+    if (job.kind === "missing") continue;
     const _exhaustive = job.kind;
     throw new Error(`unknown enroll job kind: ${_exhaustive}`);
   }
 
+  const primaries = EXTRAS_ONLY
+    ? shippedPrimaries()
+    : new Map(rows.map((r) => [r.id, Float32Array.from(r.d512)]));
+  const existingById = EXTRAS_ONLY ? shippedExtras() : new Map();
+  const gate = gateExtraCandidates(extraCandidates, {
+    primaries,
+    existingById,
+    maxPerId: extraViewCap,
+  });
+  const extras = gate.accepted.map(({ descriptor: _drop, ...keep }) => keep);
+
   console.log(
-    `\ndetected=${detected} fallback=${fallback} missing=${missing} extras=${extras.length} elapsed=${Math.round((Date.now() - t0) / 1000)}s`,
+    `\ndetected=${detected} fallback=${fallback} missing=${missing} elapsed=${Math.round((Date.now() - t0) / 1000)}s`,
   );
-  fs.writeFileSync(path.join(OUT_DIR, "embeddings.json"), JSON.stringify(rows));
+  console.log(
+    `extras gate: accepted=${gate.stats.accepted} rejected=${gate.stats.rejected} ` +
+      `ids=${gate.stats.idsWithNewViews} maxDist=${gate.stats.maxDistance} ` +
+      `reasons=${JSON.stringify(gate.stats.byReason)}`,
+  );
+
+  if (!EXTRAS_ONLY) {
+    fs.writeFileSync(path.join(OUT_DIR, "embeddings.json"), JSON.stringify(rows));
+  }
   fs.writeFileSync(path.join(OUT_DIR, "extras.json"), JSON.stringify(extras));
-  console.log(`wrote ${OUT_DIR}/embeddings.json (${rows.length}) + extras.json (${extras.length})`);
+  fs.writeFileSync(
+    path.join(OUT_DIR, "extras-gate.json"),
+    JSON.stringify({ generatedAt: new Date().toISOString(), ...gate.stats, rejected: gate.rejected }, null, 2),
+  );
+  console.log(
+    `wrote ${OUT_DIR}/extras.json (${extras.length})` +
+      (EXTRAS_ONLY ? " + extras-gate.json (primaries untouched)" : ` + embeddings.json (${rows.length})`),
+  );
 }
 
 if (process.argv[1] && process.argv[1].endsWith("enroll-gallery-onnx.mjs")) {
