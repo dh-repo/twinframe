@@ -354,6 +354,10 @@ async function main() {
     throw new Error(`unknown enroll job kind: ${_exhaustive}`);
   }
 
+  if (process.env.TWINFRAME_DUMP_CANDIDATES) {
+    fs.writeFileSync(process.env.TWINFRAME_DUMP_CANDIDATES, JSON.stringify(extraCandidates));
+  }
+
   const primaries = EXTRAS_ONLY
     ? shippedPrimaries()
     : new Map(rows.map((r) => [r.id, Float32Array.from(r.d512)]));

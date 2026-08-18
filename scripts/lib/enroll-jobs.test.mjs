@@ -54,6 +54,21 @@ describe("collectEnrollJobs", () => {
     fs.rmSync(root, { recursive: true, force: true });
   });
 
+  it("still enrolls extra views for ids whose primary photo is not on disk", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "enroll-jobs-"));
+    fs.mkdirSync(path.join(root, "extra-photos", "greta-gerwig"), { recursive: true });
+    fs.writeFileSync(path.join(root, "extra-photos", "greta-gerwig", "002.jpg"), "e");
+    const jobs = collectEnrollJobs([{ id: "greta-gerwig" }], {
+      celebsDir: root,
+      thumbDir: path.join(root, "thumbs"),
+    });
+    assert.deepEqual(
+      jobs.map((j) => j.kind),
+      ["missing", "extra"],
+    );
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
   it("falls back to the thumb when the hires JPEG is absent", () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "enroll-jobs-"));
     const thumbs = path.join(root, "thumbs");

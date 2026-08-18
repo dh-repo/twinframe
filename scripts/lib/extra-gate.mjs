@@ -14,6 +14,13 @@ import { cosineDistance, l2Normalize } from "./gallery-binary.mjs";
 
 /** Above this cosine distance from the enrolled primary the view is treated as a different person. */
 export const EXTRA_MAX_DISTANCE = 0.7;
+/**
+ * Rescue path for celebrities enrolled from a 96px webp thumbnail: their primary
+ * sits in impostor range from every real photo of them, so agreement between
+ * independent candidates is the more trustworthy same-person signal.
+ */
+export const EXTRA_CLUSTER_EPS = 0.62;
+export const EXTRA_MIN_CLUSTER = 3;
 /** SCRFD confidence floor — low-score detections are usually a background face. */
 export const EXTRA_MIN_DET_SCORE = 0.5;
 /** Views this close to one already kept add no information to the centroid. */
@@ -45,6 +52,8 @@ function normalized(descriptor) {
  *   minDetScore?: number,
  *   nearDuplicateEps?: number,
  *   maxPerId?: number,
+ *   clusterEps?: number,
+ *   minCluster?: number,
  * }} options
  */
 export function gateExtraCandidates(candidates, options) {
@@ -55,6 +64,8 @@ export function gateExtraCandidates(candidates, options) {
     minDetScore = EXTRA_MIN_DET_SCORE,
     nearDuplicateEps = EXTRA_NEAR_DUPLICATE_EPS,
     maxPerId = Infinity,
+    clusterEps = EXTRA_CLUSTER_EPS,
+    minCluster = EXTRA_MIN_CLUSTER,
   } = options;
 
   const accepted = [];
@@ -76,6 +87,8 @@ export function gateExtraCandidates(candidates, options) {
     });
   };
 
+  // Pass 1: cheap signal gates, then split on agreement with the enrolled primary.
+  const scored = [];
   for (const c of candidates) {
     if (c.usedDetection === false) {
       reject(c, "no-detection");
@@ -100,13 +113,43 @@ export function gateExtraCandidates(candidates, options) {
       reject(c, "bad-descriptor");
       continue;
     }
-    if (distance > maxDistance) {
+    scored.push({ candidate: c, vec, distance, nearPrimary: distance <= maxDistance });
+  }
+
+  // Pass 2: a candidate the primary disagrees with is still credible when enough
+  // independent candidates for that id agree with each other.
+  const clusterOk = new Set();
+  if (minCluster > 0 && clusterEps > 0) {
+    const byIdScored = new Map();
+    for (const s of scored) {
+      const list = byIdScored.get(s.candidate.id) ?? [];
+      list.push(s);
+      byIdScored.set(s.candidate.id, list);
+    }
+    for (const [id, list] of byIdScored) {
+      if (list.length < minCluster) continue;
+      // Only rescue when the primary agrees with nothing: if it validates some
+      // views (or already validated the shipped ones), trust it over the crowd.
+      if (list.some((s) => s.nearPrimary) || (existingById.get(id)?.length ?? 0) > 0) continue;
+      for (const s of list) {
+        if (s.nearPrimary) continue;
+        const neighbours = list.filter(
+          (o) => o !== s && cosineDistance(s.vec, o.vec) <= clusterEps,
+        ).length;
+        if (neighbours >= minCluster - 1) clusterOk.add(s);
+      }
+    }
+  }
+
+  for (const s of scored) {
+    const { candidate: c, vec, distance } = s;
+    const viaCluster = !s.nearPrimary && clusterOk.has(s);
+    if (!s.nearPrimary && !viaCluster) {
       reject(c, "too-far-from-primary", distance);
       continue;
     }
     const kept = keptById.get(c.id) ?? [];
-    const dupe = kept.find((k) => cosineDistance(vec, k) < nearDuplicateEps);
-    if (dupe) {
+    if (kept.some((k) => cosineDistance(vec, k) < nearDuplicateEps)) {
       reject(c, "near-duplicate", distance);
       continue;
     }
@@ -116,7 +159,11 @@ export function gateExtraCandidates(candidates, options) {
     }
     kept.push(vec);
     keptById.set(c.id, kept);
-    accepted.push({ ...c, distanceToPrimary: Number(distance.toFixed(4)) });
+    accepted.push({
+      ...c,
+      distanceToPrimary: Number(distance.toFixed(4)),
+      via: viaCluster ? "cluster" : "primary",
+    });
   }
 
   const byReason = {};
@@ -128,11 +175,14 @@ export function gateExtraCandidates(candidates, options) {
     stats: {
       candidates: candidates.length,
       accepted: accepted.length,
+      acceptedViaCluster: accepted.filter((a) => a.via === "cluster").length,
       rejected: rejected.length,
       byReason,
       idsWithNewViews: new Set(accepted.map((a) => a.id)).size,
       maxDistance,
       minDetScore,
+      clusterEps,
+      minCluster,
     },
   };
 }

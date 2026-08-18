@@ -27,6 +27,8 @@
  *   EXTRAS_SKIP_EXISTING=0  re-visit celebs that already have photos
  *   EXTRAS_MAX_EXISTING     only visit celebs with at most this many views
  *                           (0 = the single-shot celebs, the ones that need it most)
+ *   EXTRAS_REPAIR_MANIFEST=1  skip fetching; recover provenance for photos on
+ *                           disk that no manifest row covers (SHA-1 lookup)
  */
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -39,7 +41,6 @@ const OUT_ROOT = path.join(CELEBS, "extra-photos");
 const MANIFEST = path.join(OUT_ROOT, "commons-manifest.json");
 const UA = "TwinframeExtras/1.0 (local accuracy work; multi-shot enrollment) Node.js";
 const COMMONS_API = "https://commons.wikimedia.org/w/api.php";
-const WIKI_API = "https://en.wikipedia.org/w/api.php";
 
 /** Hard ceiling shared with scripts/lib/enroll-jobs.mjs — more views are never enrolled. */
 export const MAX_EXTRA_PHOTOS = 8;
@@ -361,6 +362,79 @@ function existingViewCount(id: string): number {
   return heldOut.length + listPhotos(path.join(OUT_ROOT, id)).length;
 }
 
+/** Written after every celebrity: an interrupted crawl must not lose provenance. */
+function saveManifest(rows: ManifestRow[]): void {
+  const seen = new Set<string>();
+  const unique = rows.filter((row) => {
+    const key = `${row.id}/${row.file}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  fs.writeFileSync(
+    MANIFEST,
+    JSON.stringify(
+      {
+        version: "1.0.0",
+        description: "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
+        count: unique.length,
+        photos: unique,
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+/**
+ * Recover provenance for photos on disk that no manifest row covers (an
+ * interrupted run), by asking Commons which file has that SHA-1.
+ */
+async function repairManifest(rows: ManifestRow[]): Promise<void> {
+  const known = new Set(rows.map((r) => `${r.id}/${r.file}`));
+  const orphans: Array<{ id: string; file: string }> = [];
+  for (const id of fs.readdirSync(OUT_ROOT)) {
+    const dir = path.join(OUT_ROOT, id);
+    if (!fs.statSync(dir).isDirectory()) continue;
+    for (const file of listPhotos(dir)) {
+      if (!known.has(`${id}/${file}`)) orphans.push({ id, file });
+    }
+  }
+  console.log(`manifest repair: ${orphans.length} photos without provenance`);
+  let fixed = 0;
+  for (const o of orphans) {
+    const buf = fs.readFileSync(path.join(OUT_ROOT, o.id, o.file));
+    const sha1 = crypto.createHash("sha1").update(buf).digest("hex");
+    try {
+      const j = await api(COMMONS_API, {
+        action: "query",
+        list: "allimages",
+        aisha1: sha1,
+        ailimit: "1",
+        aiprop: "url",
+      });
+      const hit = j.query?.allimages?.[0];
+      if (hit) {
+        rows.push({
+          id: o.id,
+          file: o.file,
+          commonsTitle: hit.title ?? `File:${hit.name}`,
+          sourceUrl: hit.url ?? "",
+          fetchedAt: new Date().toISOString(),
+        });
+        fixed++;
+      } else {
+        console.log(`  no commons match ${o.id}/${o.file}`);
+      }
+    } catch (err) {
+      console.log(`  lookup failed ${o.id}/${o.file}: ${err instanceof Error ? err.message : err}`);
+    }
+    saveManifest(rows);
+    await sleep(DELAY_MS);
+  }
+  console.log(`manifest repair: recovered ${fixed}/${orphans.length}`);
+}
+
 async function main(): Promise<void> {
   const index = JSON.parse(fs.readFileSync(path.join(CELEBS, "index.json"), "utf8")) as IndexEntry[];
   const byId = new Map(index.map((e) => [e.id, e]));
@@ -372,6 +446,11 @@ async function main(): Promise<void> {
   const manifest: ManifestRow[] = fs.existsSync(MANIFEST)
     ? (JSON.parse(fs.readFileSync(MANIFEST, "utf8")).photos ?? [])
     : [];
+
+  if (process.env.EXTRAS_REPAIR_MANIFEST === "1") {
+    await repairManifest(manifest);
+    return;
+  }
 
   const startedAt = Date.now();
   let saved = 0;
@@ -408,6 +487,7 @@ async function main(): Promise<void> {
       if (got > 0) {
         celebsTouched++;
         saved += got;
+        saveManifest(manifest);
       } else {
         failed++;
       }
@@ -417,26 +497,7 @@ async function main(): Promise<void> {
     }
   }
 
-  const seen = new Set<string>();
-  const unique = manifest.filter((row) => {
-    const key = `${row.id}/${row.file}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-  fs.writeFileSync(
-    MANIFEST,
-    JSON.stringify(
-      {
-        version: "1.0.0",
-        description: "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-        count: unique.length,
-        photos: unique,
-      },
-      null,
-      2,
-    ),
-  );
+  saveManifest(manifest);
 
   console.log(
     `done saved=${saved} celebs=${celebsTouched} skipped=${skipped} failed=${failed} ` +

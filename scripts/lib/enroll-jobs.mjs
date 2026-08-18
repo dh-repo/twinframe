@@ -53,11 +53,13 @@ export function collectEnrollJobs(buckets, { celebsDir, thumbDir, extraViewCap }
     const hires = path.join(celebsDir, `${b.id}.jpg`);
     const thumb = path.join(thumbDir, `${b.id}.png`);
     const src = fs.existsSync(hires) ? hires : fs.existsSync(thumb) ? thumb : null;
-    if (!src) {
-      jobs.push({ kind: "missing", id: b.id, filePath: null, source: null });
-      continue;
-    }
-    jobs.push({ kind: "primary", id: b.id, filePath: src, source: path.basename(src) });
+    // A celeb whose primary photo is not on disk (webp-thumb-only ids) still has
+    // enrollable extra views — those were the ones starved of multi-shot coverage.
+    jobs.push(
+      src
+        ? { kind: "primary", id: b.id, filePath: src, source: path.basename(src) }
+        : { kind: "missing", id: b.id, filePath: null, source: null },
+    );
     for (const extraPath of extraImagePaths(b.id, celebsDir, cap)) {
       jobs.push({
         kind: "extra",

@@ -99,6 +99,62 @@ describe("gateExtraCandidates", () => {
   });
 });
 
+describe("cluster consensus rescue", () => {
+  /** Candidates agreeing with each other but not with a thumbnail-quality primary. */
+  function farCluster(sources) {
+    return sources.map((source, i) => ({
+      id: "greta",
+      source,
+      score: 0.9,
+      descriptor: Array.from(
+        l2Normalize(
+          Float32Array.from(
+            Array.from({ length: DIM }, (_, k) =>
+              k === 5 ? 1 : k === 6 + i ? 0.28 : 0,
+            ),
+          ),
+        ),
+      ),
+    }));
+  }
+
+  const weakPrimary = new Map([["greta", unit(0)]]);
+
+  it("accepts a consistent cluster when the primary agrees with nothing", () => {
+    const res = gateExtraCandidates(farCluster(["a.jpg", "b.jpg", "c.jpg"]), {
+      primaries: weakPrimary,
+    });
+    assert.equal(res.accepted.length, 3);
+    assert.equal(res.stats.acceptedViaCluster, 3);
+    assert.ok(res.accepted.every((a) => a.via === "cluster"));
+    assert.ok(res.accepted[0].distanceToPrimary > EXTRA_MAX_DISTANCE);
+  });
+
+  it("needs at least three agreeing views", () => {
+    const res = gateExtraCandidates(farCluster(["a.jpg", "b.jpg"]), { primaries: weakPrimary });
+    assert.equal(res.accepted.length, 0);
+    assert.deepEqual(res.stats.byReason, { "too-far-from-primary": 2 });
+  });
+
+  it("trusts the primary when it validates some views or shipped templates", () => {
+    const mixed = [
+      ...farCluster(["a.jpg", "b.jpg", "c.jpg"]),
+      { id: "greta", source: "d.jpg", descriptor: atDistance(0.3), score: 0.9 },
+    ];
+    const withGoodPrimary = gateExtraCandidates(mixed, { primaries: weakPrimary });
+    assert.deepEqual(
+      withGoodPrimary.accepted.map((a) => a.source),
+      ["d.jpg"],
+    );
+
+    const alreadyShipped = gateExtraCandidates(farCluster(["a.jpg", "b.jpg", "c.jpg"]), {
+      primaries: weakPrimary,
+      existingById: new Map([["greta", [atDistance(0.3)]]]),
+    });
+    assert.equal(alreadyShipped.accepted.length, 0);
+  });
+});
+
 describe("mergeExtraTemplates", () => {
   it("adds new rows, replaces re-enrolled sources and never drops shipped views", () => {
     const existing = {
