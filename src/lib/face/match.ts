@@ -1,7 +1,9 @@
 import { catalogFor } from "../celebrities/catalog.ts";
 import { CELEBRITIES } from "../celebrities/database.ts";
+import { galleryFeaturesFor } from "../celebrities/gallery-features.ts";
 import { celebInPack, type PackId } from "../celebrities/packs.ts";
 import { initials } from "../celebrities/types.ts";
+import { composeMatchBlurb } from "../ux/match-blurb.ts";
 import type { CelebrityMatch, TraitInsight } from "./types.ts";
 import { verdictFromMatch } from "./verdict.ts";
 import {
@@ -143,6 +145,15 @@ export function rankByDescriptor(
       accentHue: meta.accentHue,
       initials: initials(displayName),
       tags: meta.tags,
+      blurb: composeMatchBlurb({
+        name: displayName,
+        gender: t.celeb.gender,
+        tags: meta.tags,
+        celebFeatures:
+          galleryFeaturesFor(t.celeb.id) ??
+          CELEBRITIES.find((c) => c.id === t.celeb.id)?.features ??
+          null,
+      }),
       gender: t.celeb.gender as "male" | "female" | "unknown" | undefined,
       photoUrl: t.celeb.path,
       photoUrl192: anyPath.path192,

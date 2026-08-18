@@ -18,6 +18,7 @@ import {
 import { composeMatchBlurb } from "@/lib/ux/match-blurb";
 import { verdictLabel, verdictSubtitle } from "@/lib/face/verdict";
 import { getCelebrityById } from "@/lib/celebrities/database";
+import { galleryFeaturesFor } from "@/lib/celebrities/gallery-features";
 
 export interface MatchRevealCardProps {
   topMatch: CelebrityMatch;
@@ -43,7 +44,9 @@ export function MatchRevealCard({
   }, []);
 
   const celebFeatures =
-    getCelebrityById(topMatch.celebrityId)?.features ?? null;
+    galleryFeaturesFor(topMatch.celebrityId) ??
+    getCelebrityById(topMatch.celebrityId)?.features ??
+    null;
   const band = topMatch.verdict
     ? honestyBandFromVerdict(topMatch.verdict)
     : honestyBand(topMatch.matchPercent, topMatch.rankMargin);
@@ -151,7 +154,11 @@ export function MatchRevealCard({
               </p>
             </div>
 
-            <div className="shrink-0 text-right">
+            <div
+              className="shrink-0 text-right"
+              data-match-percent={Math.round(topMatch.matchPercent)}
+              data-verdict={topMatch.verdict ?? ""}
+            >
               <div className="flex items-baseline justify-end gap-0.5 text-match">
                 <NumberCounter
                   value={topMatch.matchPercent}

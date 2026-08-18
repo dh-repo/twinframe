@@ -12,6 +12,7 @@ import {
   type FaceDetectionResult,
 } from "./faceapi-engine.ts";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
+import { loadGalleryFeatures } from "../celebrities/load-gallery-features.ts";
 import { detectSCRFD } from "./scrfd.ts";
 import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
@@ -41,6 +42,7 @@ export function prefetchModel(): void {
   if (typeof window === "undefined") return;
   prefetchFaceApi();
   prefetchEmbeddings();
+  void loadGalleryFeatures();
 }
 
 /** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */

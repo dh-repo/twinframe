@@ -23,6 +23,7 @@ import {
   readStoredPack,
   writeStoredPack,
 } from "@/lib/celebrities/load-packs";
+import { loadGalleryFeatures } from "@/lib/celebrities/load-gallery-features";
 import { cn } from "@/lib/utils/cn";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
@@ -141,6 +142,7 @@ export function AppHome() {
   useEffect(() => {
     prefetchModel();
     void loadCuratedPacks();
+    void loadGalleryFeatures();
     setPack(readStoredPack());
     void loadCelebrityEmbeddings()
       .then((g) => setGallerySize(new Set(g.map((c) => c.id)).size))
@@ -761,7 +763,7 @@ export function AppHome() {
                 result={result}
                 previewUrl={previewUrl}
                 onReset={reset}
-                onAddFriend={playMode === "friend" && !personB ? addFriend : undefined}
+                onAddFriend={!personB ? addFriend : undefined}
               />
             )}
           </div>
@@ -857,10 +859,10 @@ export function AppHome() {
                   </Button>
                 ) : null}
               </div>
-              {playMode === "friend" && friendSlot === "a" && result.matches.length > 0 ? (
+              {!personB ? (
                 <Button variant="primary" size="md" onClick={addFriend} className="w-full">
                   <Users className="h-4 w-4" />
-                  Add a friend anyway
+                  {result.matches.length > 0 ? "Add a friend anyway" : "Add a friend"}
                 </Button>
               ) : null}
               {result.matches.length > 0 ? (

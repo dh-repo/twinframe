@@ -15,14 +15,16 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import os from "node:os";
 import { catalogFor } from "../src/lib/celebrities/catalog.ts";
+import { applyGalleryFeatureManifest } from "../src/lib/celebrities/gallery-features.ts";
 import { applyPackManifest, celebInPack } from "../src/lib/celebrities/packs.ts";
 import { l2Normalize } from "../src/lib/face/embeddings.ts";
 import { isPaddedFaceNetDescriptor, buildMultiShotCentroidGallery } from "../src/lib/face/gallery-dedupe.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
 import { verdictLabel } from "../src/lib/face/verdict.ts";
 import { composeMatchBlurb } from "../src/lib/ux/match-blurb.ts";
-import { embedImageFile } from "./enroll-gallery-onnx.mjs";
+import { embedImageFile, productCropImageFile } from "./enroll-gallery-onnx.mjs";
 import { loadV4Gallery } from "./lib/v4-gallery.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -70,15 +72,41 @@ async function main() {
   if (fs.existsSync(packsPath)) {
     applyPackManifest(JSON.parse(fs.readFileSync(packsPath, "utf8")));
   }
+  const featuresManifest = path.join(ROOT, "public/celebs/gallery.features.json");
+  if (fs.existsSync(featuresManifest)) {
+    applyGalleryFeatureManifest(JSON.parse(fs.readFileSync(featuresManifest, "utf8")));
+  }
 
   const featuresPath = path.join(ROOT, "public/celebs/gallery.features.json");
   const features = fs.existsSync(featuresPath)
     ? JSON.parse(fs.readFileSync(featuresPath, "utf8"))
     : {};
 
-  console.log(`probe: ${imagePath}`);
+  const skipCrop = process.argv.includes("--raw");
+  let probePath = imagePath;
+  let productCrop = null;
+  if (!skipCrop) {
+    productCrop = await productCropImageFile(
+      imagePath,
+      path.join(os.tmpdir(), "twinframe-product-crop.jpg"),
+    );
+    if (productCrop.cropped) probePath = productCrop.path;
+    console.log(
+      JSON.stringify(
+        {
+          productCrop: productCrop.cropped,
+          faceCount: productCrop.faceCount,
+          detScore: productCrop.score,
+        },
+        null,
+        2,
+      ),
+    );
+  }
+
+  console.log(`probe: ${probePath}`);
   const t0 = Date.now();
-  const emb = await embedImageFile(imagePath);
+  const emb = await embedImageFile(probePath);
   const encodeMs = Date.now() - t0;
   const descriptor = emb.d512 ?? emb.d256;
   if (!descriptor) {
@@ -135,6 +163,8 @@ async function main() {
 
   const report = {
     image: imagePath,
+    probe: probePath,
+    productCrop,
     pack,
     galleryVectors: gallery.length,
     packVectors: scoped.length,

@@ -143,11 +143,21 @@ async function main() {
     timeoutMs: ANALYZE_WAIT_MS,
     label: "analyze-results",
   });
+  await page.locator("[data-match-percent]").first().waitFor({ state: "attached", timeout: 8000 }).catch(() => {});
+  const percentEl = page.locator("[data-match-percent]").first();
+  const settledPercent =
+    (await percentEl.count()) > 0 ? Number(await percentEl.getAttribute("data-match-percent")) : null;
+  const verdictAttr =
+    (await percentEl.count()) > 0 ? await percentEl.getAttribute("data-verdict") : null;
   await page.screenshot({ path: join(OUT, "03-results.png"), fullPage: true });
   report.steps.results = {
     timedOut: /timed out/i.test(resultsText),
     verdict: (resultsText.match(/DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN/) || [])[0] || null,
+    verdictAttr,
+    matchPercent: Number.isFinite(settledPercent) ? settledPercent : null,
     blurb: /You share/i.test(resultsText),
+    traitBlurb: /You share (her|his|their) /i.test(resultsText),
+    genericBlurb: /You share a look with/i.test(resultsText),
     share: /Share|Create shareable/i.test(resultsText),
     packRematch: /90s Icons|Everyone/.test(resultsText),
     qualityBlocked: /Photo quality|Hold the phone/i.test(resultsText) && !/DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN/i.test(resultsText),
@@ -178,53 +188,43 @@ async function main() {
     await page.keyboard.press("Escape").catch(() => {});
   }
 
-  // Pack rematch without recapture
+  // Friend from the first good match (solo results now expose Add a friend).
+  const addFriend = page.getByRole("button", { name: /^Add a friend/i }).first();
+  if ((await addFriend.count()) > 0) {
+    await addFriend.click();
+    await sleep(400);
+    await uploadPhoto(page, FRIEND);
+    await approveCrop(page);
+    const friendText = await waitForBody(
+      page,
+      (t) => /Closer twin|CLOSER TWIN|You share|DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN/i.test(t),
+      { timeoutMs: ANALYZE_WAIT_MS, label: "friend-b" },
+    );
+    await page.screenshot({ path: join(OUT, "06-friend.png"), fullPage: true });
+    report.steps.friend = {
+      closerTwin: /Closer twin|CLOSER TWIN/i.test(friendText),
+      excerpt: friendText.slice(0, 800),
+    };
+  } else {
+    report.steps.friend = { skipped: "Add a friend button not shown" };
+  }
+
+  // Pack rematch without recapture (open-set refuse on a mismatched pack).
   const athletes = page.getByRole("button", { name: "Athletes" });
   if ((await athletes.count()) > 0) {
     await athletes.click();
-    const rematchText = await waitForBody(page, verdictPresent, {
-      timeoutMs: ANALYZE_WAIT_MS,
-      label: "pack-rematch",
-    });
+    const rematchText = await waitForBody(
+      page,
+      (t) => verdictPresent(t) || /No close look-alike/i.test(t),
+      { timeoutMs: ANALYZE_WAIT_MS, label: "pack-rematch" },
+    );
     await page.screenshot({ path: join(OUT, "05-rematch-athletes.png"), fullPage: true });
     report.steps.rematch = {
       timedOut: /timed out/i.test(rematchText),
       verdict: (rematchText.match(/DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN/) || [])[0] || null,
+      openSetRefuse: /No close look-alike/i.test(rematchText),
       excerpt: rematchText.slice(0, 800),
     };
-  }
-
-  // Friend mode: start over, toggle, two uploads
-  const startOver = page.getByRole("button", { name: /Start over|New photo|Try another photo/i }).first();
-  if ((await startOver.count()) > 0) {
-    await startOver.click();
-    await sleep(400);
-  }
-  const friendToggle = page.getByRole("button", { name: "With a friend" });
-  if ((await friendToggle.count()) > 0) {
-    await friendToggle.click();
-    await uploadPhoto(page, IMAGE);
-    await approveCrop(page);
-    await waitForBody(page, verdictPresent, { timeoutMs: ANALYZE_WAIT_MS, label: "friend-a" });
-    const addFriend = page.getByRole("button", { name: /Add a friend/i }).first();
-    if ((await addFriend.count()) > 0) {
-      await addFriend.click();
-      await sleep(400);
-      await uploadPhoto(page, FRIEND);
-      await approveCrop(page);
-      const friendText = await waitForBody(
-        page,
-        (t) => /Closer twin|CLOSER TWIN|You share|DEAD RINGER|STRONG RESEMBLANCE|SOFT MATCH|DISTANT TWIN/i.test(t),
-        { timeoutMs: ANALYZE_WAIT_MS, label: "friend-b" },
-      );
-      await page.screenshot({ path: join(OUT, "06-friend.png"), fullPage: true });
-      report.steps.friend = {
-        closerTwin: /Closer twin|CLOSER TWIN/i.test(friendText),
-        excerpt: friendText.slice(0, 800),
-      };
-    } else {
-      report.steps.friend = { skipped: "Add a friend button not shown (quality-blocked?)" };
-    }
   }
 
   report.consoleErrors = consoleErrors.slice(0, 30);

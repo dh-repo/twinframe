@@ -205,6 +205,54 @@ function padImage(img, marginRatio = 0.6) {
   return { canvas, margin };
 }
 
+/**
+ * Same face-centric square the browser crop-review sends to analysis
+ * (0.45 pad, 1024px). Distant / full-body probes must use this before embed.
+ */
+export async function productCropImageFile(filePath, outPath) {
+  const img = await loadImage(filePath);
+  let faces = await detectFaces(img);
+  let box = faces[0]?.bbox;
+  if (!box) {
+    const padded = padImage(img);
+    faces = await detectFaces(padded.canvas);
+    if (faces[0]) {
+      box = {
+        x: faces[0].bbox.x - padded.margin,
+        y: faces[0].bbox.y - padded.margin,
+        width: faces[0].bbox.width,
+        height: faces[0].bbox.height,
+      };
+    }
+  }
+  if (!box) {
+    return { path: filePath, cropped: false, faceCount: 0, score: 0 };
+  }
+  const pad = 0.45;
+  const size = 1024;
+  const cx = box.x + box.width / 2;
+  const cy = box.y + box.height / 2;
+  const side = Math.max(box.width, box.height) * (1 + pad * 2);
+  const cropSide = Math.min(side, Math.min(img.width, img.height));
+  let sx = Math.max(0, Math.min(img.width - cropSide, cx - cropSide / 2));
+  let sy = Math.max(0, Math.min(img.height - cropSide, cy - cropSide / 2));
+  const canvas = createCanvas(size, size);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#0a0a0b";
+  ctx.fillRect(0, 0, size, size);
+  ctx.drawImage(img, sx, sy, cropSide, cropSide, 0, 0, size, size);
+  const dest = outPath ?? path.join(OUT_DIR, "product-crop.jpg");
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.writeFileSync(dest, canvas.toBuffer("image/jpeg", { quality: 0.92 }));
+  return {
+    path: dest,
+    cropped: true,
+    faceCount: faces.length,
+    score: faces[0]?.score ?? 0,
+    box,
+  };
+}
+
 export async function embedImageFile(filePath) {
   const img = await loadImage(filePath);
   let faces = await detectFaces(img);
