@@ -42,8 +42,8 @@ function record(overrides = {}) {
 }
 
 describe("wilsonInterval", () => {
-  it("returns a zero interval for an empty sample instead of NaN", () => {
-    assert.deepEqual(wilsonInterval(0, 0), [0, 0]);
+  it("returns null for an empty sample, so no interval is claimed", () => {
+    assert.equal(wilsonInterval(0, 0), null);
   });
 
   it("brackets the point estimate", () => {
@@ -143,12 +143,23 @@ describe("computeRankStats", () => {
     assert.equal(stats.refusedPct, 100);
   });
 
-  it("reports zeros, not NaN, for an empty stratum", () => {
+  it("reports an unmeasured stratum as null, not as 0%", () => {
     const stats = computeRankStats("glasses", []);
     assert.equal(stats.n, 0);
+    // 0 here would read as "glasses accuracy is 0%" off the JSON, which we never measured.
+    assert.equal(stats.rank1Pct, null);
+    assert.equal(stats.rank5Pct, null);
+    assert.equal(stats.rawRank1Pct, null);
+    assert.equal(stats.refusedPct, null);
+    assert.equal(stats.rank1Ci95, null);
+    assert.equal(stats.mrr, null);
+  });
+
+  it("still reports a real 0% when probes exist and all of them missed", () => {
+    const stats = computeRankStats("low-light", [record({ rank: -1 }), record({ rank: -1 })]);
+    assert.equal(stats.n, 2);
     assert.equal(stats.rank1Pct, 0);
-    assert.deepEqual(stats.rank1Ci95, [0, 0]);
-    assert.equal(stats.mrr, 0);
+    assert.notEqual(stats.rank1Ci95, null);
   });
 
   it("tracks the raw nearest-neighbour rank separately from the product path", () => {

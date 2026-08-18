@@ -30,7 +30,7 @@
  *   # small sanity run (~1s/probe on this CPU)
  *   node --experimental-strip-types scripts/evaluate-held-out.ts --limit 12 --concurrency 4
  *
- *   # full held-out set (203 probes, ~1 min at concurrency 4)
+ *   # full held-out set (205 probes on disk today, ~1 min at concurrency 4)
  *   node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency 4
  *
  *   # legacy FaceNet-128 protocol (needs public/celebs/held-out/descriptors.json)
@@ -150,28 +150,32 @@ export interface ProbeRecord {
   matchPercent: number | null;
 }
 
+/**
+ * Rates are null, never 0, for an empty stratum. A cohort with no probes has no
+ * accuracy, and "glasses: 0%" read off the JSON would be a claim we never measured.
+ */
 export interface RankStats {
   stratum: string;
   n: number;
   rank1: number;
   rank5: number;
-  rank1Pct: number;
-  rank5Pct: number;
-  rank1Ci95: [number, number];
+  rank1Pct: number | null;
+  rank5Pct: number | null;
+  rank1Ci95: [number, number] | null;
   rawRank1: number;
-  rawRank1Pct: number;
+  rawRank1Pct: number | null;
   refused: number;
-  refusedPct: number;
+  refusedPct: number | null;
   detected: number;
-  mrr: number;
+  mrr: number | null;
 }
 
 /**
  * Wilson score interval for a binomial proportion, in percent. With 20-200
  * probes per stratum the normal approximation is not good enough to quote.
  */
-export function wilsonInterval(hits: number, n: number, z = 1.96): [number, number] {
-  if (n <= 0) return [0, 0];
+export function wilsonInterval(hits: number, n: number, z = 1.96): [number, number] | null {
+  if (n <= 0) return null;
   const p = hits / n;
   const denom = 1 + (z * z) / n;
   const centre = p + (z * z) / (2 * n);
@@ -189,20 +193,21 @@ export function computeRankStats(stratum: string, records: ProbeRecord[]): RankS
   const refused = records.filter((r) => r.refused).length;
   const detected = records.filter((r) => r.detected).length;
   const mrr = records.reduce((acc, r) => acc + (r.rank > 0 ? 1 / r.rank : 0), 0) / Math.max(1, n);
+  const rate = (hits: number) => (n === 0 ? null : pct(hits, n));
   return {
     stratum,
     n,
     rank1,
     rank5,
-    rank1Pct: pct(rank1, n),
-    rank5Pct: pct(rank5, n),
+    rank1Pct: rate(rank1),
+    rank5Pct: rate(rank5),
     rank1Ci95: wilsonInterval(rank1, n),
     rawRank1,
-    rawRank1Pct: pct(rawRank1, n),
+    rawRank1Pct: rate(rawRank1),
     refused,
-    refusedPct: pct(refused, n),
+    refusedPct: rate(refused),
     detected,
-    mrr: round(mrr, 4),
+    mrr: n === 0 ? null : round(mrr, 4),
   };
 }
 
@@ -714,6 +719,17 @@ function scoreLegacyFacenet(
   return { records, skipped };
 }
 
+const EM_DASH = "\u2014";
+
+/** An unmeasured rate reads as a dash, never as 0%. */
+function pctText(value: number | null): string {
+  return value === null ? EM_DASH : `${value}%`;
+}
+
+function ciText(interval: [number, number] | null): string {
+  return interval === null ? EM_DASH : `${interval[0]}\u2013${interval[1]}%`;
+}
+
 function strataTable(strata: RankStats[], labels: Record<string, string>): string[] {
   const lines = [
     "| Condition | n | Rank-1 | 95% CI | Rank-5 | Raw Rank-1 | Refused | Label source |",
@@ -725,9 +741,8 @@ function strataTable(strata: RankStats[], labels: Record<string, string>): strin
       stratum.stratum === EASY_STRATUM
         ? "No condition fired"
         : hardProbeLabel(stratum.stratum as HardProbeCondition);
-    const ci = stratum.n > 0 ? `${stratum.rank1Ci95[0]}\u2013${stratum.rank1Ci95[1]}%` : "\u2014";
     lines.push(
-      `| ${name} | ${stratum.n} | ${stratum.n ? `${stratum.rank1Pct}%` : "\u2014"} | ${ci} | ${stratum.n ? `${stratum.rank5Pct}%` : "\u2014"} | ${stratum.n ? `${stratum.rawRank1Pct}%` : "\u2014"} | ${stratum.n ? `${stratum.refusedPct}%` : "\u2014"} | ${labels[stratum.stratum] ?? "\u2014"} |`,
+      `| ${name} | ${stratum.n} | ${pctText(stratum.rank1Pct)} | ${ciText(stratum.rank1Ci95)} | ${pctText(stratum.rank5Pct)} | ${pctText(stratum.rawRank1Pct)} | ${pctText(stratum.refusedPct)} | ${labels[stratum.stratum] ?? EM_DASH} |`,
     );
   }
   return lines;
@@ -838,11 +853,11 @@ export function formatMarkdownReport(report: any): string {
   lines.push("| :--- | ---: | ---: | :---: | ---: | ---: |");
   if (cleanOverall) {
     lines.push(
-      `| **Held out for real** (near-duplicates removed) | ${cleanOverall.n} | **${cleanOverall.rank1Pct}%** | ${cleanOverall.rank1Ci95[0]}\u2013${cleanOverall.rank1Ci95[1]}% | ${cleanOverall.rank5Pct}% | ${cleanOverall.refusedPct}% |`,
+      `| **Held out for real** (near-duplicates removed) | ${cleanOverall.n} | **${pctText(cleanOverall.rank1Pct)}** | ${ciText(cleanOverall.rank1Ci95)} | ${pctText(cleanOverall.rank5Pct)} | ${pctText(cleanOverall.refusedPct)} |`,
     );
   }
   lines.push(
-    `| Every probe on disk (leakage included) | ${overall.n} | ${overall.rank1Pct}% | ${overall.rank1Ci95[0]}\u2013${overall.rank1Ci95[1]}% | ${overall.rank5Pct}% | ${overall.refusedPct}% |`,
+    `| Every probe on disk (leakage included) | ${overall.n} | ${pctText(overall.rank1Pct)} | ${ciText(overall.rank1Ci95)} | ${pctText(overall.rank5Pct)} | ${pctText(overall.refusedPct)} |`,
   );
   lines.push("");
   if (leakage && leakage.count > 0) {
@@ -852,8 +867,8 @@ export function formatMarkdownReport(report: any): string {
     lines.push("");
   }
   lines.push(
-    `Raw nearest-neighbour Rank-1 (no gates, no priors): ${overall.rawRank1Pct}% over all probes${
-      cleanOverall ? `, ${cleanOverall.rawRank1Pct}% with near-duplicates removed` : ""
+    `Raw nearest-neighbour Rank-1 (no gates, no priors): ${pctText(overall.rawRank1Pct)} over all probes${
+      cleanOverall ? `, ${pctText(cleanOverall.rawRank1Pct)} with near-duplicates removed` : ""
     }.`,
   );
   lines.push("");
@@ -1103,22 +1118,24 @@ async function main() {
       `near-duplicate leakage: ${report.leakage.count}/${overall.n} probes (${report.leakage.pct}%) are the enrolled photo again`,
     );
     console.log(
-      `HONEST Rank-1 (leak-free): ${cleanOverall.rank1Pct}% (${cleanOverall.rank1}/${cleanOverall.n})  95% CI ${cleanOverall.rank1Ci95[0]}–${cleanOverall.rank1Ci95[1]}%`,
+      `HONEST Rank-1 (leak-free): ${pctText(cleanOverall.rank1Pct)} (${cleanOverall.rank1}/${cleanOverall.n})  95% CI ${ciText(cleanOverall.rank1Ci95)}`,
     );
-    console.log(`HONEST Rank-5 (leak-free): ${cleanOverall.rank5Pct}% (${cleanOverall.rank5}/${cleanOverall.n})`);
+    console.log(
+      `HONEST Rank-5 (leak-free): ${pctText(cleanOverall.rank5Pct)} (${cleanOverall.rank5}/${cleanOverall.n})`,
+    );
   }
   console.log(
-    `all probes Rank-1: ${overall.rank1Pct}% (${overall.rank1}/${overall.n})  95% CI ${overall.rank1Ci95[0]}–${overall.rank1Ci95[1]}%`,
+    `all probes Rank-1: ${pctText(overall.rank1Pct)} (${overall.rank1}/${overall.n})  95% CI ${ciText(overall.rank1Ci95)}`,
   );
-  console.log(`all probes Rank-5: ${overall.rank5Pct}% (${overall.rank5}/${overall.n})`);
-  console.log(`raw NN Rank-1: ${overall.rawRank1Pct}%   refused: ${overall.refusedPct}%`);
+  console.log(`all probes Rank-5: ${pctText(overall.rank5Pct)} (${overall.rank5}/${overall.n})`);
+  console.log(`raw NN Rank-1: ${pctText(overall.rawRank1Pct)}   refused: ${pctText(overall.refusedPct)}`);
   for (const stratum of (cleanStrata ?? strata).slice(1)) {
     if (stratum.n === 0) {
       console.log(`  ${stratum.stratum.padEnd(14)} n=0  (no labelled probes)`);
       continue;
     }
     console.log(
-      `  ${stratum.stratum.padEnd(14)} n=${String(stratum.n).padStart(3)}  Rank-1 ${String(stratum.rank1Pct).padStart(5)}%  Rank-5 ${String(stratum.rank5Pct).padStart(5)}%`,
+      `  ${stratum.stratum.padEnd(14)} n=${String(stratum.n).padStart(3)}  Rank-1 ${pctText(stratum.rank1Pct).padStart(6)}  Rank-5 ${pctText(stratum.rank5Pct).padStart(6)}`,
     );
   }
   if (skipped.length) console.log(`skipped: ${skipped.length} probes (see report)`);
