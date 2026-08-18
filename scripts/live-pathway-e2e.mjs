@@ -119,10 +119,22 @@ async function main() {
   await page.getByRole("button", { name: "90s Icons" }).click();
   await sleep(200);
   await uploadPhoto(page, IMAGE);
+  await waitForBody(
+    page,
+    (t) => /Choose a face|Approve & Match|Use this crop|Finding face|Scanning for faces/i.test(t),
+    { timeoutMs: 20000, label: "crop-review-enter" },
+  );
+  const matchBtn = page.getByRole("button", { name: /Approve & Match|Use this crop|Match /i }).last();
+  await matchBtn.waitFor({ state: "visible", timeout: 45000 });
+  for (let i = 0; i < 40; i++) {
+    if (await matchBtn.isEnabled()) break;
+    await sleep(500);
+  }
   await page.screenshot({ path: join(OUT, "02-crop.png"), fullPage: true });
   const cropText = await page.locator("body").innerText();
   report.steps.crop = {
     closeUpHint: /Hold the phone a bit further/i.test(cropText),
+    foundFace: /Face selected|faces found|Approve & Match|Use this crop/i.test(cropText),
     excerpt: cropText.slice(0, 500),
   };
 
