@@ -21,6 +21,10 @@
  *     reported separately, not quietly dropped.
  *   - Both numbers are reported: the product path (gates + priors) and the raw
  *     nearest-neighbour path (pure distance), so policy losses are visible.
+ *   - The gallery is rebuilt the way the browser builds it: enrolled primaries
+ *     plus the extra per-identity templates from extra-templates.json, then
+ *     multi-shot centroids. `--no-extra-templates` scores primaries only, which
+ *     isolates what those extras are worth.
  *
  * Usage:
  *   # small sanity run (~1s/probe on this CPU)
@@ -32,7 +36,8 @@
  *   # legacy FaceNet-128 protocol (needs public/celebs/held-out/descriptors.json)
  *   node --experimental-strip-types scripts/evaluate-held-out.ts --legacy-facenet
  *
- * Flags: --limit N --concurrency N --all-slots --legacy-facenet --force
+ * Flags: --limit N --concurrency N --all-slots --no-extra-templates
+ *        --legacy-facenet --force
  *        --json <path> --md <path> --cache <path> --hard-probes <path>
  */
 import fs from "node:fs";
@@ -49,6 +54,10 @@ import {
 } from "../src/lib/face/embeddings.ts";
 import type { CelebrityEmbedding } from "../src/lib/face/embeddings.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
+import {
+  buildMultiShotCentroidGallery,
+  isPaddedFaceNetDescriptor,
+} from "../src/lib/face/gallery-dedupe.ts";
 import { loadV4Gallery } from "./lib/v4-gallery.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
 import { SIGNALS_VERSION } from "./lib/probe-signals.mjs";
@@ -57,6 +66,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const HELD_OUT = path.join(ROOT, "public/celebs/held-out");
 const MANIFEST = path.join(HELD_OUT, "manifest.json");
 const HARD_PROBES = path.join(HELD_OUT, "hard-probes.json");
+const EXTRA_TEMPLATES = path.join(ROOT, "public/celebs/extra-templates.json");
 const WORKER = path.join(ROOT, "scripts/lib/probe-signals.worker.mjs");
 const DEFAULT_CACHE = "/tmp/twinframe-heldout/edgeface-probes.json";
 const DEFAULT_JSON = path.join(ROOT, "reports/held-out-accuracy.json");
@@ -92,6 +102,31 @@ export function partitionLeakage<T extends { nearDuplicate: boolean }>(records: 
     clean: records.filter((r) => !r.nearDuplicate),
     leaked: records.filter((r) => r.nearDuplicate),
   };
+}
+
+/**
+ * Rebuild the gallery the browser actually matches against.
+ *
+ * `loadV4Gallery` returns the enrolled primaries only, but at runtime
+ * `loadCelebrityEmbeddings` concatenates the extra per-identity templates from
+ * /celebs/extra-templates.json before building multi-shot prototypes — so a
+ * primaries-only evaluation understates the shipping engine on exactly the
+ * off-angle probes the extras exist to cover. This mirrors mergeExtraTemplates()
+ * in src/lib/face/embeddings.ts, including the padded-FaceNet guard.
+ */
+export function mergeExtraTemplates(
+  primaries: CelebrityEmbedding[],
+  templates: Array<{ id: string; descriptor?: number[] }>,
+): CelebrityEmbedding[] {
+  const byId = new Map(primaries.map((p) => [p.id, p]));
+  const extras: CelebrityEmbedding[] = [];
+  for (const template of templates) {
+    const proto = byId.get(template.id);
+    if (!proto || !template.descriptor?.length) continue;
+    if (isPaddedFaceNetDescriptor(template.descriptor)) continue;
+    extras.push({ ...proto, descriptor: Array.from(l2Normalize(template.descriptor)) });
+  }
+  return buildMultiShotCentroidGallery(extras.length > 0 ? primaries.concat(extras) : primaries);
 }
 
 /** Cohorts always reported, even at n=0, so a missing stratum stays visible. */
@@ -232,6 +267,76 @@ export function equalErrorDistance(genuine: number[], impostor: number[]) {
   return { distance: round(best.distance, 4), errorRate: round(best.errorRate * 100, 2) };
 }
 
+export const RELIABILITY_BINS: Array<[number, number]> = [
+  [0, 20],
+  [20, 40],
+  [40, 60],
+  [60, 80],
+  [80, 95],
+  [95, 100],
+];
+
+export interface ReliabilityBin {
+  band: string;
+  n: number;
+  claimedPct: number | null;
+  observedPct: number | null;
+  gapPct: number | null;
+}
+
+/**
+ * Reliability diagram for the displayed match percentage.
+ *
+ * A log-loss number says one curve beats another; this says whether either is
+ * honest. Each probe contributes its top-1 distance — min(genuine, impostor) —
+ * and whether that top-1 was the right person, so a row reading "claimed 96%,
+ * observed 71%" is the app overstating itself by 25 points to a real user.
+ */
+export function reliabilityTable(
+  pairs: Array<{ genuine: number; impostor: number }>,
+  d0: number,
+  n: number,
+): ReliabilityBin[] {
+  const scored = pairs.map((pair) => ({
+    claimed: hillProbability(Math.min(pair.genuine, pair.impostor), d0, n) * 100,
+    correct: pair.genuine <= pair.impostor,
+  }));
+  return RELIABILITY_BINS.map(([lo, hi]) => {
+    const inBin = scored.filter((s) => s.claimed >= lo && (hi === 100 ? s.claimed <= hi : s.claimed < hi));
+    if (inBin.length === 0) {
+      return { band: `${lo}-${hi}%`, n: 0, claimedPct: null, observedPct: null, gapPct: null };
+    }
+    const claimed = inBin.reduce((acc, s) => acc + s.claimed, 0) / inBin.length;
+    const observed = (inBin.filter((s) => s.correct).length / inBin.length) * 100;
+    return {
+      band: `${lo}-${hi}%`,
+      n: inBin.length,
+      claimedPct: round(claimed, 1),
+      observedPct: round(observed, 1),
+      gapPct: round(claimed - observed, 1),
+    };
+  });
+}
+
+/**
+ * Expected calibration error: probe-weighted mean gap between claimed and
+ * observed, in percentage points.
+ *
+ * Log-loss alone picks the wrong winner here. It rewards hedging, and refitting
+ * two parameters on a couple hundred probes always finds a flatter curve that
+ * hedges — one that scores better on log-loss while telling every user "maybe
+ * 55%". ECE asks the question a user cares about instead: when the app says 95%,
+ * is it right 95% of the time? Weighting by bin population keeps a four-probe
+ * band from outvoting a fifty-probe one.
+ */
+export function expectedCalibrationError(bins: ReliabilityBin[]): number | null {
+  const populated = bins.filter((bin) => bin.n > 0 && bin.gapPct !== null);
+  const total = populated.reduce((acc, bin) => acc + bin.n, 0);
+  if (total === 0) return null;
+  const weighted = populated.reduce((acc, bin) => acc + bin.n * Math.abs(bin.gapPct!), 0);
+  return round(weighted / total, 2);
+}
+
 /**
  * Fit the hill percentage curve to the measured genuine / best-impostor
  * distances. The 1:1 sample ratio makes this the calibration of the question the
@@ -262,6 +367,14 @@ export function fitHillConstants(genuine: number[], impostor: number[]) {
   }
 
   const fitted = { d0: round(bestD0, 3), n: round(bestN, 2), logLoss: round(bestLoss, 4) };
+  // Reliability needs the two distances paired per probe, which only holds when
+  // both arrays came from the same records in the same order.
+  const pairs =
+    genuine.length === impostor.length
+      ? genuine
+          .map((g, i) => ({ genuine: g, impostor: impostor[i]! }))
+          .filter((pair) => Number.isFinite(pair.genuine) && Number.isFinite(pair.impostor))
+      : [];
   // Held-d0 sweep: how much of the gain survives if only the exponent moves?
   const grid: Array<{ d0: number; n: number; logLoss: number }> = [];
   for (const d0 of [0.55, HILL_D0, 0.65]) {
@@ -270,16 +383,38 @@ export function fitHillConstants(genuine: number[], impostor: number[]) {
     }
   }
 
+  const reliability = {
+    current: reliabilityTable(pairs, current.d0, current.n),
+    fitted: reliabilityTable(pairs, fitted.d0, fitted.n),
+  };
+  const calibrationError = {
+    current: expectedCalibrationError(reliability.current),
+    fitted: expectedCalibrationError(reliability.fitted),
+  };
+
   // Below this the refit is noise on a two-hundred-probe sample, not a finding.
   const materialD0 = Math.abs(fitted.d0 - current.d0) > 0.05;
   const materialN = Math.abs(fitted.n - current.n) > 1.0;
   const materialLoss = current.logLoss - fitted.logLoss > 0.02;
+  // A refit that wins on log-loss while telling users less honest percentages is
+  // not an improvement, so ECE has veto power over the verdict.
+  const betterCalibrated =
+    calibrationError.current !== null &&
+    calibrationError.fitted !== null &&
+    calibrationError.current - calibrationError.fitted > 1;
   return {
     current,
     fitted,
     grid,
+    reliability,
+    calibrationError,
     eer: equalErrorDistance(genuine, impostor),
-    verdict: (materialD0 || materialN) && materialLoss ? "recalibrate" : "keep-current",
+    verdict:
+      (materialD0 || materialN) && materialLoss && betterCalibrated
+        ? "recalibrate"
+        : materialLoss && !betterCalibrated
+          ? "keep-current (refit lowers log-loss only by hedging)"
+          : "keep-current",
   };
 }
 
@@ -304,6 +439,7 @@ function readJson<T>(file: string, fallback: T): T {
 interface Options {
   limit: number;
   allSlots: boolean;
+  extraTemplates: boolean;
   legacyFacenet: boolean;
   force: boolean;
   json: string;
@@ -327,6 +463,7 @@ function parseArgs(argv: string[]): Options {
   return {
     limit: limitRaw === undefined ? Number.POSITIVE_INFINITY : Math.floor(limit),
     allSlots: argv.includes("--all-slots"),
+    extraTemplates: !argv.includes("--no-extra-templates"),
     legacyFacenet: argv.includes("--legacy-facenet"),
     force: argv.includes("--force"),
     json,
@@ -621,6 +758,40 @@ function hillLines(title: string, hill: any): string[] {
     lines.push(
       `- equal-error distance ${hill.eer.distance ?? "\u2014"} at ${hill.eer.errorRate ?? "\u2014"}% error`,
     );
+    if (hill.calibrationError?.current !== null && hill.calibrationError?.current !== undefined) {
+      lines.push(
+        `- expected calibration error: current **${hill.calibrationError.current} pts**, best fit ${hill.calibrationError.fitted ?? "\u2014"} pts (probe-weighted mean gap between claimed and observed)`,
+      );
+    }
+    if (hill.reliability?.current?.length) {
+      lines.push("");
+      lines.push(
+        "Reliability of the displayed percentage — what the curve claims versus how often the top match was actually the right person:",
+      );
+      lines.push("");
+      lines.push(
+        `| Claimed band | n | mean claimed | observed correct | overstatement (current) | overstatement (fitted) |`,
+      );
+      lines.push("| :--- | ---: | ---: | ---: | ---: | ---: |");
+      const fittedBins = (hill.reliability.fitted ?? []) as ReliabilityBin[];
+      for (const [i, bin] of (hill.reliability.current as ReliabilityBin[]).entries()) {
+        if (bin.n === 0) continue;
+        const fitted = fittedBins[i];
+        lines.push(
+          `| ${bin.band} | ${bin.n} | ${bin.claimedPct}% | ${bin.observedPct}% | ${bin.gapPct! > 0 ? "+" : ""}${bin.gapPct} pts | ${
+            fitted && fitted.n > 0 ? `${fitted.gapPct! > 0 ? "+" : ""}${fitted.gapPct} pts over ${fitted.n}` : "\u2014"
+          } |`,
+        );
+      }
+      lines.push("");
+      lines.push(
+        "The two overstatement columns are not the same probes: refitting moves each probe into a different claimed band, so compare the size of the errors, not the rows.",
+      );
+      lines.push("");
+      lines.push(
+        "Log-loss and calibration disagree here, and calibration is the one the user experiences. The best-fit curve wins on log-loss by flattening every percentage toward the middle, which trades a small gain in the confident bands for a much larger understatement in the middle ones.",
+      );
+    }
     if (hill.grid?.length) {
       lines.push("");
       lines.push("| HILL_D0 | HILL_N | log-loss |");
@@ -648,7 +819,13 @@ export function formatMarkdownReport(report: any): string {
   lines.push("");
   lines.push(`**Generated** ${report.generatedAt}  `);
   lines.push(`**Engine** ${report.engine}  `);
-  lines.push(`**Gallery** ${report.gallerySize} vectors / ${report.galleryIdentities} identities  `);
+  lines.push(
+    `**Gallery** ${report.gallerySize} vectors / ${report.galleryIdentities} identities` +
+      (report.extraTemplatesMerged
+        ? ` (${report.extraTemplatesMerged} of them extra templates and centroids, as the browser builds it)`
+        : "") +
+      "  ",
+  );
   lines.push(`**Probes** ${overall.n} held-out photos (slot ${report.slots})  `);
   lines.push("");
   lines.push(
@@ -781,6 +958,7 @@ async function main() {
   let engine: string;
   let gallerySize = 0;
   let galleryIdentities = 0;
+  let extraTemplatesMerged = 0;
   let slots = options.allSlots ? "001+002…(includes enrolled views)" : "001 only";
 
   if (options.legacyFacenet) {
@@ -803,9 +981,18 @@ async function main() {
       process.exit(0);
     }
     const probes = selectProbes(cases, { allSlots: options.allSlots, limit: options.limit });
-    const { gallery } = loadV4Gallery(ROOT);
+    const { gallery: primaries } = loadV4Gallery(ROOT);
+    const templates = options.extraTemplates
+      ? (readJson<{ templates?: Array<{ id: string; descriptor?: number[] }> }>(EXTRA_TEMPLATES, {})
+          .templates ?? [])
+      : [];
+    const gallery = mergeExtraTemplates(primaries, templates);
+    extraTemplatesMerged = gallery.length - primaries.length;
+    engine = options.extraTemplates
+      ? `EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + ${templates.length} extra templates)`
+      : "EdgeFace-512 + SCRFD-2.5G (AFv4 primaries only, --no-extra-templates)";
     gallerySize = gallery.length;
-    galleryIdentities = new Set(gallery.map((g: any) => canonicalCelebId(g.id))).size;
+    galleryIdentities = new Set(gallery.map((g) => canonicalCelebId(g.id))).size;
     const cache = await embedProbes(probes, options, concurrency);
     const scored = scoreEdgeFace(probes, cache, gallery, conditionsFor);
     records = scored.records;
@@ -826,6 +1013,7 @@ async function main() {
     hardProbeSignalsVersion: hardProbeFile.signalsVersion ?? null,
     gallerySize,
     galleryIdentities,
+    extraTemplatesMerged,
     slots,
     labelledImages: Object.keys(labelled).length,
     conditionProvenance,
@@ -863,7 +1051,7 @@ async function main() {
     skipped,
     commands: [
       "node --experimental-strip-types scripts/label-hard-probes.mjs --concurrency 4",
-      `node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency ${concurrency}${options.allSlots ? " --all-slots" : ""}`,
+      `node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency ${concurrency}${options.allSlots ? " --all-slots" : ""}${options.extraTemplates ? "" : " --no-extra-templates"}`,
     ],
     records,
   };

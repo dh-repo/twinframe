@@ -1,11 +1,12 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-18T04:11:24.235Z",
-  "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery)",
+  "generatedAt": "2026-08-18T04:37:20.732Z",
+  "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 627 extra templates)",
   "signalsVersion": "1.1.0",
   "hardProbeSignalsVersion": "1.1.0",
-  "gallerySize": 1000,
+  "gallerySize": 1848,
   "galleryIdentities": 999,
+  "extraTemplatesMerged": 848,
   "slots": "001 only",
   "labelledImages": 743,
   "conditionProvenance": {
@@ -20,38 +21,38 @@
     {
       "stratum": "overall",
       "n": 206,
-      "rank1": 151,
-      "rank5": 166,
-      "rank1Pct": 73.3,
-      "rank5Pct": 80.6,
+      "rank1": 169,
+      "rank5": 174,
+      "rank1Pct": 82,
+      "rank5Pct": 84.5,
       "rank1Ci95": [
-        66.9,
-        78.9
+        76.2,
+        86.7
       ],
-      "rawRank1": 151,
-      "rawRank1Pct": 73.3,
-      "refused": 1,
-      "refusedPct": 0.5,
+      "rawRank1": 169,
+      "rawRank1Pct": 82,
+      "refused": 0,
+      "refusedPct": 0,
       "detected": 205,
-      "mrr": 0.7595
+      "mrr": 0.8294
     },
     {
       "stratum": "low-light",
       "n": 18,
-      "rank1": 9,
-      "rank5": 12,
-      "rank1Pct": 50,
-      "rank5Pct": 66.7,
+      "rank1": 10,
+      "rank5": 11,
+      "rank1Pct": 55.6,
+      "rank5Pct": 61.1,
       "rank1Ci95": [
-        29,
-        71
+        33.7,
+        75.4
       ],
-      "rawRank1": 9,
-      "rawRank1Pct": 50,
+      "rawRank1": 10,
+      "rawRank1Pct": 55.6,
       "refused": 0,
       "refusedPct": 0,
       "detected": 18,
-      "mrr": 0.5556
+      "mrr": 0.5741
     },
     {
       "stratum": "glasses",
@@ -74,38 +75,38 @@
     {
       "stratum": "big-smile",
       "n": 122,
-      "rank1": 103,
-      "rank5": 110,
-      "rank1Pct": 84.4,
-      "rank5Pct": 90.2,
+      "rank1": 111,
+      "rank5": 113,
+      "rank1Pct": 91,
+      "rank5Pct": 92.6,
       "rank1Ci95": [
-        77,
-        89.8
+        84.6,
+        94.9
       ],
-      "rawRank1": 103,
-      "rawRank1Pct": 84.4,
+      "rawRank1": 111,
+      "rawRank1Pct": 91,
       "refused": 0,
       "refusedPct": 0,
       "detected": 122,
-      "mrr": 0.8675
+      "mrr": 0.9167
     },
     {
       "stratum": "yaw-gt-25",
       "n": 39,
-      "rank1": 22,
-      "rank5": 26,
-      "rank1Pct": 56.4,
-      "rank5Pct": 66.7,
+      "rank1": 29,
+      "rank5": 30,
+      "rank1Pct": 74.4,
+      "rank5Pct": 76.9,
       "rank1Ci95": [
-        41,
-        70.7
+        58.9,
+        85.4
       ],
-      "rawRank1": 22,
-      "rawRank1Pct": 56.4,
+      "rawRank1": 29,
+      "rawRank1Pct": 74.4,
       "refused": 0,
       "refusedPct": 0,
       "detected": 39,
-      "mrr": 0.5983
+      "mrr": 0.7564
     },
     {
       "stratum": "phone-closeup",
@@ -128,146 +129,240 @@
     {
       "stratum": "no-condition",
       "n": 58,
-      "rank1": 36,
-      "rank5": 41,
-      "rank1Pct": 62.1,
-      "rank5Pct": 70.7,
+      "rank1": 42,
+      "rank5": 44,
+      "rank1Pct": 72.4,
+      "rank5Pct": 75.9,
       "rank1Ci95": [
-        49.2,
-        73.4
+        59.8,
+        82.2
       ],
-      "rawRank1": 36,
-      "rawRank1Pct": 62.1,
-      "refused": 1,
-      "refusedPct": 1.7,
+      "rawRank1": 42,
+      "rawRank1Pct": 72.4,
+      "refused": 0,
+      "refusedPct": 0,
       "detected": 57,
-      "mrr": 0.6486
+      "mrr": 0.7333
     }
   ],
   "distances": {
     "genuine (probe → own identity)": {
       "n": 206,
-      "mean": 0.4055,
+      "mean": 0.3337,
       "p10": 0.0034,
-      "p50": 0.426,
-      "p90": 0.8564
+      "p50": 0.3271,
+      "p90": 0.8251
     },
     "impostor (probe → best other identity)": {
       "n": 206,
-      "mean": 0.6133,
-      "p10": 0.5451,
-      "p50": 0.6297,
-      "p90": 0.6779
+      "mean": 0.5848,
+      "p10": 0.5095,
+      "p50": 0.6038,
+      "p90": 0.6634
     }
   },
   "hill": {
     "current": {
       "d0": 0.6,
       "n": 4.1,
-      "logLoss": 0.6215
+      "logLoss": 0.6353
     },
     "fitted": {
-      "d0": 0.46,
-      "n": 1.6,
-      "logLoss": 0.5579
+      "d0": 0.45,
+      "n": 2.7,
+      "logLoss": 0.5472
     },
     "grid": [
       {
         "d0": 0.55,
         "n": 1.2,
-        "logLoss": 0.5686
+        "logLoss": 0.589
       },
       {
         "d0": 0.55,
         "n": 1.4,
-        "logLoss": 0.5671
+        "logLoss": 0.5842
       },
       {
         "d0": 0.55,
         "n": 1.6,
-        "logLoss": 0.5663
+        "logLoss": 0.5806
       },
       {
         "d0": 0.55,
         "n": 2,
-        "logLoss": 0.5668
+        "logLoss": 0.576
       },
       {
         "d0": 0.55,
         "n": 3,
-        "logLoss": 0.5773
-      },
-      {
-        "d0": 0.55,
-        "n": 4.1,
-        "logLoss": 0.6007
-      },
-      {
-        "d0": 0.6,
-        "n": 1.2,
-        "logLoss": 0.5762
-      },
-      {
-        "d0": 0.6,
-        "n": 1.4,
-        "logLoss": 0.5759
-      },
-      {
-        "d0": 0.6,
-        "n": 1.6,
         "logLoss": 0.5764
       },
       {
+        "d0": 0.55,
+        "n": 4.1,
+        "logLoss": 0.5907
+      },
+      {
+        "d0": 0.6,
+        "n": 1.2,
+        "logLoss": 0.5995
+      },
+      {
+        "d0": 0.6,
+        "n": 1.4,
+        "logLoss": 0.597
+      },
+      {
+        "d0": 0.6,
+        "n": 1.6,
+        "logLoss": 0.5956
+      },
+      {
         "d0": 0.6,
         "n": 2,
-        "logLoss": 0.5791
+        "logLoss": 0.5957
       },
       {
         "d0": 0.6,
         "n": 3,
-        "logLoss": 0.5944
+        "logLoss": 0.6082
       },
       {
         "d0": 0.6,
         "n": 4.1,
-        "logLoss": 0.6215
+        "logLoss": 0.6353
       },
       {
         "d0": 0.65,
         "n": 1.2,
-        "logLoss": 0.5852
+        "logLoss": 0.6112
       },
       {
         "d0": 0.65,
         "n": 1.4,
-        "logLoss": 0.5867
+        "logLoss": 0.6113
       },
       {
         "d0": 0.65,
         "n": 1.6,
-        "logLoss": 0.5891
+        "logLoss": 0.6128
       },
       {
         "d0": 0.65,
         "n": 2,
-        "logLoss": 0.5958
+        "logLoss": 0.619
       },
       {
         "d0": 0.65,
         "n": 3,
-        "logLoss": 0.6214
+        "logLoss": 0.6479
       },
       {
         "d0": 0.65,
         "n": 4.1,
-        "logLoss": 0.6603
+        "logLoss": 0.6944
       }
     ],
-    "eer": {
-      "distance": 0.6009,
-      "errorRate": 27.18
+    "reliability": {
+      "current": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 4,
+          "claimedPct": 37.8,
+          "observedPct": 0,
+          "gapPct": 37.8
+        },
+        {
+          "band": "40-60%",
+          "n": 26,
+          "claimedPct": 49.9,
+          "observedPct": 26.9,
+          "gapPct": 23
+        },
+        {
+          "band": "60-80%",
+          "n": 30,
+          "claimedPct": 71.8,
+          "observedPct": 76.7,
+          "gapPct": -4.9
+        },
+        {
+          "band": "80-95%",
+          "n": 50,
+          "claimedPct": 88.8,
+          "observedPct": 92,
+          "gapPct": -3.2
+        },
+        {
+          "band": "95-100%",
+          "n": 96,
+          "claimedPct": 99.3,
+          "observedPct": 96.9,
+          "gapPct": 2.4
+        }
+      ],
+      "fitted": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 33,
+          "claimedPct": 31.4,
+          "observedPct": 30.3,
+          "gapPct": 1.1
+        },
+        {
+          "band": "40-60%",
+          "n": 42,
+          "claimedPct": 50.5,
+          "observedPct": 83.3,
+          "gapPct": -32.9
+        },
+        {
+          "band": "60-80%",
+          "n": 40,
+          "claimedPct": 69.9,
+          "observedPct": 90,
+          "gapPct": -20.1
+        },
+        {
+          "band": "80-95%",
+          "n": 25,
+          "claimedPct": 86.5,
+          "observedPct": 92,
+          "gapPct": -5.5
+        },
+        {
+          "band": "95-100%",
+          "n": 66,
+          "claimedPct": 99.9,
+          "observedPct": 98.5,
+          "gapPct": 1.4
+        }
+      ]
     },
-    "verdict": "recalibrate"
+    "calibrationError": {
+      "current": 6.25,
+      "fitted": 11.9
+    },
+    "eer": {
+      "distance": 0.5536,
+      "errorRate": 19.9
+    },
+    "verdict": "keep-current (refit lowers log-loss only by hedging)"
   },
   "leakage": {
     "maxDistance": 0.05,
@@ -342,38 +437,38 @@
     {
       "stratum": "overall",
       "n": 145,
-      "rank1": 90,
-      "rank5": 105,
-      "rank1Pct": 62.1,
-      "rank5Pct": 72.4,
+      "rank1": 108,
+      "rank5": 113,
+      "rank1Pct": 74.5,
+      "rank5Pct": 77.9,
       "rank1Ci95": [
-        54,
-        69.6
+        66.8,
+        80.9
       ],
-      "rawRank1": 90,
-      "rawRank1Pct": 62.1,
-      "refused": 1,
-      "refusedPct": 0.7,
+      "rawRank1": 108,
+      "rawRank1Pct": 74.5,
+      "refused": 0,
+      "refusedPct": 0,
       "detected": 144,
-      "mrr": 0.6583
+      "mrr": 0.7577
     },
     {
       "stratum": "low-light",
       "n": 12,
-      "rank1": 3,
-      "rank5": 6,
-      "rank1Pct": 25,
-      "rank5Pct": 50,
+      "rank1": 4,
+      "rank5": 5,
+      "rank1Pct": 33.3,
+      "rank5Pct": 41.7,
       "rank1Ci95": [
-        8.9,
-        53.2
+        13.8,
+        60.9
       ],
-      "rawRank1": 3,
-      "rawRank1Pct": 25,
+      "rawRank1": 4,
+      "rawRank1Pct": 33.3,
       "refused": 0,
       "refusedPct": 0,
       "detected": 12,
-      "mrr": 0.3333
+      "mrr": 0.3611
     },
     {
       "stratum": "glasses",
@@ -396,38 +491,38 @@
     {
       "stratum": "big-smile",
       "n": 77,
-      "rank1": 58,
-      "rank5": 65,
-      "rank1Pct": 75.3,
-      "rank5Pct": 84.4,
+      "rank1": 66,
+      "rank5": 68,
+      "rank1Pct": 85.7,
+      "rank5Pct": 88.3,
       "rank1Ci95": [
-        64.6,
-        83.6
+        76.2,
+        91.8
       ],
-      "rawRank1": 58,
-      "rawRank1Pct": 75.3,
+      "rawRank1": 66,
+      "rawRank1Pct": 85.7,
       "refused": 0,
       "refusedPct": 0,
       "detected": 77,
-      "mrr": 0.79
+      "mrr": 0.868
     },
     {
       "stratum": "yaw-gt-25",
       "n": 32,
-      "rank1": 15,
-      "rank5": 19,
-      "rank1Pct": 46.9,
-      "rank5Pct": 59.4,
+      "rank1": 22,
+      "rank5": 23,
+      "rank1Pct": 68.8,
+      "rank5Pct": 71.9,
       "rank1Ci95": [
-        30.9,
-        63.6
+        51.4,
+        82
       ],
-      "rawRank1": 15,
-      "rawRank1Pct": 46.9,
+      "rawRank1": 22,
+      "rawRank1Pct": 68.8,
       "refused": 0,
       "refusedPct": 0,
       "detected": 32,
-      "mrr": 0.5104
+      "mrr": 0.7031
     },
     {
       "stratum": "phone-closeup",
@@ -450,146 +545,240 @@
     {
       "stratum": "no-condition",
       "n": 47,
-      "rank1": 25,
-      "rank5": 30,
-      "rank1Pct": 53.2,
-      "rank5Pct": 63.8,
+      "rank1": 31,
+      "rank5": 33,
+      "rank1Pct": 66,
+      "rank5Pct": 70.2,
       "rank1Ci95": [
-        39.2,
-        66.7
+        51.7,
+        77.8
       ],
-      "rawRank1": 25,
-      "rawRank1Pct": 53.2,
-      "refused": 1,
-      "refusedPct": 2.1,
+      "rawRank1": 31,
+      "rawRank1Pct": 66,
+      "refused": 0,
+      "refusedPct": 0,
       "detected": 46,
-      "mrr": 0.5663
+      "mrr": 0.6709
     }
   ],
   "distancesExcludingNearDuplicates": {
     "genuine (probe → own identity)": {
       "n": 145,
-      "mean": 0.5738,
-      "p10": 0.319,
-      "p50": 0.528,
-      "p90": 0.911
+      "mean": 0.4717,
+      "p10": 0.2278,
+      "p50": 0.4165,
+      "p90": 0.8858
     },
     "impostor (probe → best other identity)": {
       "n": 145,
-      "mean": 0.6137,
-      "p10": 0.5514,
-      "p50": 0.6342,
-      "p90": 0.679
+      "mean": 0.58,
+      "p10": 0.5058,
+      "p50": 0.6014,
+      "p90": 0.6639
     }
   },
   "hillExcludingNearDuplicates": {
     "current": {
       "d0": 0.6,
       "n": 4.1,
-      "logLoss": 0.7337
+      "logLoss": 0.7422
     },
     "fitted": {
-      "d0": 0.57,
-      "n": 1.4,
-      "logLoss": 0.6717
+      "d0": 0.5,
+      "n": 2.3,
+      "logLoss": 0.6794
     },
     "grid": [
       {
         "d0": 0.55,
         "n": 1.2,
-        "logLoss": 0.6721
+        "logLoss": 0.6979
       },
       {
         "d0": 0.55,
         "n": 1.4,
-        "logLoss": 0.672
+        "logLoss": 0.6928
       },
       {
         "d0": 0.55,
         "n": 1.6,
-        "logLoss": 0.6727
+        "logLoss": 0.6889
       },
       {
         "d0": 0.55,
         "n": 2,
-        "logLoss": 0.6765
+        "logLoss": 0.6845
       },
       {
         "d0": 0.55,
         "n": 3,
-        "logLoss": 0.6978
+        "logLoss": 0.6894
       },
       {
         "d0": 0.55,
         "n": 4.1,
-        "logLoss": 0.7369
+        "logLoss": 0.7135
       },
       {
         "d0": 0.6,
         "n": 1.2,
-        "logLoss": 0.6724
+        "logLoss": 0.7022
       },
       {
         "d0": 0.6,
         "n": 1.4,
-        "logLoss": 0.6723
+        "logLoss": 0.6984
       },
       {
         "d0": 0.6,
         "n": 1.6,
-        "logLoss": 0.6731
+        "logLoss": 0.696
       },
       {
         "d0": 0.6,
         "n": 2,
-        "logLoss": 0.6768
+        "logLoss": 0.6949
       },
       {
         "d0": 0.6,
         "n": 3,
-        "logLoss": 0.6972
+        "logLoss": 0.7086
       },
       {
         "d0": 0.6,
         "n": 4.1,
-        "logLoss": 0.7337
+        "logLoss": 0.7422
       },
       {
         "d0": 0.65,
         "n": 1.2,
-        "logLoss": 0.675
+        "logLoss": 0.7084
       },
       {
         "d0": 0.65,
         "n": 1.4,
-        "logLoss": 0.6758
+        "logLoss": 0.7066
       },
       {
         "d0": 0.65,
         "n": 1.6,
-        "logLoss": 0.6774
+        "logLoss": 0.7065
       },
       {
         "d0": 0.65,
         "n": 2,
-        "logLoss": 0.6832
+        "logLoss": 0.7102
       },
       {
         "d0": 0.65,
         "n": 3,
-        "logLoss": 0.7095
+        "logLoss": 0.7379
       },
       {
         "d0": 0.65,
         "n": 4.1,
-        "logLoss": 0.753
+        "logLoss": 0.7885
       }
     ],
-    "eer": {
-      "distance": 0.6107,
-      "errorRate": 35.86
+    "reliability": {
+      "current": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 4,
+          "claimedPct": 37.8,
+          "observedPct": 0,
+          "gapPct": 37.8
+        },
+        {
+          "band": "40-60%",
+          "n": 26,
+          "claimedPct": 49.9,
+          "observedPct": 26.9,
+          "gapPct": 23
+        },
+        {
+          "band": "60-80%",
+          "n": 30,
+          "claimedPct": 71.8,
+          "observedPct": 76.7,
+          "gapPct": -4.9
+        },
+        {
+          "band": "80-95%",
+          "n": 50,
+          "claimedPct": 88.8,
+          "observedPct": 92,
+          "gapPct": -3.2
+        },
+        {
+          "band": "95-100%",
+          "n": 35,
+          "claimedPct": 98,
+          "observedPct": 91.4,
+          "gapPct": 6.6
+        }
+      ],
+      "fitted": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 18,
+          "claimedPct": 36.1,
+          "observedPct": 5.6,
+          "gapPct": 30.5
+        },
+        {
+          "band": "40-60%",
+          "n": 45,
+          "claimedPct": 50.6,
+          "observedPct": 71.1,
+          "gapPct": -20.5
+        },
+        {
+          "band": "60-80%",
+          "n": 51,
+          "claimedPct": 69.7,
+          "observedPct": 92.2,
+          "gapPct": -22.4
+        },
+        {
+          "band": "80-95%",
+          "n": 26,
+          "claimedPct": 86,
+          "observedPct": 92.3,
+          "gapPct": -6.3
+        },
+        {
+          "band": "95-100%",
+          "n": 5,
+          "claimedPct": 98.1,
+          "observedPct": 80,
+          "gapPct": 18.1
+        }
+      ]
     },
-    "verdict": "recalibrate"
+    "calibrationError": {
+      "current": 8.88,
+      "fitted": 19.78
+    },
+    "eer": {
+      "distance": 0.5678,
+      "errorRate": 26.9
+    },
+    "verdict": "keep-current (refit lowers log-loss only by hedging)"
   },
   "misses": [
     {
@@ -598,96 +787,29 @@
       "conditions": [],
       "topId": "katie-cassidy",
       "refused": false,
-      "rawRank": 12,
-      "genuineDistance": 0.737,
+      "rawRank": 6,
+      "genuineDistance": 0.6912,
       "impostorDistance": 0.6262
-    },
-    {
-      "id": "ana-de-armas",
-      "slot": "001",
-      "conditions": [],
-      "topId": "brina-romanek",
-      "refused": false,
-      "rawRank": 3,
-      "genuineDistance": 0.6467,
-      "impostorDistance": 0.6359
     },
     {
       "id": "angelina-jolie",
       "slot": "001",
       "conditions": [],
-      "topId": null,
-      "refused": true,
-      "rawRank": 191,
-      "genuineDistance": 0.9118,
-      "impostorDistance": 0.7272
+      "topId": "jason-momoa",
+      "refused": false,
+      "rawRank": 217,
+      "genuineDistance": 0.9071,
+      "impostorDistance": 0.653
     },
     {
       "id": "anya-taylor-joy",
       "slot": "001",
       "conditions": [],
-      "topId": "travis-scott",
+      "topId": "kylian-mbappe",
       "refused": false,
-      "rawRank": 776,
-      "genuineDistance": 1.0956,
-      "impostorDistance": 0.6717
-    },
-    {
-      "id": "ariana-grande",
-      "slot": "001",
-      "conditions": [
-        "yaw-gt-25"
-      ],
-      "topId": "zac-efron",
-      "refused": false,
-      "rawRank": 9,
-      "genuineDistance": 0.7281,
-      "impostorDistance": 0.6606
-    },
-    {
-      "id": "bella-hadid",
-      "slot": "001",
-      "conditions": [],
-      "topId": "gigi-hadid",
-      "refused": false,
-      "rawRank": 3,
-      "genuineDistance": 0.6373,
-      "impostorDistance": 0.6069
-    },
-    {
-      "id": "beyonce",
-      "slot": "001",
-      "conditions": [],
-      "topId": "zoe-saldana",
-      "refused": false,
-      "rawRank": 4,
-      "genuineDistance": 0.5878,
-      "impostorDistance": 0.5246
-    },
-    {
-      "id": "charlize-theron",
-      "slot": "001",
-      "conditions": [
-        "big-smile",
-        "yaw-gt-25"
-      ],
-      "topId": "anthony-mackie",
-      "refused": false,
-      "rawRank": 4,
-      "genuineDistance": 0.7129,
-      "impostorDistance": 0.6362
-    },
-    {
-      "id": "dev-patel",
-      "slot": "001",
-      "conditions": [
-        "big-smile"
-      ],
-      "topId": "adrian-petriw",
-      "refused": false,
-      "rawRank": 2,
-      "genuineDistance": 0.6933,
-      "impostorDistance": 0.6673
+      "rawRank": 286,
+      "genuineDistance": 0.9425,
+      "impostorDistance": 0.6009
     },
     {
       "id": "doja-cat",
@@ -697,8 +819,8 @@
       ],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 9,
-      "genuineDistance": 0.7342,
+      "rawRank": 10,
+      "genuineDistance": 0.6355,
       "impostorDistance": 0.3246
     },
     {
@@ -707,11 +829,11 @@
       "conditions": [
         "low-light"
       ],
-      "topId": "travis-scott",
+      "topId": "hugh-jackman",
       "refused": false,
-      "rawRank": 92,
-      "genuineDistance": 0.8452,
-      "impostorDistance": 0.6439
+      "rawRank": 51,
+      "genuineDistance": 0.7913,
+      "impostorDistance": 0.5142
     },
     {
       "id": "donnie-yen",
@@ -719,24 +841,11 @@
       "conditions": [
         "yaw-gt-25"
       ],
-      "topId": "travis-scott",
+      "topId": "hugh-jackman",
       "refused": false,
-      "rawRank": 97,
-      "genuineDistance": 0.8531,
-      "impostorDistance": 0.4662
-    },
-    {
-      "id": "dua-lipa",
-      "slot": "001",
-      "conditions": [
-        "big-smile",
-        "yaw-gt-25"
-      ],
-      "topId": "ansel-elgort",
-      "refused": false,
-      "rawRank": 21,
-      "genuineDistance": 0.7891,
-      "impostorDistance": 0.6515
+      "rawRank": 42,
+      "genuineDistance": 0.7693,
+      "impostorDistance": 0.3573
     },
     {
       "id": "fan-bingbing",
@@ -744,36 +853,11 @@
       "conditions": [
         "big-smile"
       ],
-      "topId": "travis-scott",
+      "topId": "jennie-kim",
       "refused": false,
-      "rawRank": 92,
-      "genuineDistance": 0.8429,
-      "impostorDistance": 0.5795
-    },
-    {
-      "id": "florence-pugh",
-      "slot": "001",
-      "conditions": [
-        "big-smile",
-        "yaw-gt-25"
-      ],
-      "topId": "keira-knightley",
-      "refused": false,
-      "rawRank": 3,
-      "genuineDistance": 0.6746,
-      "impostorDistance": 0.6058
-    },
-    {
-      "id": "george-clooney",
-      "slot": "001",
-      "conditions": [
-        "big-smile"
-      ],
-      "topId": "colman-domingo",
-      "refused": false,
-      "rawRank": 2,
-      "genuineDistance": 0.3267,
-      "impostorDistance": 0.2726
+      "rawRank": 118,
+      "genuineDistance": 0.8345,
+      "impostorDistance": 0.4425
     },
     {
       "id": "gigi-hadid",
@@ -781,21 +865,9 @@
       "conditions": [],
       "topId": "andrea-frankle",
       "refused": false,
-      "rawRank": 38,
-      "genuineDistance": 0.7771,
+      "rawRank": 3,
+      "genuineDistance": 0.6454,
       "impostorDistance": 0.5168
-    },
-    {
-      "id": "hailee-steinfeld",
-      "slot": "001",
-      "conditions": [
-        "yaw-gt-25"
-      ],
-      "topId": "kenneth-fink",
-      "refused": false,
-      "rawRank": 18,
-      "genuineDistance": 0.7965,
-      "impostorDistance": 0.6878
     },
     {
       "id": "harry-styles",
@@ -806,8 +878,8 @@
       ],
       "topId": "bruno-mars",
       "refused": false,
-      "rawRank": 127,
-      "genuineDistance": 0.8564,
+      "rawRank": 22,
+      "genuineDistance": 0.7204,
       "impostorDistance": 0.5825
     },
     {
@@ -819,19 +891,9 @@
       ],
       "topId": "kim-sykes",
       "refused": false,
-      "rawRank": 522,
+      "rawRank": 574,
       "genuineDistance": 0.9729,
       "impostorDistance": 0.6521
-    },
-    {
-      "id": "jennie-kim",
-      "slot": "001",
-      "conditions": [],
-      "topId": "andy-thompson",
-      "refused": false,
-      "rawRank": 40,
-      "genuineDistance": 0.7759,
-      "impostorDistance": 0.657
     },
     {
       "id": "jennifer-lawrence",
@@ -839,21 +901,9 @@
       "conditions": [],
       "topId": "ritchie-montgomery",
       "refused": false,
-      "rawRank": 167,
-      "genuineDistance": 0.8724,
+      "rawRank": 179,
+      "genuineDistance": 0.8663,
       "impostorDistance": 0.6778
-    },
-    {
-      "id": "joaquin-phoenix",
-      "slot": "001",
-      "conditions": [
-        "big-smile"
-      ],
-      "topId": "bella-ramsey",
-      "refused": false,
-      "rawRank": 8,
-      "genuineDistance": 0.6896,
-      "impostorDistance": 0.5605
     },
     {
       "id": "julia-roberts",
@@ -863,8 +913,8 @@
       ],
       "topId": "sarah-jane-redmond",
       "refused": false,
-      "rawRank": 479,
-      "genuineDistance": 0.9428,
+      "rawRank": 265,
+      "genuineDistance": 0.8743,
       "impostorDistance": 0.5451
     },
     {
@@ -876,8 +926,8 @@
       ],
       "topId": "jeffrey-nordling",
       "refused": false,
-      "rawRank": 18,
-      "genuineDistance": 0.7586,
+      "rawRank": 10,
+      "genuineDistance": 0.6955,
       "impostorDistance": 0.6361
     },
     {
@@ -889,7 +939,7 @@
       ],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 305,
+      "rawRank": 369,
       "genuineDistance": 0.911,
       "impostorDistance": 0.3056
     },
@@ -899,21 +949,21 @@
       "conditions": [
         "yaw-gt-25"
       ],
-      "topId": "marc-senior",
+      "topId": "chadwick-boseman",
       "refused": false,
-      "rawRank": 6,
-      "genuineDistance": 0.6839,
-      "impostorDistance": 0.5823
+      "rawRank": 2,
+      "genuineDistance": 0.5806,
+      "impostorDistance": 0.5765
     },
     {
       "id": "kim-kardashian",
       "slot": "001",
       "conditions": [],
-      "topId": "travis-scott",
+      "topId": "luke-hemsworth",
       "refused": false,
-      "rawRank": 90,
-      "genuineDistance": 0.8405,
-      "impostorDistance": 0.6514
+      "rawRank": 103,
+      "genuineDistance": 0.8251,
+      "impostorDistance": 0.5077
     },
     {
       "id": "kylian-mbappe",
@@ -924,7 +974,7 @@
       ],
       "topId": "simon-chin",
       "refused": false,
-      "rawRank": 45,
+      "rawRank": 66,
       "genuineDistance": 0.7907,
       "impostorDistance": 0.6342
     },
@@ -932,58 +982,11 @@
       "id": "leonardo-dicaprio",
       "slot": "001",
       "conditions": [],
-      "topId": "lee-jung-jae",
-      "refused": false,
-      "rawRank": 74,
-      "genuineDistance": 0.8316,
-      "impostorDistance": 0.6448
-    },
-    {
-      "id": "lionel-messi",
-      "slot": "001",
-      "conditions": [],
-      "topId": "ryan-mcdonell",
+      "topId": "will-smith",
       "refused": false,
       "rawRank": 5,
-      "genuineDistance": 0.6802,
-      "impostorDistance": 0.5813
-    },
-    {
-      "id": "lisa-blackpink",
-      "slot": "001",
-      "conditions": [
-        "big-smile",
-        "yaw-gt-25"
-      ],
-      "topId": "jessica-alba",
-      "refused": false,
-      "rawRank": 22,
-      "genuineDistance": 0.7458,
-      "impostorDistance": 0.5058
-    },
-    {
-      "id": "lizzo",
-      "slot": "001",
-      "conditions": [
-        "big-smile"
-      ],
-      "topId": "lana-condor",
-      "refused": false,
-      "rawRank": 19,
-      "genuineDistance": 0.7516,
-      "impostorDistance": 0.6352
-    },
-    {
-      "id": "mahershala-ali",
-      "slot": "001",
-      "conditions": [
-        "yaw-gt-25"
-      ],
-      "topId": "tilda-swinton",
-      "refused": false,
-      "rawRank": 2,
-      "genuineDistance": 0.5532,
-      "impostorDistance": 0.5514
+      "genuineDistance": 0.6655,
+      "impostorDistance": 0.5035
     },
     {
       "id": "meghan-markle",
@@ -991,11 +994,11 @@
       "conditions": [
         "yaw-gt-25"
       ],
-      "topId": "scott-lyster",
+      "topId": "jennie-kim",
       "refused": false,
-      "rawRank": 40,
+      "rawRank": 58,
       "genuineDistance": 0.7667,
-      "impostorDistance": 0.6308
+      "impostorDistance": 0.6058
     },
     {
       "id": "meryl-streep",
@@ -1003,11 +1006,11 @@
       "conditions": [
         "big-smile"
       ],
-      "topId": "colton-haynes",
+      "topId": "elizabeth-olsen",
       "refused": false,
       "rawRank": 304,
-      "genuineDistance": 0.932,
-      "impostorDistance": 0.6795
+      "genuineDistance": 0.9142,
+      "impostorDistance": 0.6683
     },
     {
       "id": "naomi-campbell",
@@ -1015,11 +1018,11 @@
       "conditions": [
         "low-light"
       ],
-      "topId": "travis-scott",
+      "topId": "billie-eilish",
       "refused": false,
-      "rawRank": 474,
-      "genuineDistance": 0.9563,
-      "impostorDistance": 0.6223
+      "rawRank": 289,
+      "genuineDistance": 0.8907,
+      "impostorDistance": 0.4693
     },
     {
       "id": "natalie-portman",
@@ -1030,7 +1033,7 @@
       ],
       "topId": "rey-lucas",
       "refused": false,
-      "rawRank": 215,
+      "rawRank": 254,
       "genuineDistance": 0.9005,
       "impostorDistance": 0.6538
     },
@@ -1042,9 +1045,9 @@
       ],
       "topId": "kylian-mbappe",
       "refused": false,
-      "rawRank": 803,
-      "genuineDistance": 1.0784,
-      "impostorDistance": 0.3682
+      "rawRank": 333,
+      "genuineDistance": 0.9122,
+      "impostorDistance": 0.348
     },
     {
       "id": "oprah-winfrey",
@@ -1052,8 +1055,8 @@
       "conditions": [],
       "topId": "ian-butcher",
       "refused": false,
-      "rawRank": 293,
-      "genuineDistance": 0.9018,
+      "rawRank": 150,
+      "genuineDistance": 0.8378,
       "impostorDistance": 0.5793
     },
     {
@@ -1072,23 +1075,11 @@
       "id": "priyanka-chopra",
       "slot": "001",
       "conditions": [],
-      "topId": "ellen-rice",
+      "topId": "shah-rukh-khan",
       "refused": false,
-      "rawRank": 254,
+      "rawRank": 304,
       "genuineDistance": 0.9123,
-      "impostorDistance": 0.678
-    },
-    {
-      "id": "ranveer-singh",
-      "slot": "001",
-      "conditions": [
-        "low-light"
-      ],
-      "topId": "halle-bailey",
-      "refused": false,
-      "rawRank": 4,
-      "genuineDistance": 0.6919,
-      "impostorDistance": 0.5968
+      "impostorDistance": 0
     },
     {
       "id": "rihanna",
@@ -1096,8 +1087,8 @@
       "conditions": [],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 846,
-      "genuineDistance": 1.043,
+      "rawRank": 96,
+      "genuineDistance": 0.8043,
       "impostorDistance": 0.1981
     },
     {
@@ -1108,7 +1099,7 @@
       ],
       "topId": "danny-dworkis",
       "refused": false,
-      "rawRank": 337,
+      "rawRank": 397,
       "genuineDistance": 0.9477,
       "impostorDistance": 0.5991
     },
@@ -1116,11 +1107,11 @@
       "id": "sebastian-stan",
       "slot": "001",
       "conditions": [],
-      "topId": "travis-scott",
+      "topId": "naomi-osaka",
       "refused": false,
-      "rawRank": 217,
+      "rawRank": 278,
       "genuineDistance": 0.9226,
-      "impostorDistance": 0.6959
+      "impostorDistance": 0.6639
     },
     {
       "id": "serena-williams",
@@ -1129,21 +1120,21 @@
         "low-light",
         "big-smile"
       ],
-      "topId": "sza",
+      "topId": "seth-rogen",
       "refused": false,
-      "rawRank": 4,
+      "rawRank": 8,
       "genuineDistance": 0.6964,
-      "impostorDistance": 0.6747
+      "impostorDistance": 0.6512
     },
     {
       "id": "shah-rukh-khan",
       "slot": "001",
       "conditions": [],
-      "topId": "jay-o-sanders",
+      "topId": "aishwarya-rai",
       "refused": false,
-      "rawRank": 801,
-      "genuineDistance": 1.0826,
-      "impostorDistance": 0.6682
+      "rawRank": 667,
+      "genuineDistance": 1.0193,
+      "impostorDistance": 0.6617
     },
     {
       "id": "stephen-curry",
@@ -1151,39 +1142,29 @@
       "conditions": [],
       "topId": "travis-scott",
       "refused": false,
-      "rawRank": 188,
+      "rawRank": 262,
       "genuineDistance": 0.8895,
       "impostorDistance": 0.2105
-    },
-    {
-      "id": "taylor-swift",
-      "slot": "001",
-      "conditions": [],
-      "topId": "sarah-jane-redmond",
-      "refused": false,
-      "rawRank": 2,
-      "genuineDistance": 0.5599,
-      "impostorDistance": 0.5365
     },
     {
       "id": "timothee-chalamet",
       "slot": "001",
       "conditions": [],
-      "topId": "gong-yoo",
+      "topId": "doja-cat",
       "refused": false,
-      "rawRank": 396,
-      "genuineDistance": 0.964,
-      "impostorDistance": 0.6577
+      "rawRank": 173,
+      "genuineDistance": 0.8696,
+      "impostorDistance": 0.6146
     },
     {
       "id": "victoria-beckham",
       "slot": "001",
       "conditions": [],
-      "topId": "george-tchortov",
+      "topId": "seth-rogen",
       "refused": false,
-      "rawRank": 719,
-      "genuineDistance": 1.0564,
-      "impostorDistance": 0.7132
+      "rawRank": 222,
+      "genuineDistance": 0.8913,
+      "impostorDistance": 0.7
     },
     {
       "id": "viola-davis",
@@ -1193,7 +1174,7 @@
       ],
       "topId": "remy-auberjonois",
       "refused": false,
-      "rawRank": 4,
+      "rawRank": 6,
       "genuineDistance": 0.7027,
       "impostorDistance": 0.6396
     },
@@ -1201,11 +1182,11 @@
       "id": "zhang-ziyi",
       "slot": "001",
       "conditions": [],
-      "topId": "lee-min-ho",
+      "topId": "lee-jung-jae",
       "refused": false,
-      "rawRank": 201,
+      "rawRank": 246,
       "genuineDistance": 0.8858,
-      "impostorDistance": 0.6112
+      "impostorDistance": 0.5516
     },
     {
       "id": "zoe-saldana",
@@ -1214,17 +1195,17 @@
         "low-light",
         "big-smile"
       ],
-      "topId": "lizzo",
+      "topId": "naomi-campbell",
       "refused": false,
-      "rawRank": 2,
-      "genuineDistance": 0.6107,
-      "impostorDistance": 0.5884
+      "rawRank": 3,
+      "genuineDistance": 0.5514,
+      "impostorDistance": 0.5189
     }
   ],
   "skipped": [],
   "commands": [
     "node --experimental-strip-types scripts/label-hard-probes.mjs --concurrency 4",
-    "node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency 4"
+    "node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency 2"
   ],
   "records": [
     {
@@ -1240,7 +1221,7 @@
       "rank": 1,
       "topId": "aaron-taylor-johnson",
       "genuineDistance": 0.0088,
-      "impostorDistance": 0.6108,
+      "impostorDistance": 0.6079,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -1271,9 +1252,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "katie-cassidy",
-      "genuineDistance": 0.737,
+      "genuineDistance": 0.6912,
       "impostorDistance": 0.6262,
-      "rawRank": 12,
+      "rawRank": 6,
       "matchPercent": 38.6
     },
     {
@@ -1289,10 +1270,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "adriana-lima",
-      "genuineDistance": 0.5227,
-      "impostorDistance": 0.6886,
+      "genuineDistance": 0.435,
+      "impostorDistance": 0.6669,
       "rawRank": 1,
-      "matchPercent": 68.1
+      "matchPercent": 82.5
     },
     {
       "imagePath": "/celebs/held-out/alexander-skarsgard/001.jpg",
@@ -1306,10 +1287,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "alexander-skarsgard",
-      "genuineDistance": 0.2578,
-      "impostorDistance": 0.6648,
+      "genuineDistance": 0.2228,
+      "impostorDistance": 0.609,
       "rawRank": 1,
-      "matchPercent": 97.9
+      "matchPercent": 98.9
     },
     {
       "imagePath": "/celebs/held-out/alia-bhatt/001.jpg",
@@ -1321,10 +1302,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "alia-bhatt",
-      "genuineDistance": 0.5131,
-      "impostorDistance": 0.6219,
+      "genuineDistance": 0.3899,
+      "impostorDistance": 0.5562,
       "rawRank": 1,
-      "matchPercent": 66.1
+      "matchPercent": 85.8
     },
     {
       "imagePath": "/celebs/held-out/alicia-vikander/001.jpg",
@@ -1339,7 +1320,7 @@
       "rank": 1,
       "topId": "alicia-vikander",
       "genuineDistance": 0.0103,
-      "impostorDistance": 0.5433,
+      "impostorDistance": 0.5044,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -1355,10 +1336,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "amy-adams",
-      "genuineDistance": 0.4844,
-      "impostorDistance": 0.5705,
+      "genuineDistance": 0.4417,
+      "impostorDistance": 0.5696,
       "rawRank": 1,
-      "matchPercent": 74.8
+      "matchPercent": 81.5
     },
     {
       "imagePath": "/celebs/held-out/ana-de-armas/001.jpg",
@@ -1368,12 +1349,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 3,
-      "topId": "brina-romanek",
-      "genuineDistance": 0.6467,
+      "rank": 1,
+      "topId": "ana-de-armas",
+      "genuineDistance": 0.5225,
       "impostorDistance": 0.6359,
-      "rawRank": 3,
-      "matchPercent": 30
+      "rawRank": 1,
+      "matchPercent": 63.8
     },
     {
       "imagePath": "/celebs/held-out/andrew-garfield/001.jpg",
@@ -1387,10 +1368,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "andrew-garfield",
-      "genuineDistance": 0.393,
-      "impostorDistance": 0.6563,
+      "genuineDistance": 0.3749,
+      "impostorDistance": 0.5622,
       "rawRank": 1,
-      "matchPercent": 88
+      "matchPercent": 90
     },
     {
       "imagePath": "/celebs/held-out/andrew-scott/001.jpg",
@@ -1432,14 +1413,14 @@
       "slot": "001",
       "conditions": [],
       "detected": true,
-      "refused": true,
+      "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": null,
-      "genuineDistance": 0.9118,
-      "impostorDistance": 0.7272,
-      "rawRank": 191,
-      "matchPercent": null
+      "topId": "jason-momoa",
+      "genuineDistance": 0.9071,
+      "impostorDistance": 0.653,
+      "rawRank": 217,
+      "matchPercent": 37.2
     },
     {
       "imagePath": "/celebs/held-out/anna-sawai/001.jpg",
@@ -1454,7 +1435,7 @@
       "rank": 1,
       "topId": "anna-sawai",
       "genuineDistance": 0.0025,
-      "impostorDistance": 0.6175,
+      "impostorDistance": 0.6105,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -1470,10 +1451,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "anthony-hopkins",
-      "genuineDistance": 0.5887,
+      "genuineDistance": 0.1703,
       "impostorDistance": 0.6036,
       "rawRank": 1,
-      "matchPercent": 38.2
+      "matchPercent": 99.7
     },
     {
       "imagePath": "/celebs/held-out/antonio-banderas/001.jpg",
@@ -1487,10 +1468,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "antonio-banderas",
-      "genuineDistance": 0.585,
+      "genuineDistance": 0.5547,
       "impostorDistance": 0.5871,
       "rawRank": 1,
-      "matchPercent": 36.3
+      "matchPercent": 45
     },
     {
       "imagePath": "/celebs/held-out/anya-taylor-joy/001.jpg",
@@ -1501,11 +1482,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 1.0956,
-      "impostorDistance": 0.6717,
-      "rawRank": 776,
-      "matchPercent": 33.8
+      "topId": "kylian-mbappe",
+      "genuineDistance": 0.9425,
+      "impostorDistance": 0.6009,
+      "rawRank": 286,
+      "matchPercent": 33.9
     },
     {
       "imagePath": "/celebs/held-out/ariana-grande/001.jpg",
@@ -1517,12 +1498,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "zac-efron",
-      "genuineDistance": 0.7281,
-      "impostorDistance": 0.6606,
-      "rawRank": 9,
-      "matchPercent": 27.8
+      "rank": 1,
+      "topId": "ariana-grande",
+      "genuineDistance": 0.5933,
+      "impostorDistance": 0.6324,
+      "rawRank": 1,
+      "matchPercent": 40.9
     },
     {
       "imagePath": "/celebs/held-out/austin-butler/001.jpg",
@@ -1535,7 +1516,7 @@
       "rank": 1,
       "topId": "austin-butler",
       "genuineDistance": 0.3312,
-      "impostorDistance": 0.5773,
+      "impostorDistance": 0.5446,
       "rawRank": 1,
       "matchPercent": 92
     },
@@ -1549,10 +1530,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "awkwafina",
-      "genuineDistance": 0.3371,
+      "genuineDistance": 0.272,
       "impostorDistance": 0.5536,
       "rawRank": 1,
-      "matchPercent": 91.4
+      "matchPercent": 96.2
     },
     {
       "imagePath": "/celebs/held-out/bad-bunny/001.jpg",
@@ -1596,12 +1577,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 3,
-      "topId": "gigi-hadid",
-      "genuineDistance": 0.6373,
-      "impostorDistance": 0.6069,
-      "rawRank": 3,
-      "matchPercent": 36.3
+      "rank": 1,
+      "topId": "bella-hadid",
+      "genuineDistance": 0.5239,
+      "impostorDistance": 0.5579,
+      "rawRank": 1,
+      "matchPercent": 49.2
     },
     {
       "imagePath": "/celebs/held-out/benedict-cumberbatch/001.jpg",
@@ -1613,10 +1594,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "benedict-cumberbatch",
-      "genuineDistance": 0.3029,
+      "genuineDistance": 0.2888,
       "impostorDistance": 0.58,
       "rawRank": 1,
-      "matchPercent": 94.3
+      "matchPercent": 95.2
     },
     {
       "imagePath": "/celebs/held-out/beyonce/001.jpg",
@@ -1626,12 +1607,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 4,
-      "topId": "zoe-saldana",
-      "genuineDistance": 0.5878,
-      "impostorDistance": 0.5246,
-      "rawRank": 4,
-      "matchPercent": 47.1
+      "rank": 1,
+      "topId": "beyonce",
+      "genuineDistance": 0.3416,
+      "impostorDistance": 0.5095,
+      "rawRank": 1,
+      "matchPercent": 91
     },
     {
       "imagePath": "/celebs/held-out/billie-eilish/001.jpg",
@@ -1663,10 +1644,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "brad-pitt",
-      "genuineDistance": 0.4824,
-      "impostorDistance": 0.6364,
+      "genuineDistance": 0.2278,
+      "impostorDistance": 0.5746,
       "rawRank": 1,
-      "matchPercent": 75.1
+      "matchPercent": 98.8
     },
     {
       "imagePath": "/celebs/held-out/bradley-cooper/001.jpg",
@@ -1680,10 +1661,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "bradley-cooper",
-      "genuineDistance": 0.3948,
+      "genuineDistance": 0.3271,
       "impostorDistance": 0.611,
       "rawRank": 1,
-      "matchPercent": 87.8
+      "matchPercent": 94.3
     },
     {
       "imagePath": "/celebs/held-out/britney-spears/001.jpg",
@@ -1697,10 +1678,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "britney-spears",
-      "genuineDistance": 0.4499,
-      "impostorDistance": 0.6613,
+      "genuineDistance": 0.4098,
+      "impostorDistance": 0.6493,
       "rawRank": 1,
-      "matchPercent": 78.7
+      "matchPercent": 84.6
     },
     {
       "imagePath": "/celebs/held-out/cardi-b/001.jpg",
@@ -1714,10 +1695,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "cardi-b",
-      "genuineDistance": 0.5716,
-      "impostorDistance": 0.6073,
+      "genuineDistance": 0.4349,
+      "impostorDistance": 0.6038,
       "rawRank": 1,
-      "matchPercent": 44.3
+      "matchPercent": 80.3
     },
     {
       "imagePath": "/celebs/held-out/cate-blanchett/001.jpg",
@@ -1732,7 +1713,7 @@
       "rank": 1,
       "topId": "cate-blanchett",
       "genuineDistance": 0.0052,
-      "impostorDistance": 0.6103,
+      "impostorDistance": 0.5662,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -1766,10 +1747,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "channing-tatum",
-      "genuineDistance": 0.4108,
+      "genuineDistance": 0.3916,
       "impostorDistance": 0.611,
       "rawRank": 1,
-      "matchPercent": 85.8
+      "matchPercent": 88.2
     },
     {
       "imagePath": "/celebs/held-out/charlize-theron/001.jpg",
@@ -1782,12 +1763,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 4,
-      "topId": "anthony-mackie",
-      "genuineDistance": 0.7129,
-      "impostorDistance": 0.6362,
-      "rawRank": 4,
-      "matchPercent": 44.4
+      "rank": 1,
+      "topId": "charlize-theron",
+      "genuineDistance": 0.4272,
+      "impostorDistance": 0.6349,
+      "rawRank": 1,
+      "matchPercent": 83.6
     },
     {
       "imagePath": "/celebs/held-out/chloe-grace-moretz/001.jpg",
@@ -1802,7 +1783,7 @@
       "rank": 1,
       "topId": "chloe-grace-moretz",
       "genuineDistance": 0.0055,
-      "impostorDistance": 0.6297,
+      "impostorDistance": 0.6143,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -1816,10 +1797,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "chris-evans",
-      "genuineDistance": 0.4567,
-      "impostorDistance": 0.6179,
+      "genuineDistance": 0.3003,
+      "impostorDistance": 0.6174,
       "rawRank": 1,
-      "matchPercent": 75.4
+      "matchPercent": 94.5
     },
     {
       "imagePath": "/celebs/held-out/chris-hemsworth/001.jpg",
@@ -1833,10 +1814,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "chris-hemsworth",
-      "genuineDistance": 0.5633,
-      "impostorDistance": 0.654,
+      "genuineDistance": 0.2622,
+      "impostorDistance": 0.6095,
       "rawRank": 1,
-      "matchPercent": 60.8
+      "matchPercent": 97.8
     },
     {
       "imagePath": "/celebs/held-out/cillian-murphy/001.jpg",
@@ -1867,10 +1848,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "cole-sprouse",
-      "genuineDistance": 0.5417,
+      "genuineDistance": 0.4518,
       "impostorDistance": 0.6136,
       "rawRank": 1,
-      "matchPercent": 62.1
+      "matchPercent": 80
     },
     {
       "imagePath": "/celebs/held-out/cristiano-ronaldo/001.jpg",
@@ -1884,10 +1865,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "cristiano-ronaldo",
-      "genuineDistance": 0.4763,
-      "impostorDistance": 0.6512,
+      "genuineDistance": 0.4665,
+      "impostorDistance": 0.6266,
       "rawRank": 1,
-      "matchPercent": 72.1
+      "matchPercent": 73.7
     },
     {
       "imagePath": "/celebs/held-out/daniel-craig/001.jpg",
@@ -1916,10 +1897,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "deepika-padukone",
-      "genuineDistance": 0.2844,
+      "genuineDistance": 0.2478,
       "impostorDistance": 0.6062,
       "rawRank": 1,
-      "matchPercent": 95.8
+      "matchPercent": 97.6
     },
     {
       "imagePath": "/celebs/held-out/denzel-washington/001.jpg",
@@ -1931,10 +1912,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "denzel-washington",
-      "genuineDistance": 0.2651,
-      "impostorDistance": 0.6117,
+      "genuineDistance": 0.154,
+      "impostorDistance": 0.5752,
       "rawRank": 1,
-      "matchPercent": 96.9
+      "matchPercent": 99.7
     },
     {
       "imagePath": "/celebs/held-out/dev-patel/001.jpg",
@@ -1946,12 +1927,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 2,
-      "topId": "adrian-petriw",
-      "genuineDistance": 0.6933,
+      "rank": 1,
+      "topId": "dev-patel",
+      "genuineDistance": 0.3466,
       "impostorDistance": 0.6673,
-      "rawRank": 2,
-      "matchPercent": 31.5
+      "rawRank": 1,
+      "matchPercent": 92.7
     },
     {
       "imagePath": "/celebs/held-out/doja-cat/001.jpg",
@@ -1965,9 +1946,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "travis-scott",
-      "genuineDistance": 0.7342,
+      "genuineDistance": 0.6355,
       "impostorDistance": 0.3246,
-      "rawRank": 9,
+      "rawRank": 10,
       "matchPercent": 92.5
     },
     {
@@ -1981,11 +1962,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 0.8452,
-      "impostorDistance": 0.6439,
-      "rawRank": 92,
-      "matchPercent": 29.1
+      "topId": "hugh-jackman",
+      "genuineDistance": 0.7913,
+      "impostorDistance": 0.5142,
+      "rawRank": 51,
+      "matchPercent": 57.9
     },
     {
       "imagePath": "/celebs/held-out/donnie-yen/001.jpg",
@@ -1998,11 +1979,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 0.8531,
-      "impostorDistance": 0.4662,
-      "rawRank": 97,
-      "matchPercent": 73.8
+      "topId": "hugh-jackman",
+      "genuineDistance": 0.7693,
+      "impostorDistance": 0.3573,
+      "rawRank": 42,
+      "matchPercent": 89.3
     },
     {
       "imagePath": "/celebs/held-out/drake/001.jpg",
@@ -2015,7 +1996,7 @@
       "rank": 1,
       "topId": "drake",
       "genuineDistance": 0.3983,
-      "impostorDistance": 0.5909,
+      "impostorDistance": 0.5819,
       "rawRank": 1,
       "matchPercent": 84.3
     },
@@ -2030,12 +2011,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "ansel-elgort",
-      "genuineDistance": 0.7891,
-      "impostorDistance": 0.6515,
-      "rawRank": 21,
-      "matchPercent": 40.4
+      "rank": 1,
+      "topId": "dua-lipa",
+      "genuineDistance": 0.4609,
+      "impostorDistance": 0.6139,
+      "rawRank": 1,
+      "matchPercent": 76.1
     },
     {
       "imagePath": "/celebs/held-out/dwayne-johnson/001.jpg",
@@ -2068,7 +2049,7 @@
       "rank": 1,
       "topId": "ed-sheeran",
       "genuineDistance": 0.0014,
-      "impostorDistance": 0.6865,
+      "impostorDistance": 0.6368,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2084,10 +2065,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "eddie-redmayne",
-      "genuineDistance": 0.2823,
-      "impostorDistance": 0.6529,
+      "genuineDistance": 0.2427,
+      "impostorDistance": 0.6014,
       "rawRank": 1,
-      "matchPercent": 96.6
+      "matchPercent": 98.2
     },
     {
       "imagePath": "/celebs/held-out/elijah-wood/001.jpg",
@@ -2102,7 +2083,7 @@
       "rank": 1,
       "topId": "elijah-wood",
       "genuineDistance": 0.0032,
-      "impostorDistance": 0.6684,
+      "impostorDistance": 0.6605,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2118,10 +2099,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "elizabeth-olsen",
-      "genuineDistance": 0.5424,
-      "impostorDistance": 0.688,
+      "genuineDistance": 0.4828,
+      "impostorDistance": 0.6357,
       "rawRank": 1,
-      "matchPercent": 61.2
+      "matchPercent": 71.9
     },
     {
       "imagePath": "/celebs/held-out/elon-musk/001.jpg",
@@ -2151,7 +2132,7 @@
       "rank": 1,
       "topId": "emily-blunt",
       "genuineDistance": 0.3839,
-      "impostorDistance": 0.6501,
+      "impostorDistance": 0.5898,
       "rawRank": 1,
       "matchPercent": 86.3
     },
@@ -2168,10 +2149,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "emma-stone",
-      "genuineDistance": 0.4355,
+      "genuineDistance": 0.3468,
       "impostorDistance": 0.5461,
       "rawRank": 1,
-      "matchPercent": 82.3
+      "matchPercent": 92.6
     },
     {
       "imagePath": "/celebs/held-out/emma-watson/001.jpg",
@@ -2186,7 +2167,7 @@
       "rank": 1,
       "topId": "emma-watson",
       "genuineDistance": 0.0015,
-      "impostorDistance": 0.6701,
+      "impostorDistance": 0.6385,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2200,10 +2181,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "eva-longoria",
-      "genuineDistance": 0.5781,
-      "impostorDistance": 0.6779,
+      "genuineDistance": 0.4852,
+      "impostorDistance": 0.6198,
       "rawRank": 1,
-      "matchPercent": 54.6
+      "matchPercent": 71.3
     },
     {
       "imagePath": "/celebs/held-out/fan-bingbing/001.jpg",
@@ -2216,11 +2197,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 0.8429,
-      "impostorDistance": 0.5795,
-      "rawRank": 92,
-      "matchPercent": 53.2
+      "topId": "jennie-kim",
+      "genuineDistance": 0.8345,
+      "impostorDistance": 0.4425,
+      "rawRank": 118,
+      "matchPercent": 79.8
     },
     {
       "imagePath": "/celebs/held-out/florence-pugh/001.jpg",
@@ -2233,12 +2214,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 3,
-      "topId": "keira-knightley",
-      "genuineDistance": 0.6746,
-      "impostorDistance": 0.6058,
-      "rawRank": 3,
-      "matchPercent": 38.4
+      "rank": 1,
+      "topId": "florence-pugh",
+      "genuineDistance": 0.4788,
+      "impostorDistance": 0.5997,
+      "rawRank": 1,
+      "matchPercent": 75.6
     },
     {
       "imagePath": "/celebs/held-out/gal-gadot/001.jpg",
@@ -2252,10 +2233,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "gal-gadot",
-      "genuineDistance": 0.2909,
-      "impostorDistance": 0.6388,
+      "genuineDistance": 0.2562,
+      "impostorDistance": 0.6082,
       "rawRank": 1,
-      "matchPercent": 96.5
+      "matchPercent": 98
     },
     {
       "imagePath": "/celebs/held-out/gary-oldman/001.jpg",
@@ -2269,10 +2250,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "gary-oldman",
-      "genuineDistance": 0.412,
-      "impostorDistance": 0.697,
+      "genuineDistance": 0.3559,
+      "impostorDistance": 0.6631,
       "rawRank": 1,
-      "matchPercent": 84.4
+      "matchPercent": 91
     },
     {
       "imagePath": "/celebs/held-out/gemma-chan/001.jpg",
@@ -2284,10 +2265,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "gemma-chan",
-      "genuineDistance": 0.6287,
-      "impostorDistance": 0.6854,
+      "genuineDistance": 0.5319,
+      "impostorDistance": 0.6183,
       "rawRank": 1,
-      "matchPercent": 40.7
+      "matchPercent": 63
     },
     {
       "imagePath": "/celebs/held-out/george-clooney/001.jpg",
@@ -2299,12 +2280,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 2,
-      "topId": "colman-domingo",
-      "genuineDistance": 0.3267,
+      "rank": 1,
+      "topId": "george-clooney",
+      "genuineDistance": 0.2129,
       "impostorDistance": 0.2726,
-      "rawRank": 2,
-      "matchPercent": 97.1
+      "rawRank": 1,
+      "matchPercent": 99
     },
     {
       "imagePath": "/celebs/held-out/gigi-hadid/001.jpg",
@@ -2314,11 +2295,11 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
+      "rank": 3,
       "topId": "andrea-frankle",
-      "genuineDistance": 0.7771,
+      "genuineDistance": 0.6454,
       "impostorDistance": 0.5168,
-      "rawRank": 38,
+      "rawRank": 3,
       "matchPercent": 64.8
     },
     {
@@ -2333,10 +2314,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "glen-powell",
-      "genuineDistance": 0.3451,
+      "genuineDistance": 0.311,
       "impostorDistance": 0.601,
       "rawRank": 1,
-      "matchPercent": 92.5
+      "matchPercent": 95.1
     },
     {
       "imagePath": "/celebs/held-out/hailee-steinfeld/001.jpg",
@@ -2348,12 +2329,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "kenneth-fink",
-      "genuineDistance": 0.7965,
+      "rank": 1,
+      "topId": "hailee-steinfeld",
+      "genuineDistance": 0.6189,
       "impostorDistance": 0.6878,
-      "rawRank": 18,
-      "matchPercent": 27.1
+      "rawRank": 1,
+      "matchPercent": 44.2
     },
     {
       "imagePath": "/celebs/held-out/halle-berry/001.jpg",
@@ -2367,10 +2348,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "halle-berry",
-      "genuineDistance": 0.3198,
-      "impostorDistance": 0.6318,
+      "genuineDistance": 0.2081,
+      "impostorDistance": 0.546,
       "rawRank": 1,
-      "matchPercent": 94.8
+      "matchPercent": 99.2
     },
     {
       "imagePath": "/celebs/held-out/harry-styles/001.jpg",
@@ -2385,10 +2366,10 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "bruno-mars",
-      "genuineDistance": 0.8564,
+      "genuineDistance": 0.7204,
       "impostorDistance": 0.5825,
-      "rawRank": 127,
-      "matchPercent": 40.1
+      "rawRank": 22,
+      "matchPercent": 38.7
     },
     {
       "imagePath": "/celebs/held-out/heidi-klum/001.jpg",
@@ -2403,10 +2384,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "heidi-klum",
-      "genuineDistance": 0.3749,
-      "impostorDistance": 0.6543,
+      "genuineDistance": 0.3428,
+      "impostorDistance": 0.5999,
       "rawRank": 1,
-      "matchPercent": 90
+      "matchPercent": 93
     },
     {
       "imagePath": "/celebs/held-out/helen-mirren/001.jpg",
@@ -2420,10 +2401,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "helen-mirren",
-      "genuineDistance": 0.3308,
+      "genuineDistance": 0.2459,
       "impostorDistance": 0.6613,
       "rawRank": 1,
-      "matchPercent": 94
+      "matchPercent": 98.3
     },
     {
       "imagePath": "/celebs/held-out/helena-bonham-carter/001.jpg",
@@ -2440,7 +2421,7 @@
       "topId": "kim-sykes",
       "genuineDistance": 0.9729,
       "impostorDistance": 0.6521,
-      "rawRank": 522,
+      "rawRank": 574,
       "matchPercent": 30.8
     },
     {
@@ -2455,10 +2436,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "henry-cavill",
-      "genuineDistance": 0.2603,
+      "genuineDistance": 0.2079,
       "impostorDistance": 0.6498,
       "rawRank": 1,
-      "matchPercent": 97
+      "matchPercent": 98.8
     },
     {
       "imagePath": "/celebs/held-out/henry-golding/001.jpg",
@@ -2487,10 +2468,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "hugh-jackman",
-      "genuineDistance": 0.4657,
-      "impostorDistance": 0.5845,
+      "genuineDistance": 0.3561,
+      "impostorDistance": 0.4965,
       "rawRank": 1,
-      "matchPercent": 77.8
+      "matchPercent": 91.9
     },
     {
       "imagePath": "/celebs/held-out/hunter-schafer/001.jpg",
@@ -2519,10 +2500,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "idris-elba",
-      "genuineDistance": 0.375,
-      "impostorDistance": 0.668,
+      "genuineDistance": 0.3064,
+      "impostorDistance": 0.6258,
       "rawRank": 1,
-      "matchPercent": 90
+      "matchPercent": 95.6
     },
     {
       "imagePath": "/celebs/held-out/jackie-chan/001.jpg",
@@ -2572,10 +2553,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "jamie-dornan",
-      "genuineDistance": 0.5859,
-      "impostorDistance": 0.6049,
+      "genuineDistance": 0.0794,
+      "impostorDistance": 0.5843,
       "rawRank": 1,
-      "matchPercent": 39.7
+      "matchPercent": 100
     },
     {
       "imagePath": "/celebs/held-out/jason-momoa/001.jpg",
@@ -2588,7 +2569,7 @@
       "rank": 1,
       "topId": "jason-momoa",
       "genuineDistance": 0.0038,
-      "impostorDistance": 0.6403,
+      "impostorDistance": 0.6261,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2617,12 +2598,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "andy-thompson",
-      "genuineDistance": 0.7759,
-      "impostorDistance": 0.657,
-      "rawRank": 40,
-      "matchPercent": 28.3
+      "rank": 1,
+      "topId": "jennie-kim",
+      "genuineDistance": 0.4395,
+      "impostorDistance": 0.5772,
+      "rawRank": 1,
+      "matchPercent": 79
     },
     {
       "imagePath": "/celebs/held-out/jennifer-lawrence/001.jpg",
@@ -2634,9 +2615,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "ritchie-montgomery",
-      "genuineDistance": 0.8724,
+      "genuineDistance": 0.8663,
       "impostorDistance": 0.6778,
-      "rawRank": 167,
+      "rawRank": 179,
       "matchPercent": 25.7
     },
     {
@@ -2652,7 +2633,7 @@
       "rank": 1,
       "topId": "jessica-alba",
       "genuineDistance": 0.0179,
-      "impostorDistance": 0.5788,
+      "impostorDistance": 0.5071,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2670,7 +2651,7 @@
       "rank": 1,
       "topId": "jessica-chastain",
       "genuineDistance": 0.0057,
-      "impostorDistance": 0.6397,
+      "impostorDistance": 0.5965,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2687,7 +2668,7 @@
       "rank": 1,
       "topId": "jet-li",
       "genuineDistance": 0.0028,
-      "impostorDistance": 0.6877,
+      "impostorDistance": 0.6844,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2703,10 +2684,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "jisoo",
-      "genuineDistance": 0.466,
-      "impostorDistance": 0.6216,
+      "genuineDistance": 0.4211,
+      "impostorDistance": 0.5373,
       "rawRank": 1,
-      "matchPercent": 76.9
+      "matchPercent": 83.7
     },
     {
       "imagePath": "/celebs/held-out/joaquin-phoenix/001.jpg",
@@ -2718,12 +2699,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "bella-ramsey",
-      "genuineDistance": 0.6896,
+      "rank": 1,
+      "topId": "joaquin-phoenix",
+      "genuineDistance": 0.5493,
       "impostorDistance": 0.5605,
-      "rawRank": 8,
-      "matchPercent": 42.3
+      "rawRank": 1,
+      "matchPercent": 43
     },
     {
       "imagePath": "/celebs/held-out/john-boyega/001.jpg",
@@ -2754,7 +2735,7 @@
       "rank": 1,
       "topId": "john-cho",
       "genuineDistance": 0.0023,
-      "impostorDistance": 0.671,
+      "impostorDistance": 0.6334,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2770,10 +2751,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "john-krasinski",
-      "genuineDistance": 0.3848,
-      "impostorDistance": 0.6418,
+      "genuineDistance": 0.2097,
+      "impostorDistance": 0.3337,
       "rawRank": 1,
-      "matchPercent": 88.9
+      "matchPercent": 99.2
     },
     {
       "imagePath": "/celebs/held-out/jonah-hill/001.jpg",
@@ -2788,7 +2769,7 @@
       "rank": 1,
       "topId": "jonah-hill",
       "genuineDistance": 0.0049,
-      "impostorDistance": 0.6896,
+      "impostorDistance": 0.6634,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -2804,10 +2785,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "jonathan-bailey",
-      "genuineDistance": 0.4562,
-      "impostorDistance": 0.647,
+      "genuineDistance": 0.4541,
+      "impostorDistance": 0.6316,
       "rawRank": 1,
-      "matchPercent": 79.3
+      "matchPercent": 79.7
     },
     {
       "imagePath": "/celebs/held-out/joseph-gordon-levitt/001.jpg",
@@ -2821,10 +2802,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "joseph-gordon-levitt",
-      "genuineDistance": 0.3672,
+      "genuineDistance": 0.2429,
       "impostorDistance": 0.6095,
       "rawRank": 1,
-      "matchPercent": 90.8
+      "matchPercent": 98.4
     },
     {
       "imagePath": "/celebs/held-out/josh-hutcherson/001.jpg",
@@ -2838,10 +2819,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "josh-hutcherson",
-      "genuineDistance": 0.4385,
+      "genuineDistance": 0.3109,
       "impostorDistance": 0.6018,
       "rawRank": 1,
-      "matchPercent": 82
+      "matchPercent": 95.4
     },
     {
       "imagePath": "/celebs/held-out/julia-roberts/001.jpg",
@@ -2855,9 +2836,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "sarah-jane-redmond",
-      "genuineDistance": 0.9428,
+      "genuineDistance": 0.8743,
       "impostorDistance": 0.5451,
-      "rawRank": 479,
+      "rawRank": 265,
       "matchPercent": 58.6
     },
     {
@@ -2872,10 +2853,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "karol-g",
-      "genuineDistance": 0.3695,
-      "impostorDistance": 0.5442,
+      "genuineDistance": 0.356,
+      "impostorDistance": 0.5362,
       "rawRank": 1,
-      "matchPercent": 90.6
+      "matchPercent": 91.9
     },
     {
       "imagePath": "/celebs/held-out/kate-middleton/001.jpg",
@@ -2890,9 +2871,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "jeffrey-nordling",
-      "genuineDistance": 0.7586,
+      "genuineDistance": 0.6955,
       "impostorDistance": 0.6361,
-      "rawRank": 18,
+      "rawRank": 10,
       "matchPercent": 36
     },
     {
@@ -2908,10 +2889,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "kate-winslet",
-      "genuineDistance": 0.4084,
+      "genuineDistance": 0.388,
       "impostorDistance": 0.5994,
       "rawRank": 1,
-      "matchPercent": 84.3
+      "matchPercent": 87
     },
     {
       "imagePath": "/celebs/held-out/keanu-reeves/001.jpg",
@@ -2923,10 +2904,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "keanu-reeves",
-      "genuineDistance": 0.2198,
+      "genuineDistance": 0.1922,
       "impostorDistance": 0.6912,
       "rawRank": 1,
-      "matchPercent": 98.4
+      "matchPercent": 99.1
     },
     {
       "imagePath": "/celebs/held-out/keira-knightley/001.jpg",
@@ -2940,10 +2921,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "keira-knightley",
-      "genuineDistance": 0.4636,
-      "impostorDistance": 0.6071,
+      "genuineDistance": 0.3429,
+      "impostorDistance": 0.5844,
       "rawRank": 1,
-      "matchPercent": 76.7
+      "matchPercent": 92.3
     },
     {
       "imagePath": "/celebs/held-out/kendall-jenner/001.jpg",
@@ -2960,7 +2941,7 @@
       "topId": "travis-scott",
       "genuineDistance": 0.911,
       "impostorDistance": 0.3056,
-      "rawRank": 305,
+      "rawRank": 369,
       "matchPercent": 94.1
     },
     {
@@ -2973,12 +2954,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "marc-senior",
-      "genuineDistance": 0.6839,
-      "impostorDistance": 0.5823,
-      "rawRank": 6,
-      "matchPercent": 45.5
+      "rank": 2,
+      "topId": "chadwick-boseman",
+      "genuineDistance": 0.5806,
+      "impostorDistance": 0.5765,
+      "rawRank": 2,
+      "matchPercent": 36.8
     },
     {
       "imagePath": "/celebs/held-out/kerry-washington/001.jpg",
@@ -2990,10 +2971,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "kerry-washington",
-      "genuineDistance": 0.4738,
-      "impostorDistance": 0.6222,
+      "genuineDistance": 0.3489,
+      "impostorDistance": 0.5576,
       "rawRank": 1,
-      "matchPercent": 72.5
+      "matchPercent": 90.2
     },
     {
       "imagePath": "/celebs/held-out/kevin-hart/001.jpg",
@@ -3022,11 +3003,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 0.8405,
-      "impostorDistance": 0.6514,
-      "rawRank": 90,
-      "matchPercent": 34.8
+      "topId": "luke-hemsworth",
+      "genuineDistance": 0.8251,
+      "impostorDistance": 0.5077,
+      "rawRank": 103,
+      "matchPercent": 66.5
     },
     {
       "imagePath": "/celebs/held-out/kristen-stewart/001.jpg",
@@ -3040,10 +3021,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "kristen-stewart",
-      "genuineDistance": 0.5204,
-      "impostorDistance": 0.6072,
+      "genuineDistance": 0.3496,
+      "impostorDistance": 0.57,
       "rawRank": 1,
-      "matchPercent": 65.8
+      "matchPercent": 91.1
     },
     {
       "imagePath": "/celebs/held-out/kylian-mbappe/001.jpg",
@@ -3060,8 +3041,8 @@
       "topId": "simon-chin",
       "genuineDistance": 0.7907,
       "impostorDistance": 0.6342,
-      "rawRank": 45,
-      "matchPercent": 34.2
+      "rawRank": 66,
+      "matchPercent": 33.6
     },
     {
       "imagePath": "/celebs/held-out/kylie-jenner/001.jpg",
@@ -3074,7 +3055,7 @@
       "rank": 1,
       "topId": "kylie-jenner",
       "genuineDistance": 0.001,
-      "impostorDistance": 0.6292,
+      "impostorDistance": 0.607,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3120,10 +3101,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "lee-min-ho",
-      "genuineDistance": 0.3999,
-      "impostorDistance": 0.64,
+      "genuineDistance": 0.358,
+      "impostorDistance": 0.6137,
       "rawRank": 1,
-      "matchPercent": 84.1
+      "matchPercent": 89.3
     },
     {
       "imagePath": "/celebs/held-out/leonardo-dicaprio/001.jpg",
@@ -3133,12 +3114,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "lee-jung-jae",
-      "genuineDistance": 0.8316,
-      "impostorDistance": 0.6448,
-      "rawRank": 74,
-      "matchPercent": 31.5
+      "rank": 5,
+      "topId": "will-smith",
+      "genuineDistance": 0.6655,
+      "impostorDistance": 0.5035,
+      "rawRank": 5,
+      "matchPercent": 50.4
     },
     {
       "imagePath": "/celebs/held-out/liam-hemsworth/001.jpg",
@@ -3153,7 +3134,7 @@
       "rank": 1,
       "topId": "liam-hemsworth",
       "genuineDistance": 0.0034,
-      "impostorDistance": 0.6624,
+      "impostorDistance": 0.5533,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3182,12 +3163,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 5,
-      "topId": "ryan-mcdonell",
-      "genuineDistance": 0.6802,
+      "rank": 1,
+      "topId": "lionel-messi",
+      "genuineDistance": 0.535,
       "impostorDistance": 0.5813,
-      "rawRank": 5,
-      "matchPercent": 36.2
+      "rawRank": 1,
+      "matchPercent": 51.3
     },
     {
       "imagePath": "/celebs/held-out/lisa-blackpink/001.jpg",
@@ -3200,12 +3181,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "jessica-alba",
-      "genuineDistance": 0.7458,
+      "rank": 1,
+      "topId": "lisa-blackpink",
+      "genuineDistance": 0.4474,
       "impostorDistance": 0.5058,
-      "rawRank": 22,
-      "matchPercent": 70.2
+      "rawRank": 1,
+      "matchPercent": 71.4
     },
     {
       "imagePath": "/celebs/held-out/liu-yifei/001.jpg",
@@ -3217,10 +3198,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "liu-yifei",
-      "genuineDistance": 0.319,
+      "genuineDistance": 0.2446,
       "impostorDistance": 0.6265,
       "rawRank": 1,
-      "matchPercent": 93
+      "matchPercent": 97.5
     },
     {
       "imagePath": "/celebs/held-out/lizzo/001.jpg",
@@ -3232,12 +3213,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": -1,
-      "topId": "lana-condor",
-      "genuineDistance": 0.7516,
-      "impostorDistance": 0.6352,
-      "rawRank": 19,
-      "matchPercent": 31.8
+      "rank": 1,
+      "topId": "lizzo",
+      "genuineDistance": 0.4884,
+      "impostorDistance": 0.5923,
+      "rawRank": 1,
+      "matchPercent": 72.8
     },
     {
       "imagePath": "/celebs/held-out/logan-lerman/001.jpg",
@@ -3252,10 +3233,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "logan-lerman",
-      "genuineDistance": 0.3669,
-      "impostorDistance": 0.6508,
+      "genuineDistance": 0.2873,
+      "impostorDistance": 0.6396,
       "rawRank": 1,
-      "matchPercent": 89.6
+      "matchPercent": 96.1
     },
     {
       "imagePath": "/celebs/held-out/luke-hemsworth/001.jpg",
@@ -3270,7 +3251,7 @@
       "rank": 1,
       "topId": "luke-hemsworth",
       "genuineDistance": 0.0022,
-      "impostorDistance": 0.6479,
+      "impostorDistance": 0.5548,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3287,10 +3268,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "lupita-nyongo",
-      "genuineDistance": 0.605,
-      "impostorDistance": 0.6602,
+      "genuineDistance": 0.4189,
+      "impostorDistance": 0.5889,
       "rawRank": 1,
-      "matchPercent": 46.3
+      "matchPercent": 84.4
     },
     {
       "imagePath": "/celebs/held-out/mads-mikkelsen/001.jpg",
@@ -3319,12 +3300,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 2,
-      "topId": "tilda-swinton",
-      "genuineDistance": 0.5532,
+      "rank": 1,
+      "topId": "mahershala-ali",
+      "genuineDistance": 0.5464,
       "impostorDistance": 0.5514,
-      "rawRank": 2,
-      "matchPercent": 40.5
+      "rawRank": 1,
+      "matchPercent": 41.1
     },
     {
       "imagePath": "/celebs/held-out/margot-robbie/001.jpg",
@@ -3338,10 +3319,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "margot-robbie",
-      "genuineDistance": 0.5037,
-      "impostorDistance": 0.6565,
+      "genuineDistance": 0.3695,
+      "impostorDistance": 0.6102,
       "rawRank": 1,
-      "matchPercent": 71.4
+      "matchPercent": 90.6
     },
     {
       "imagePath": "/celebs/held-out/mark-zuckerberg/001.jpg",
@@ -3355,10 +3336,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "mark-zuckerberg",
-      "genuineDistance": 0.4272,
+      "genuineDistance": 0.3209,
       "impostorDistance": 0.6483,
       "rawRank": 1,
-      "matchPercent": 83.6
+      "matchPercent": 94.7
     },
     {
       "imagePath": "/celebs/held-out/martin-freeman/001.jpg",
@@ -3370,10 +3351,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "martin-freeman",
-      "genuineDistance": 0.3308,
-      "impostorDistance": 0.6583,
+      "genuineDistance": 0.3182,
+      "impostorDistance": 0.6343,
       "rawRank": 1,
-      "matchPercent": 92
+      "matchPercent": 93.1
     },
     {
       "imagePath": "/celebs/held-out/matt-bomer/001.jpg",
@@ -3387,10 +3368,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "matt-bomer",
-      "genuineDistance": 0.2805,
+      "genuineDistance": 0.2659,
       "impostorDistance": 0.5831,
       "rawRank": 1,
-      "matchPercent": 96.9
+      "matchPercent": 97.5
     },
     {
       "imagePath": "/celebs/held-out/matt-damon/001.jpg",
@@ -3404,10 +3385,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "matt-damon",
-      "genuineDistance": 0.4126,
+      "genuineDistance": 0.1961,
       "impostorDistance": 0.6512,
       "rawRank": 1,
-      "matchPercent": 83.9
+      "matchPercent": 99.2
     },
     {
       "imagePath": "/celebs/held-out/meghan-markle/001.jpg",
@@ -3420,11 +3401,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "scott-lyster",
+      "topId": "jennie-kim",
       "genuineDistance": 0.7667,
-      "impostorDistance": 0.6308,
-      "rawRank": 40,
-      "matchPercent": 30.6
+      "impostorDistance": 0.6058,
+      "rawRank": 58,
+      "matchPercent": 35.8
     },
     {
       "imagePath": "/celebs/held-out/meryl-streep/001.jpg",
@@ -3437,11 +3418,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "colton-haynes",
-      "genuineDistance": 0.932,
-      "impostorDistance": 0.6795,
+      "topId": "elizabeth-olsen",
+      "genuineDistance": 0.9142,
+      "impostorDistance": 0.6683,
       "rawRank": 304,
-      "matchPercent": 29.3
+      "matchPercent": 29.1
     },
     {
       "imagePath": "/celebs/held-out/michael-b-jordan/001.jpg",
@@ -3455,10 +3436,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "michael-b-jordan",
-      "genuineDistance": 0.2867,
+      "genuineDistance": 0.1723,
       "impostorDistance": 0.5593,
       "rawRank": 1,
-      "matchPercent": 96.7
+      "matchPercent": 99.7
     },
     {
       "imagePath": "/celebs/held-out/michelle-obama/001.jpg",
@@ -3489,10 +3470,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "michelle-yeoh",
-      "genuineDistance": 0.3959,
-      "impostorDistance": 0.6994,
+      "genuineDistance": 0.334,
+      "impostorDistance": 0.6908,
       "rawRank": 1,
-      "matchPercent": 87.7
+      "matchPercent": 93.7
     },
     {
       "imagePath": "/celebs/held-out/miles-teller/001.jpg",
@@ -3504,10 +3485,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "miles-teller",
-      "genuineDistance": 0.4541,
-      "impostorDistance": 0.6319,
+      "genuineDistance": 0.3011,
+      "impostorDistance": 0.5885,
       "rawRank": 1,
-      "matchPercent": 76.7
+      "matchPercent": 94.8
     },
     {
       "imagePath": "/celebs/held-out/millie-bobby-brown/001.jpg",
@@ -3522,7 +3503,7 @@
       "rank": 1,
       "topId": "millie-bobby-brown",
       "genuineDistance": 0.002,
-      "impostorDistance": 0.5656,
+      "impostorDistance": 0.5644,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3536,10 +3517,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "morgan-freeman",
-      "genuineDistance": 0.6044,
-      "impostorDistance": 0.6417,
+      "genuineDistance": 0.2928,
+      "impostorDistance": 0.6236,
       "rawRank": 1,
-      "matchPercent": 38.9
+      "matchPercent": 95
     },
     {
       "imagePath": "/celebs/held-out/naomi-campbell/001.jpg",
@@ -3552,11 +3533,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
-      "genuineDistance": 0.9563,
-      "impostorDistance": 0.6223,
-      "rawRank": 474,
-      "matchPercent": 37.1
+      "topId": "billie-eilish",
+      "genuineDistance": 0.8907,
+      "impostorDistance": 0.4693,
+      "rawRank": 289,
+      "matchPercent": 60.4
     },
     {
       "imagePath": "/celebs/held-out/naomi-osaka/001.jpg",
@@ -3591,7 +3572,7 @@
       "topId": "rey-lucas",
       "genuineDistance": 0.9005,
       "impostorDistance": 0.6538,
-      "rawRank": 215,
+      "rawRank": 254,
       "matchPercent": 31.4
     },
     {
@@ -3606,10 +3587,10 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "kylian-mbappe",
-      "genuineDistance": 1.0784,
-      "impostorDistance": 0.3682,
-      "rawRank": 803,
-      "matchPercent": 90.3
+      "genuineDistance": 0.9122,
+      "impostorDistance": 0.348,
+      "rawRank": 333,
+      "matchPercent": 92.3
     },
     {
       "imagePath": "/celebs/held-out/nicholas-hoult/001.jpg",
@@ -3622,7 +3603,7 @@
       "rank": 1,
       "topId": "nicholas-hoult",
       "genuineDistance": 0.005,
-      "impostorDistance": 0.6058,
+      "impostorDistance": 0.5626,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3636,10 +3617,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "nicki-minaj",
-      "genuineDistance": 0.4703,
-      "impostorDistance": 0.6543,
+      "genuineDistance": 0.4599,
+      "impostorDistance": 0.5678,
       "rawRank": 1,
-      "matchPercent": 73.1
+      "matchPercent": 74.8
     },
     {
       "imagePath": "/celebs/held-out/nicole-kidman/001.jpg",
@@ -3653,10 +3634,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "nicole-kidman",
-      "genuineDistance": 0.5895,
-      "impostorDistance": 0.679,
+      "genuineDistance": 0.4342,
+      "impostorDistance": 0.6056,
       "rawRank": 1,
-      "matchPercent": 53.6
+      "matchPercent": 80.6
     },
     {
       "imagePath": "/celebs/held-out/olivia-colman/001.jpg",
@@ -3670,10 +3651,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "olivia-colman",
-      "genuineDistance": 0.4082,
-      "impostorDistance": 0.6823,
+      "genuineDistance": 0.2995,
+      "impostorDistance": 0.6727,
       "rawRank": 1,
-      "matchPercent": 85.1
+      "matchPercent": 95.6
     },
     {
       "imagePath": "/celebs/held-out/olivia-rodrigo/001.jpg",
@@ -3702,9 +3683,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "ian-butcher",
-      "genuineDistance": 0.9018,
+      "genuineDistance": 0.8378,
       "impostorDistance": 0.5793,
-      "rawRank": 293,
+      "rawRank": 150,
       "matchPercent": 47.5
     },
     {
@@ -3720,10 +3701,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "orlando-bloom",
-      "genuineDistance": 0.4832,
+      "genuineDistance": 0.4163,
       "impostorDistance": 0.5644,
       "rawRank": 1,
-      "matchPercent": 72.5
+      "matchPercent": 83.1
     },
     {
       "imagePath": "/celebs/held-out/oscar-isaac/001.jpg",
@@ -3737,10 +3718,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "oscar-isaac",
-      "genuineDistance": 0.426,
-      "impostorDistance": 0.6637,
+      "genuineDistance": 0.2611,
+      "impostorDistance": 0.6389,
       "rawRank": 1,
-      "matchPercent": 83.8
+      "matchPercent": 97.8
     },
     {
       "imagePath": "/celebs/held-out/park-seo-joon/001.jpg",
@@ -3755,10 +3736,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "park-seo-joon",
-      "genuineDistance": 0.3787,
-      "impostorDistance": 0.664,
+      "genuineDistance": 0.3522,
+      "impostorDistance": 0.6149,
       "rawRank": 1,
-      "matchPercent": 88.6
+      "matchPercent": 91.4
     },
     {
       "imagePath": "/celebs/held-out/paul-mescal/001.jpg",
@@ -3807,10 +3788,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "pedro-pascal",
-      "genuineDistance": 0.2886,
+      "genuineDistance": 0.2743,
       "impostorDistance": 0.625,
       "rawRank": 1,
-      "matchPercent": 96.6
+      "matchPercent": 97.3
     },
     {
       "imagePath": "/celebs/held-out/penelope-cruz-m/001.jpg",
@@ -3825,7 +3806,7 @@
       "rank": 1,
       "topId": "penelope-cruz-m",
       "genuineDistance": 0.0053,
-      "impostorDistance": 0.6503,
+      "impostorDistance": 0.6281,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3872,11 +3853,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "ellen-rice",
+      "topId": "shah-rukh-khan",
       "genuineDistance": 0.9123,
-      "impostorDistance": 0.678,
-      "rawRank": 254,
-      "matchPercent": 25.6
+      "impostorDistance": 0,
+      "rawRank": 304,
+      "matchPercent": 100
     },
     {
       "imagePath": "/celebs/held-out/rachel-mcadams/001.jpg",
@@ -3890,10 +3871,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "rachel-mcadams",
-      "genuineDistance": 0.5667,
-      "impostorDistance": 0.6334,
+      "genuineDistance": 0.4424,
+      "impostorDistance": 0.6204,
       "rawRank": 1,
-      "matchPercent": 56.2
+      "matchPercent": 81.4
     },
     {
       "imagePath": "/celebs/held-out/ranbir-kapoor/001.jpg",
@@ -3905,10 +3886,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "ranbir-kapoor",
-      "genuineDistance": 0.292,
-      "impostorDistance": 0.6735,
+      "genuineDistance": 0.1349,
+      "impostorDistance": 0.6159,
       "rawRank": 1,
-      "matchPercent": 95
+      "matchPercent": 99.8
     },
     {
       "imagePath": "/celebs/held-out/ranveer-singh/001.jpg",
@@ -3920,12 +3901,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 4,
-      "topId": "halle-bailey",
-      "genuineDistance": 0.6919,
+      "rank": 1,
+      "topId": "ranveer-singh",
+      "genuineDistance": 0.1044,
       "impostorDistance": 0.5968,
-      "rawRank": 4,
-      "matchPercent": 41.9
+      "rawRank": 1,
+      "matchPercent": 99.9
     },
     {
       "imagePath": "/celebs/held-out/rebecca-ferguson/001.jpg",
@@ -3970,7 +3951,7 @@
       "rank": 1,
       "topId": "regé-jean-page",
       "genuineDistance": 0.0029,
-      "impostorDistance": 0.6441,
+      "impostorDistance": 0.6024,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -3984,9 +3965,9 @@
       "nearDuplicate": false,
       "rank": -1,
       "topId": "travis-scott",
-      "genuineDistance": 1.043,
+      "genuineDistance": 0.8043,
       "impostorDistance": 0.1981,
-      "rawRank": 846,
+      "rawRank": 96,
       "matchPercent": 98.9
     },
     {
@@ -4000,7 +3981,7 @@
       "rank": 1,
       "topId": "riz-ahmed",
       "genuineDistance": 0.0023,
-      "impostorDistance": 0.623,
+      "impostorDistance": 0.574,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4017,7 +3998,7 @@
       "rank": 1,
       "topId": "robert-downey-jr",
       "genuineDistance": 0.0036,
-      "impostorDistance": 0.6509,
+      "impostorDistance": 0.6212,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4032,7 +4013,7 @@
       "rank": 1,
       "topId": "robert-pattinson",
       "genuineDistance": 0.0054,
-      "impostorDistance": 0.6591,
+      "impostorDistance": 0.6139,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4049,7 +4030,7 @@
       "rank": 1,
       "topId": "ryan-gosling",
       "genuineDistance": 0.0008,
-      "impostorDistance": 0.613,
+      "impostorDistance": 0.5729,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4066,7 +4047,7 @@
       "rank": 1,
       "topId": "salma-hayek",
       "genuineDistance": 0.0044,
-      "impostorDistance": 0.5362,
+      "impostorDistance": 0.5083,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4083,7 +4064,7 @@
       "rank": 1,
       "topId": "sam-claflin",
       "genuineDistance": 0.0047,
-      "impostorDistance": 0.67,
+      "impostorDistance": 0.6221,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4114,10 +4095,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "sandra-bullock",
-      "genuineDistance": 0.512,
+      "genuineDistance": 0.4165,
       "impostorDistance": 0.616,
       "rawRank": 1,
-      "matchPercent": 66.5
+      "matchPercent": 82.4
     },
     {
       "imagePath": "/celebs/held-out/saoirse-ronan/001.jpg",
@@ -4133,8 +4114,8 @@
       "topId": "danny-dworkis",
       "genuineDistance": 0.9477,
       "impostorDistance": 0.5991,
-      "rawRank": 337,
-      "matchPercent": 50.2
+      "rawRank": 397,
+      "matchPercent": 39.8
     },
     {
       "imagePath": "/celebs/held-out/scarlett-johansson/001.jpg",
@@ -4148,10 +4129,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "scarlett-johansson",
-      "genuineDistance": 0.3683,
-      "impostorDistance": 0.6342,
+      "genuineDistance": 0.2878,
+      "impostorDistance": 0.5044,
       "rawRank": 1,
-      "matchPercent": 89.9
+      "matchPercent": 96.3
     },
     {
       "imagePath": "/celebs/held-out/sebastian-stan/001.jpg",
@@ -4162,11 +4143,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "travis-scott",
+      "topId": "naomi-osaka",
       "genuineDistance": 0.9226,
-      "impostorDistance": 0.6959,
-      "rawRank": 217,
-      "matchPercent": 27.2
+      "impostorDistance": 0.6639,
+      "rawRank": 278,
+      "matchPercent": 27.9
     },
     {
       "imagePath": "/celebs/held-out/selena-gomez/001.jpg",
@@ -4180,10 +4161,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "selena-gomez",
-      "genuineDistance": 0.5014,
-      "impostorDistance": 0.5926,
+      "genuineDistance": 0.4055,
+      "impostorDistance": 0.5815,
       "rawRank": 1,
-      "matchPercent": 69.7
+      "matchPercent": 84.9
     },
     {
       "imagePath": "/celebs/held-out/serena-williams/001.jpg",
@@ -4196,12 +4177,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 4,
-      "topId": "sza",
+      "rank": -1,
+      "topId": "seth-rogen",
       "genuineDistance": 0.6964,
-      "impostorDistance": 0.6747,
-      "rawRank": 4,
-      "matchPercent": 28.4
+      "impostorDistance": 0.6512,
+      "rawRank": 8,
+      "matchPercent": 30.9
     },
     {
       "imagePath": "/celebs/held-out/seth-rogen/001.jpg",
@@ -4215,10 +4196,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "seth-rogen",
-      "genuineDistance": 0.6338,
+      "genuineDistance": 0.265,
       "impostorDistance": 0.6354,
       "rawRank": 1,
-      "matchPercent": 32.8
+      "matchPercent": 97.7
     },
     {
       "imagePath": "/celebs/held-out/shah-rukh-khan/001.jpg",
@@ -4229,11 +4210,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "jay-o-sanders",
-      "genuineDistance": 1.0826,
-      "impostorDistance": 0.6682,
-      "rawRank": 801,
-      "matchPercent": 26.7
+      "topId": "aishwarya-rai",
+      "genuineDistance": 1.0193,
+      "impostorDistance": 0.6617,
+      "rawRank": 667,
+      "matchPercent": 27.3
     },
     {
       "imagePath": "/celebs/held-out/shakira/001.jpg",
@@ -4264,10 +4245,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "simu-liu",
-      "genuineDistance": 0.4893,
-      "impostorDistance": 0.6302,
+      "genuineDistance": 0.4225,
+      "impostorDistance": 0.6233,
       "rawRank": 1,
-      "matchPercent": 71.2
+      "matchPercent": 82
     },
     {
       "imagePath": "/celebs/held-out/song-kang/001.jpg",
@@ -4279,10 +4260,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "song-kang",
-      "genuineDistance": 0.6227,
+      "genuineDistance": 0.5628,
       "impostorDistance": 0.6726,
       "rawRank": 1,
-      "matchPercent": 39.3
+      "matchPercent": 56.5
     },
     {
       "imagePath": "/celebs/held-out/stephen-curry/001.jpg",
@@ -4296,7 +4277,7 @@
       "topId": "travis-scott",
       "genuineDistance": 0.8895,
       "impostorDistance": 0.2105,
-      "rawRank": 188,
+      "rawRank": 262,
       "matchPercent": 98.8
     },
     {
@@ -4311,10 +4292,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "sydney-sweeney",
-      "genuineDistance": 0.5258,
-      "impostorDistance": 0.6361,
+      "genuineDistance": 0.4185,
+      "impostorDistance": 0.5982,
       "rawRank": 1,
-      "matchPercent": 67.5
+      "matchPercent": 84.8
     },
     {
       "imagePath": "/celebs/held-out/taylor-lautner/001.jpg",
@@ -4328,10 +4309,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "taylor-lautner",
-      "genuineDistance": 0.2636,
+      "genuineDistance": 0.2471,
       "impostorDistance": 0.5881,
       "rawRank": 1,
-      "matchPercent": 97.3
+      "matchPercent": 98
     },
     {
       "imagePath": "/celebs/held-out/taylor-swift/001.jpg",
@@ -4341,12 +4322,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 2,
-      "topId": "sarah-jane-redmond",
-      "genuineDistance": 0.5599,
+      "rank": 1,
+      "topId": "taylor-swift",
+      "genuineDistance": 0.4149,
       "impostorDistance": 0.5365,
-      "rawRank": 2,
-      "matchPercent": 44.2
+      "rawRank": 1,
+      "matchPercent": 81.9
     },
     {
       "imagePath": "/celebs/held-out/tiffany-haddish/001.jpg",
@@ -4375,11 +4356,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "gong-yoo",
-      "genuineDistance": 0.964,
-      "impostorDistance": 0.6577,
-      "rawRank": 396,
-      "matchPercent": 27.8
+      "topId": "doja-cat",
+      "genuineDistance": 0.8696,
+      "impostorDistance": 0.6146,
+      "rawRank": 173,
+      "matchPercent": 39
     },
     {
       "imagePath": "/celebs/held-out/tom-hanks/001.jpg",
@@ -4393,10 +4374,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "tom-hanks",
-      "genuineDistance": 0.4755,
+      "genuineDistance": 0.2345,
       "impostorDistance": 0.6708,
       "rawRank": 1,
-      "matchPercent": 75.4
+      "matchPercent": 98.5
     },
     {
       "imagePath": "/celebs/held-out/tom-hardy/001.jpg",
@@ -4427,10 +4408,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "tom-holland",
-      "genuineDistance": 0.528,
-      "impostorDistance": 0.7214,
+      "genuineDistance": 0.346,
+      "impostorDistance": 0.5338,
       "rawRank": 1,
-      "matchPercent": 67.2
+      "matchPercent": 92.8
     },
     {
       "imagePath": "/celebs/held-out/tony-leung/001.jpg",
@@ -4442,10 +4423,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "tony-leung",
-      "genuineDistance": 0.4472,
+      "genuineDistance": 0.3106,
       "impostorDistance": 0.5787,
       "rawRank": 1,
-      "matchPercent": 76.9
+      "matchPercent": 93.7
     },
     {
       "imagePath": "/celebs/held-out/trevor-noah/001.jpg",
@@ -4477,7 +4458,7 @@
       "rank": 1,
       "topId": "uzo-aduba",
       "genuineDistance": 0.0074,
-      "impostorDistance": 0.6594,
+      "impostorDistance": 0.659,
       "rawRank": 1,
       "matchPercent": 100
     },
@@ -4493,10 +4474,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "vanessa-kirby",
-      "genuineDistance": 0.5607,
-      "impostorDistance": 0.6503,
+      "genuineDistance": 0.467,
+      "impostorDistance": 0.6199,
       "rawRank": 1,
-      "matchPercent": 59.1
+      "matchPercent": 75.7
     },
     {
       "imagePath": "/celebs/held-out/victoria-beckham/001.jpg",
@@ -4507,11 +4488,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "george-tchortov",
-      "genuineDistance": 1.0564,
-      "impostorDistance": 0.7132,
-      "rawRank": 719,
-      "matchPercent": 22.4
+      "topId": "seth-rogen",
+      "genuineDistance": 0.8913,
+      "impostorDistance": 0.7,
+      "rawRank": 222,
+      "matchPercent": 23.6
     },
     {
       "imagePath": "/celebs/held-out/viola-davis/001.jpg",
@@ -4523,12 +4504,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 4,
+      "rank": -1,
       "topId": "remy-auberjonois",
       "genuineDistance": 0.7027,
       "impostorDistance": 0.6396,
-      "rawRank": 4,
-      "matchPercent": 36.6
+      "rawRank": 6,
+      "matchPercent": 33.2
     },
     {
       "imagePath": "/celebs/held-out/will-smith/001.jpg",
@@ -4559,10 +4540,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "zac-efron",
-      "genuineDistance": 0.5025,
+      "genuineDistance": 0.39,
       "impostorDistance": 0.6089,
       "rawRank": 1,
-      "matchPercent": 69.5
+      "matchPercent": 86.9
     },
     {
       "imagePath": "/celebs/held-out/zayn-malik/001.jpg",
@@ -4589,10 +4570,10 @@
       "nearDuplicate": false,
       "rank": 1,
       "topId": "zendaya",
-      "genuineDistance": 0.6025,
-      "impostorDistance": 0.6379,
+      "genuineDistance": 0.3334,
+      "impostorDistance": 0.5695,
       "rawRank": 1,
-      "matchPercent": 39.1
+      "matchPercent": 92
     },
     {
       "imagePath": "/celebs/held-out/zhang-ziyi/001.jpg",
@@ -4603,11 +4584,11 @@
       "refused": false,
       "nearDuplicate": false,
       "rank": -1,
-      "topId": "lee-min-ho",
+      "topId": "lee-jung-jae",
       "genuineDistance": 0.8858,
-      "impostorDistance": 0.6112,
-      "rawRank": 201,
-      "matchPercent": 37
+      "impostorDistance": 0.5516,
+      "rawRank": 246,
+      "matchPercent": 42.9
     },
     {
       "imagePath": "/celebs/held-out/zoe-kravitz/001.jpg",
@@ -4637,12 +4618,12 @@
       "detected": true,
       "refused": false,
       "nearDuplicate": false,
-      "rank": 2,
-      "topId": "lizzo",
-      "genuineDistance": 0.6107,
-      "impostorDistance": 0.5884,
-      "rawRank": 2,
-      "matchPercent": 40.2
+      "rank": 3,
+      "topId": "naomi-campbell",
+      "genuineDistance": 0.5514,
+      "impostorDistance": 0.5189,
+      "rawRank": 3,
+      "matchPercent": 46.8
     }
   ]
 }

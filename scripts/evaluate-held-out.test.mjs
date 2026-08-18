@@ -9,10 +9,13 @@ import {
   computeRankStats,
   distanceStats,
   equalErrorDistance,
+  expectedCalibrationError,
   fitHillConstants,
   formatMarkdownReport,
   hillLogLoss,
+  reliabilityTable,
   isNearDuplicate,
+  mergeExtraTemplates,
   partitionLeakage,
   selectProbes,
   stratify,
@@ -58,6 +61,60 @@ describe("wilsonInterval", () => {
     const [lo, hi] = wilsonInterval(8, 8);
     assert.ok(lo > 0 && lo < 100);
     assert.equal(hi, 100);
+  });
+});
+
+describe("mergeExtraTemplates", () => {
+  const dim = 512;
+  const unit = (seed) => {
+    const v = new Array(dim).fill(0);
+    v[seed % dim] = 1;
+    return v;
+  };
+  const primaries = [
+    { id: "adele", name: "Adele", descriptor: unit(1), age: 35, gender: "female", genderProb: 0.9 },
+    { id: "zendaya", name: "Zendaya", descriptor: unit(2), age: 27, gender: "female", genderProb: 0.9 },
+  ];
+
+  it("returns primaries untouched when there are no extra templates", () => {
+    const merged = mergeExtraTemplates(primaries, []);
+    assert.deepEqual(
+      merged.map((g) => g.id).sort(),
+      ["adele", "zendaya"],
+    );
+  });
+
+  it("adds each extra template plus a centroid prototype, as the browser does", () => {
+    const merged = mergeExtraTemplates(primaries, [{ id: "adele", descriptor: unit(3) }]);
+    const adele = merged.filter((g) => g.id === "adele");
+    assert.equal(adele.length, 3, "primary + extra template + centroid");
+    assert.equal(merged.filter((g) => g.id === "zendaya").length, 1);
+    assert.ok(
+      adele.every((g) => g.name === "Adele" && g.gender === "female"),
+      "extras inherit the primary's metadata",
+    );
+  });
+
+  it("ignores templates for unknown ids, empty descriptors, and padded FaceNet vectors", () => {
+    const padded = new Array(dim).fill(0);
+    for (let i = 0; i < 128; i++) padded[i] = 0.05;
+    const merged = mergeExtraTemplates(primaries, [
+      { id: "not-in-gallery", descriptor: unit(4) },
+      { id: "adele", descriptor: [] },
+      { id: "adele" },
+      { id: "adele", descriptor: padded },
+    ]);
+    assert.equal(merged.length, 2);
+  });
+
+  it("normalizes extra descriptors so an unnormalized template cannot dominate ranking", () => {
+    const merged = mergeExtraTemplates(primaries, [
+      { id: "adele", descriptor: unit(3).map((v) => v * 42) },
+    ]);
+    for (const entry of merged) {
+      const norm = Math.hypot(...entry.descriptor);
+      assert.ok(Math.abs(norm - 1) < 1e-5, `expected unit norm, got ${norm}`);
+    }
   });
 });
 
@@ -229,9 +286,84 @@ describe("hill calibration", () => {
 
   it("keeps the current constants when the refit barely moves", () => {
     const tight = fitHillConstants([HILL_D0 - 0.3], [HILL_D0 + 0.3]);
-    assert.ok(["keep-current", "recalibrate"].includes(tight.verdict));
+    assert.ok(tight.verdict.startsWith("keep-current") || tight.verdict === "recalibrate");
     const same = fitHillConstants([0.45, 0.5], [0.7, 0.75]);
     assert.equal(typeof same.verdict, "string");
+  });
+
+  it("refuses to recalibrate when the refit only wins log-loss by hedging", () => {
+    const fit = fitHillConstants(genuine, impostor);
+    assert.ok(fit.calibrationError.current !== null);
+    if (fit.calibrationError.fitted - fit.calibrationError.current > 1) {
+      assert.ok(
+        fit.verdict.startsWith("keep-current"),
+        `a worse-calibrated refit must not win: ${fit.verdict}`,
+      );
+    }
+  });
+});
+
+describe("reliabilityTable", () => {
+  it("reports the claimed percentage against how often the top match was right", () => {
+    // Distances chosen so the correct pairs land near-certain and the wrong ones near-even.
+    const pairs = [
+      { genuine: 0.1, impostor: 0.6 },
+      { genuine: 0.1, impostor: 0.6 },
+      { genuine: 0.7, impostor: 0.6 },
+      { genuine: 0.7, impostor: 0.62 },
+    ];
+    const bins = reliabilityTable(pairs, HILL_D0, HILL_N);
+    const confident = bins.find((b) => b.band === "95-100%");
+    assert.equal(confident.n, 2);
+    assert.equal(confident.observedPct, 100, "both near-zero-distance probes were correct");
+    assert.ok(confident.claimedPct > 95);
+
+    const middling = bins.filter((b) => b.n > 0 && b.band !== "95-100%");
+    assert.equal(
+      middling.reduce((acc, b) => acc + b.n, 0),
+      2,
+    );
+    assert.ok(
+      middling.every((b) => b.observedPct === 0),
+      "the impostor-topped probes were wrong",
+    );
+  });
+
+  it("emits an empty band rather than dropping it, so a report cannot hide a gap", () => {
+    const bins = reliabilityTable([{ genuine: 0.05, impostor: 0.9 }], HILL_D0, HILL_N);
+    assert.equal(bins.length, 6);
+    const empty = bins.find((b) => b.band === "40-60%");
+    assert.equal(empty.n, 0);
+    assert.equal(empty.claimedPct, null);
+    assert.equal(empty.gapPct, null);
+  });
+
+  it("signs the gap so overstatement is positive", () => {
+    const overstating = reliabilityTable([{ genuine: 0.61, impostor: 0.6 }], HILL_D0, HILL_N);
+    const populated = overstating.find((b) => b.n > 0);
+    assert.equal(populated.observedPct, 0);
+    assert.ok(populated.gapPct > 0, "claiming anything about a wrong answer overstates");
+  });
+});
+
+describe("expectedCalibrationError", () => {
+  it("weights each band by its probe count, so a tiny band cannot dominate", () => {
+    const bins = [
+      { band: "40-60%", n: 1, claimedPct: 50, observedPct: 0, gapPct: 50 },
+      { band: "95-100%", n: 99, claimedPct: 99, observedPct: 99, gapPct: 0 },
+    ];
+    assert.equal(expectedCalibrationError(bins), 0.5);
+  });
+
+  it("ignores sign, so understating is penalised too", () => {
+    const over = expectedCalibrationError([{ band: "a", n: 10, claimedPct: 90, observedPct: 70, gapPct: 20 }]);
+    const under = expectedCalibrationError([{ band: "a", n: 10, claimedPct: 50, observedPct: 70, gapPct: -20 }]);
+    assert.equal(over, 20);
+    assert.equal(under, 20);
+  });
+
+  it("returns null when no band has probes", () => {
+    assert.equal(expectedCalibrationError([{ band: "a", n: 0, claimedPct: null, observedPct: null, gapPct: null }]), null);
   });
 });
 
