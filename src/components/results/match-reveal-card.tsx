@@ -146,9 +146,11 @@ export function MatchRevealCard({
               <h2 className="text-[1.75rem] sm:text-[2.25rem] font-bold tracking-tight leading-tight truncate text-fg">
                 {topMatch.name}
               </h2>
-              <p className="mt-1 text-sm text-fg leading-snug text-pretty">
-                {blurb}
-              </p>
+              {blurb && blurb !== secondary ? (
+                <p className="mt-1 text-sm text-fg leading-snug text-pretty">
+                  {blurb}
+                </p>
+              ) : null}
               <p className="mt-1 text-xs sm:text-sm text-fg-muted truncate">
                 {topMatch.knownFor}
               </p>
