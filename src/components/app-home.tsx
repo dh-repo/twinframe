@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Brain, ShieldCheck, Zap, ScanFace } from "lucide-react";
+import { Brain, ShieldCheck, Zap, ScanFace, User, Users } from "lucide-react";
 import { PhotoUploader } from "@/components/capture/photo-uploader";
 import { WebcamCapture } from "@/components/capture/webcam-capture";
 import { CropReview } from "@/components/capture/crop-review";
 import { MatchResults } from "@/components/results/match-results";
+import { FriendCompare } from "@/components/results/friend-compare";
 import { AnalyzingState } from "@/components/analyzing-state";
 import { StarGalleryModal } from "@/components/gallery/star-gallery-modal";
 import { PackPicker } from "@/components/pack-picker";
@@ -22,11 +23,96 @@ import {
   readStoredPack,
   writeStoredPack,
 } from "@/lib/celebrities/load-packs";
+import { cn } from "@/lib/utils/cn";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
+type PlayMode = "solo" | "friend";
+type FriendSlot = "a" | "b";
+type FaceBox = { x: number; y: number; width: number; height: number };
+
+interface PersonCapture {
+  blob: Blob;
+  selectedBox?: FaceBox;
+  previewUrl: string;
+  result: MatchResult;
+}
+
+function playModeLabel(mode: PlayMode): string {
+  switch (mode) {
+    case "solo":
+      return "Just me";
+    case "friend":
+      return "With a friend";
+    default: {
+      const _exhaustive: never = mode;
+      return _exhaustive;
+    }
+  }
+}
+
+function captureHeadline(mode: PlayMode, slot: FriendSlot): string {
+  switch (mode) {
+    case "solo":
+      return "Find Your Celebrity Doppelgänger";
+    case "friend":
+      switch (slot) {
+        case "a":
+          return "You go first";
+        case "b":
+          return "Now add your friend";
+        default: {
+          const _exhaustive: never = slot;
+          return _exhaustive;
+        }
+      }
+    default: {
+      const _exhaustive: never = mode;
+      return _exhaustive;
+    }
+  }
+}
+
+function captureSubcopy(mode: PlayMode, slot: FriendSlot): string {
+  switch (mode) {
+    case "solo":
+      return "Upload a selfie or use your camera. Instant, on-device matching with EdgeFace 512-d & SCRFD-2.5G against";
+    case "friend":
+      switch (slot) {
+        case "a":
+          return "Match yourself first. Your friend goes next — same pack, split results, one closer twin.";
+        case "b":
+          return "Same pack as you. Capture or upload your friend, then we’ll see who is the closer twin.";
+        default: {
+          const _exhaustive: never = slot;
+          return _exhaustive;
+        }
+      }
+    default: {
+      const _exhaustive: never = mode;
+      return _exhaustive;
+    }
+  }
+}
+
+function rematchHint(mode: PlayMode, hasPair: boolean): string {
+  switch (mode) {
+    case "solo":
+      return "Switch packs to rematch this photo — no new selfie needed.";
+    case "friend":
+      return hasPair
+        ? "Switch packs to rematch both photos — same gallery for each of you."
+        : "Switch packs to rematch this photo — your friend will use the same pack.";
+    default: {
+      const _exhaustive: never = mode;
+      return _exhaustive;
+    }
+  }
+}
 
 export function AppHome() {
   const [phase, setPhase] = useState<Phase>("capture");
+  const [playMode, setPlayMode] = useState<PlayMode>("solo");
+  const [friendSlot, setFriendSlot] = useState<FriendSlot>("a");
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [galleryModalOpen, setGalleryModalOpen] = useState(false);
@@ -37,15 +123,19 @@ export function AppHome() {
   const [progress, setProgress] = useState(0);
   const [gallerySize, setGallerySize] = useState(1000);
   const [pack, setPack] = useState<PackId>(DEFAULT_PACK);
+  const [personA, setPersonA] = useState<PersonCapture | null>(null);
+  const [personB, setPersonB] = useState<PersonCapture | null>(null);
   const previewRef = useRef<string | null>(null);
-  // review state
   const [reviewSrc, setReviewSrc] = useState<string | null>(null);
   const [reviewFileName, setReviewFileName] = useState<string | undefined>(undefined);
   const reviewSrcRef = useRef<string | null>(null);
   const lastApprovedBlobRef = useRef<Blob | null>(null);
-  const lastSelectedBoxRef = useRef<
-    { x: number; y: number; width: number; height: number } | undefined
-  >(undefined);
+  const lastSelectedBoxRef = useRef<FaceBox | undefined>(undefined);
+  const playModeRef = useRef<PlayMode>("solo");
+  const friendSlotRef = useRef<FriendSlot>("a");
+  const personARef = useRef<PersonCapture | null>(null);
+  const personBRef = useRef<PersonCapture | null>(null);
+  const analyzeGenRef = useRef(0);
 
   useEffect(() => {
     prefetchModel();
@@ -60,6 +150,8 @@ export function AppHome() {
     return () => {
       if (previewRef.current) URL.revokeObjectURL(previewRef.current);
       if (reviewSrcRef.current) URL.revokeObjectURL(reviewSrcRef.current);
+      if (personARef.current) URL.revokeObjectURL(personARef.current.previewUrl);
+      if (personBRef.current) URL.revokeObjectURL(personBRef.current.previewUrl);
     };
   }, []);
 
@@ -83,6 +175,27 @@ export function AppHome() {
     setReviewFileName(undefined);
   }, []);
 
+  const replacePerson = useCallback((slot: FriendSlot, next: PersonCapture | null) => {
+    const prev = slot === "a" ? personARef.current : personBRef.current;
+    if (prev && prev.previewUrl !== next?.previewUrl) {
+      URL.revokeObjectURL(prev.previewUrl);
+    }
+    switch (slot) {
+      case "a":
+        personARef.current = next;
+        setPersonA(next);
+        break;
+      case "b":
+        personBRef.current = next;
+        setPersonB(next);
+        break;
+      default: {
+        const _exhaustive: never = slot;
+        return _exhaustive;
+      }
+    }
+  }, []);
+
   const [detectedDetails, setDetectedDetails] = useState<{
     normalizedBox?: { x: number; y: number; width: number; height: number };
     normalizedLandmarks?: { x: number; y: number }[];
@@ -102,12 +215,18 @@ export function AppHome() {
   const runAnalysis = useCallback(
     async (
       blob: Blob,
-      selectedBox?: { x: number; y: number; width: number; height: number },
-      packOverride?: PackId,
+      selectedBox?: FaceBox,
+      options?: { packOverride?: PackId; slot?: FriendSlot; holdPhase?: boolean; token?: number },
     ) => {
+      const token = options?.token ?? ++analyzeGenRef.current;
+      const targetSlot = options?.slot ?? friendSlotRef.current;
+      const holdPhase = options?.holdPhase ?? false;
+
       setError(null);
-      setResult(null);
-      setDetectedDetails(null);
+      if (!holdPhase) {
+        setResult(null);
+        setDetectedDetails(null);
+      }
       setPhase("analyzing");
       setStepIndex(0);
       setProgress(5);
@@ -115,20 +234,18 @@ export function AppHome() {
       const url = URL.createObjectURL(blob);
       setPreview(url);
 
-      // Smooth ticker keeps progress moving smoothly during async model/WASM tasks
       let currentProgress = 5;
       let cancelled = false;
       const ticker = window.setInterval(() => {
-        if (cancelled) return;
+        if (cancelled || analyzeGenRef.current !== token) return;
         currentProgress = Math.min(96, currentProgress + 1);
         setProgress((prev) => Math.max(prev, currentProgress));
       }, 100);
 
-      // First model load + CPU-only detection can exceed 25s even on desktops
-      // without WebGPU/WebGL (software rendering, older laptops).
       const timeoutMs = window.matchMedia("(pointer: coarse)").matches ? 60000 : 45000;
-      console.info("[Analyze] start", { timeoutMs, blobBytes: blob.size });
+      console.info("[Analyze] start", { timeoutMs, blobBytes: blob.size, slot: targetSlot });
       const timeoutId = window.setTimeout(() => {
+        if (analyzeGenRef.current !== token) return;
         cancelled = true;
         console.warn("[Analyze] timeout", { timeoutMs });
         setError("Analysis timed out. Please try a clearer front-facing photo on a stronger connection.");
@@ -137,14 +254,14 @@ export function AppHome() {
 
       try {
         const img = await loadImageFromBlob(blob);
-        if (cancelled) return;
+        if (cancelled || analyzeGenRef.current !== token) return false;
 
         const matchResult = await analyzeFaceSource(img, {
           topK: 6,
-          pack: packOverride ?? pack,
+          pack: options?.packOverride ?? pack,
           selectedBox,
           onProgress: (stepIdx, pct, details) => {
-            if (cancelled) return;
+            if (cancelled || analyzeGenRef.current !== token) return;
             console.info("[Analyze] progress", { stepIdx, pct, hasDetails: Boolean(details) });
             setStepIndex(stepIdx);
             if (details) {
@@ -157,7 +274,7 @@ export function AppHome() {
           },
         });
 
-        if (cancelled) return;
+        if (cancelled || analyzeGenRef.current !== token) return false;
 
         console.info("[Analyze] pipeline returned", {
           matches: matchResult.matches.length,
@@ -166,12 +283,22 @@ export function AppHome() {
         });
 
         clearInterval(ticker);
-        // Step to 100% when finished
         setProgress(100);
         setStepIndex(3);
         setResult(matchResult);
 
-        // --- High-accuracy quality gate ---
+        lastApprovedBlobRef.current = blob;
+        lastSelectedBoxRef.current = selectedBox;
+
+        if (playModeRef.current === "friend") {
+          replacePerson(targetSlot, {
+            blob,
+            selectedBox,
+            previewUrl: URL.createObjectURL(blob),
+            result: matchResult,
+          });
+        }
+
         const q = matchResult.quality as FaceQuality & { sharpness?: number; illumination?: number };
         const sharpness = q.sharpness ?? 60;
         const noFace =
@@ -195,12 +322,13 @@ export function AppHome() {
               i.includes("No close look-alike"),
           );
 
-        // Keep a short beat for polish before showing results
         await new Promise((r) => setTimeout(r, 260));
-        if (cancelled) return;
+        if (cancelled || analyzeGenRef.current !== token) return false;
 
         setProgress(100);
         setResult(matchResult);
+
+        if (holdPhase) return true;
 
         if (isLowQuality || !matchResult.matches.length) {
           setPhase("quality-blocked");
@@ -208,25 +336,48 @@ export function AppHome() {
           playMatchChime();
           setPhase("results");
         }
+        return true;
       } catch (e) {
-        if (cancelled) return;
+        if (cancelled || analyzeGenRef.current !== token) return false;
         const msg =
           e instanceof Error
             ? e.message
             : "Something went wrong analyzing your photo.";
         setError(msg);
         setPhase("error");
+        return false;
       } finally {
         clearInterval(ticker);
         clearTimeout(timeoutId);
       }
     },
-    [setPreview, pack],
+    [setPreview, pack, replacePerson],
+  );
+
+  const rematchBoth = useCallback(
+    async (packOverride: PackId) => {
+      const a = personARef.current;
+      const b = personBRef.current;
+      if (!a || !b) return;
+      const token = ++analyzeGenRef.current;
+      const aOk = await runAnalysis(a.blob, a.selectedBox, {
+        packOverride,
+        slot: "a",
+        holdPhase: true,
+        token,
+      });
+      if (!aOk || analyzeGenRef.current !== token) return;
+      await runAnalysis(b.blob, b.selectedBox, {
+        packOverride,
+        slot: "b",
+        token,
+      });
+    },
+    [runAnalysis],
   );
 
   const onFile = useCallback(
     (file: File) => {
-      // go to crop/approve review instead of immediate analysis
       const url = URL.createObjectURL(file);
       setReview(url, file.name);
       setPhase("review");
@@ -236,7 +387,6 @@ export function AppHome() {
 
   const onCapture = useCallback(
     (blob: Blob) => {
-      // camera capture also goes through review for consistency, but with quick approve
       const url = URL.createObjectURL(blob);
       setReview(url, "camera.jpg");
       setPhase("review");
@@ -247,14 +397,11 @@ export function AppHome() {
   );
 
   const onApproveCrop = useCallback(
-    (
-      croppedBlob: Blob,
-      selectedBox?: { x: number; y: number; width: number; height: number },
-    ) => {
+    (croppedBlob: Blob, selectedBox?: FaceBox) => {
       lastApprovedBlobRef.current = croppedBlob;
       lastSelectedBoxRef.current = selectedBox;
       clearReview();
-      void runAnalysis(croppedBlob, selectedBox);
+      void runAnalysis(croppedBlob, selectedBox, { slot: friendSlotRef.current });
     },
     [clearReview, runAnalysis],
   );
@@ -262,13 +409,25 @@ export function AppHome() {
   const onPackChange = useCallback(
     (next: PackId) => {
       persistPack(next);
-      const blob = lastApprovedBlobRef.current;
-      if (!blob) return;
-      if (phase === "results" || phase === "quality-blocked") {
-        void runAnalysis(blob, lastSelectedBoxRef.current, next);
+      if (phase !== "results" && phase !== "quality-blocked") return;
+
+      if (playModeRef.current === "friend" && personARef.current && personBRef.current) {
+        void rematchBoth(next);
+        return;
       }
+
+      const stored =
+        playModeRef.current === "friend" && friendSlotRef.current === "b"
+          ? personBRef.current
+          : personARef.current;
+      const blob = stored?.blob ?? lastApprovedBlobRef.current;
+      if (!blob) return;
+      void runAnalysis(blob, stored?.selectedBox ?? lastSelectedBoxRef.current, {
+        packOverride: next,
+        slot: friendSlotRef.current,
+      });
     },
-    [persistPack, phase, runAnalysis],
+    [persistPack, phase, rematchBoth, runAnalysis],
   );
 
   const onRetake = useCallback(() => {
@@ -276,19 +435,85 @@ export function AppHome() {
     setPhase("capture");
   }, [clearReview]);
 
+  const setMode = useCallback((next: PlayMode) => {
+    if (next === playModeRef.current) return;
+    if (personARef.current || personBRef.current || friendSlotRef.current === "b") return;
+    playModeRef.current = next;
+    setPlayMode(next);
+    friendSlotRef.current = "a";
+    setFriendSlot("a");
+  }, []);
+
+  const addFriend = useCallback(() => {
+    playModeRef.current = "friend";
+    setPlayMode("friend");
+    friendSlotRef.current = "b";
+    setFriendSlot("b");
+    setPhase("capture");
+    setResult(null);
+    setError(null);
+    setDetectedDetails(null);
+    setPreview(null);
+    setStepIndex(0);
+    setProgress(0);
+  }, [setPreview]);
+
+  const retryCapture = useCallback(() => {
+    setError(null);
+    setPhase("capture");
+    setResult(null);
+    setDetectedDetails(null);
+    setPreview(null);
+    setStepIndex(0);
+    setProgress(0);
+    clearReview();
+  }, [setPreview, clearReview]);
+
   const reset = useCallback(() => {
+    analyzeGenRef.current += 1;
     lastApprovedBlobRef.current = null;
     lastSelectedBoxRef.current = undefined;
+    playModeRef.current = "solo";
+    friendSlotRef.current = "a";
+    setPlayMode("solo");
+    setFriendSlot("a");
+    replacePerson("a", null);
+    replacePerson("b", null);
     setPhase("capture");
     setResult(null);
     setError(null);
     setStepIndex(0);
     setProgress(0);
     setPreview(null);
+    setDetectedDetails(null);
     clearReview();
-  }, [setPreview, clearReview]);
+  }, [setPreview, clearReview, replacePerson]);
 
   const showHero = phase === "capture" || phase === "review";
+  const capturingFriendB = playMode === "friend" && friendSlot === "b";
+  const hasPair =
+    Boolean(personA?.result.matches[0]) && Boolean(personB?.result.matches[0]);
+  const showCompare = phase === "results" && playMode === "friend" && hasPair;
+  const canStartOver =
+    phase === "results" ||
+    phase === "quality-blocked" ||
+    phase === "review" ||
+    phase === "analyzing" ||
+    capturingFriendB ||
+    personA !== null;
+
+  const youCompare = personA?.result.matches[0]
+    ? {
+        previewUrl: personA.result.facePreviewUrl || personA.previewUrl,
+        match: personA.result.matches[0],
+      }
+    : null;
+  const friendCompare = personB?.result.matches[0]
+    ? {
+        previewUrl: personB.result.facePreviewUrl || personB.previewUrl,
+        match: personB.result.matches[0],
+      }
+    : null;
 
   return (
     <div className="app-shell bg-[#090a0f] text-white">
@@ -301,13 +526,13 @@ export function AppHome() {
               </div>
               <span className="text-base font-bold tracking-tight text-white">Twinframe</span>
             </div>
-            {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") ? (
+            {canStartOver ? (
               <button
                 type="button"
                 onClick={reset}
                 className="inline-flex min-h-11 items-center rounded-full px-3 text-sm text-white/70 transition-colors hover:text-white"
               >
-                New photo
+                {playMode === "friend" ? "Start over" : "New photo"}
               </button>
             ) : (
               <button
@@ -323,49 +548,121 @@ export function AppHome() {
           {showHero && (
             <div className="text-center space-y-3.5 mb-8">
               <h1 className="text-[1.65rem] font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
-                Find Your Celebrity Doppelgänger
+                {captureHeadline(playMode, friendSlot)}
               </h1>
               <p className="max-w-lg mx-auto text-sm sm:text-base leading-relaxed text-white/70">
-                Upload a selfie or use your camera. Instant, on-device matching with EdgeFace 512-d & SCRFD-2.5G against{" "}
-                <button
-                  type="button"
-                  onClick={() => setGalleryModalOpen(true)}
-                  className="font-semibold text-white underline underline-offset-4 hover:text-indigo-300 transition-colors"
-                >
-                  {gallerySize.toLocaleString()}+ stars
-                </button>.
+                {captureSubcopy(playMode, friendSlot)}
+                {playMode === "solo" ? (
+                  <>
+                    {" "}
+                    <button
+                      type="button"
+                      onClick={() => setGalleryModalOpen(true)}
+                      className="font-semibold text-white underline underline-offset-4 hover:text-indigo-300 transition-colors"
+                    >
+                      {gallerySize.toLocaleString()}+ stars
+                    </button>
+                    .
+                  </>
+                ) : null}
               </p>
 
-              {/* 3 Horizontal Pill Badges */}
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-2.5">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
-                  <Brain className="h-4 w-4 text-indigo-300" />
-                  On-device AI
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
-                  <ShieldCheck className="h-4 w-4 text-emerald-300" />
-                  100% Private
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
-                  <Zap className="h-4 w-4 text-amber-300" />
-                  Instant Results
-                </span>
-              </div>
+              {!capturingFriendB && (
+                <div className="pt-2 flex flex-wrap items-center justify-center gap-2.5">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
+                    <Brain className="h-4 w-4 text-indigo-300" />
+                    On-device AI
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
+                    <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                    100% Private
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-md shadow-sm">
+                    <Zap className="h-4 w-4 text-amber-300" />
+                    Instant Results
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </header>
 
         {phase === "capture" && (
           <div className="animate-fade-up space-y-8">
+            {!capturingFriendB && (
+              <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
+                <div className="text-center space-y-1">
+                  <h2 className="text-sm font-semibold text-white">Who’s matching?</h2>
+                  <p className="text-xs text-white/55">
+                    {playMode === "friend"
+                      ? "You’ll go first. Your friend uses the same pack."
+                      : "Solo by default — or take turns with a friend."}
+                  </p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {(["solo", "friend"] as const).map((mode) => {
+                    const selected = playMode === mode;
+                    return (
+                      <button
+                        key={mode}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => setMode(mode)}
+                        className={cn(
+                          "inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-all",
+                          selected
+                            ? "bg-white text-black font-semibold shadow-sm"
+                            : "border border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white",
+                        )}
+                      >
+                        {mode === "solo" ? <User className="h-3.5 w-3.5" /> : <Users className="h-3.5 w-3.5" />}
+                        {playModeLabel(mode)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
             <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
               <div className="text-center space-y-1">
-                <h2 className="text-sm font-semibold text-white">Match me with</h2>
+                <h2 className="text-sm font-semibold text-white">
+                  {capturingFriendB ? "Same pack as you" : "Match me with"}
+                </h2>
                 <p className="text-xs text-white/55">
-                  {packDefinition(pack)?.label ?? "Everyone"} — pick a gallery, then take a photo.
+                  {packDefinition(pack)?.label ?? "Everyone"}
+                  {capturingFriendB
+                    ? " — locked for a fair closer-twin compare."
+                    : " — pick a gallery, then take a photo."}
                 </p>
               </div>
-              <PackPicker value={pack} onChange={onPackChange} />
+              <PackPicker value={pack} onChange={onPackChange} disabled={capturingFriendB} />
             </section>
+
+            {capturingFriendB && personA ? (
+              <div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/20 bg-black/40">
+                  <img
+                    src={personA.result.facePreviewUrl || personA.previewUrl}
+                    alt="Your match"
+                    className="h-full w-full object-cover object-top"
+                  />
+                </div>
+                <div className="min-w-0 text-left">
+                  <p className="text-[11px] font-mono uppercase tracking-[0.14em] text-white/45">
+                    Your match
+                  </p>
+                  <p className="truncate text-sm font-semibold text-white">
+                    {personA.result.matches[0]?.name ?? "Matched"}
+                  </p>
+                  {personA.result.matches[0] ? (
+                    <p className="text-xs text-white/55">
+                      {Math.round(personA.result.matches[0].matchPercent)}% · waiting on your friend
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
 
             <PhotoUploader
               onFile={onFile}
@@ -375,39 +672,39 @@ export function AppHome() {
               }}
             />
 
-            {/* Teaser Sample Match Preview Showcase */}
-            <div className="flex flex-col items-center justify-center space-y-2.5 pt-2">
-              <div className="flex items-center gap-2.5">
-                <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
-                  <img
-                    src="/celebs/sample_user.jpg"
-                    alt="User portrait sample"
-                    className="h-full w-full object-cover"
-                  />
+            {!capturingFriendB && (
+              <div className="flex flex-col items-center justify-center space-y-2.5 pt-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
+                    <img
+                      src="/celebs/sample_user.jpg"
+                      alt="User portrait sample"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
+                    <img
+                      src="/celebs/leonardo-dicaprio.jpg"
+                      alt="Leonardo DiCaprio sample match"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 </div>
-                <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
-                  <img
-                    src="/celebs/leonardo-dicaprio.jpg"
-                    alt="Leonardo DiCaprio sample match"
-                    className="h-full w-full object-cover"
-                  />
+                <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-[#161824]/90 px-4 py-1.5 text-xs font-bold text-white shadow-xl backdrop-blur-md">
+                  Match Found! 94% Similarity
                 </div>
-              </div>
-              <div className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-[#161824]/90 px-4 py-1.5 text-xs font-bold text-white shadow-xl backdrop-blur-md">
-                Match Found! 94% Similarity
-              </div>
 
-              {/* Star Preview Row */}
-              <div className="pt-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => setGalleryModalOpen(true)}
-                  className="text-xs text-white/60 hover:text-white transition-colors"
-                >
-                  Browse our full index of 1,000+ Hollywood, Music & Sports Icons →
-                </button>
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setGalleryModalOpen(true)}
+                    className="text-xs text-white/60 hover:text-white transition-colors"
+                  >
+                    Browse our full index of 1,000+ Hollywood, Music & Sports Icons →
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -451,14 +748,19 @@ export function AppHome() {
               </div>
               <PackPicker value={pack} onChange={onPackChange} compact />
               <p className="text-center text-[11px] text-white/45">
-                Switch packs to rematch this photo — no new selfie needed.
+                {rematchHint(playMode, hasPair)}
               </p>
             </section>
-            <MatchResults
-              result={result}
-              previewUrl={previewUrl}
-              onReset={reset}
-            />
+            {showCompare && youCompare && friendCompare ? (
+              <FriendCompare you={youCompare} friend={friendCompare} onStartOver={reset} />
+            ) : (
+              <MatchResults
+                result={result}
+                previewUrl={previewUrl}
+                onReset={reset}
+                onAddFriend={playMode === "friend" && !personB ? addFriend : undefined}
+              />
+            )}
           </div>
         )}
 
@@ -540,8 +842,8 @@ export function AppHome() {
                 <PackPicker value={pack} onChange={onPackChange} compact />
               </div>
               <div className="flex flex-col gap-2 pt-1 sm:flex-row">
-                <Button variant="secondary" size="md" onClick={reset} className="w-full sm:flex-1">
-                  Retake photo
+                <Button variant="secondary" size="md" onClick={retryCapture} className="w-full sm:flex-1">
+                  {capturingFriendB ? "Retake friend’s photo" : "Retake photo"}
                 </Button>
                 {result.matches.length > 0 ? (
                   <Button variant="primary" size="md" onClick={() => setPhase("results")} className="w-full sm:flex-1">
@@ -549,6 +851,12 @@ export function AppHome() {
                   </Button>
                 ) : null}
               </div>
+              {playMode === "friend" && friendSlot === "a" && result.matches.length > 0 ? (
+                <Button variant="primary" size="md" onClick={addFriend} className="w-full">
+                  <Users className="h-4 w-4" />
+                  Add a friend anyway
+                </Button>
+              ) : null}
               {result.matches.length > 0 ? (
                 <p className="text-center text-[11px] text-white/50">Low-confidence matches may be inaccurate — use for fun only.</p>
               ) : (
@@ -564,9 +872,16 @@ export function AppHome() {
           <section className="animate-fade-up space-y-4 rounded-[var(--radius-xl)] border border-white/10 bg-white/5 p-6 text-center text-white">
             <h2 className="text-lg font-medium">Couldn't analyze that photo</h2>
             <p className="text-sm text-white/70 text-pretty">{error}</p>
-            <Button variant="secondary" onClick={reset}>
-              Try again
-            </Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button variant="secondary" onClick={retryCapture} className="w-full sm:flex-1">
+                Try again
+              </Button>
+              {playMode === "friend" ? (
+                <Button variant="ghost" onClick={reset} className="w-full sm:flex-1">
+                  Start over
+                </Button>
+              ) : null}
+            </div>
           </section>
         )}
 
