@@ -26,6 +26,7 @@ const IMAGE = resolve(
 const FRIEND = resolve(
   arg("friend", "public/celebs/held-out/billie-eilish/001.jpg"),
 );
+const PACK_CHIP = String(arg("pack", "Everyone"));
 const BASE = arg("url", "http://127.0.0.1:8080/");
 const OUT = resolve("screenshots/live-pathway");
 const ANALYZE_WAIT_MS = Number(process.env.LIVE_PATHWAY_ANALYZE_MS || 120000);
@@ -116,8 +117,10 @@ async function main() {
     throw new Error("Landing is missing pack chips");
   }
 
-  await page.getByRole("button", { name: "90s Icons" }).click();
-  await sleep(200);
+  if (PACK_CHIP && PACK_CHIP !== "Everyone") {
+    await page.getByRole("button", { name: PACK_CHIP, exact: true }).click();
+    await sleep(200);
+  }
   await uploadPhoto(page, IMAGE);
   await waitForBody(
     page,
