@@ -109,7 +109,7 @@ export function rankByDescriptor(
   const margin = rankMargin(deduped.map((t) => t.adjusted));
   const percents = applyOpenSetLookalikePercents(hillPercents, margin, bestAdjusted);
   const scopedPack = Boolean(pack && pack !== "all");
-  const floor = distanceLookalikeGate(bestAdjusted, percents[0], scopedPack);
+  const floor = distanceLookalikeGate(bestAdjusted, scopedPack);
   if (!floor.pass) return [];
   const confScore = computeMatchConfidence(
     user.detConfidence ?? 0.92,
