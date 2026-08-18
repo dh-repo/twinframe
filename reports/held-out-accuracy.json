@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-18T04:37:20.732Z",
+  "generatedAt": "2026-08-18T04:39:31.132Z",
   "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 627 extra templates)",
   "signalsVersion": "1.1.0",
   "hardProbeSignalsVersion": "1.1.0",
@@ -9,6 +9,13 @@
   "extraTemplatesMerged": 848,
   "slots": "001 only",
   "labelledImages": 743,
+  "labelledConditionCounts": {
+    "low-light": 73,
+    "glasses": 0,
+    "big-smile": 461,
+    "yaw-gt-25": 196,
+    "phone-closeup": 8
+  },
   "conditionProvenance": {
     "no-condition": "derived",
     "low-light": "auto (SCRFD geometry)",

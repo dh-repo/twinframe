@@ -870,8 +870,27 @@ export function formatMarkdownReport(report: any): string {
   lines.push(...strataTable(strata, labels));
   lines.push("");
   lines.push(
-    "Cohorts overlap \u2014 a probe can be dark and turned away at once \u2014 and every cohort is a subset of the same held-out set, so the strata are not independent samples. `glasses` has no automated signal and stays at n=0 until someone hand-labels it.",
+    "Cohorts overlap \u2014 a probe can be dark and turned away at once \u2014 and every cohort is a subset of the same held-out set, so the strata are not independent samples.",
   );
+  const empty = (cleanStrata ?? strata).filter(
+    (s) => s.n === 0 && s.stratum !== OVERALL_STRATUM && s.stratum !== EASY_STRATUM,
+  );
+  if (empty.length > 0) {
+    lines.push("");
+    lines.push("Empty cohorts, and why:");
+    lines.push("");
+    const labelledCounts = (report.labelledConditionCounts ?? {}) as Record<string, number>;
+    for (const stratum of empty) {
+      const condition = stratum.stratum as HardProbeCondition;
+      const elsewhere = labelledCounts[condition] ?? 0;
+      lines.push(
+        `- **${hardProbeLabel(condition)}** \u2014 ` +
+          (elsewhere > 0
+            ? `${elsewhere} labelled images do carry it, but none are held-out probes (they are enrolled slots 002+), so this protocol has nothing to score.`
+            : `no labelled image carries it. Provenance: ${labels[condition] ?? "unknown"}.`),
+      );
+    }
+  }
   lines.push("");
   lines.push("## Distance distributions");
   lines.push("");
@@ -941,6 +960,17 @@ async function main() {
   }
   const conditionsFor = (imagePath: string): HardProbeCondition[] =>
     labelled[imagePath]?.conditions ?? [];
+
+  // Every labelled image, not just the scored ones: an empty stratum means
+  // something different when the condition never fires than when it only fires on
+  // photos this protocol excludes.
+  const labelledConditionCounts: Record<string, number> = {};
+  for (const condition of HARD_PROBE_CONDITIONS) labelledConditionCounts[condition] = 0;
+  for (const entry of Object.values(labelled)) {
+    for (const condition of entry.conditions ?? []) {
+      labelledConditionCounts[condition] = (labelledConditionCounts[condition] ?? 0) + 1;
+    }
+  }
 
   const conditionProvenance: Record<string, string> = {
     [EASY_STRATUM]: "derived",
@@ -1016,6 +1046,7 @@ async function main() {
     extraTemplatesMerged,
     slots,
     labelledImages: Object.keys(labelled).length,
+    labelledConditionCounts,
     conditionProvenance,
     strata,
     distances: {

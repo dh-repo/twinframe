@@ -1,6 +1,6 @@
 # Twinframe held-out accuracy (stratified)
 
-**Generated** 2026-08-18T04:37:20.732Z  
+**Generated** 2026-08-18T04:39:31.132Z  
 **Engine** EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 627 extra templates)  
 **Gallery** 1848 vectors / 999 identities (848 of them extra templates and centroids, as the browser builds it)  
 **Probes** 206 held-out photos (slot 001 only)  
@@ -42,7 +42,12 @@ All probes on disk, leakage included:
 | Phone close-up | 0 | — | — | — | — | — | auto (SCRFD geometry) |
 | No condition fired | 58 | 72.4% | 59.8–82.2% | 75.9% | 72.4% | 0% | derived |
 
-Cohorts overlap — a probe can be dark and turned away at once — and every cohort is a subset of the same held-out set, so the strata are not independent samples. `glasses` has no automated signal and stays at n=0 until someone hand-labels it.
+Cohorts overlap — a probe can be dark and turned away at once — and every cohort is a subset of the same held-out set, so the strata are not independent samples.
+
+Empty cohorts, and why:
+
+- **Glasses** — no labelled image carries it. Provenance: manual labels only.
+- **Phone close-up** — 8 labelled images do carry it, but none are held-out probes (they are enrolled slots 002+), so this protocol has nothing to score.
 
 ## Distance distributions
 
