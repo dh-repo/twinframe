@@ -1,3 +1,5 @@
+import type { VerdictTier } from "./verdict.ts";
+
 /** Normalized facial feature vector used for matching (0–1 scale unless noted). */
 export interface FaceFeatures {
   faceAspect: number;
@@ -113,10 +115,16 @@ export interface CelebrityMatch {
   photoUrl192?: string;
   fallbackPhotoUrl?: string;
   distance?: number;
+  /** Age/gender-adjusted cosine distance used for ranking. */
+  adjustedDistance?: number;
   /** Hill percent before open-set margin suppression. */
   hillPercent?: number;
   /** Adjusted d2 − d1. Small values mean a crowded nearest-neighbor, not a doppelgänger. */
   rankMargin?: number;
+  /** Named look-alike tier from absolute distance + margin. */
+  verdict?: VerdictTier;
+  /** One-line shared-trait copy for the reveal / share card. */
+  blurb?: string;
 }
 
 /**

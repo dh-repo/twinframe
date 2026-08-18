@@ -1,3 +1,4 @@
+import type { PackId } from "../celebrities/packs.ts";
 import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./types.ts";
 import { ENGINE_VERSION } from "./types.ts";
 import { emptyFeatures } from "./math.ts";
@@ -69,6 +70,8 @@ function padSourceForDetection(
 
 export interface AnalyzeOptions {
   topK?: number;
+  /** Restrict ranking to a themed pack before scoring. */
+  pack?: PackId;
   selectedCandidateIndex?: number;
   selectedBox?: { x: number; y: number; width: number; height: number };
   onProgress?: (
@@ -387,6 +390,7 @@ export async function analyzeFaceSource(
     },
     gallery,
     topK,
+    { pack: options.pack },
   );
 
   onProgress?.(3, 98);

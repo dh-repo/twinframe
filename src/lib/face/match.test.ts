@@ -599,5 +599,41 @@ describe("open-set margin calibration in rankByDescriptor", () => {
     );
     assert.ok((matches[0]?.matchPercent ?? 0) < (matches[0]?.hillPercent ?? 0));
   });
+
+  it("scopes ranking to a pack before scoring so #2 is inside the pack", () => {
+    const user: UserFaceQuery = {
+      descriptor: axisVector(0),
+      age: 35,
+      gender: "unknown",
+      genderProbability: 0.5,
+    };
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "brad-pitt",
+        name: "Brad Pitt",
+        path: "/brad.webp",
+        descriptor: Array.from(vectorAtCosineDistance(0.2)),
+        age: 50,
+        gender: "male",
+        genderProb: 0.99,
+      },
+      {
+        id: "lebron-james",
+        name: "LeBron James",
+        path: "/lebron.webp",
+        descriptor: Array.from(vectorAtCosineDistance(0.35)),
+        age: 39,
+        gender: "male",
+        genderProb: 0.99,
+      },
+    ];
+    const all = rankByDescriptor(user, gallery, 2);
+    assert.equal(all[0]?.celebrityId, "brad-pitt");
+    const athletes = rankByDescriptor(user, gallery, 2, { pack: "athletes" });
+    assert.equal(athletes.length, 1);
+    assert.equal(athletes[0]?.celebrityId, "lebron-james");
+    assert.ok(athletes[0]?.verdict);
+    assert.ok(typeof athletes[0]?.adjustedDistance === "number");
+  });
 });
 
