@@ -1,3 +1,7 @@
+import {
+  classifyProbeAppearance,
+  filterRanksByAppearanceFamily,
+} from "../celebrities/appearance-family.ts";
 import { catalogFor } from "../celebrities/catalog.ts";
 import { CELEBRITIES } from "../celebrities/database.ts";
 import { galleryFeaturesFor } from "../celebrities/gallery-features.ts";
@@ -98,7 +102,20 @@ export function rankByDescriptor(
   const deduped = Array.from(bestById.values());
   deduped.sort((a, b) => a.adjusted - b.adjusted);
   if (deduped.length === 0) return [];
-  const presentable = selectPresentableRanks(deduped, topK, userGender, userGenderProb);
+  // Glance family: a white woman must not be shown an East Asian celebrity as
+  // the twin just because EdgeFace liked the bone structure. Weak guesses stay
+  // unknown and ranking is unchanged.
+  const glance = classifyProbeAppearance(
+    userDesc,
+    deduped.map((row) => row.celeb),
+  );
+  const glanceRanked = filterRanksByAppearanceFamily(deduped, glance.family);
+  const presentable = selectPresentableRanks(
+    glanceRanked,
+    topK,
+    userGender,
+    userGenderProb,
+  );
   if (presentable.length === 0) return [];
 
   const bestAdjusted = presentable[0]!.adjusted;
@@ -167,7 +184,9 @@ export function rankByDescriptor(
 /** Confident gender: keep #1 (visual twin may cross gender), fill #2+ same-gender. */
 export const PRESENTABLE_GENDER_MIN_PROB = 0.7;
 
-export function selectPresentableRanks<T extends { celeb: { gender?: string } }>(
+export function selectPresentableRanks<
+  T extends { celeb: { id?: string; gender?: string } },
+>(
   ranked: readonly T[],
   topK: number,
   userGender: string | undefined,
