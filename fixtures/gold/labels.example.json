@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "note": "Copy to labels.json and point image paths at REAL photos you collected. Do not generate or synthesize faces. Every accept id must exist in public/celebs/gallery.buckets.json (see gallery-ids.tsv).",
+  "cases": [
+    {
+      "id": "civilian-01",
+      "image": "fixtures/gold/civilian-01.jpg",
+      "accept": ["margot-robbie", "scarlett-johansson", "ana-de-armas"],
+      "age": 32,
+      "gender": "female",
+      "notes": "Replace this example. 3+ humans must agree these celebs are acceptable look-alikes."
+    },
+    {
+      "id": "civilian-02",
+      "image": "fixtures/gold/civilian-02.jpg",
+      "accept": ["ryan-gosling", "brad-pitt", "keanu-reeves"],
+      "age": 40,
+      "gender": "male",
+      "notes": "Replace this example."
+    },
+    {
+      "id": "civilian-refuse-01",
+      "image": "fixtures/gold/no-match-01.jpg",
+      "refuse": true,
+      "notes": "Human judgment: no good doppelgänger. Model should refuse top-K."
+    }
+  ]
+}
