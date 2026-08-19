@@ -218,10 +218,11 @@ async function main() {
     report.steps.results.nearestFeedbackPrompt =
       /Was the nearest face at least plausible/i.test(report.steps.results.text);
     await shot(page, "03-results.png");
-    if (report.steps.results.verdict === "DISTANT TWIN") {
-      throw new Error(
-        "Distant Twin celebrity card must not be shown — refuse the open-set miss",
-      );
+    if (
+      report.steps.results.verdict === "DISTANT TWIN" &&
+      /doppelgänger|Dead Ringer/i.test(report.steps.results.text)
+    ) {
+      throw new Error("Distant Twin card still sells a doppelgänger");
     }
 
     if (report.steps.results.timedOut) {

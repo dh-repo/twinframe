@@ -17,6 +17,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import os from "node:os";
 import { catalogFor } from "../src/lib/celebrities/catalog.ts";
+import { applyAppearanceFamilyManifest } from "../src/lib/celebrities/appearance-family.ts";
 import { applyGalleryFeatureManifest } from "../src/lib/celebrities/gallery-features.ts";
 import { applyPackManifest, celebInPack } from "../src/lib/celebrities/packs.ts";
 import { l2Normalize } from "../src/lib/face/embeddings.ts";
@@ -71,6 +72,10 @@ async function main() {
   const packsPath = path.join(ROOT, "public/celebs/packs.json");
   if (fs.existsSync(packsPath)) {
     applyPackManifest(JSON.parse(fs.readFileSync(packsPath, "utf8")));
+  }
+  const familiesPath = path.join(ROOT, "public/celebs/appearance-families.json");
+  if (fs.existsSync(familiesPath)) {
+    applyAppearanceFamilyManifest(JSON.parse(fs.readFileSync(familiesPath, "utf8")));
   }
   const featuresManifest = path.join(ROOT, "public/celebs/gallery.features.json");
   if (fs.existsSync(featuresManifest)) {

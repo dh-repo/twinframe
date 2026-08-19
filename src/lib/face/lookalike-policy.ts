@@ -5,8 +5,6 @@
  * Displayed percents are further calibrated by open-set-score.ts (Hill × margin).
  */
 
-import { DISTANT_TWIN_MAX_PERCENT } from "./verdict.ts";
-
 /** Absolute yaw (degrees) beyond which we refuse ranking. */
 export const POSE_YAW_REFUSE_DEG = 40;
 /** Absolute pitch (degrees) beyond which we refuse ranking. */
@@ -20,18 +18,14 @@ export const HARD_DET_CONFIDENCE_MIN = 0.35;
 export const HARD_FACE_COVERAGE_MIN = 0.02;
 
 /**
- * Max adjusted cosine distance still treated as a presentable look-alike.
- * Beyond this, rankByDescriptor returns [] (no forced top-K).
- * EdgeFace-512 calibration: best-of-1000 impostor p90 ≈ 0.67; refusing past
- * 0.72 keeps genuinely-far probes out of top-K even before the percent floor.
+ * Max adjusted cosine distance still treated as a presentable nearest neighbor.
+ * Beyond this, rankByDescriptor returns [] (orthogonal / garbage probes).
+ * EdgeFace-512 calibration: best-of-1000 impostor p90 ≈ 0.67.
+ *
+ * Percents below Distant Twin (<55%) are still a card — labeled Distant Twin,
+ * not a doppelgänger. Refusing those emptied the product for ordinary selfies.
  */
 export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.72;
-
-/**
- * Displayed (open-set) percent below Distant Twin is not a look-alike card.
- * A 31% Sandra Oh next to a blonde civilian is a miss, not a "nearest twin."
- */
-export const LOOKALIKE_MIN_PERCENT = DISTANT_TWIN_MAX_PERCENT;
 
 export interface PoseGateInput {
   yaw?: number | null;
@@ -138,10 +132,8 @@ export function openSetMissMessage(scopedPack: boolean): string {
 
 export function distanceLookalikeGate(
   bestAdjustedDistance: number,
-  topMatchPercent?: number,
   scopedPack = false,
 ): LookalikeGateResult {
-  const message = openSetMissMessage(scopedPack);
   if (
     !Number.isFinite(bestAdjustedDistance) ||
     bestAdjustedDistance > LOOKALIKE_MAX_ADJUSTED_DISTANCE
@@ -149,18 +141,7 @@ export function distanceLookalikeGate(
     return {
       pass: false,
       reason: "distance",
-      message,
-    };
-  }
-  if (
-    typeof topMatchPercent === "number" &&
-    Number.isFinite(topMatchPercent) &&
-    topMatchPercent < LOOKALIKE_MIN_PERCENT
-  ) {
-    return {
-      pass: false,
-      reason: "distance",
-      message,
+      message: openSetMissMessage(scopedPack),
     };
   }
   return { pass: true };

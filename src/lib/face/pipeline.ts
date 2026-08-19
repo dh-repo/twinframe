@@ -12,6 +12,7 @@ import {
   type FaceDetectionResult,
 } from "./faceapi-engine.ts";
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
+import { loadAppearanceFamilies } from "../celebrities/load-appearance-families.ts";
 import { loadGalleryFeatures } from "../celebrities/load-gallery-features.ts";
 import { detectSCRFD } from "./scrfd.ts";
 import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
@@ -44,6 +45,7 @@ export function prefetchModel(): void {
   prefetchFaceApi();
   prefetchEmbeddings();
   void loadGalleryFeatures();
+  void loadAppearanceFamilies();
 }
 
 /** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */
@@ -455,7 +457,7 @@ async function completeQueryAnalysis(
 
   onProgress?.(3, 84);
   pipelineLog("gallery:wait");
-  const gallery = await galleryPromise;
+  const [gallery] = await Promise.all([galleryPromise, loadAppearanceFamilies(), loadGalleryFeatures()]);
   pipelineLog("gallery:ready", { n: gallery.length });
 
   onProgress?.(3, 92);

@@ -322,7 +322,7 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
           path: "/celeb2.webp",
           descriptor: Array.from(celebVec2),
           age: 45,
-          gender: "male",
+          gender: "female",
           genderProb: 0.90,
         },
       ];

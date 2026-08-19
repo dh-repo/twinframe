@@ -95,6 +95,46 @@ describe("euclideanDistance / calibration", () => {
     const matches = rankByDescriptor(user, gallery, 5);
     assert.equal(matches.length, 0);
   });
+
+  it("keeps a mid-distance nearest neighbor as a Distant Twin card", () => {
+    // cos ≈ 0.38 → cosine distance ≈ 0.62, under the 0.72 far floor but
+    // typically below the old 55% display refuse.
+    const userVec = Array.from({ length: 256 }, (_, i) => (i === 0 ? 1 : 0));
+    const y = Math.sqrt(1 - 0.38 * 0.38);
+    const near = Array.from({ length: 256 }, (_, i) => (i === 0 ? 0.38 : i === 1 ? y : 0));
+    const other = Array.from({ length: 256 }, (_, i) => (i === 80 ? 1 : 0));
+    const gallery: CelebrityEmbedding[] = [
+      {
+        id: "near",
+        name: "Near",
+        path: "/near.jpg",
+        descriptor: near,
+        age: 36,
+        gender: "female",
+        genderProb: 0.9,
+      },
+      {
+        id: "other",
+        name: "Other",
+        path: "/other.jpg",
+        descriptor: other,
+        age: 36,
+        gender: "female",
+        genderProb: 0.9,
+      },
+    ];
+    const user: UserFaceQuery = {
+      descriptor: userVec,
+      age: 35,
+      gender: "female",
+      genderProbability: 0.9,
+    };
+    const matches = rankByDescriptor(user, gallery, 5);
+    assert.ok(matches.length >= 1, "ordinary nearest neighbor must not empty the card");
+    assert.equal(matches[0]?.celebrityId, "near");
+    assert.equal(matches[0]?.verdict, "distant-twin");
+    assert.ok((matches[0]?.matchPercent ?? 100) < 55);
+  });
 });
 
 describe("Continuous Gaussian Age & Gender Affinity", () => {
@@ -561,7 +601,7 @@ describe("open-set margin calibration in rankByDescriptor", () => {
     assert.ok((matches[0]?.matchPercent ?? 0) >= 90);
   });
 
-  it("refuses a crowded open-set nearest-neighbor instead of a Distant Twin card", () => {
+  it("shows a crowded open-set nearest-neighbor as Distant Twin, not an empty screen", () => {
     const user: UserFaceQuery = {
       descriptor: axisVector(0),
       age: 35,
@@ -589,11 +629,10 @@ describe("open-set margin calibration in rankByDescriptor", () => {
       },
     ];
     const matches = rankByDescriptor(user, gallery, 2);
-    assert.equal(
-      matches.length,
-      0,
-      "Distant Twin / suppressed open-set neighbor must not become a celebrity card",
-    );
+    assert.ok(matches.length >= 1, "entertainment path still shows the nearest face");
+    assert.equal(matches[0]?.celebrityId, "emma-style");
+    assert.equal(matches[0]?.verdict, "distant-twin");
+    assert.ok((matches[0]?.matchPercent ?? 0) < (matches[0]?.hillPercent ?? 0));
   });
 
   it("scopes ranking to a pack before scoring so #2 is inside the pack", () => {
