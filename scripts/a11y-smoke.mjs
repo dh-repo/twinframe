@@ -86,14 +86,17 @@ try {
   await fileChooser.setFiles(UPLOAD_FIXTURE);
 
   await page.waitForSelector("text=Choose a face", { timeout: 30_000 });
-  await page.waitForTimeout(1200);
+  // Candidate detection can take tens of seconds on 2-core CI runners; the
+  // button only takes its final label once candidates resolve.
+  const approve = page.getByRole("button", { name: "Approve & Match" }).first();
+  try {
+    await approve.waitFor({ state: "visible", timeout: 90_000 });
+    await page.waitForTimeout(500);
+  } catch {
+    throw new Error('"Approve & Match" never appeared — crop-review candidate detection failed');
+  }
   reachedStates.add("crop-review");
   await axeRun(page, "crop-review");
-
-  // Approve the primary face and wait for analysis to finish. Pinned by
-  // accessible name — a substring .last() click silently degrades on DOM reorder.
-  const approve = page.getByRole("button", { name: "Approve & Match" }).first();
-  if ((await approve.count()) === 0) throw new Error('"Approve & Match" button not found');
   await approve.click();
   // Only real match-results headlines count as coverage — the quality-refusal
   // card is a different state (substring-matching it here once let a broken
