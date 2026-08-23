@@ -42,6 +42,13 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
   - `scripts/test-challenger-m3-2.mjs`: **14 / 14 PASSED**.
   - `scripts/m4-challenger-empirical.mjs`: **35 / 35 PASSED**.
 
+> **Honesty note (2026-08).** The tier-probe numbers above overlap the enrollment imagery —
+> they measure pipeline sanity and are an upper bound, not user-facing accuracy. The honest
+> headline is held-out Rank-1 from `scripts/evaluate-held-out-v2.ts`:
+> **86.5% Rank-1 / MRR 0.874 over 735 probes** (`reports/held-out-v2-baseline.json`), using
+> photos disjoint from enrollment centroids and the exact `rankByDescriptor` the browser runs.
+> Any new accuracy claim must state which protocol produced it; see AGENTS.md "Eval scripts".
+
 
 
 ## Interface Contracts
