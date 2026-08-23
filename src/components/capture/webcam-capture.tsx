@@ -237,6 +237,8 @@ export function WebcamCapture({
         ref={nativeInputRef}
         type="file"
         accept={PHOTO_ACCEPT}
+        aria-label="Choose a photo to match"
+        tabIndex={-1}
         capture={facingMode === "environment" ? "environment" : "user"}
         className="sr-only"
         onChange={(e) => {

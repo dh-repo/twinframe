@@ -39,5 +39,14 @@ jobs:
       - name: Sampled tier-probe eval (pipeline sanity)
         run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 3 --concurrency 2
 
+      - name: Accessibility smoke (axe-core serious/critical gate)
+        run: |
+          npm run dev > /dev/null 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8080/ > /dev/null; then break; fi
+            sleep 2
+          done
+          node scripts/a11y-smoke.mjs http://127.0.0.1:8080
+
       - name: Production build
         run: npm run build

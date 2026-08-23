@@ -128,6 +128,8 @@ export function PhotoUploader({ onFile, onCameraClick, disabled }: PhotoUploader
           ref={inputRef}
           type="file"
           accept={PHOTO_ACCEPT}
+          aria-label="Choose a photo to match"
+          tabIndex={-1}
           className="sr-only"
           onChange={(e) => {
             void accept(e.target.files?.[0]);
