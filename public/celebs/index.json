@@ -15026,9 +15026,9 @@
     "path": "/celebs/thumbs/96/daisy-edgar-jones.webp",
     "path192": "/celebs/thumbs/192/daisy-edgar-jones.webp",
     "fallbackPath": "/celebs/daisy-edgar-jones.jpg",
-    "baseAge": 33,
+    "baseAge": 28,
     "ageBuckets": [
-      33
+      28
     ],
     "gender": "female",
     "genderProb": 0.9099019020795822
@@ -15247,9 +15247,9 @@
     "path": "/celebs/thumbs/96/stephan-james.webp",
     "path192": "/celebs/thumbs/192/stephan-james.webp",
     "fallbackPath": "/celebs/stephan-james.jpg",
-    "baseAge": 27,
+    "baseAge": 33,
     "ageBuckets": [
-      27
+      33
     ],
     "gender": "male",
     "genderProb": 0.9868059158325195

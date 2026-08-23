@@ -45,7 +45,7 @@ async function commons(params) {
   throw new Error("commons 429");
 }
 
-const SKIP = /logo|icon|flag|coat|arms|crest|signature|poster|\.svg|map|diagram|album|cover|cast of|wax|tussauds|cosplay|costume|handprint|walk of fame|premiere|festival|conference|panel|ceremony/i;
+const SKIP = /logo|icon|flag|coat|arms|crest|signature|poster|\.svg|map|diagram|album|cover|cast of|wax|tussauds|cosplay|costume|handprint|walk of fame|premiere|festival|conference|panel|ceremony|djvu|painting|peasant|statelibqld|elizabeth i|comparator|index\.|1890s|1550/i;
 
 async function main() {
   for (const t of TARGETS) {

@@ -10041,8 +10041,8 @@
   },
   {
     "id": "daisy-edgar-jones",
-    "name": "Daisy Edgar Jones",
-    "age": 33,
+    "name": "Daisy Edgar-Jones",
+    "age": 28,
     "gender": "female",
     "genderProb": 0.9099019020795822,
     "path": "/celebs/thumbs/96/daisy-edgar-jones.webp",
@@ -10211,8 +10211,8 @@
   },
   {
     "id": "stephan-james",
-    "name": "Stephan James",
-    "age": 27,
+    "name": "Stephan James (actor)",
+    "age": 33,
     "gender": "male",
     "genderProb": 0.9868059158325195,
     "path": "/celebs/thumbs/96/stephan-james.webp",
