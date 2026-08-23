@@ -20,10 +20,15 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
 /**
  * Max adjusted cosine distance still treated as a presentable look-alike.
  * Beyond this, rankByDescriptor returns [] (no forced top-K).
- * EdgeFace-512 calibration: best-of-1000 impostor p90 ≈ 0.67; refusing past
- * 0.72 (≈32% on the Hill map) keeps genuinely-far probes out of top-K.
+ *
+ * Evidence (held-out v2.1, n=272, full 512-d geometry, raw distance as the
+ * conservative proxy for adjusted): at 0.72 the floor refuses only 0.4% of
+ * probes; at 0.65 it refuses 4.8% while losing ZERO rank-1 correct matches and
+ * lifting precision-among-passed from 74.2% to 77.6%. Adjusted distances run up
+ * to ~16% above raw via demographic denominators, so the operating point errs
+ * toward refusing junk. Sweep lives in .github/agent-state/long-run-checkpoint.md.
  */
-export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.72;
+export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.65;
 
 /** Match percent below this is not shown as a look-alike top-K. */
 export const LOOKALIKE_MIN_PERCENT = 32;

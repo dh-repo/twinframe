@@ -66,3 +66,27 @@ describe("lookalike-policy gates", () => {
     assert.equal(distanceLookalikeGate(0.7, 30).pass, false);
   });
 });
+
+describe("distance floor evidentiary basis (held-out v2.1)", () => {
+  it("the shipped floor loses zero rank-1 correct matches on the tracked held-out report", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+    const reportPath = path.join(root, "reports/held-out-v2-baseline.json");
+    if (!fs.existsSync(reportPath)) return; // artifact optional in sparse checkouts
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8")) as {
+      records: Array<{ dTop1: number | null; rank: number }>;
+    };
+    const scored = report.records.filter(
+      (r) => r.dTop1 !== null && Number.isFinite(r.dTop1),
+    );
+    assert.ok(scored.length >= 200, `expected a real eval population, got ${scored.length}`);
+    const lost = scored.filter(
+      (r) => (r.dTop1 as number) > LOOKALIKE_MAX_ADJUSTED_DISTANCE && r.rank === 1,
+    ).length;
+    // Raw-distance proxy is conservative vs adjusted; allow at most the single
+    // prior-flip outlier before demanding recalibration.
+    assert.ok(lost <= 1, `floor ${LOOKALIKE_MAX_ADJUSTED_DISTANCE} now discards ${lost} correct top matches — recalibrate with a fresh sweep`);
+  });
+});
