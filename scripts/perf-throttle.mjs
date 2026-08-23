@@ -41,8 +41,14 @@ try {
   for (const rate of rates) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await context.newPage();
-    const cdp = await context.newCDPSession(page);
-    await cdp.send("Emulation.setCPUThrottlingRate", { rate });
+    // Only attach CDP throttling when actually throttling: on 2-core CI the
+    // mere attachment starved ORT's WASM thread pool even at rate 1.
+    if (rate > 1) {
+      const cdp = await context.newCDPSession(page);
+      await cdp.send("Emulation.setCPUThrottlingRate", { rate });
+    }
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(e.message.slice(0, 120)));
 
     await page.goto(new URL("/", url).href, { waitUntil: "networkidle", timeout: 90_000 });
     const [fc] = await Promise.all([
@@ -68,7 +74,9 @@ try {
     }
     if (totalMs === null) {
       failed = true;
-      console.log(`[perf] FAIL ${rate}x: no result within ${budgetMs}ms budget`);
+      const tail = (await page.locator("body").innerText().catch(() => "")).replace(/\s+/g, " ").slice(0, 220);
+      console.log(`[perf] FAIL ${rate}x: no result within ${budgetMs}ms | pageerrors=${errors.length} | body="${tail}"`);
+      for (const e of errors.slice(0, 3)) console.log(`[perf]   pageerror: ${e}`);
     } else if (totalMs > budgetMs) {
       failed = true;
       console.log(`[perf] FAIL ${rate}x: ${totalMs}ms exceeds ${budgetMs}ms budget`);
