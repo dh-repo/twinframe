@@ -2,14 +2,20 @@ import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./ty
 import { ENGINE_VERSION } from "./types.ts";
 import { emptyFeatures } from "./math.ts";
 import { rankByDescriptor } from "./match.ts";
-import {
-  detectAndDescribe,
-  detectAndDescribeWithTTA,
-  prefetchFaceApi,
-  assessDetectionQuality,
-  logFaceTelemetry,
-  type FaceDetectionResult,
-} from "./faceapi-engine.ts";
+import type { FaceDetectionResult } from "./faceapi-engine.ts";
+
+/**
+ * The legacy FaceNet engine (face-api.esm + tfjs, ~320KB gz) is only needed for the
+ * demographic attribute pass and the full fallback — never on the critical path of a
+ * healthy EdgeFace analysis. Load it lazily so mid-range phones do not download it up front.
+ */
+let faceApiEnginePromise: Promise<typeof import("./faceapi-engine.ts")> | null = null;
+function loadFaceApiEngine() {
+  if (!faceApiEnginePromise) {
+    faceApiEnginePromise = import("./faceapi-engine.ts");
+  }
+  return faceApiEnginePromise;
+}
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
 import { detectSCRFD } from "./scrfd.ts";
 import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
@@ -32,8 +38,16 @@ export type PipelineStatus =
 /** Warm models + gallery in the background. */
 export function prefetchModel(): void {
   if (typeof window === "undefined") return;
-  prefetchFaceApi();
   prefetchEmbeddings();
+  // The legacy engine (~320KB gz with tfjs) must not compete with first paint;
+  // warm it once the browser goes idle, before the user likely finishes picking a photo.
+  const idle = (cb: () => void) => {
+    if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(() => cb());
+    else setTimeout(cb, 2000);
+  };
+  idle(() => {
+    loadFaceApiEngine().then((m) => m.prefetchFaceApi());
+  });
 }
 
 /** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */
@@ -247,9 +261,10 @@ export async function analyzeFaceSource(
       hasEdgeFace: Boolean(edgeFaceEmbedding),
       hasScrfd: Boolean(scrfdResult?.primary),
     });
+    const engine = await loadFaceApiEngine();
     det = edgeFaceEmbedding
-      ? await detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
-      : await detectAndDescribeWithTTA(source, options);
+      ? await engine.detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
+      : await engine.detectAndDescribeWithTTA(source, options);
     pipelineLog("faceapi:fallback-done");
   }
 
@@ -296,6 +311,7 @@ export async function analyzeFaceSource(
       telemetry: det.telemetry,
     });
     if (det.telemetry) {
+      const { logFaceTelemetry } = await loadFaceApiEngine();
       logFaceTelemetry(det.telemetry);
     }
   }
@@ -328,6 +344,7 @@ export async function analyzeFaceSource(
     };
   }
 
+  const { assessDetectionQuality } = await loadFaceApiEngine();
   const quality: FaceQuality = assessDetectionQuality(det);
   const faceCoverage =
     (det.box.width * det.box.height) /
