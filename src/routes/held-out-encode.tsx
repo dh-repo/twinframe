@@ -236,7 +236,7 @@ function HeldOutEncodePage() {
   const pct = total ? Math.round((done / total) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-zinc-100 p-8">
+    <main className="min-h-screen bg-[#0a0a0b] text-zinc-100 p-8">
       <h1 className="text-xl font-semibold">Held-out encode</h1>
       <p className="mt-2 text-sm text-zinc-400">
         {status} · {okCount}/{done} ok · {done}/{total} ({pct}%)
@@ -244,6 +244,6 @@ function HeldOutEncodePage() {
       <pre className="mt-6 text-xs text-zinc-400 whitespace-pre-wrap max-h-[70vh] overflow-auto">
         {logs.join("\n")}
       </pre>
-    </div>
+    </main>
   );
 }

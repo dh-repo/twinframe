@@ -255,7 +255,7 @@ export function AppHome() {
 
   return (
     <div className="app-shell bg-[#090a0f] text-white">
-      <div className="app-content mx-auto w-full max-w-xl px-4 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2rem))] pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.35rem),var(--grok-banner-h,0px))] sm:px-6">
+      <main className="app-content mx-auto w-full max-w-xl px-4 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2rem))] pt-[max(1.25rem,calc(env(safe-area-inset-top)+0.35rem),var(--grok-banner-h,0px))] sm:px-6">
         <header className={showHero ? "mb-8 sm:mb-10" : "mb-5"}>
           <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
             <div className="flex items-center gap-2.5">
@@ -514,7 +514,7 @@ export function AppHome() {
             </p>
           </footer>
         )}
-      </div>
+      </main>
 
       <WebcamCapture
         open={cameraOpen}
