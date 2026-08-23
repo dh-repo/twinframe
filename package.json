@@ -14,8 +14,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts' 'src/lib/ux/**/*.test.ts' 'scripts/**/*.test.mjs'",
-    "test:match": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts'",
+    "test": "node --experimental-strip-types --test --test-concurrency=1 'src/lib/face/**/*.test.ts' 'src/lib/ux/**/*.test.ts' 'scripts/**/*.test.mjs'",
+    "test:match": "node --experimental-strip-types --test --test-concurrency=1 'src/lib/face/**/*.test.ts'",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

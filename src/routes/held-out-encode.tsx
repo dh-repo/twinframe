@@ -75,7 +75,7 @@ function HeldOutEncodePage() {
           name: string;
           descriptor: number[];
           age: number;
-          gender: "male" | "female";
+          gender: "male" | "female" | "unknown";
           genderProb: number;
           ok: boolean;
           source: string;
@@ -89,7 +89,7 @@ function HeldOutEncodePage() {
             name: c.name,
             descriptor: [] as number[],
             age: 35,
-            gender: "male" as "male" | "female",
+            gender: "unknown" as "male" | "female" | "unknown",
             genderProb: 0,
             ok: false,
             source: c.imagePath,
