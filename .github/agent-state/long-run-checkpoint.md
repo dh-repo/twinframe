@@ -122,3 +122,33 @@ Real AGENTS.md · honest README/PROJECT · leak-excluded eval protocol + 13-test
 
 ### Session ledger
 13 cycles · 30 commits on `night/twinframe` · 2 reviewer rounds (P0×1, P1×5 — all remediated with evidence) · zero privacy violations found or introduced · main untouched throughout.
+
+---
+
+## Continuation session (cycles 14–21, 2026-08-23)
+
+The completion gate was already evidenced at cycle 13; this continuation spent quota on
+the handoff backlog and on reviewer-driven repairs:
+
+| Cycle | Delivered | Evidence |
+|---|---|---|
+| 14 | 26 unenrolled celebrities enrolled (gallery 999 → 1025 slots, thumbs generated); first run enrolled everyone with one face due to a selector bug — caught in output review, reverted from git, fixed | full-catalog parity 100% on 297; held-out recomposed honestly (n=303, 73.6%; like-for-like 270 unchanged at 75.9%) |
+| 15 | A11y gate extended into crop-review/results/webcam; unnamed progressbar violation found + fixed at component level | results serious violations 1 → 0 |
+| 16 | Round-3 review P0: `anya-taylor` slot shipped a bystander's face from a crowd photo AND duplicated enrolled `anya-taylor-joy` — dropped entirely; a11y smoke made fail-closed; add/drop-slot scripts hardened (preflight, explicit demographics, meta sync) | reviewer re-encoded all 26 slots; 25 proven clean |
+| 17 | Calibration coefficients made reproducible: deterministic refit script + suite-level drift gate (fired immediately on stale n=274-era constants — refit shipped) | `refit-calibration.ts` exit 0; 370/370 tests |
+| 18 | Color-contrast rule enabled (no exclusions): fg-subtle token below threshold moved #71717a→#8b8b93; log pane + candidate sublabel + white/40 hints lifted | axe clean across all states incl. contrast |
+| 19 | greta-lee (male@0.665) and don-cheadle (@0.691) re-enrolled from better Commons portraits through the same detector: female@0.947 / male@0.986 — recorded output, never hand-edited labels | slot metadata verified post-patch |
+| 20 | Error-state UX forced (model-block after candidate detection) and axed; main landmarks added to app shell + tooling routes | landing/encode/crop-review/webcam: **zero** axe violations total |
+| 21 | CI-runner timing fix: approve waits ≤90s for candidate detection (2-core runners were slower than local) | CI conclusion=success on `a64dae3` |
+
+### Review rounds
+Round 1: P0×1 (half-stride parser) · Round 2: P1×3 (cache-bust, poisoned lazy-import, dangling reference) ·
+Round 3: P0×1 (wrong-face enrollment) + P1×2 (fail-open gate paths) — **all remediated with evidence**;
+each round also produced hardening that outlived its findings (parity taxonomy, drift gates, preflights).
+
+### Remaining known limits (accepted or awaiting input)
+- Modal overlays account for 1 minor axe finding each on error/results (properly labeled dialogs).
+- Nightly cron activates when `night/twinframe` merges to the default branch.
+- Multi-shot v5 gallery awaits a real second-photo pool; held-out corpus must stay out of enrollment.
+- Age estimates for the 26 new slots come from detector reads of single photos (recorded honestly);
+  ground-truth age tables would be a catalog-maintenance decision for the owner.
