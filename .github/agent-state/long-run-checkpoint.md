@@ -174,3 +174,16 @@ each round also produced hardening that outlived its findings (parity taxonomy, 
 
 Final state at close: `night-ci` success on `be02610`; 370/370 tests; typecheck/build clean;
 held-out 74.8% / MRR 0.771 (n=301); parity 100%; axe near-zero across six states.
+
+### Continuation 3 (cycles 25–26, same day)
+- **Mid-phone performance probe** (`scripts/perf-throttle.mjs`): real upload→results flow
+  under CDP CPU throttling — 3.7–4.4s at 1×/4×/6×; CI enforces the 15s budget at 1×/4×.
+- **Strong-band margin gate pinned by evidence**: among held-out probes ≥70 percent with
+  margin ≥0.05, correctness is 100% (n=187); suite fails if the "TOP DOPPELGÄNGER MATCH"
+  label degrades below 95%.
+- **Zero axe violations across all six audited states** after fixing heading semantics
+  (wordmark → h1, trait section → h3).
+- AGENTS.md verify battery expanded to document all eight gates.
+
+Close-out state: `night-ci` success on `96b91f7`; 371/371 tests; typecheck/build clean;
+held-out 74.8% / MRR 0.771 (n=301); parity 100%; axe 0 violations everywhere.
