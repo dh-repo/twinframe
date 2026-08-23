@@ -200,3 +200,27 @@ True final state: `night-ci` success on `74e9be9` (typecheck → 371 tests → h
 full-catalog parity → legacy benchmark → a11y smoke (0 violations, 6 states) → perf probe →
 build). Remaining work requires owner input or default-branch merge; nothing executable
 remains in backlog.
+
+### Continuation 4 (cycles 28+, same day): catalog-wide multi-shot + merge to main
+- **Multi-shot for everyone**: fetched alternate Commons portraits for all 819 celebs lacking
+  a second view; encoded 259 candidates; `scripts/select-extra-templates.mjs` admits only
+  candidates within 0.45 cosine of their own slot (rejected 227 junk/strangers). Template
+  pool: 558 → 775 after unioning main's parallel fetch. Held-out **75.4% like-for-like**.
+- **Mislabeled Cheadle portrait root-caused** via parity forensics: original catalog portrait
+  sat 0.93 from two verified Commons Cheadle photos — replaced at the source, thumbs +
+  tracked probe regenerated, parity back to 100%.
+- **Merged origin/main's parallel evolution** (50 commits: Distant Twin verdict system,
+  trait rewrite, their own photo fetches): conflicts resolved by composition (their verdict
+  tiers + trait UI; my calibration, evals, repaired gallery; floor returns to 0.72 under the
+  new labeled-card UX with both rationales recorded). Also fixed two type errors main had
+  shipped without CI.
+- **Merged tree**: 588/588 tests · parity 100% · held-out **76.7% / MRR 0.788, zero
+  refusals** · typecheck/build clean.
+- **PR #23 merged to main** (`ce019a2`) with all checks green after three CI iterations:
+  a11y markers updated to verdict-tier headlines; perf probe re-based on pipeline telemetry
+  (`rank:done totalMs`) instead of UI routing; interactive gates share one strict-port dev
+  server; perf budgets scale per throttle rate with both machines' measurements documented.
+- **Nightly cron armed on default branch** and proven via manual dispatch.
+
+Final shipped state: honest headline **76.7% held-out Rank-1 / MRR 0.788**, calibrated
+confidence in the UI, every gate green on main.
