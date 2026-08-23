@@ -90,3 +90,35 @@ NEXT: cycle 2 — wire `test:heldout`, leakage-prevention tests, margin-metric m
 | File | Q1 Correctness | Q2 Robustness | Q3 Optimality | Adversarial | Performance | Coverage |
 |------|----------------|---------------|---------------|-------------|-------------|----------|
 | .gitignore | EVIDENCED (untracked corpus ignored, tracked files unaffected) | assertion only | n/a | n/a | n/a | n/a |
+
+---
+
+## Completion Gate — final audit (cycle 13, 2026-08-23)
+
+| Gate item | Status | Evidence |
+|---|---|---|
+| Real AGENTS.md | ✅ DONE | Product-specific AGENTS.md (verify commands, on-device constraint, legal surface, eval rules, executed-truth env notes); accuracy claims corrected across 3 reviewer passes |
+| Eval script exit 0; leakage prevented (documented + tested) | ✅ DONE | `test:heldout --floor 40` exit 0; leak rules = path + content-hash exclusion + header-dim guard + parser/browser-parity, all pinned in `scripts/held-out-protocol.test.mjs` (13 tests); headline **75.9% Rank-1 / MRR 0.779, n=270**, full 512-d geometry |
+| Non-face rejection tested | ✅ DONE | `scripts/hard-cases.test.mjs` (7 tests: sky/noise/flat/text rejection + positive control + group composite + measured small-face boundary) runs in CI via `npm test` |
+| CI exists | ✅ DONE | `.github/workflows/night-ci.yml` green on every push (typecheck → 369 tests → held-out floor gate → sampled benchmark → a11y axe gate → build); `nightly-eval.yml` for full slices; run `9196515` conclusion=success |
+| `npm test` + typecheck exit 0 | ✅ DONE | 369/369 pass; tsc clean; build exit 0 |
+
+### The honesty arc (why the headline changed three times)
+1. **97.7% "overall"** (PROJECT.md legacy): tier probes overlap enrollment imagery → vanity.
+2. **86.5% "held-out"** (inherited untracked work): invalid twice — 128-d probes vs 512-d gallery (cross-space cosine), and 531/735 probe files doubled as gallery templates.
+3. **46.0%**: honest protocol but half-stride parser bug (reviewer P0) → truncated geometry.
+4. **75.9%** (final): true 512-d geometry, content-hash leak exclusion, repaired shipped gallery. Every number names its protocol; every claim has a falsifying test.
+
+### Cumulative deliverables
+Real AGENTS.md · honest README/PROJECT · leak-excluded eval protocol + 13-test protocol suite · hard-case CI suites (non-face/EXIF/HEIC/group/crop) · calibrated P(match correct) ECE 0.028 w/ regression gate · evidence-tuned distance floor (0.65) · gallery surgery tooling + repaired catalog (+2pts real accuracy) · true-parity tier harness (100% on enrolled) · lazy legacy engine (−329KB gz first paint) · axe a11y CI gate · deterministic test runner · GitHub Actions end-to-end · two adversarial reviews fully remediated.
+
+### Handoff backlog (ranked)
+1. Enroll-or-drop the 27 unenrolled thumbs (needs multi-shot v5 pool decision; held-out photos must stay out of enrollment).
+2. A11y flows for crop-review/webcam/results dialogs (axe currently covers landing + encode routes).
+3. Enable color-contrast rule once design tokens settle (LT_Design tokens.css available read-only).
+4. Investigate cross-celeb confusions from parity audit (dominic-sessa→rami-malek class).
+5. onnxruntime-node for fast node-side evals (requires dependency-audit ritual).
+6. Nightly cron activates automatically when this merges to the default branch.
+
+### Session ledger
+13 cycles · 30 commits on `night/twinframe` · 2 reviewer rounds (P0×1, P1×5 — all remediated with evidence) · zero privacy violations found or introduced · main untouched throughout.
