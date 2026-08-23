@@ -1,53 +1,38 @@
 name: night-ci
-
-on:
+true:
   push:
     branches:
-      - "night/**"
-  pull_request:
-  workflow_dispatch:
-
-# Heavy suite; one run per ref at a time.
+    - night/**
+  pull_request: null
+  workflow_dispatch: null
 concurrency:
   group: night-ci-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      # The committed lockfile is intentionally slightly out of sync; npm ci fails.
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Unit + integration + hard-case tests
-        run: npm test
-
-      - name: Held-out eval gate (leak-excluded, rank-1 floor)
-        run: npm run test:heldout -- --floor 40
-      - name: Sampled tier-probe eval (pipeline sanity)
-        run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 3 --concurrency 2
-
-      - name: Accessibility smoke (axe-core serious/critical gate)
-        run: |
-          npx playwright install --with-deps chromium
-          npm run dev > /dev/null 2>&1 &
-          for i in $(seq 1 30); do
-            if curl -sf http://127.0.0.1:8080/ > /dev/null; then break; fi
-            sleep 2
-          done
-          node scripts/a11y-smoke.mjs http://127.0.0.1:8080
-
-      - name: Production build
-        run: npm run build
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+    - name: Install dependencies
+      run: npm install --no-audit --no-fund
+    - name: Typecheck
+      run: npm run typecheck
+    - name: Unit + integration + hard-case tests
+      run: npm test
+    - name: Held-out eval gate (leak-excluded, rank-1 floor)
+      run: npm run test:heldout -- --floor 40
+    - name: Full-catalog enroll/query parity
+      run: npm run test:parity -- --floor 90
+    - name: Sampled tier-probe eval (pipeline sanity)
+      run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 3 --concurrency 2
+    - name: Accessibility smoke (axe-core serious/critical gate)
+      run: "npx playwright install --with-deps chromium\nnpm run dev > /dev/null 2>&1\
+        \ &\nfor i in $(seq 1 30); do\n  if curl -sf http://127.0.0.1:8080/ > /dev/null;\
+        \ then break; fi\n  sleep 2\ndone\nnode scripts/a11y-smoke.mjs http://127.0.0.1:8080\n"
+    - name: Production build
+      run: npm run build
