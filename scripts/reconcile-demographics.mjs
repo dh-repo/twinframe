@@ -21,6 +21,11 @@ const UA = "TwinframeDemographicReconcile/1.0 (local catalog quality) Node.js";
 const CURRENT_YEAR = new Date().getFullYear();
 const AGE_DRIFT_THRESHOLD = 2;
 
+// Exact enwiki titles for names whose catalog form resists canonicalization.
+const TITLE_OVERRIDES = {
+  "daisy-edgar-jones": "Daisy Edgar-Jones",
+  "stephan-james": "Stephan James (actor)",
+};
 const idsArg = process.argv.indexOf("--ids");
 const targets = idsArg >= 0 ? process.argv[idsArg + 1].split(",") : null;
 const applyAll = process.argv.includes("--all");
@@ -127,7 +132,10 @@ async function main() {
 
   let pool = buckets;
   if (targets) pool = buckets.filter((b) => targets.includes(b.id));
-  else if (!applyAll && !apply) {
+  for (const b of pool) {
+    if (TITLE_OVERRIDES[b.id]) b.name = TITLE_OVERRIDES[b.id];
+  }
+  if (!targets && !applyAll && !apply) {
     console.error("nothing to do: pass --ids a,b,c, or --all, or --apply (applies to all)");
     process.exit(1);
   }

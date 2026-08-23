@@ -28,7 +28,7 @@ jobs:
       run: npm run test:heldout -- --floor 40
     - name: Full-catalog enroll/query parity
       run: npm run test:parity -- --floor 90
-    - name: Sampled tier-probe eval (pipeline sanity)
+    - name: Legacy-geometry sampled benchmark (latency/tooling sanity; accuracy parity is the step above)
       run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 3 --concurrency 2
     - name: Accessibility smoke (axe-core serious/critical gate)
       run: "npx playwright install --with-deps chromium\nnpm run dev > /dev/null 2>&1\
