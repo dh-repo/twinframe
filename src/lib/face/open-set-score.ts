@@ -24,6 +24,13 @@ export const OPEN_SET_MARGIN_FLOOR = 0.015;
 export const OPEN_SET_MARGIN_FACTOR_MIN = 0.68;
 
 /** A "strong doppelgänger" claim also needs this much top-2 separation. */
+/**
+ * Minimum rank margin for a >=70-percent match to carry the strong label.
+ * Evidence (held-out v2.1, n=278 scored probes): among percent>=70 candidates,
+ * margin>=0.02 was already 100% correct (n=188); 0.05 keeps headroom while
+ * holding precision at 100% (n=187). Pinned by the evidentiary test in
+ * open-set-score.test.ts, which fails if the label degrades below 95%.
+ */
 export const STRONG_LOOKALIKE_MIN_MARGIN = 0.05;
 
 export function rankMargin(adjustedDistances: readonly number[]): number {
