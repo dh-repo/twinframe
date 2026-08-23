@@ -1,0 +1,515 @@
+{
+ "fetched": {
+  "adam-sandler": {
+   "title": "Adam Sandler",
+   "lastExtra": "File:Adam Sandler.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "aishwarya-rai": {
+   "title": "Aishwarya Rai",
+   "lastExtra": "File:AishwaryaRai.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "al-pacino": {
+   "title": "Al Pacino",
+   "lastExtra": "File:Al Pacino.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "ali-wong": {
+   "title": "Ali Wong",
+   "lastExtra": "File:Ali Wong June 2012.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "ansel-elgort": {
+   "title": "Ansel Elgort",
+   "lastExtra": "File:Ansel Elgort at an Apple Store in 2014 (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "anthony-mackie": {
+   "title": "Anthony Mackie",
+   "lastExtra": "File:Anthony Mackie on the Green Carpet at the 2025 Zurich Film Festival 03 (cropped).jpg",
+   "extrasDone": true,
+   "extras": 1
+  },
+  "ben-affleck": {
+   "title": "Ben Affleck",
+   "lastExtra": "File:Bay Affleck Tyler at JFK Space Center Armageddon premiere (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "bill-gates": {
+   "title": "Bill Gates",
+   "lastExtra": "File:Bill Gates - World Economic Forum Annual Meeting Davos 2008.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "bill-skarsgard": {
+   "title": "Bill Skarsgård",
+   "lastExtra": "File:Bill Skarsgård (43573067882) (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "blake-lively": {
+   "title": "Blake Lively",
+   "lastExtra": "File:Blake Lively Cannes 2014.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "brie-larson": {
+   "title": "Brie Larson",
+   "lastExtra": "File:Brie Larson Captain Marvel Interview.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "bruno-mars": {
+   "title": "Bruno Mars",
+   "lastExtra": "File:Bruno Mars Concert 2.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "cara-delevingne": {
+   "title": "Cara Delevingne",
+   "lastExtra": "File:Cara Delevingne During LFW SS15.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "chris-pine": {
+   "title": "Chris Pine",
+   "lastExtra": "File:Chris Pine (42727112570).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "christian-bale": {
+   "title": "Christian Bale",
+   "lastExtra": "File:Christian Bale-7837.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "colin-firth": {
+   "title": "Colin Firth",
+   "lastExtra": "File:Colin Firth (36124162705) (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "dakota-johnson": {
+   "title": "Dakota Johnson",
+   "lastExtra": "File:Dakota Johnson Venice 2018 (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "daniel-kaluuya": {
+   "title": "Daniel Kaluuya",
+   "lastExtra": "File:Daniel Kaluuya & Keke Palmer in 2022 01.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "david-beckham": {
+   "title": "David Beckham",
+   "lastExtra": "File:1999 FA Cup Final Beckham corner (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "diego-luna": {
+   "title": "Diego Luna",
+   "lastExtra": "File:Diego Luna - Andor.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "drew-barrymore": {
+   "title": "Drew Barrymore",
+   "lastExtra": "File:DrewBarrymoreMusicLyrics.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "gael-garcia-bernal": {
+   "title": "Gael García Bernal",
+   "lastExtra": "File:Gael García Bernal (Guadalajara Film Festival) (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "gong-li": {
+   "title": "Gong Li",
+   "lastExtra": "File:Gong Li Cannes 2011.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "gong-yoo": {
+   "title": "Gong Yoo",
+   "lastExtra": "File:Gong yoo.png",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "gwenyth-paltrow": {
+   "title": "Gwyneth Paltrow",
+   "lastExtra": "File:GwynethPaltrowTIFF00 adj.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "gwyneth-paltrow": {
+   "title": "Gwyneth Paltrow",
+   "lastExtra": "File:GwynethPaltrowTIFF00 adj.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "hrithik-roshan": {
+   "title": "Hrithik Roshan",
+   "lastExtra": "File:Hrithik Roshan at trailer launch of The Roshans (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "hugh-grant": {
+   "title": "Hugh Grant",
+   "lastExtra": "File:Hugh Grant 2014.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "hyun-bin": {
+   "title": "Hyun Bin",
+   "lastExtra": "File:Hyun Bin at the 2024 Toronto International Film Festival 2 (cropped).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "ian-somerhalder": {
+   "title": "Ian Somerhalder",
+   "lastExtra": "File:Ian Somerhalder Photo Op GalaxyCon Raleigh 2023.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "jacob-elordi": {
+   "title": "Jacob Elordi",
+   "lastExtra": "File:Jacob Elordi at 82nd Venice International Film Festival-1.jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "jeff-bezos": {
+   "title": "Jeff Bezos",
+   "lastExtra": "File:Jeff Bezos-171027-F-DC888008 (25610066788).jpg",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "jenna-ortega": {
+   "title": "Jenna Ortega",
+   "lastExtra": "File:Jenna Ortega 2025 (4).png",
+   "extrasDone": true,
+   "extras": 2
+  },
+  "jennifer-aniston": {
+   "extrasDone": true,
+   "extras": 0
+  },
+  "barry-keoghan": {
+   "note": "error: wiki 429 query"
+  },
+  "bella-ramsey": {
+   "note": "error: wiki 429 query"
+  },
+  "brendan-fraser": {
+   "note": "error: wiki 429 query"
+  },
+  "colman-domingo": {
+   "note": "error: wiki 429 query"
+  },
+  "greta-gerwig": {
+   "note": "error: wiki 429 query"
+  },
+  "jodie-comer": {
+   "note": "error: wiki 429 query"
+  },
+  "ayo-edebiri": {
+   "note": "error: wiki 429 query"
+  },
+  "jeremy-allen-white": {
+   "note": "error: wiki 429 query"
+  },
+  "cailee-spaeny": {
+   "title": "Cailee Spaeny",
+   "grown": true,
+   "name": "Cailee Spaeny",
+   "shots": 3
+  },
+  "daisy-edgar-jones": {
+   "title": "Daisy Edgar-Jones",
+   "grown": true,
+   "name": "Daisy Edgar-Jones",
+   "shots": 3
+  },
+  "mikey-madison": {
+   "title": "Mikey Madison",
+   "grown": true,
+   "name": "Mikey Madison",
+   "shots": 3
+  },
+  "demi-moore": {
+   "title": "Demi Moore",
+   "grown": true,
+   "name": "Demi Moore",
+   "shots": 3
+  },
+  "kieran-culkin": {
+   "title": "Kieran Culkin",
+   "grown": true,
+   "name": "Kieran Culkin",
+   "shots": 3
+  },
+  "jeremy-strong": {
+   "title": "Jeremy Strong",
+   "grown": true,
+   "name": "Jeremy Strong",
+   "shots": 3
+  },
+  "sarah-snook": {
+   "title": "Sarah Snook",
+   "grown": true,
+   "name": "Sarah Snook",
+   "shots": 3
+  },
+  "aubrey-plaza": {
+   "title": "Aubrey Plaza",
+   "grown": true,
+   "name": "Aubrey Plaza",
+   "shots": 3
+  },
+  "danielle-deadwyxler": {
+   "note": "no wiki title"
+  },
+  "fantasia-barrino": {
+   "title": "Fantasia (singer)",
+   "grown": true,
+   "name": "Fantasia Barrino",
+   "shots": 2
+  },
+  "paul-giamatti": {
+   "title": "Paul Giamatti",
+   "grown": true,
+   "name": "Paul Giamatti",
+   "shots": 3
+  },
+  "da-vine-joy-randolph": {
+   "title": "Da'Vine Joy Randolph",
+   "note": "downloads failed"
+  },
+  "dominic-sessa": {
+   "title": "Dominic Sessa",
+   "grown": true,
+   "name": "Dominic Sessa",
+   "shots": 1
+  },
+  "tilda-swinton": {
+   "title": "Tilda Swinton",
+   "grown": true,
+   "name": "Tilda Swinton",
+   "shots": 3
+  },
+  "willem-dafoe": {
+   "title": "Willem Dafoe",
+   "grown": true,
+   "name": "Willem Dafoe",
+   "shots": 3
+  },
+  "anya-chalotra": {
+   "title": "Anya Chalotra",
+   "grown": true,
+   "name": "Anya Chalotra",
+   "shots": 1
+  },
+  "anya-taylor": {
+   "title": "Anya Taylor-Joy",
+   "grown": true,
+   "name": "Anya Taylor",
+   "shots": 3
+  },
+  "letitia-wright": {
+   "title": "Letitia Wright",
+   "grown": true,
+   "name": "Letitia Wright",
+   "shots": 3
+  },
+  "lakeith-stanfield": {
+   "title": "LaKeith Stanfield",
+   "grown": true,
+   "name": "Lakeith Stanfield",
+   "shots": 2
+  },
+  "brian-tyree-henry": {
+   "title": "Brian Tyree Henry",
+   "grown": true,
+   "name": "Brian Tyree Henry",
+   "shots": 1
+  },
+  "jharrel-jerome": {
+   "title": "Jharrel Jerome",
+   "grown": true,
+   "name": "Jharrel Jerome",
+   "shots": 1
+  },
+  "stephan-james": {
+   "title": "Stephan James (actor)",
+   "grown": true,
+   "name": "Stephan James",
+   "shots": 1
+  },
+  "octavia-spencer": {
+   "title": "Octavia Spencer",
+   "grown": true,
+   "name": "Octavia Spencer",
+   "shots": 1
+  },
+  "don-cheadle": {
+   "title": "Don Cheadle",
+   "grown": true,
+   "name": "Don Cheadle",
+   "shots": 3
+  },
+  "greta-lee": {
+   "title": "Greta Lee",
+   "grown": true,
+   "name": "Greta Lee",
+   "shots": 3
+  },
+  "teo-yoo": {
+   "title": "Teo Yoo",
+   "grown": true,
+   "name": "Teo Yoo",
+   "shots": 2
+  },
+  "song-kang-ho": {
+   "title": "Song Kang-ho",
+   "grown": true,
+   "name": "Song Kang-ho",
+   "shots": 1
+  },
+  "bae-doona": {
+   "title": "Bae Doona",
+   "grown": true,
+   "name": "Bae Doona",
+   "shots": 3
+  },
+  "jung-ho-yeon": {
+   "title": "Jung Ho-yeon",
+   "grown": true,
+   "name": "Jung Ho-yeon",
+   "shots": 3
+  },
+  "jun-ji-hyun": {
+   "title": "Jun Ji-hyun",
+   "grown": true,
+   "name": "Jun Ji-hyun",
+   "shots": 1
+  },
+  "son-ye-jin": {
+   "title": "Son Ye-jin",
+   "grown": true,
+   "name": "Son Ye-jin",
+   "shots": 3
+  },
+  "iu": {
+   "title": "IU (entertainer)",
+   "note": "downloads failed"
+  },
+  "lisa-manobal": {
+   "title": "Lisa (rapper)",
+   "note": "no images"
+  },
+  "ros-park": {
+   "note": "error: wiki 429 query"
+  },
+  "cha-eun-woo": {
+   "note": "error: wiki 429 query"
+  },
+  "kim-soo-hyun": {
+   "note": "error: wiki 429 query"
+  },
+  "song-hye-kyo": {
+   "note": "error: wiki 429 query"
+  },
+  "wang-yibo": {
+   "note": "error: wiki 429 query"
+  },
+  "xiao-zhan": {
+   "note": "error: wiki 429 query"
+  },
+  "steven-yeun": {
+   "note": "error: wiki 429 query"
+  },
+  "maitreyi-ramakrishnan": {
+   "note": "error: wiki 429 query"
+  },
+  "nawazuddin-siddiqui": {
+   "note": "error: wiki 429 query"
+  },
+  "radhika-apte": {
+   "note": "error: wiki 429 query"
+  },
+  "vicky-kaushal": {
+   "note": "error: wiki 429 query"
+  },
+  "anushka-sharma": {
+   "note": "error: wiki 429 query"
+  },
+  "kareena-kapoor": {
+   "note": "error: wiki 429 query"
+  },
+  "samantha-ruth-prabhu": {
+   "note": "error: wiki 429 query"
+  },
+  "vijay-sethupathi": {
+   "note": "error: wiki 429 query"
+  },
+  "anitta": {
+   "note": "error: wiki 429 query"
+  },
+  "rosal-a": {
+   "note": "error: wiki 429 query"
+  },
+  "maluma": {
+   "note": "error: wiki 429 query"
+  },
+  "niall-horan": {
+   "note": "error: wiki 429 query"
+  },
+  "nicolas-cage": {
+   "note": "error: wiki 429 query"
+  },
+  "uma-thurman": {
+   "note": "error: wiki 429 query"
+  },
+  "halle-bailey": {
+   "note": "error: wiki 429 query"
+  },
+  "simone-ashley": {
+   "note": "error: wiki 429 query"
+  },
+  "nicola-coughlan": {
+   "note": "error: wiki 429 query"
+  },
+  "luke-newton": {
+   "note": "error: wiki 429 query"
+  },
+  "claudia-jessie": {
+   "note": "error: wiki 429 query"
+  },
+  "lily-collins": {
+   "note": "error: wiki 429 query"
+  },
+  "camila-cabello": {
+   "note": "error: wiki 429 query"
+  },
+  "shawn-mendes": {
+   "note": "error: wiki 429 query"
+  },
+  "frank-ocean": {
+   "note": "error: wiki 429 query"
+  },
+  "tyler-the-creator": {
+   "note": "error: wiki 429 query"
+  },
+  "a-ap-rocky": {
+   "note": "error: wiki 429 query"
+  }
+ }
+}

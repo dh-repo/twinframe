@@ -1,0 +1,6635 @@
+{
+ "at": "2026-08-18T03:18:26.822Z",
+ "gallerySize": 1605,
+ "probes": 735,
+ "rank1Pct": 86.53061224489797,
+ "rank5Pct": 88.70748299319729,
+ "mrr": 0.8736281179138322,
+ "withPortrait": {
+  "n": 735,
+  "rank1Pct": 86.53061224489797,
+  "rank5Pct": 88.70748299319729
+ },
+ "withoutPortrait": {
+  "n": 0,
+  "rank1Pct": 0,
+  "rank5Pct": 0
+ },
+ "records": [
+  {
+   "id": "brad-pitt",
+   "rank": 1,
+   "top1": "brad-pitt",
+   "dTrue": 0.051607610360193124,
+   "dTop1": 0.0616056708489392,
+   "margin": -0.009998060488746074,
+   "hasPortrait": true
+  },
+  {
+   "id": "denzel-washington",
+   "rank": 1,
+   "top1": "denzel-washington",
+   "dTrue": 0.01664347557647372,
+   "dTop1": 0.027449775464900794,
+   "margin": -0.010806299888427073,
+   "hasPortrait": true
+  },
+  {
+   "id": "michael-b-jordan",
+   "rank": 1,
+   "top1": "michael-b-jordan",
+   "dTrue": 0.0412125605603727,
+   "dTop1": 0.050974212494143356,
+   "margin": -0.009761651933770654,
+   "hasPortrait": true
+  },
+  {
+   "id": "dev-patel",
+   "rank": 1,
+   "top1": "dev-patel",
+   "dTrue": 0.03884172425636523,
+   "dTop1": 0.04892118482294283,
+   "margin": -0.010079460566577603,
+   "hasPortrait": true
+  },
+  {
+   "id": "simu-liu",
+   "rank": 1,
+   "top1": "simu-liu",
+   "dTrue": 0.028047144685465097,
+   "dTop1": 0.03817195472017221,
+   "margin": -0.01012481003470711,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-cho",
+   "rank": 1,
+   "top1": "john-cho",
+   "dTrue": 0.0029946471114272732,
+   "dTop1": 0.013060810871189266,
+   "margin": -0.010066163759761992,
+   "hasPortrait": true
+  },
+  {
+   "id": "scarlett-johansson",
+   "rank": 1,
+   "top1": "scarlett-johansson",
+   "dTrue": 0.030911187926372707,
+   "dTop1": 0.042135989815301866,
+   "margin": -0.011224801888929159,
+   "hasPortrait": true
+  },
+  {
+   "id": "margot-robbie",
+   "rank": 1,
+   "top1": "margot-robbie",
+   "dTrue": 0.0393990710859331,
+   "dTop1": 0.050715105835806074,
+   "margin": -0.011316034749872972,
+   "hasPortrait": true
+  },
+  {
+   "id": "florence-pugh",
+   "rank": 1,
+   "top1": "florence-pugh",
+   "dTrue": 0.03985533717531642,
+   "dTop1": 0.051258471047774146,
+   "margin": -0.011403133872457727,
+   "hasPortrait": true
+  },
+  {
+   "id": "ana-de-armas",
+   "rank": 1,
+   "top1": "ana-de-armas",
+   "dTrue": 0.054854379080133686,
+   "dTop1": 0.0658168654648631,
+   "margin": -0.010962486384729409,
+   "hasPortrait": true
+  },
+  {
+   "id": "sydney-sweeney",
+   "rank": null,
+   "top1": "naomi-campbell",
+   "dTrue": 0.07584688828238983,
+   "dTop1": 0.06643875085281314,
+   "margin": 0.00940813742957669,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennifer-lawrence",
+   "rank": 1,
+   "top1": "jennifer-lawrence",
+   "dTrue": 0.04348106840281052,
+   "dTop1": 0.053714938020902214,
+   "margin": -0.010233869618091695,
+   "hasPortrait": true
+  },
+  {
+   "id": "liu-yifei",
+   "rank": 1,
+   "top1": "liu-yifei",
+   "dTrue": 0.02979837268100216,
+   "dTop1": 0.04072111208089413,
+   "margin": -0.010922739399891968,
+   "hasPortrait": true
+  },
+  {
+   "id": "dua-lipa",
+   "rank": 1,
+   "top1": "dua-lipa",
+   "dTrue": 0.049819402334902674,
+   "dTop1": 0.060517174368345916,
+   "margin": -0.010697772033443242,
+   "hasPortrait": true
+  },
+  {
+   "id": "elizabeth-olsen",
+   "rank": 1,
+   "top1": "elizabeth-olsen",
+   "dTrue": 0.05879443704099374,
+   "dTop1": 0.06984649314111258,
+   "margin": -0.011052056100118834,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-boyega",
+   "rank": 1,
+   "top1": "john-boyega",
+   "dTrue": 0.003944464989498853,
+   "dTop1": 0.014792679966558087,
+   "margin": -0.010848214977059234,
+   "hasPortrait": true
+  },
+  {
+   "id": "millie-bobby-brown",
+   "rank": 1,
+   "top1": "millie-bobby-brown",
+   "dTrue": 0.0029105906171122964,
+   "dTop1": 0.014116649205193288,
+   "margin": -0.011206058588080992,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-garfield",
+   "rank": 1,
+   "top1": "andrew-garfield",
+   "dTrue": 0.030474758504858923,
+   "dTop1": 0.04177599983932534,
+   "margin": -0.011301241334466416,
+   "hasPortrait": true
+  },
+  {
+   "id": "adam-driver",
+   "rank": 1,
+   "top1": "adam-driver",
+   "dTrue": 0.005332501532778977,
+   "dTop1": 0.016020959058202777,
+   "margin": -0.0106884575254238,
+   "hasPortrait": true
+  },
+  {
+   "id": "riz-ahmed",
+   "rank": 1,
+   "top1": "riz-ahmed",
+   "dTrue": 0.0015376183284915301,
+   "dTop1": 0.01253343386043182,
+   "margin": -0.01099581553194029,
+   "hasPortrait": true
+  },
+  {
+   "id": "lupita-nyongo",
+   "rank": 1,
+   "top1": "lupita-nyongo",
+   "dTrue": 0.044479173575454056,
+   "dTop1": 0.055060210337816606,
+   "margin": -0.01058103676236255,
+   "hasPortrait": true
+  },
+  {
+   "id": "awkwafina",
+   "rank": 1,
+   "top1": "awkwafina",
+   "dTrue": 0.03742331099778562,
+   "dTop1": 0.048093716718069945,
+   "margin": -0.010670405720284326,
+   "hasPortrait": true
+  },
+  {
+   "id": "priyanka-chopra",
+   "rank": null,
+   "top1": "shah-rukh-khan",
+   "dTrue": 0.06861070368989353,
+   "dTop1": 0.014520854197499489,
+   "margin": 0.05408984949239404,
+   "hasPortrait": true
+  },
+  {
+   "id": "uzo-aduba",
+   "rank": 1,
+   "top1": "uzo-aduba",
+   "dTrue": 0.004915188927658409,
+   "dTop1": 0.016163311277511805,
+   "margin": -0.011248122349853396,
+   "hasPortrait": true
+  },
+  {
+   "id": "bad-bunny",
+   "rank": 1,
+   "top1": "bad-bunny",
+   "dTrue": 0.05208436936521388,
+   "dTop1": 0.06203860477239076,
+   "margin": -0.009954235407176881,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-evans",
+   "rank": 1,
+   "top1": "chris-evans",
+   "dTrue": 0.033780425990721064,
+   "dTop1": 0.043856255655358,
+   "margin": -0.010075829664636937,
+   "hasPortrait": true
+  },
+  {
+   "id": "zendaya",
+   "rank": 1,
+   "top1": "zendaya",
+   "dTrue": 0.02689740018060982,
+   "dTop1": 0.037098247898666004,
+   "margin": -0.010200847718056183,
+   "hasPortrait": true
+  },
+  {
+   "id": "salma-hayek",
+   "rank": 1,
+   "top1": "salma-hayek",
+   "dTrue": 0.00565808763707587,
+   "dTop1": 0.016982110268796147,
+   "margin": -0.011324022631720276,
+   "hasPortrait": true
+  },
+  {
+   "id": "ryan-gosling",
+   "rank": 1,
+   "top1": "ryan-gosling",
+   "dTrue": 0.001769232391440556,
+   "dTop1": 0.013235574243413928,
+   "margin": -0.011466341851973372,
+   "hasPortrait": true
+  },
+  {
+   "id": "aaron-taylor-johnson",
+   "rank": 1,
+   "top1": "aaron-taylor-johnson",
+   "dTrue": 0.001841073612618871,
+   "dTop1": 0.01259964953231707,
+   "margin": -0.010758575919698199,
+   "hasPortrait": true
+  },
+  {
+   "id": "adriana-lima",
+   "rank": 1,
+   "top1": "adriana-lima",
+   "dTrue": 0.058427642937573965,
+   "dTop1": 0.06943602091575107,
+   "margin": -0.011008377978177109,
+   "hasPortrait": true
+  },
+  {
+   "id": "alexander-skarsgard",
+   "rank": 1,
+   "top1": "alexander-skarsgard",
+   "dTrue": 0.028119390262022814,
+   "dTop1": 0.03831049677255138,
+   "margin": -0.01019110651052857,
+   "hasPortrait": true
+  },
+  {
+   "id": "alia-bhatt",
+   "rank": 1,
+   "top1": "alia-bhatt",
+   "dTrue": 0.031449964182741486,
+   "dTop1": 0.04185137648838444,
+   "margin": -0.010401412305642954,
+   "hasPortrait": true
+  },
+  {
+   "id": "alicia-vikander",
+   "rank": 1,
+   "top1": "alicia-vikander",
+   "dTrue": 0.006861262152724201,
+   "dTop1": 0.01835645988300727,
+   "margin": -0.011495197730283069,
+   "hasPortrait": true
+  },
+  {
+   "id": "amy-adams",
+   "rank": 1,
+   "top1": "amy-adams",
+   "dTrue": 0.035860522400288475,
+   "dTop1": 0.046699459194256665,
+   "margin": -0.01083893679396819,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-scott",
+   "rank": 1,
+   "top1": "andrew-scott",
+   "dTrue": 0.004026713519321712,
+   "dTop1": 0.015666205692636437,
+   "margin": -0.011639492173314725,
+   "hasPortrait": true
+  },
+  {
+   "id": "angela-bassett",
+   "rank": 1,
+   "top1": "angela-bassett",
+   "dTrue": 0.00458658894179631,
+   "dTop1": 0.015451469148217822,
+   "margin": -0.010864880206421512,
+   "hasPortrait": true
+  },
+  {
+   "id": "anna-sawai",
+   "rank": 1,
+   "top1": "anna-sawai",
+   "dTrue": 0.0025301568691465937,
+   "dTop1": 0.013385723451347697,
+   "margin": -0.010855566582201104,
+   "hasPortrait": true
+  },
+  {
+   "id": "anthony-hopkins",
+   "rank": 1,
+   "top1": "anthony-hopkins",
+   "dTrue": 0.001220518519184477,
+   "dTop1": 0.011763320499408647,
+   "margin": -0.01054280198022417,
+   "hasPortrait": true
+  },
+  {
+   "id": "antonio-banderas",
+   "rank": 1,
+   "top1": "antonio-banderas",
+   "dTrue": 0.07396981675739478,
+   "dTop1": 0.0837854910205964,
+   "margin": -0.009815674263201624,
+   "hasPortrait": true
+  },
+  {
+   "id": "ariana-grande",
+   "rank": null,
+   "top1": "meghan-markle",
+   "dTrue": 0.08759089385829699,
+   "dTop1": 0.07184105943749475,
+   "margin": 0.015749834420802244,
+   "hasPortrait": true
+  },
+  {
+   "id": "austin-butler",
+   "rank": 1,
+   "top1": "austin-butler",
+   "dTrue": 0.028665610764304295,
+   "dTop1": 0.039008651707493014,
+   "margin": -0.01034304094318872,
+   "hasPortrait": true
+  },
+  {
+   "id": "bella-hadid",
+   "rank": 1,
+   "top1": "bella-hadid",
+   "dTrue": 0.0493791280630248,
+   "dTop1": 0.06007554930713166,
+   "margin": -0.010696421244106857,
+   "hasPortrait": true
+  },
+  {
+   "id": "eva-longoria",
+   "rank": 1,
+   "top1": "eva-longoria",
+   "dTrue": 0.030409515461970904,
+   "dTop1": 0.041636166839875144,
+   "margin": -0.01122665137790424,
+   "hasPortrait": true
+  },
+  {
+   "id": "fan-bingbing",
+   "rank": 1,
+   "top1": "fan-bingbing",
+   "dTrue": 0.044189688063328236,
+   "dTop1": 0.055169559213170793,
+   "margin": -0.010979871149842557,
+   "hasPortrait": true
+  },
+  {
+   "id": "gary-oldman",
+   "rank": 1,
+   "top1": "gary-oldman",
+   "dTrue": 0.05634233797191446,
+   "dTop1": 0.06620874353328021,
+   "margin": -0.009866405561365754,
+   "hasPortrait": true
+  },
+  {
+   "id": "gemma-chan",
+   "rank": 1,
+   "top1": "gemma-chan",
+   "dTrue": 0.057542461706596604,
+   "dTop1": 0.0678343942878179,
+   "margin": -0.010291932581221297,
+   "hasPortrait": true
+  },
+  {
+   "id": "gigi-hadid",
+   "rank": null,
+   "top1": "jennifer-lawrence",
+   "dTrue": 0.07730000351289157,
+   "dTop1": 0.07427929566532265,
+   "margin": 0.0030207078475689153,
+   "hasPortrait": true
+  },
+  {
+   "id": "glen-powell",
+   "rank": 1,
+   "top1": "glen-powell",
+   "dTrue": 0.039294211493184794,
+   "dTop1": 0.050371328503108104,
+   "margin": -0.01107711700992331,
+   "hasPortrait": true
+  },
+  {
+   "id": "helen-mirren",
+   "rank": 1,
+   "top1": "helen-mirren",
+   "dTrue": 0.03483317915640971,
+   "dTop1": 0.04614261814078757,
+   "margin": -0.011309438984377862,
+   "hasPortrait": true
+  },
+  {
+   "id": "helena-bonham-carter",
+   "rank": 1,
+   "top1": "helena-bonham-carter",
+   "dTrue": 0.03628343490850061,
+   "dTop1": 0.04709210212616255,
+   "margin": -0.010808667217661938,
+   "hasPortrait": true
+  },
+  {
+   "id": "hugh-jackman",
+   "rank": 1,
+   "top1": "hugh-jackman",
+   "dTrue": 0.04100267303237448,
+   "dTop1": 0.051782719740714134,
+   "margin": -0.010780046708339652,
+   "hasPortrait": true
+  },
+  {
+   "id": "hunter-schafer",
+   "rank": 1,
+   "top1": "hunter-schafer",
+   "dTrue": 0.007781684507619957,
+   "dTop1": 0.01933607604264309,
+   "margin": -0.011554391535023134,
+   "hasPortrait": true
+  },
+  {
+   "id": "jackie-chan",
+   "rank": 1,
+   "top1": "jackie-chan",
+   "dTrue": 0.008540127869088088,
+   "dTop1": 0.01959834545575223,
+   "margin": -0.011058217586664143,
+   "hasPortrait": true
+  },
+  {
+   "id": "jason-momoa",
+   "rank": 1,
+   "top1": "jason-momoa",
+   "dTrue": 0.0011101651541898239,
+   "dTop1": 0.011928711154777782,
+   "margin": -0.010818546000587959,
+   "hasPortrait": true
+  },
+  {
+   "id": "javier-bardem",
+   "rank": 1,
+   "top1": "javier-bardem",
+   "dTrue": 0.002350465666046908,
+   "dTop1": 0.013460795142776538,
+   "margin": -0.01111032947672963,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennie-kim",
+   "rank": 1,
+   "top1": "jennie-kim",
+   "dTrue": 0.04417305733483545,
+   "dTop1": 0.054980215817941214,
+   "margin": -0.010807158483105761,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-alba",
+   "rank": 1,
+   "top1": "jessica-alba",
+   "dTrue": 0.005660556607314793,
+   "dTop1": 0.016550530519509166,
+   "margin": -0.010889973912194373,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-chastain",
+   "rank": 1,
+   "top1": "jessica-chastain",
+   "dTrue": 0.004625177295704774,
+   "dTop1": 0.015550329263857132,
+   "margin": -0.010925151968152358,
+   "hasPortrait": true
+  },
+  {
+   "id": "jisoo",
+   "rank": 1,
+   "top1": "jisoo",
+   "dTrue": 0.02870181984050657,
+   "dTop1": 0.03923555467981321,
+   "margin": -0.010533734839306641,
+   "hasPortrait": true
+  },
+  {
+   "id": "joaquin-phoenix",
+   "rank": 1,
+   "top1": "joaquin-phoenix",
+   "dTrue": 0.05243727277246424,
+   "dTop1": 0.062426188837065966,
+   "margin": -0.009988916064601727,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-krasinski",
+   "rank": 1,
+   "top1": "john-krasinski",
+   "dTrue": 0.03653106585668642,
+   "dTop1": 0.04725267968676705,
+   "margin": -0.010721613830080634,
+   "hasPortrait": true
+  },
+  {
+   "id": "jonah-hill",
+   "rank": 1,
+   "top1": "jonah-hill",
+   "dTrue": 0.00340736379353912,
+   "dTop1": 0.015810542040668674,
+   "margin": -0.012403178247129554,
+   "hasPortrait": true
+  },
+  {
+   "id": "joseph-gordon-levitt",
+   "rank": 1,
+   "top1": "joseph-gordon-levitt",
+   "dTrue": 0.022631888452260385,
+   "dTop1": 0.03286419698356302,
+   "margin": -0.010232308531302636,
+   "hasPortrait": true
+  },
+  {
+   "id": "josh-hutcherson",
+   "rank": 1,
+   "top1": "josh-hutcherson",
+   "dTrue": 0.03838814739856988,
+   "dTop1": 0.049369656798918804,
+   "margin": -0.010981509400348921,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-winslet",
+   "rank": 1,
+   "top1": "kate-winslet",
+   "dTrue": 0.04026019856068341,
+   "dTop1": 0.051491163919406,
+   "margin": -0.011230965358722589,
+   "hasPortrait": true
+  },
+  {
+   "id": "kerry-washington",
+   "rank": 1,
+   "top1": "kerry-washington",
+   "dTrue": 0.05030680362377937,
+   "dTop1": 0.06078613922007858,
+   "margin": -0.01047933559629921,
+   "hasPortrait": true
+  },
+  {
+   "id": "kevin-hart",
+   "rank": 1,
+   "top1": "kevin-hart",
+   "dTrue": 0.0018268125250638922,
+   "dTop1": 0.012813465244298494,
+   "margin": -0.010986652719234602,
+   "hasPortrait": true
+  },
+  {
+   "id": "kim-kardashian",
+   "rank": 2,
+   "top1": "shakira",
+   "dTrue": 0.06421535713823678,
+   "dTop1": 0.07087988779593002,
+   "margin": -0.006664530657693235,
+   "hasPortrait": true
+  },
+  {
+   "id": "kristen-stewart",
+   "rank": 1,
+   "top1": "kristen-stewart",
+   "dTrue": 0.0327158887698471,
+   "dTop1": 0.04478547957149126,
+   "margin": -0.012069590801644159,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylie-jenner",
+   "rank": 1,
+   "top1": "kylie-jenner",
+   "dTrue": 0.0006727705565695574,
+   "dTop1": 0.011098939475014946,
+   "margin": -0.010426168918445389,
+   "hasPortrait": true
+  },
+  {
+   "id": "laurence-fishburne",
+   "rank": 1,
+   "top1": "laurence-fishburne",
+   "dTrue": 0.0018635161228236496,
+   "dTop1": 0.012101794194442683,
+   "margin": -0.010238278071619034,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-jung-jae",
+   "rank": 1,
+   "top1": "lee-jung-jae",
+   "dTrue": 0.039551286488612614,
+   "dTop1": 0.04962517106863418,
+   "margin": -0.010073884580021564,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-min-ho",
+   "rank": 1,
+   "top1": "lee-min-ho",
+   "dTrue": 0.02360501105639068,
+   "dTop1": 0.03368248376365879,
+   "margin": -0.01007747270726811,
+   "hasPortrait": true
+  },
+  {
+   "id": "leonardo-dicaprio",
+   "rank": 1,
+   "top1": "leonardo-dicaprio",
+   "dTrue": 0.031608927876300874,
+   "dTop1": 0.04237731039760706,
+   "margin": -0.010768382521306186,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-hemsworth",
+   "rank": 1,
+   "top1": "liam-hemsworth",
+   "dTrue": 0.0028646135425852703,
+   "dTop1": 0.01418864150124255,
+   "margin": -0.011324027958657279,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-neeson",
+   "rank": 1,
+   "top1": "liam-neeson",
+   "dTrue": 0.0014214922932540563,
+   "dTop1": 0.011977996010385517,
+   "margin": -0.01055650371713146,
+   "hasPortrait": true
+  },
+  {
+   "id": "logan-lerman",
+   "rank": 1,
+   "top1": "logan-lerman",
+   "dTrue": 0.05708319576166199,
+   "dTop1": 0.067065338207134,
+   "margin": -0.00998214244547202,
+   "hasPortrait": true
+  },
+  {
+   "id": "luke-hemsworth",
+   "rank": 1,
+   "top1": "luke-hemsworth",
+   "dTrue": 0.0011020113547497434,
+   "dTop1": 0.012077738775256863,
+   "margin": -0.01097572742050712,
+   "hasPortrait": true
+  },
+  {
+   "id": "mads-mikkelsen",
+   "rank": 1,
+   "top1": "mads-mikkelsen",
+   "dTrue": 0.005333094574385577,
+   "dTop1": 0.015613892944223107,
+   "margin": -0.01028079836983753,
+   "hasPortrait": true
+  },
+  {
+   "id": "mark-zuckerberg",
+   "rank": 1,
+   "top1": "mark-zuckerberg",
+   "dTrue": 0.04298358153438542,
+   "dTop1": 0.05358383375915732,
+   "margin": -0.0106002522247719,
+   "hasPortrait": true
+  },
+  {
+   "id": "martin-freeman",
+   "rank": 1,
+   "top1": "martin-freeman",
+   "dTrue": 0.033017858713725534,
+   "dTop1": 0.042894687589069336,
+   "margin": -0.009876828875343802,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-bomer",
+   "rank": 1,
+   "top1": "matt-bomer",
+   "dTrue": 0.032881649200514285,
+   "dTop1": 0.0442026098034789,
+   "margin": -0.011320960602964614,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-damon",
+   "rank": 1,
+   "top1": "matt-damon",
+   "dTrue": 0.029238919265965002,
+   "dTop1": 0.04020071214107468,
+   "margin": -0.010961792875109677,
+   "hasPortrait": true
+  },
+  {
+   "id": "meghan-markle",
+   "rank": 1,
+   "top1": "meghan-markle",
+   "dTrue": 0.04304609406061888,
+   "dTop1": 0.05365593784070466,
+   "margin": -0.010609843780085781,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-obama",
+   "rank": 1,
+   "top1": "michelle-obama",
+   "dTrue": 0.0017307079169447404,
+   "dTop1": 0.013207501784355147,
+   "margin": -0.011476793867410406,
+   "hasPortrait": true
+  },
+  {
+   "id": "miles-teller",
+   "rank": 1,
+   "top1": "miles-teller",
+   "dTrue": 0.04286997975993334,
+   "dTop1": 0.05268691473625431,
+   "margin": -0.009816934976320968,
+   "hasPortrait": true
+  },
+  {
+   "id": "morgan-freeman",
+   "rank": 1,
+   "top1": "morgan-freeman",
+   "dTrue": 0.039373377983294766,
+   "dTop1": 0.04977618461778066,
+   "margin": -0.010402806634485895,
+   "hasPortrait": true
+  },
+  {
+   "id": "naomi-campbell",
+   "rank": 1,
+   "top1": "naomi-campbell",
+   "dTrue": 0.05563548148837094,
+   "dTop1": 0.06663799814710292,
+   "margin": -0.011002516658731976,
+   "hasPortrait": true
+  },
+  {
+   "id": "sam-smith",
+   "rank": 1,
+   "top1": "sam-smith",
+   "dTrue": 0.002514175272826824,
+   "dTop1": 0.013572610885614234,
+   "margin": -0.01105843561278741,
+   "hasPortrait": true
+  },
+  {
+   "id": "sandra-bullock",
+   "rank": 1,
+   "top1": "sandra-bullock",
+   "dTrue": 0.03711221686403865,
+   "dTop1": 0.04842144234107937,
+   "margin": -0.011309225477040719,
+   "hasPortrait": true
+  },
+  {
+   "id": "saoirse-ronan",
+   "rank": 1,
+   "top1": "saoirse-ronan",
+   "dTrue": 0.03499528539177921,
+   "dTop1": 0.04546660032717187,
+   "margin": -0.010471314935392662,
+   "hasPortrait": true
+  },
+  {
+   "id": "sebastian-stan",
+   "rank": 1,
+   "top1": "sebastian-stan",
+   "dTrue": 0.04317827725715029,
+   "dTop1": 0.053131616819996674,
+   "margin": -0.009953339562846386,
+   "hasPortrait": true
+  },
+  {
+   "id": "selena-gomez",
+   "rank": 1,
+   "top1": "selena-gomez",
+   "dTrue": 0.035044313742818245,
+   "dTop1": 0.04594024554267684,
+   "margin": -0.010895931799858594,
+   "hasPortrait": true
+  },
+  {
+   "id": "seth-rogen",
+   "rank": 1,
+   "top1": "seth-rogen",
+   "dTrue": 0.03876486952011371,
+   "dTop1": 0.04942247213562012,
+   "margin": -0.010657602615506412,
+   "hasPortrait": true
+  },
+  {
+   "id": "shakira",
+   "rank": 1,
+   "top1": "shakira",
+   "dTrue": 0.0016917695841055513,
+   "dTop1": 0.01240205195508326,
+   "margin": -0.010710282370977708,
+   "hasPortrait": true
+  },
+  {
+   "id": "song-kang",
+   "rank": 2,
+   "top1": "park-seo-joon",
+   "dTrue": 0.05132053129711023,
+   "dTop1": 0.06131294955084632,
+   "margin": -0.00999241825373609,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-lautner",
+   "rank": 1,
+   "top1": "taylor-lautner",
+   "dTrue": 0.03869219462409701,
+   "dTop1": 0.04869077501392938,
+   "margin": -0.009998580389832368,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-swift",
+   "rank": 1,
+   "top1": "taylor-swift",
+   "dTrue": 0.040423148876096326,
+   "dTop1": 0.051518528363887706,
+   "margin": -0.01109537948779138,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hanks",
+   "rank": 1,
+   "top1": "tom-hanks",
+   "dTrue": 0.02397221917685166,
+   "dTop1": 0.03421147917506662,
+   "margin": -0.010239259998214956,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hardy",
+   "rank": 1,
+   "top1": "tom-hardy",
+   "dTrue": 0.01708280638315174,
+   "dTop1": 0.02787764707845053,
+   "margin": -0.01079484069529879,
+   "hasPortrait": true
+  },
+  {
+   "id": "trevor-noah",
+   "rank": 1,
+   "top1": "trevor-noah",
+   "dTrue": 0.0033939579979244128,
+   "dTop1": 0.013396252561299948,
+   "margin": -0.010002294563375536,
+   "hasPortrait": true
+  },
+  {
+   "id": "vanessa-kirby",
+   "rank": 1,
+   "top1": "vanessa-kirby",
+   "dTrue": 0.027799087675696277,
+   "dTop1": 0.03890455020462169,
+   "margin": -0.011105462528925414,
+   "hasPortrait": true
+  },
+  {
+   "id": "victoria-beckham",
+   "rank": 1,
+   "top1": "victoria-beckham",
+   "dTrue": 0.05785539363302983,
+   "dTop1": 0.06799870548077791,
+   "margin": -0.010143311847748082,
+   "hasPortrait": true
+  },
+  {
+   "id": "will-smith",
+   "rank": 1,
+   "top1": "will-smith",
+   "dTrue": 0.003971581175792549,
+   "dTop1": 0.014946600450545189,
+   "margin": -0.01097501927475264,
+   "hasPortrait": true
+  },
+  {
+   "id": "zac-efron",
+   "rank": 1,
+   "top1": "zac-efron",
+   "dTrue": 0.06098500384639416,
+   "dTop1": 0.07020648112684236,
+   "margin": -0.009221477280448198,
+   "hasPortrait": true
+  },
+  {
+   "id": "zoe-saldana",
+   "rank": 1,
+   "top1": "zoe-saldana",
+   "dTrue": 0.028760176592330877,
+   "dTop1": 0.039565966852275536,
+   "margin": -0.010805790259944659,
+   "hasPortrait": true
+  },
+  {
+   "id": "karol-g",
+   "rank": 1,
+   "top1": "karol-g",
+   "dTrue": 0.0517400448812364,
+   "dTop1": 0.06218495236231736,
+   "margin": -0.010444907481080956,
+   "hasPortrait": true
+  },
+  {
+   "id": "adele",
+   "rank": null,
+   "top1": "chloe-grace-moretz",
+   "dTrue": 0.07735007300856611,
+   "dTop1": 0.07725558170805935,
+   "margin": 0.00009449130050676047,
+   "hasPortrait": true
+  },
+  {
+   "id": "angelina-jolie",
+   "rank": null,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.14352931636451305,
+   "dTop1": 0.07517179161429843,
+   "margin": 0.06835752475021462,
+   "hasPortrait": true
+  },
+  {
+   "id": "anya-taylor-joy",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.1686143390327589,
+   "dTop1": 0.08780987672845342,
+   "margin": 0.08080446230430549,
+   "hasPortrait": true
+  },
+  {
+   "id": "donald-glover",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.14889823091044396,
+   "dTop1": 0.07947010264520726,
+   "margin": 0.0694281282652367,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-stone",
+   "rank": null,
+   "top1": "naomi-osaka",
+   "dTrue": 0.10301824105728541,
+   "dTop1": 0.0747393503569237,
+   "margin": 0.028278890700361714,
+   "hasPortrait": true
+  },
+  {
+   "id": "george-clooney",
+   "rank": 1,
+   "top1": "george-clooney",
+   "dTrue": 0.028252881589042822,
+   "dTop1": 0.03849047427895946,
+   "margin": -0.010237592689916641,
+   "hasPortrait": true
+  },
+  {
+   "id": "hailee-steinfeld",
+   "rank": 4,
+   "top1": "will-smith",
+   "dTrue": 0.05421731933572105,
+   "dTop1": 0.04526473371644302,
+   "margin": 0.00895258561927803,
+   "hasPortrait": true
+  },
+  {
+   "id": "idris-elba",
+   "rank": 1,
+   "top1": "idris-elba",
+   "dTrue": 0.038112030068546465,
+   "dTop1": 0.04914055217729041,
+   "margin": -0.011028522108743943,
+   "hasPortrait": true
+  },
+  {
+   "id": "jamie-dornan",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.10129846577508461,
+   "dTop1": 0.06440651860596758,
+   "margin": 0.036891947169117034,
+   "hasPortrait": true
+  },
+  {
+   "id": "julia-roberts",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.15337645812650702,
+   "dTop1": 0.050225349723928225,
+   "margin": 0.1031511084025788,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-middleton",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.11601806800446124,
+   "dTop1": 0.049820853565731404,
+   "margin": 0.06619721443872983,
+   "hasPortrait": true
+  },
+  {
+   "id": "keanu-reeves",
+   "rank": 1,
+   "top1": "keanu-reeves",
+   "dTrue": 0.03276297279193663,
+   "dTop1": 0.043607653288848414,
+   "margin": -0.010844680496911785,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendall-jenner",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.17385291178393902,
+   "dTop1": 0.03907542310318346,
+   "margin": 0.13477748868075556,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylian-mbappe",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.12478941687745448,
+   "dTop1": 0.06548854401013204,
+   "margin": 0.05930087286732244,
+   "hasPortrait": true
+  },
+  {
+   "id": "lionel-messi",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.1255377107491088,
+   "dTop1": 0.04708746461793545,
+   "margin": 0.07845024613117335,
+   "hasPortrait": true
+  },
+  {
+   "id": "lizzo",
+   "rank": 4,
+   "top1": "viola-davis",
+   "dTrue": 0.06508321301469355,
+   "dTop1": 0.06359941248564493,
+   "margin": 0.0014838005290486178,
+   "hasPortrait": true
+  },
+  {
+   "id": "meryl-streep",
+   "rank": null,
+   "top1": "tom-hanks",
+   "dTrue": 0.15698728390157735,
+   "dTop1": 0.07821213906865754,
+   "margin": 0.07877514483291981,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-yeoh",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.13371223976758473,
+   "dTop1": 0.05807385215615046,
+   "margin": 0.07563838761143427,
+   "hasPortrait": true
+  },
+  {
+   "id": "olivia-colman",
+   "rank": 1,
+   "top1": "olivia-colman",
+   "dTrue": 0.031413472203301485,
+   "dTop1": 0.04131548866594725,
+   "margin": -0.009902016462645769,
+   "hasPortrait": true
+  },
+  {
+   "id": "pedro-pascal",
+   "rank": 1,
+   "top1": "pedro-pascal",
+   "dTrue": 0.051505668832724893,
+   "dTop1": 0.06084939810807499,
+   "margin": -0.009343729275350099,
+   "hasPortrait": true
+  },
+  {
+   "id": "shah-rukh-khan",
+   "rank": 1,
+   "top1": "shah-rukh-khan",
+   "dTrue": 0.05354036126940098,
+   "dTop1": 0.0642014283110478,
+   "margin": -0.010661067041646821,
+   "hasPortrait": true
+  },
+  {
+   "id": "stephen-curry",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.1411459227886016,
+   "dTop1": 0.04720056332918732,
+   "margin": 0.09394535945941429,
+   "hasPortrait": true
+  },
+  {
+   "id": "timothee-chalamet",
+   "rank": null,
+   "top1": "bruno-mars",
+   "dTrue": 0.09901773191805319,
+   "dTop1": 0.0797047279554921,
+   "margin": 0.01931300396256108,
+   "hasPortrait": true
+  },
+  {
+   "id": "viola-davis",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.10118649871528851,
+   "dTop1": 0.0616794129321423,
+   "margin": 0.03950708578314621,
+   "hasPortrait": true
+  },
+  {
+   "id": "zayn-malik",
+   "rank": 1,
+   "top1": "zayn-malik",
+   "dTrue": 0.061565174556671876,
+   "dTop1": 0.071478556079825,
+   "margin": -0.00991338152315313,
+   "hasPortrait": true
+  },
+  {
+   "id": "oscar-isaac",
+   "rank": 1,
+   "top1": "oscar-isaac",
+   "dTrue": 0.022637435421297147,
+   "dTop1": 0.03417217575326692,
+   "margin": -0.011534740331969773,
+   "hasPortrait": true
+  },
+  {
+   "id": "barack-obama",
+   "rank": 1,
+   "top1": "barack-obama",
+   "dTrue": 0.0074127309594003155,
+   "dTop1": 0.01682830197898655,
+   "margin": -0.009415571019586233,
+   "hasPortrait": true
+  },
+  {
+   "id": "gal-gadot",
+   "rank": 1,
+   "top1": "gal-gadot",
+   "dTrue": 0.03230964185397189,
+   "dTop1": 0.04291681859068608,
+   "margin": -0.010607176736714186,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-hemsworth",
+   "rank": 1,
+   "top1": "chris-hemsworth",
+   "dTrue": 0.025023431152376485,
+   "dTop1": 0.03593796787143255,
+   "margin": -0.010914536719056067,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-cavill",
+   "rank": 1,
+   "top1": "henry-cavill",
+   "dTrue": 0.03293928735987206,
+   "dTop1": 0.04306216660449347,
+   "margin": -0.010122879244621408,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-watson",
+   "rank": 1,
+   "top1": "emma-watson",
+   "dTrue": 0.003162399199122534,
+   "dTop1": 0.01442417264930762,
+   "margin": -0.011261773450185086,
+   "hasPortrait": true
+  },
+  {
+   "id": "beyonce",
+   "rank": 1,
+   "top1": "beyonce",
+   "dTrue": 0.04961973191001301,
+   "dTop1": 0.059833565077854645,
+   "margin": -0.010213833167841635,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-holland",
+   "rank": 1,
+   "top1": "tom-holland",
+   "dTrue": 0.03586179597818351,
+   "dTop1": 0.0465012325366323,
+   "margin": -0.01063943655844879,
+   "hasPortrait": true
+  },
+  {
+   "id": "harry-styles",
+   "rank": 1,
+   "top1": "harry-styles",
+   "dTrue": 0.07496569822213506,
+   "dTop1": 0.0857533161004107,
+   "margin": -0.010787617878275646,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendrick-lamar",
+   "rank": null,
+   "top1": "neymar",
+   "dTrue": 0.07715791566321017,
+   "dTop1": 0.06346692619145955,
+   "margin": 0.013690989471750625,
+   "hasPortrait": true
+  },
+  {
+   "id": "aaron-taylor-johnson",
+   "rank": 1,
+   "top1": "aaron-taylor-johnson",
+   "dTrue": 0.0017167354282431324,
+   "dTop1": 0.012456186263438473,
+   "margin": -0.010739450835195341,
+   "hasPortrait": true
+  },
+  {
+   "id": "adam-driver",
+   "rank": 1,
+   "top1": "adam-driver",
+   "dTrue": 0.027464230672810785,
+   "dTop1": 0.037855320747465115,
+   "margin": -0.01039109007465433,
+   "hasPortrait": true
+  },
+  {
+   "id": "adele",
+   "rank": null,
+   "top1": "post-malone",
+   "dTrue": 0.10654041290511851,
+   "dTop1": 0.07322607879246568,
+   "margin": 0.03331433411265283,
+   "hasPortrait": true
+  },
+  {
+   "id": "adriana-lima",
+   "rank": 1,
+   "top1": "adriana-lima",
+   "dTrue": 0.0017080428949227677,
+   "dTop1": 0.012932347413194933,
+   "margin": -0.011224304518272166,
+   "hasPortrait": true
+  },
+  {
+   "id": "alexander-skarsgard",
+   "rank": 1,
+   "top1": "alexander-skarsgard",
+   "dTrue": 0.0015196752916684098,
+   "dTop1": 0.011989706733760763,
+   "margin": -0.010470031442092353,
+   "hasPortrait": true
+  },
+  {
+   "id": "alia-bhatt",
+   "rank": 1,
+   "top1": "alia-bhatt",
+   "dTrue": 0.0011007727523004718,
+   "dTop1": 0.01190680662031518,
+   "margin": -0.010806033868014708,
+   "hasPortrait": true
+  },
+  {
+   "id": "alicia-vikander",
+   "rank": 1,
+   "top1": "alicia-vikander",
+   "dTrue": 0.0006851911380528763,
+   "dTop1": 0.011488508744126325,
+   "margin": -0.010803317606073448,
+   "hasPortrait": true
+  },
+  {
+   "id": "amy-adams",
+   "rank": 1,
+   "top1": "amy-adams",
+   "dTrue": 0.003649842904464906,
+   "dTop1": 0.014850890163545016,
+   "margin": -0.01120104725908011,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-garfield",
+   "rank": 1,
+   "top1": "andrew-garfield",
+   "dTrue": 0.0001710704542272623,
+   "dTop1": 0.011470763683427254,
+   "margin": -0.011299693229199992,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-scott",
+   "rank": 1,
+   "top1": "andrew-scott",
+   "dTrue": 0.0021840681361130487,
+   "dTop1": 0.01309591364691065,
+   "margin": -0.010911845510797602,
+   "hasPortrait": true
+  },
+  {
+   "id": "angela-bassett",
+   "rank": 1,
+   "top1": "angela-bassett",
+   "dTrue": 0.00482203807256254,
+   "dTop1": 0.015904951000320633,
+   "margin": -0.011082912927758093,
+   "hasPortrait": true
+  },
+  {
+   "id": "angelina-jolie",
+   "rank": null,
+   "top1": "naomi-osaka",
+   "dTrue": 0.08674414105650308,
+   "dTop1": 0.07355645541410882,
+   "margin": 0.013187685642394253,
+   "hasPortrait": true
+  },
+  {
+   "id": "anna-sawai",
+   "rank": null,
+   "top1": "lee-jung-jae",
+   "dTrue": 0.0977506414317415,
+   "dTop1": 0.07713180662925057,
+   "margin": 0.020618834802490937,
+   "hasPortrait": true
+  },
+  {
+   "id": "anthony-hopkins",
+   "rank": 1,
+   "top1": "anthony-hopkins",
+   "dTrue": 0.0022231060247390744,
+   "dTop1": 0.013219623722470764,
+   "margin": -0.01099651769773169,
+   "hasPortrait": true
+  },
+  {
+   "id": "antonio-banderas",
+   "rank": 1,
+   "top1": "antonio-banderas",
+   "dTrue": 0.002947011958046475,
+   "dTop1": 0.013515512639397764,
+   "margin": -0.01056850068135129,
+   "hasPortrait": true
+  },
+  {
+   "id": "anya-taylor-joy",
+   "rank": 1,
+   "top1": "anya-taylor-joy",
+   "dTrue": 0.0014765977804118702,
+   "dTop1": 0.012035141351934175,
+   "margin": -0.010558543571522305,
+   "hasPortrait": true
+  },
+  {
+   "id": "ariana-grande",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.09433593078002833,
+   "dTop1": 0.052673595718592536,
+   "margin": 0.041662335061435796,
+   "hasPortrait": true
+  },
+  {
+   "id": "austin-butler",
+   "rank": 1,
+   "top1": "austin-butler",
+   "dTrue": 0.001516239080102455,
+   "dTop1": 0.012264749679666398,
+   "margin": -0.010748510599563943,
+   "hasPortrait": true
+  },
+  {
+   "id": "awkwafina",
+   "rank": 1,
+   "top1": "awkwafina",
+   "dTrue": 0.003148672937297481,
+   "dTop1": 0.014199017441620776,
+   "margin": -0.011050344504323295,
+   "hasPortrait": true
+  },
+  {
+   "id": "bad-bunny",
+   "rank": 1,
+   "top1": "bad-bunny",
+   "dTrue": 0.0018741098182221139,
+   "dTop1": 0.012355615534768272,
+   "margin": -0.010481505716546158,
+   "hasPortrait": true
+  },
+  {
+   "id": "barack-obama",
+   "rank": 1,
+   "top1": "barack-obama",
+   "dTrue": 0.0014923377925247783,
+   "dTop1": 0.010770643431586402,
+   "margin": -0.009278305639061624,
+   "hasPortrait": true
+  },
+  {
+   "id": "bella-hadid",
+   "rank": 1,
+   "top1": "bella-hadid",
+   "dTrue": 0.0033935747311522046,
+   "dTop1": 0.014409244855691838,
+   "margin": -0.011015670124539634,
+   "hasPortrait": true
+  },
+  {
+   "id": "benedict-cumberbatch",
+   "rank": 1,
+   "top1": "benedict-cumberbatch",
+   "dTrue": 0.03679786173591848,
+   "dTop1": 0.04801920702528362,
+   "margin": -0.011221345289365137,
+   "hasPortrait": true
+  },
+  {
+   "id": "benedict-cumberbatch",
+   "rank": 1,
+   "top1": "benedict-cumberbatch",
+   "dTrue": 0.004901876686653539,
+   "dTop1": 0.01580364428919412,
+   "margin": -0.01090176760254058,
+   "hasPortrait": true
+  },
+  {
+   "id": "beyonce",
+   "rank": 1,
+   "top1": "beyonce",
+   "dTrue": 0.007186741773412275,
+   "dTop1": 0.01820507277959249,
+   "margin": -0.011018331006180215,
+   "hasPortrait": true
+  },
+  {
+   "id": "billie-eilish",
+   "rank": 1,
+   "top1": "billie-eilish",
+   "dTrue": 0.0036035789114750028,
+   "dTop1": 0.015425704023494524,
+   "margin": -0.011822125112019521,
+   "hasPortrait": true
+  },
+  {
+   "id": "billie-eilish",
+   "rank": 1,
+   "top1": "billie-eilish",
+   "dTrue": 0.014665054916014553,
+   "dTop1": 0.025931238319203187,
+   "margin": -0.011266183403188634,
+   "hasPortrait": true
+  },
+  {
+   "id": "brad-pitt",
+   "rank": 1,
+   "top1": "brad-pitt",
+   "dTrue": 0.0016312847841097877,
+   "dTop1": 0.01214459834721704,
+   "margin": -0.010513313563107252,
+   "hasPortrait": true
+  },
+  {
+   "id": "bradley-cooper",
+   "rank": 1,
+   "top1": "bradley-cooper",
+   "dTrue": 0.058077092576073075,
+   "dTop1": 0.06925851649056602,
+   "margin": -0.01118142391449295,
+   "hasPortrait": true
+  },
+  {
+   "id": "bradley-cooper",
+   "rank": 1,
+   "top1": "bradley-cooper",
+   "dTrue": 0.0013340904798114783,
+   "dTop1": 0.013189104241550953,
+   "margin": -0.011855013761739475,
+   "hasPortrait": true
+  },
+  {
+   "id": "britney-spears",
+   "rank": 1,
+   "top1": "britney-spears",
+   "dTrue": 0.04374563440300072,
+   "dTop1": 0.05412347221265568,
+   "margin": -0.010377837809654955,
+   "hasPortrait": true
+  },
+  {
+   "id": "britney-spears",
+   "rank": 1,
+   "top1": "britney-spears",
+   "dTrue": 0.002565073100177395,
+   "dTop1": 0.013989433870139178,
+   "margin": -0.011424360769961783,
+   "hasPortrait": true
+  },
+  {
+   "id": "cardi-b",
+   "rank": 4,
+   "top1": "sza",
+   "dTrue": 0.07290974009468687,
+   "dTop1": 0.07565140388214486,
+   "margin": -0.002741663787457993,
+   "hasPortrait": true
+  },
+  {
+   "id": "cardi-b",
+   "rank": 1,
+   "top1": "cardi-b",
+   "dTrue": 0.009861319308882233,
+   "dTop1": 0.02062702620877621,
+   "margin": -0.010765706899893979,
+   "hasPortrait": true
+  },
+  {
+   "id": "cate-blanchett",
+   "rank": 1,
+   "top1": "cate-blanchett",
+   "dTrue": 0.002489229664465964,
+   "dTop1": 0.014345936878466747,
+   "margin": -0.011856707214000783,
+   "hasPortrait": true
+  },
+  {
+   "id": "cate-blanchett",
+   "rank": 1,
+   "top1": "cate-blanchett",
+   "dTrue": 0.007903404074319997,
+   "dTop1": 0.018769906797432512,
+   "margin": -0.010866502723112514,
+   "hasPortrait": true
+  },
+  {
+   "id": "chadwick-boseman",
+   "rank": 1,
+   "top1": "chadwick-boseman",
+   "dTrue": 0.002519110726386109,
+   "dTop1": 0.014032021619409862,
+   "margin": -0.011512910893023753,
+   "hasPortrait": true
+  },
+  {
+   "id": "chadwick-boseman",
+   "rank": 1,
+   "top1": "chadwick-boseman",
+   "dTrue": 0.0063369192181435,
+   "dTop1": 0.017436693573539608,
+   "margin": -0.011099774355396108,
+   "hasPortrait": true
+  },
+  {
+   "id": "channing-tatum",
+   "rank": 1,
+   "top1": "channing-tatum",
+   "dTrue": 0.03654621530421431,
+   "dTop1": 0.04702489384027908,
+   "margin": -0.010478678536064767,
+   "hasPortrait": true
+  },
+  {
+   "id": "channing-tatum",
+   "rank": 1,
+   "top1": "channing-tatum",
+   "dTrue": 0.0375733982403621,
+   "dTop1": 0.04804090847548603,
+   "margin": -0.010467510235123934,
+   "hasPortrait": true
+  },
+  {
+   "id": "charlize-theron",
+   "rank": 1,
+   "top1": "charlize-theron",
+   "dTrue": 0.04887287239481475,
+   "dTop1": 0.06058721160856251,
+   "margin": -0.01171433921374776,
+   "hasPortrait": true
+  },
+  {
+   "id": "charlize-theron",
+   "rank": 1,
+   "top1": "charlize-theron",
+   "dTrue": 0.008454933341228599,
+   "dTop1": 0.019760479720106194,
+   "margin": -0.011305546378877596,
+   "hasPortrait": true
+  },
+  {
+   "id": "chloe-grace-moretz",
+   "rank": 1,
+   "top1": "chloe-grace-moretz",
+   "dTrue": 0.002239929174265076,
+   "dTop1": 0.01315635882375421,
+   "margin": -0.010916429649489134,
+   "hasPortrait": true
+  },
+  {
+   "id": "chloe-grace-moretz",
+   "rank": 1,
+   "top1": "chloe-grace-moretz",
+   "dTrue": 0.0006911355442723588,
+   "dTop1": 0.011698699425751413,
+   "margin": -0.011007563881479054,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-evans",
+   "rank": 1,
+   "top1": "chris-evans",
+   "dTrue": 0.0016876975483397505,
+   "dTop1": 0.012585970443158678,
+   "margin": -0.010898272894818928,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-hemsworth",
+   "rank": 1,
+   "top1": "chris-hemsworth",
+   "dTrue": 0.002251856052426726,
+   "dTop1": 0.013421314788737648,
+   "margin": -0.011169458736310922,
+   "hasPortrait": true
+  },
+  {
+   "id": "cillian-murphy",
+   "rank": 1,
+   "top1": "cillian-murphy",
+   "dTrue": 0.0032905880274369803,
+   "dTop1": 0.013790536251967134,
+   "margin": -0.010499948224530153,
+   "hasPortrait": true
+  },
+  {
+   "id": "cillian-murphy",
+   "rank": 1,
+   "top1": "cillian-murphy",
+   "dTrue": 0.001342976682091379,
+   "dTop1": 0.011587821438353463,
+   "margin": -0.010244844756262084,
+   "hasPortrait": true
+  },
+  {
+   "id": "cole-sprouse",
+   "rank": 1,
+   "top1": "cole-sprouse",
+   "dTrue": 0.05216979511132447,
+   "dTop1": 0.06263873346242821,
+   "margin": -0.01046893835110374,
+   "hasPortrait": true
+  },
+  {
+   "id": "cole-sprouse",
+   "rank": 1,
+   "top1": "cole-sprouse",
+   "dTrue": 0.007770656717252522,
+   "dTop1": 0.018729989482204057,
+   "margin": -0.010959332764951535,
+   "hasPortrait": true
+  },
+  {
+   "id": "cristiano-ronaldo",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.09643955653581093,
+   "dTop1": 0.041364231012605446,
+   "margin": 0.05507532552320549,
+   "hasPortrait": true
+  },
+  {
+   "id": "cristiano-ronaldo",
+   "rank": null,
+   "top1": "liam-neeson",
+   "dTrue": 0.10210752045559612,
+   "dTop1": 0.0739021650633348,
+   "margin": 0.028205355392261322,
+   "hasPortrait": true
+  },
+  {
+   "id": "daniel-craig",
+   "rank": 1,
+   "top1": "daniel-craig",
+   "dTrue": 0.0039306411224568905,
+   "dTop1": 0.014348099355543154,
+   "margin": -0.010417458233086263,
+   "hasPortrait": true
+  },
+  {
+   "id": "daniel-craig",
+   "rank": 1,
+   "top1": "daniel-craig",
+   "dTrue": 0.003965171670366696,
+   "dTop1": 0.013782053662811156,
+   "margin": -0.00981688199244446,
+   "hasPortrait": true
+  },
+  {
+   "id": "deepika-padukone",
+   "rank": 1,
+   "top1": "deepika-padukone",
+   "dTrue": 0.031912493486598525,
+   "dTop1": 0.04248943873871269,
+   "margin": -0.010576945252114167,
+   "hasPortrait": true
+  },
+  {
+   "id": "deepika-padukone",
+   "rank": null,
+   "top1": "billie-eilish",
+   "dTrue": 0.1171509973072099,
+   "dTop1": 0.08383339682513369,
+   "margin": 0.033317600482076215,
+   "hasPortrait": true
+  },
+  {
+   "id": "dev-patel",
+   "rank": 1,
+   "top1": "dev-patel",
+   "dTrue": 0.008600691918944081,
+   "dTop1": 0.019159028789054955,
+   "margin": -0.010558336870110874,
+   "hasPortrait": true
+  },
+  {
+   "id": "doja-cat",
+   "rank": 2,
+   "top1": "lizzo",
+   "dTrue": 0.08533299244049974,
+   "dTop1": 0.09356762612579561,
+   "margin": -0.008234633685295867,
+   "hasPortrait": true
+  },
+  {
+   "id": "doja-cat",
+   "rank": 1,
+   "top1": "doja-cat",
+   "dTrue": 0.003957823090725565,
+   "dTop1": 0.015322205086160112,
+   "margin": -0.011364381995434547,
+   "hasPortrait": true
+  },
+  {
+   "id": "donald-glover",
+   "rank": 1,
+   "top1": "donald-glover",
+   "dTrue": 0.002037792372851732,
+   "dTop1": 0.012332342606843794,
+   "margin": -0.010294550233992061,
+   "hasPortrait": true
+  },
+  {
+   "id": "donnie-yen",
+   "rank": 1,
+   "top1": "donnie-yen",
+   "dTrue": 0.052138854984072,
+   "dTop1": 0.06315615548811726,
+   "margin": -0.011017300504045258,
+   "hasPortrait": true
+  },
+  {
+   "id": "dua-lipa",
+   "rank": 1,
+   "top1": "dua-lipa",
+   "dTrue": 0.002377887453516414,
+   "dTop1": 0.013609795861401208,
+   "margin": -0.011231908407884794,
+   "hasPortrait": true
+  },
+  {
+   "id": "dwayne-johnson",
+   "rank": 1,
+   "top1": "dwayne-johnson",
+   "dTrue": 0.0044697102626127805,
+   "dTop1": 0.014961968413141458,
+   "margin": -0.010492258150528677,
+   "hasPortrait": true
+  },
+  {
+   "id": "ed-sheeran",
+   "rank": 1,
+   "top1": "ed-sheeran",
+   "dTrue": 0.0022465713586882208,
+   "dTop1": 0.012242014743625296,
+   "margin": -0.009995443384937075,
+   "hasPortrait": true
+  },
+  {
+   "id": "eddie-redmayne",
+   "rank": 1,
+   "top1": "eddie-redmayne",
+   "dTrue": 0.02740623255291319,
+   "dTop1": 0.03754641142986781,
+   "margin": -0.01014017887695462,
+   "hasPortrait": true
+  },
+  {
+   "id": "elijah-wood",
+   "rank": 1,
+   "top1": "elijah-wood",
+   "dTrue": 0.0012820158702198103,
+   "dTop1": 0.012227015134638197,
+   "margin": -0.010944999264418387,
+   "hasPortrait": true
+  },
+  {
+   "id": "elizabeth-olsen",
+   "rank": 1,
+   "top1": "elizabeth-olsen",
+   "dTrue": 0.0019864140538049524,
+   "dTop1": 0.013015430823840823,
+   "margin": -0.011029016770035871,
+   "hasPortrait": true
+  },
+  {
+   "id": "elon-musk",
+   "rank": 1,
+   "top1": "elon-musk",
+   "dTrue": 0.0021339409582492586,
+   "dTop1": 0.013453464418237804,
+   "margin": -0.011319523459988545,
+   "hasPortrait": true
+  },
+  {
+   "id": "emily-blunt",
+   "rank": 1,
+   "top1": "emily-blunt",
+   "dTrue": 0.026059678178192547,
+   "dTop1": 0.03691867453655695,
+   "margin": -0.010858996358364403,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-stone",
+   "rank": 2,
+   "top1": "andrew-garfield",
+   "dTrue": 0.0026939477414696933,
+   "dTop1": 0.013545725343398485,
+   "margin": -0.010851777601928791,
+   "hasPortrait": true
+  },
+  {
+   "id": "gal-gadot",
+   "rank": 1,
+   "top1": "gal-gadot",
+   "dTrue": 0.0010695225269201636,
+   "dTop1": 0.01201913560032597,
+   "margin": -0.010949613073405806,
+   "hasPortrait": true
+  },
+  {
+   "id": "george-clooney",
+   "rank": 1,
+   "top1": "george-clooney",
+   "dTrue": 0.0012924899682166258,
+   "dTop1": 0.01181412247741298,
+   "margin": -0.010521632509196355,
+   "hasPortrait": true
+  },
+  {
+   "id": "halle-berry",
+   "rank": 1,
+   "top1": "halle-berry",
+   "dTrue": 0.02450144839186874,
+   "dTop1": 0.03498302416868149,
+   "margin": -0.010481575776812746,
+   "hasPortrait": true
+  },
+  {
+   "id": "harry-styles",
+   "rank": 1,
+   "top1": "harry-styles",
+   "dTrue": 0.0037364352159213743,
+   "dTop1": 0.01433363806718324,
+   "margin": -0.010597202851261867,
+   "hasPortrait": true
+  },
+  {
+   "id": "heidi-klum",
+   "rank": 2,
+   "top1": "britney-spears",
+   "dTrue": 0.07062038931682446,
+   "dTop1": 0.08142694666563477,
+   "margin": -0.010806557348810308,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-cavill",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.10719793317211557,
+   "dTop1": 0.07048555194616846,
+   "margin": 0.03671238122594711,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-golding",
+   "rank": 1,
+   "top1": "henry-golding",
+   "dTrue": 0.0016998264277200414,
+   "dTop1": 0.0124037063890301,
+   "margin": -0.010703879961310059,
+   "hasPortrait": true
+  },
+  {
+   "id": "idris-elba",
+   "rank": 1,
+   "top1": "idris-elba",
+   "dTrue": 0.0016113821763847902,
+   "dTop1": 0.01278070273882348,
+   "margin": -0.01116932056243869,
+   "hasPortrait": true
+  },
+  {
+   "id": "jake-gyllenhaal",
+   "rank": 1,
+   "top1": "jake-gyllenhaal",
+   "dTrue": 0.015124033979630691,
+   "dTop1": 0.025601665716451616,
+   "margin": -0.010477631736820925,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennifer-lawrence",
+   "rank": 1,
+   "top1": "jennifer-lawrence",
+   "dTrue": 0.0009695456880236542,
+   "dTop1": 0.01108537093805384,
+   "margin": -0.010115825250030186,
+   "hasPortrait": true
+  },
+  {
+   "id": "jet-li",
+   "rank": 1,
+   "top1": "jet-li",
+   "dTrue": 0.004097833571790388,
+   "dTop1": 0.015269765511498501,
+   "margin": -0.011171931939708113,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-boyega",
+   "rank": 1,
+   "top1": "john-boyega",
+   "dTrue": 0.0009959838839022073,
+   "dTop1": 0.011770277111252447,
+   "margin": -0.01077429322735024,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-cho",
+   "rank": 1,
+   "top1": "john-cho",
+   "dTrue": 0.006158106552667686,
+   "dTop1": 0.01565783486760486,
+   "margin": -0.009499728314937173,
+   "hasPortrait": true
+  },
+  {
+   "id": "jonathan-bailey",
+   "rank": 1,
+   "top1": "jonathan-bailey",
+   "dTrue": 0.05734974990697894,
+   "dTop1": 0.06801465799111939,
+   "margin": -0.010664908084140445,
+   "hasPortrait": true
+  },
+  {
+   "id": "keanu-reeves",
+   "rank": 1,
+   "top1": "keanu-reeves",
+   "dTrue": 0.0049202716137709546,
+   "dTop1": 0.01579167224817779,
+   "margin": -0.010871400634406836,
+   "hasPortrait": true
+  },
+  {
+   "id": "keira-knightley",
+   "rank": 1,
+   "top1": "keira-knightley",
+   "dTrue": 0.05237140498068571,
+   "dTop1": 0.06372043623568036,
+   "margin": -0.011349031254994646,
+   "hasPortrait": true
+  },
+  {
+   "id": "liu-yifei",
+   "rank": 1,
+   "top1": "liu-yifei",
+   "dTrue": 0.0012082324019943025,
+   "dTop1": 0.013034983992771476,
+   "margin": -0.011826751590777174,
+   "hasPortrait": true
+  },
+  {
+   "id": "lupita-nyongo",
+   "rank": 1,
+   "top1": "lupita-nyongo",
+   "dTrue": 0.001929330590462186,
+   "dTop1": 0.012985468663447186,
+   "margin": -0.011056138072985,
+   "hasPortrait": true
+  },
+  {
+   "id": "margot-robbie",
+   "rank": 1,
+   "top1": "margot-robbie",
+   "dTrue": 0.0030816332616988573,
+   "dTop1": 0.014729857681890945,
+   "margin": -0.011648224420192088,
+   "hasPortrait": true
+  },
+  {
+   "id": "michael-b-jordan",
+   "rank": 1,
+   "top1": "michael-b-jordan",
+   "dTrue": 0.0015385178799864896,
+   "dTop1": 0.01194974523489123,
+   "margin": -0.01041122735490474,
+   "hasPortrait": true
+  },
+  {
+   "id": "millie-bobby-brown",
+   "rank": null,
+   "top1": "karol-g",
+   "dTrue": 0.12181367497745677,
+   "dTop1": 0.08664953468361025,
+   "margin": 0.03516414029384651,
+   "hasPortrait": true
+  },
+  {
+   "id": "natalie-portman",
+   "rank": 1,
+   "top1": "natalie-portman",
+   "dTrue": 0.03364211011034912,
+   "dTop1": 0.04494435188926904,
+   "margin": -0.01130224177891992,
+   "hasPortrait": true
+  },
+  {
+   "id": "neymar",
+   "rank": 5,
+   "top1": "kylian-mbappe",
+   "dTrue": 0.09354043216078733,
+   "dTop1": 0.05657955043100027,
+   "margin": 0.036960881729787065,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicholas-hoult",
+   "rank": 1,
+   "top1": "nicholas-hoult",
+   "dTrue": 0.0024469057297401564,
+   "dTop1": 0.013526928799808324,
+   "margin": -0.011080023070068168,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicki-minaj",
+   "rank": 2,
+   "top1": "sza",
+   "dTrue": 0.06640851625550248,
+   "dTop1": 0.07071643291069396,
+   "margin": -0.004307916655191479,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicole-kidman",
+   "rank": 1,
+   "top1": "nicole-kidman",
+   "dTrue": 0.0546472390729662,
+   "dTop1": 0.06551707968466502,
+   "margin": -0.010869840611698822,
+   "hasPortrait": true
+  },
+  {
+   "id": "olivia-rodrigo",
+   "rank": 1,
+   "top1": "olivia-rodrigo",
+   "dTrue": 0.006235765143710159,
+   "dTop1": 0.017787775066285594,
+   "margin": -0.011552009922575435,
+   "hasPortrait": true
+  },
+  {
+   "id": "oprah-winfrey",
+   "rank": null,
+   "top1": "karol-g",
+   "dTrue": 0.11811758269750494,
+   "dTop1": 0.06332509944099529,
+   "margin": 0.05479248325650965,
+   "hasPortrait": true
+  },
+  {
+   "id": "orlando-bloom",
+   "rank": 1,
+   "top1": "orlando-bloom",
+   "dTrue": 0.07503074660046505,
+   "dTop1": 0.08490826198145118,
+   "margin": -0.009877515380986135,
+   "hasPortrait": true
+  },
+  {
+   "id": "oscar-isaac",
+   "rank": 1,
+   "top1": "oscar-isaac",
+   "dTrue": 0.0018790401699534387,
+   "dTop1": 0.013192789427542095,
+   "margin": -0.011313749257588657,
+   "hasPortrait": true
+  },
+  {
+   "id": "park-seo-joon",
+   "rank": 1,
+   "top1": "park-seo-joon",
+   "dTrue": 0.020290305622381655,
+   "dTop1": 0.03128617559053215,
+   "margin": -0.010995869968150496,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-mescal",
+   "rank": 1,
+   "top1": "paul-mescal",
+   "dTrue": 0.0014699593565321578,
+   "dTop1": 0.012651659403927207,
+   "margin": -0.011181700047395049,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-rudd",
+   "rank": 1,
+   "top1": "paul-rudd",
+   "dTrue": 0.005938537635916452,
+   "dTop1": 0.016658917085762837,
+   "margin": -0.010720379449846384,
+   "hasPortrait": true
+  },
+  {
+   "id": "pedro-pascal",
+   "rank": 1,
+   "top1": "pedro-pascal",
+   "dTrue": 0.0013182560058236925,
+   "dTop1": 0.011605491731129125,
+   "margin": -0.010287235725305433,
+   "hasPortrait": true
+  },
+  {
+   "id": "penelope-cruz-m",
+   "rank": 1,
+   "top1": "penelope-cruz-m",
+   "dTrue": 0.003930613123628746,
+   "dTop1": 0.015418731246244488,
+   "margin": -0.011488118122615743,
+   "hasPortrait": true
+  },
+  {
+   "id": "pierce-brosnan",
+   "rank": 1,
+   "top1": "pierce-brosnan",
+   "dTrue": 0.0054824419816149605,
+   "dTop1": 0.01598132772701666,
+   "margin": -0.010498885745401698,
+   "hasPortrait": true
+  },
+  {
+   "id": "rachel-mcadams",
+   "rank": null,
+   "top1": "naomi-campbell",
+   "dTrue": 0.12493159230026674,
+   "dTop1": 0.08075763554601134,
+   "margin": 0.044173956754255395,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranbir-kapoor",
+   "rank": 1,
+   "top1": "ranbir-kapoor",
+   "dTrue": 0.014672767947605636,
+   "dTop1": 0.02629524361940916,
+   "margin": -0.011622475671803523,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranveer-singh",
+   "rank": 1,
+   "top1": "ranveer-singh",
+   "dTrue": 0.02046808781974485,
+   "dTop1": 0.03163024738192299,
+   "margin": -0.011162159562178142,
+   "hasPortrait": true
+  },
+  {
+   "id": "rebecca-ferguson",
+   "rank": 1,
+   "top1": "rebecca-ferguson",
+   "dTrue": 0.0035444068026921904,
+   "dTop1": 0.016143286349275643,
+   "margin": -0.012598879546583452,
+   "hasPortrait": true
+  },
+  {
+   "id": "reesewitherspoon",
+   "rank": 1,
+   "top1": "reesewitherspoon",
+   "dTrue": 0.011031511664341798,
+   "dTop1": 0.022601679642416883,
+   "margin": -0.011570167978075085,
+   "hasPortrait": true
+  },
+  {
+   "id": "regé-jean-page",
+   "rank": 1,
+   "top1": "regé-jean-page",
+   "dTrue": 0.001480966048750032,
+   "dTop1": 0.013143957900816017,
+   "margin": -0.011662991852065985,
+   "hasPortrait": true
+  },
+  {
+   "id": "riz-ahmed",
+   "rank": 1,
+   "top1": "riz-ahmed",
+   "dTrue": 0.0004652573866394949,
+   "dTop1": 0.010925793173134468,
+   "margin": -0.010460535786494973,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-downey-jr",
+   "rank": 1,
+   "top1": "robert-downey-jr",
+   "dTrue": 0.0031798130946232295,
+   "dTop1": 0.013101866846513266,
+   "margin": -0.009922053751890036,
+   "hasPortrait": true
+  },
+  {
+   "id": "ryan-gosling",
+   "rank": 1,
+   "top1": "ryan-gosling",
+   "dTrue": 0.0006171560022459888,
+   "dTop1": 0.012207590542277491,
+   "margin": -0.011590434540031502,
+   "hasPortrait": true
+  },
+  {
+   "id": "salma-hayek",
+   "rank": 1,
+   "top1": "salma-hayek",
+   "dTrue": 0.0016342412914688298,
+   "dTop1": 0.012710816547019888,
+   "margin": -0.011076575255551058,
+   "hasPortrait": true
+  },
+  {
+   "id": "sam-claflin",
+   "rank": 1,
+   "top1": "sam-claflin",
+   "dTrue": 0.0014516907775041776,
+   "dTop1": 0.012440655247092702,
+   "margin": -0.010988964469588525,
+   "hasPortrait": true
+  },
+  {
+   "id": "scarlett-johansson",
+   "rank": 1,
+   "top1": "scarlett-johansson",
+   "dTrue": 0.0005064008738100423,
+   "dTop1": 0.012238886208461919,
+   "margin": -0.011732485334651876,
+   "hasPortrait": true
+  },
+  {
+   "id": "simu-liu",
+   "rank": 1,
+   "top1": "simu-liu",
+   "dTrue": 0.0016496187288821407,
+   "dTop1": 0.012013760830838383,
+   "margin": -0.010364142101956242,
+   "hasPortrait": true
+  },
+  {
+   "id": "sydney-sweeney",
+   "rank": 1,
+   "top1": "sydney-sweeney",
+   "dTrue": 0.017703676397538115,
+   "dTop1": 0.02902295680330602,
+   "margin": -0.011319280405767906,
+   "hasPortrait": true
+  },
+  {
+   "id": "tiffany-haddish",
+   "rank": 1,
+   "top1": "tiffany-haddish",
+   "dTrue": 0.002577947785743051,
+   "dTop1": 0.013611185099903667,
+   "margin": -0.011033237314160615,
+   "hasPortrait": true
+  },
+  {
+   "id": "timothee-chalamet",
+   "rank": 1,
+   "top1": "timothee-chalamet",
+   "dTrue": 0.00168473047789508,
+   "dTop1": 0.01251393265340528,
+   "margin": -0.0108292021755102,
+   "hasPortrait": true
+  },
+  {
+   "id": "tony-leung",
+   "rank": 1,
+   "top1": "tony-leung",
+   "dTrue": 0.041477734589835835,
+   "dTop1": 0.05072483174809472,
+   "margin": -0.009247097158258888,
+   "hasPortrait": true
+  },
+  {
+   "id": "viola-davis",
+   "rank": 1,
+   "top1": "viola-davis",
+   "dTrue": 0.0013124376884924294,
+   "dTop1": 0.012683254814352951,
+   "margin": -0.011370817125860522,
+   "hasPortrait": true
+  },
+  {
+   "id": "zendaya",
+   "rank": 1,
+   "top1": "zendaya",
+   "dTrue": 0.0014661118294767572,
+   "dTop1": 0.012115066801880903,
+   "margin": -0.010648954972404145,
+   "hasPortrait": true
+  },
+  {
+   "id": "zhang-ziyi",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.15105239606598275,
+   "dTop1": 0.03644413431833926,
+   "margin": 0.11460826174764349,
+   "hasPortrait": true
+  },
+  {
+   "id": "aaron-taylor-johnson",
+   "rank": 1,
+   "top1": "aaron-taylor-johnson",
+   "dTrue": 0.0031538218344424607,
+   "dTop1": 0.014755983381174564,
+   "margin": -0.011602161546732104,
+   "hasPortrait": true
+  },
+  {
+   "id": "adam-driver",
+   "rank": 1,
+   "top1": "adam-driver",
+   "dTrue": 0.035607505127363104,
+   "dTop1": 0.04565780567481492,
+   "margin": -0.010050300547451818,
+   "hasPortrait": true
+  },
+  {
+   "id": "adele",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.10410803648847,
+   "dTop1": 0.05517741701984802,
+   "margin": 0.04893061946862198,
+   "hasPortrait": true
+  },
+  {
+   "id": "adriana-lima",
+   "rank": 1,
+   "top1": "adriana-lima",
+   "dTrue": 0.0018842172882910235,
+   "dTop1": 0.01359006284460973,
+   "margin": -0.011705845556318706,
+   "hasPortrait": true
+  },
+  {
+   "id": "alexander-skarsgard",
+   "rank": 1,
+   "top1": "alexander-skarsgard",
+   "dTrue": 0.020935883960022106,
+   "dTop1": 0.03132651565859168,
+   "margin": -0.010390631698569575,
+   "hasPortrait": true
+  },
+  {
+   "id": "alia-bhatt",
+   "rank": 1,
+   "top1": "alia-bhatt",
+   "dTrue": 0.0016796032853259035,
+   "dTop1": 0.012366622564089047,
+   "margin": -0.010687019278763144,
+   "hasPortrait": true
+  },
+  {
+   "id": "alicia-vikander",
+   "rank": 1,
+   "top1": "alicia-vikander",
+   "dTrue": 0.002164067030682726,
+   "dTop1": 0.012895490779224472,
+   "margin": -0.010731423748541746,
+   "hasPortrait": true
+  },
+  {
+   "id": "amy-adams",
+   "rank": 1,
+   "top1": "amy-adams",
+   "dTrue": 0.0014274649686083496,
+   "dTop1": 0.012786030416939154,
+   "margin": -0.011358565448330804,
+   "hasPortrait": true
+  },
+  {
+   "id": "ana-de-armas",
+   "rank": 1,
+   "top1": "ana-de-armas",
+   "dTrue": 0.0030335821043971922,
+   "dTop1": 0.014638462968327048,
+   "margin": -0.011604880863929856,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-garfield",
+   "rank": 1,
+   "top1": "andrew-garfield",
+   "dTrue": 0.0007951294938943754,
+   "dTop1": 0.012018886270923623,
+   "margin": -0.011223756777029248,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-scott",
+   "rank": 1,
+   "top1": "andrew-scott",
+   "dTrue": 0.009632897304907795,
+   "dTop1": 0.021204160147951345,
+   "margin": -0.01157126284304355,
+   "hasPortrait": true
+  },
+  {
+   "id": "angela-bassett",
+   "rank": 1,
+   "top1": "angela-bassett",
+   "dTrue": 0.0010387821660559071,
+   "dTop1": 0.011815094663401915,
+   "margin": -0.010776312497346008,
+   "hasPortrait": true
+  },
+  {
+   "id": "angelina-jolie",
+   "rank": 1,
+   "top1": "angelina-jolie",
+   "dTrue": 0.002474828553016728,
+   "dTop1": 0.013048490868817098,
+   "margin": -0.01057366231580037,
+   "hasPortrait": true
+  },
+  {
+   "id": "antonio-banderas",
+   "rank": null,
+   "top1": "millie-bobby-brown",
+   "dTrue": 0.1359442002012553,
+   "dTop1": 0.07138470988726275,
+   "margin": 0.06455949031399255,
+   "hasPortrait": true
+  },
+  {
+   "id": "anya-taylor-joy",
+   "rank": 1,
+   "top1": "anya-taylor-joy",
+   "dTrue": 0.023698152775418424,
+   "dTop1": 0.03438246038905257,
+   "margin": -0.010684307613634147,
+   "hasPortrait": true
+  },
+  {
+   "id": "ariana-grande",
+   "rank": 1,
+   "top1": "ariana-grande",
+   "dTrue": 0.0067876994808132585,
+   "dTop1": 0.017967955640509903,
+   "margin": -0.011180256159696644,
+   "hasPortrait": true
+  },
+  {
+   "id": "austin-butler",
+   "rank": 1,
+   "top1": "austin-butler",
+   "dTrue": 0.0019881095092103562,
+   "dTop1": 0.01210438034025052,
+   "margin": -0.010116270831040164,
+   "hasPortrait": true
+  },
+  {
+   "id": "awkwafina",
+   "rank": 1,
+   "top1": "awkwafina",
+   "dTrue": 0.03712084943055105,
+   "dTop1": 0.047629588180658544,
+   "margin": -0.010508738750107494,
+   "hasPortrait": true
+  },
+  {
+   "id": "beyonce",
+   "rank": 1,
+   "top1": "beyonce",
+   "dTrue": 0.0021364760187975174,
+   "dTop1": 0.013532862025922854,
+   "margin": -0.011396386007125336,
+   "hasPortrait": true
+  },
+  {
+   "id": "billie-eilish",
+   "rank": 1,
+   "top1": "billie-eilish",
+   "dTrue": 0.024853918114791207,
+   "dTop1": 0.035618395981057205,
+   "margin": -0.010764477866265998,
+   "hasPortrait": true
+  },
+  {
+   "id": "brad-pitt",
+   "rank": null,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.12463672634736755,
+   "dTop1": 0.07169893246967951,
+   "margin": 0.052937793877688044,
+   "hasPortrait": true
+  },
+  {
+   "id": "bradley-cooper",
+   "rank": 1,
+   "top1": "bradley-cooper",
+   "dTrue": 0.0014573387112959413,
+   "dTop1": 0.012723542913357977,
+   "margin": -0.011266204202062036,
+   "hasPortrait": true
+  },
+  {
+   "id": "britney-spears",
+   "rank": 1,
+   "top1": "britney-spears",
+   "dTrue": 0.0007058491293502334,
+   "dTop1": 0.011373914296214815,
+   "margin": -0.010668065166864582,
+   "hasPortrait": true
+  },
+  {
+   "id": "cardi-b",
+   "rank": 1,
+   "top1": "cardi-b",
+   "dTrue": 0.02602522743610647,
+   "dTop1": 0.03709106959042874,
+   "margin": -0.01106584215432227,
+   "hasPortrait": true
+  },
+  {
+   "id": "cate-blanchett",
+   "rank": 1,
+   "top1": "cate-blanchett",
+   "dTrue": 0.0008015737378390675,
+   "dTop1": 0.0119500558214507,
+   "margin": -0.011148482083611633,
+   "hasPortrait": true
+  },
+  {
+   "id": "channing-tatum",
+   "rank": 1,
+   "top1": "channing-tatum",
+   "dTrue": 0.000626196977365101,
+   "dTop1": 0.011495545948102204,
+   "margin": -0.010869348970737103,
+   "hasPortrait": true
+  },
+  {
+   "id": "charlize-theron",
+   "rank": 1,
+   "top1": "charlize-theron",
+   "dTrue": 0.0008747365935495299,
+   "dTop1": 0.01318024102210491,
+   "margin": -0.01230550442855538,
+   "hasPortrait": true
+  },
+  {
+   "id": "chloe-grace-moretz",
+   "rank": 1,
+   "top1": "chloe-grace-moretz",
+   "dTrue": 0.007035705444346951,
+   "dTop1": 0.017722161633116462,
+   "margin": -0.01068645618876951,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-evans",
+   "rank": 1,
+   "top1": "chris-evans",
+   "dTrue": 0.0423765894014313,
+   "dTop1": 0.052410372123148474,
+   "margin": -0.010033782721717177,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-hemsworth",
+   "rank": null,
+   "top1": "orlando-bloom",
+   "dTrue": 0.0864783497864281,
+   "dTop1": 0.0693285335593371,
+   "margin": 0.017149816227090997,
+   "hasPortrait": true
+  },
+  {
+   "id": "cillian-murphy",
+   "rank": 1,
+   "top1": "cillian-murphy",
+   "dTrue": 0.0020367235329249445,
+   "dTop1": 0.012857724090640787,
+   "margin": -0.010821000557715843,
+   "hasPortrait": true
+  },
+  {
+   "id": "cole-sprouse",
+   "rank": 1,
+   "top1": "cole-sprouse",
+   "dTrue": 0.0029130954089181538,
+   "dTop1": 0.013660796892346116,
+   "margin": -0.010747701483427963,
+   "hasPortrait": true
+  },
+  {
+   "id": "cristiano-ronaldo",
+   "rank": 1,
+   "top1": "cristiano-ronaldo",
+   "dTrue": 0.0015137901050680247,
+   "dTop1": 0.011960924511321691,
+   "margin": -0.010447134406253666,
+   "hasPortrait": true
+  },
+  {
+   "id": "daniel-craig",
+   "rank": 1,
+   "top1": "daniel-craig",
+   "dTrue": 0.000124157745655884,
+   "dTop1": 0.010667732652859474,
+   "margin": -0.01054357490720359,
+   "hasPortrait": true
+  },
+  {
+   "id": "deepika-padukone",
+   "rank": 1,
+   "top1": "deepika-padukone",
+   "dTrue": 0.00036949525178009424,
+   "dTop1": 0.011522965823606457,
+   "margin": -0.011153470571826363,
+   "hasPortrait": true
+  },
+  {
+   "id": "denzel-washington",
+   "rank": 1,
+   "top1": "denzel-washington",
+   "dTrue": 0.004454630993048547,
+   "dTop1": 0.014541804397290692,
+   "margin": -0.010087173404242145,
+   "hasPortrait": true
+  },
+  {
+   "id": "dev-patel",
+   "rank": null,
+   "top1": "post-malone",
+   "dTrue": 0.15016879624310153,
+   "dTop1": 0.08391301853737498,
+   "margin": 0.06625577770572655,
+   "hasPortrait": true
+  },
+  {
+   "id": "donald-glover",
+   "rank": 1,
+   "top1": "donald-glover",
+   "dTrue": 0.006538079108041717,
+   "dTop1": 0.0164009959348016,
+   "margin": -0.009862916826759882,
+   "hasPortrait": true
+  },
+  {
+   "id": "donnie-yen",
+   "rank": 1,
+   "top1": "donnie-yen",
+   "dTrue": 0.0007197025007559255,
+   "dTop1": 0.01233466532530858,
+   "margin": -0.011614962824552655,
+   "hasPortrait": true
+  },
+  {
+   "id": "donnie-yen",
+   "rank": 1,
+   "top1": "donnie-yen",
+   "dTrue": 0.005075665402626828,
+   "dTop1": 0.01644230257957402,
+   "margin": -0.011366637176947192,
+   "hasPortrait": true
+  },
+  {
+   "id": "dua-lipa",
+   "rank": 1,
+   "top1": "dua-lipa",
+   "dTrue": 0.0012021780320113917,
+   "dTop1": 0.012363101582995473,
+   "margin": -0.011160923550984081,
+   "hasPortrait": true
+  },
+  {
+   "id": "dwayne-johnson",
+   "rank": 1,
+   "top1": "dwayne-johnson",
+   "dTrue": 0.0014794586823075884,
+   "dTop1": 0.012502979700706796,
+   "margin": -0.011023521018399207,
+   "hasPortrait": true
+  },
+  {
+   "id": "dwayne-johnson",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.10685996214418514,
+   "dTop1": 0.06513519636848875,
+   "margin": 0.04172476577569639,
+   "hasPortrait": true
+  },
+  {
+   "id": "ed-sheeran",
+   "rank": 1,
+   "top1": "ed-sheeran",
+   "dTrue": 0.018524055313721477,
+   "dTop1": 0.029610768883469585,
+   "margin": -0.011086713569748108,
+   "hasPortrait": true
+  },
+  {
+   "id": "eddie-redmayne",
+   "rank": 1,
+   "top1": "eddie-redmayne",
+   "dTrue": 0.0026280941404480673,
+   "dTop1": 0.013026609299377712,
+   "margin": -0.010398515158929644,
+   "hasPortrait": true
+  },
+  {
+   "id": "elijah-wood",
+   "rank": 1,
+   "top1": "elijah-wood",
+   "dTrue": 0.0016288481804538346,
+   "dTop1": 0.012601956982303042,
+   "margin": -0.010973108801849207,
+   "hasPortrait": true
+  },
+  {
+   "id": "elizabeth-olsen",
+   "rank": 1,
+   "top1": "elizabeth-olsen",
+   "dTrue": 0.0016335035334134052,
+   "dTop1": 0.013211688283036649,
+   "margin": -0.011578184749623244,
+   "hasPortrait": true
+  },
+  {
+   "id": "elon-musk",
+   "rank": 1,
+   "top1": "elon-musk",
+   "dTrue": 0.0021788689854768117,
+   "dTop1": 0.013497889352717118,
+   "margin": -0.011319020367240307,
+   "hasPortrait": true
+  },
+  {
+   "id": "emily-blunt",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.09356489786541733,
+   "dTop1": 0.07059263879552491,
+   "margin": 0.02297225906989242,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-stone",
+   "rank": 1,
+   "top1": "emma-stone",
+   "dTrue": 0.0018704196544676588,
+   "dTop1": 0.012828761373415154,
+   "margin": -0.010958341718947495,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-watson",
+   "rank": null,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.074780849666653,
+   "dTop1": 0.0756434408673109,
+   "margin": -0.0008625912006579028,
+   "hasPortrait": true
+  },
+  {
+   "id": "eva-longoria",
+   "rank": 1,
+   "top1": "eva-longoria",
+   "dTrue": 0.003467843895612277,
+   "dTop1": 0.015006437378372706,
+   "margin": -0.011538593482760429,
+   "hasPortrait": true
+  },
+  {
+   "id": "fan-bingbing",
+   "rank": 1,
+   "top1": "fan-bingbing",
+   "dTrue": 0.001270881462732465,
+   "dTop1": 0.01274377515777625,
+   "margin": -0.011472893695043784,
+   "hasPortrait": true
+  },
+  {
+   "id": "florence-pugh",
+   "rank": 4,
+   "top1": "sydney-sweeney",
+   "dTrue": 0.07062639594115871,
+   "dTop1": 0.07984895299581862,
+   "margin": -0.009222557054659908,
+   "hasPortrait": true
+  },
+  {
+   "id": "gal-gadot",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.15275430541746426,
+   "dTop1": 0.053451843756847084,
+   "margin": 0.09930246166061718,
+   "hasPortrait": true
+  },
+  {
+   "id": "gary-oldman",
+   "rank": 1,
+   "top1": "gary-oldman",
+   "dTrue": 0.00340721749865458,
+   "dTop1": 0.013600313971005584,
+   "margin": -0.010193096472351004,
+   "hasPortrait": true
+  },
+  {
+   "id": "gemma-chan",
+   "rank": 1,
+   "top1": "gemma-chan",
+   "dTrue": 0.0019227435579662888,
+   "dTop1": 0.01244171744067546,
+   "margin": -0.01051897388270917,
+   "hasPortrait": true
+  },
+  {
+   "id": "george-clooney",
+   "rank": 1,
+   "top1": "george-clooney",
+   "dTrue": 0.0020798803658526044,
+   "dTop1": 0.012433799330457962,
+   "margin": -0.010353918964605358,
+   "hasPortrait": true
+  },
+  {
+   "id": "gigi-hadid",
+   "rank": 1,
+   "top1": "gigi-hadid",
+   "dTrue": 0.001228808093001743,
+   "dTop1": 0.012332337132300752,
+   "margin": -0.01110352903929901,
+   "hasPortrait": true
+  },
+  {
+   "id": "glen-powell",
+   "rank": 1,
+   "top1": "glen-powell",
+   "dTrue": 0.0022405710283921465,
+   "dTop1": 0.013800150437422887,
+   "margin": -0.01155957940903074,
+   "hasPortrait": true
+  },
+  {
+   "id": "hailee-steinfeld",
+   "rank": 1,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.0019357399024306776,
+   "dTop1": 0.012587326892405604,
+   "margin": -0.010651586989974926,
+   "hasPortrait": true
+  },
+  {
+   "id": "halle-berry",
+   "rank": 1,
+   "top1": "halle-berry",
+   "dTrue": 0.0005613515639159017,
+   "dTop1": 0.011160661717654952,
+   "margin": -0.01059931015373905,
+   "hasPortrait": true
+  },
+  {
+   "id": "harry-styles",
+   "rank": 1,
+   "top1": "harry-styles",
+   "dTrue": 0.0022353006287866295,
+   "dTop1": 0.013152759470799413,
+   "margin": -0.010917458842012784,
+   "hasPortrait": true
+  },
+  {
+   "id": "heidi-klum",
+   "rank": 1,
+   "top1": "heidi-klum",
+   "dTrue": 0.0010727116513692403,
+   "dTop1": 0.011817350915662717,
+   "margin": -0.010744639264293476,
+   "hasPortrait": true
+  },
+  {
+   "id": "helen-mirren",
+   "rank": 1,
+   "top1": "helen-mirren",
+   "dTrue": 0.002803959043384374,
+   "dTop1": 0.014237238584515644,
+   "margin": -0.01143327954113127,
+   "hasPortrait": true
+  },
+  {
+   "id": "helena-bonham-carter",
+   "rank": 1,
+   "top1": "helena-bonham-carter",
+   "dTrue": 0.0013429770463189161,
+   "dTop1": 0.012009014658695083,
+   "margin": -0.010666037612376167,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-cavill",
+   "rank": 1,
+   "top1": "henry-cavill",
+   "dTrue": 0.0017839750569577095,
+   "dTop1": 0.012232968356755025,
+   "margin": -0.010448993299797316,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-golding",
+   "rank": 1,
+   "top1": "henry-golding",
+   "dTrue": 0.0004643362937288842,
+   "dTop1": 0.01063715710271107,
+   "margin": -0.010172820808982186,
+   "hasPortrait": true
+  },
+  {
+   "id": "hugh-jackman",
+   "rank": 1,
+   "top1": "hugh-jackman",
+   "dTrue": 0.004145999600663974,
+   "dTop1": 0.015069656492112338,
+   "margin": -0.010923656891448363,
+   "hasPortrait": true
+  },
+  {
+   "id": "hunter-schafer",
+   "rank": 1,
+   "top1": "hunter-schafer",
+   "dTrue": 0.004159965033841306,
+   "dTop1": 0.015534537334556342,
+   "margin": -0.011374572300715036,
+   "hasPortrait": true
+  },
+  {
+   "id": "idris-elba",
+   "rank": 1,
+   "top1": "idris-elba",
+   "dTrue": 0.0054815486210079145,
+   "dTop1": 0.01688419705069233,
+   "margin": -0.011402648429684414,
+   "hasPortrait": true
+  },
+  {
+   "id": "jackie-chan",
+   "rank": 1,
+   "top1": "jackie-chan",
+   "dTrue": 0.0012707992966256576,
+   "dTop1": 0.012673040215216091,
+   "margin": -0.011402240918590434,
+   "hasPortrait": true
+  },
+  {
+   "id": "jamie-dornan",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.10642063735602147,
+   "dTop1": 0.07263571328203833,
+   "margin": 0.03378492407398315,
+   "hasPortrait": true
+  },
+  {
+   "id": "jason-momoa",
+   "rank": 1,
+   "top1": "jason-momoa",
+   "dTrue": 0.0003345205175706578,
+   "dTop1": 0.011304500489878744,
+   "margin": -0.010969979972308086,
+   "hasPortrait": true
+  },
+  {
+   "id": "javier-bardem",
+   "rank": 1,
+   "top1": "javier-bardem",
+   "dTrue": 0.0024337008906117896,
+   "dTop1": 0.013467716157595677,
+   "margin": -0.011034015266983888,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennie-kim",
+   "rank": 1,
+   "top1": "jennie-kim",
+   "dTrue": 0.0019230373852684446,
+   "dTop1": 0.01280277885097103,
+   "margin": -0.010879741465702586,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennifer-lawrence",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.102385395886046,
+   "dTop1": 0.07289669781403041,
+   "margin": 0.029488698072015596,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-alba",
+   "rank": 1,
+   "top1": "jessica-alba",
+   "dTrue": 0.038949700095360584,
+   "dTop1": 0.049828152880797005,
+   "margin": -0.010878452785436421,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-chastain",
+   "rank": 1,
+   "top1": "jessica-chastain",
+   "dTrue": 0.0022166922293915814,
+   "dTop1": 0.01284598884137711,
+   "margin": -0.010629296611985528,
+   "hasPortrait": true
+  },
+  {
+   "id": "jet-li",
+   "rank": 1,
+   "top1": "jet-li",
+   "dTrue": 0.0009377976519803211,
+   "dTop1": 0.012259916856423025,
+   "margin": -0.011322119204442704,
+   "hasPortrait": true
+  },
+  {
+   "id": "jisoo",
+   "rank": 1,
+   "top1": "jisoo",
+   "dTrue": 0.0007034774494273366,
+   "dTop1": 0.0117206594701732,
+   "margin": -0.011017182020745864,
+   "hasPortrait": true
+  },
+  {
+   "id": "joaquin-phoenix",
+   "rank": 1,
+   "top1": "joaquin-phoenix",
+   "dTrue": 0.0011293043663541669,
+   "dTop1": 0.011721323015011498,
+   "margin": -0.010592018648657331,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-krasinski",
+   "rank": 1,
+   "top1": "john-krasinski",
+   "dTrue": 0.0010769801881400642,
+   "dTop1": 0.012185631748587222,
+   "margin": -0.011108651560447158,
+   "hasPortrait": true
+  },
+  {
+   "id": "jonah-hill",
+   "rank": 1,
+   "top1": "jonah-hill",
+   "dTrue": 0.0008638029721854679,
+   "dTop1": 0.012500642737452328,
+   "margin": -0.01163683976526686,
+   "hasPortrait": true
+  },
+  {
+   "id": "jonathan-bailey",
+   "rank": 1,
+   "top1": "jonathan-bailey",
+   "dTrue": 0.0007283512623148525,
+   "dTop1": 0.012033857286322336,
+   "margin": -0.011305506024007483,
+   "hasPortrait": true
+  },
+  {
+   "id": "joseph-gordon-levitt",
+   "rank": 1,
+   "top1": "joseph-gordon-levitt",
+   "dTrue": 0.0006285103614589449,
+   "dTop1": 0.011091176728806884,
+   "margin": -0.01046266636734794,
+   "hasPortrait": true
+  },
+  {
+   "id": "josh-hutcherson",
+   "rank": 1,
+   "top1": "josh-hutcherson",
+   "dTrue": 0.0015809871218885885,
+   "dTop1": 0.012818627270664296,
+   "margin": -0.011237640148775707,
+   "hasPortrait": true
+  },
+  {
+   "id": "julia-roberts",
+   "rank": 1,
+   "top1": "julia-roberts",
+   "dTrue": 0.04988353075454344,
+   "dTop1": 0.06049300049694073,
+   "margin": -0.010609469742397293,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-middleton",
+   "rank": 1,
+   "top1": "kate-middleton",
+   "dTrue": 0.001135295990410401,
+   "dTop1": 0.013210026607922809,
+   "margin": -0.012074730617512408,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-winslet",
+   "rank": 1,
+   "top1": "kate-winslet",
+   "dTrue": 0.0006360293788678639,
+   "dTop1": 0.011771428484477875,
+   "margin": -0.011135399105610011,
+   "hasPortrait": true
+  },
+  {
+   "id": "keanu-reeves",
+   "rank": 1,
+   "top1": "keanu-reeves",
+   "dTrue": 0.0013203947148131556,
+   "dTop1": 0.012517607357649174,
+   "margin": -0.011197212642836019,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendall-jenner",
+   "rank": 1,
+   "top1": "kendall-jenner",
+   "dTrue": 0.00041025483361256665,
+   "dTop1": 0.011109491472986455,
+   "margin": -0.010699236639373888,
+   "hasPortrait": true
+  },
+  {
+   "id": "kerry-washington",
+   "rank": 1,
+   "top1": "kerry-washington",
+   "dTrue": 0.017573538647679077,
+   "dTop1": 0.028414066543664962,
+   "margin": -0.010840527895985885,
+   "hasPortrait": true
+  },
+  {
+   "id": "kim-kardashian",
+   "rank": 1,
+   "top1": "kim-kardashian",
+   "dTrue": 0.0007663338541646914,
+   "dTop1": 0.012648026339922458,
+   "margin": -0.011881692485757767,
+   "hasPortrait": true
+  },
+  {
+   "id": "kristen-stewart",
+   "rank": 1,
+   "top1": "kristen-stewart",
+   "dTrue": 0.0007774501713138093,
+   "dTop1": 0.012206332283145604,
+   "margin": -0.011428882111831795,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylian-mbappe",
+   "rank": 1,
+   "top1": "kylian-mbappe",
+   "dTrue": 0.0008912288257134637,
+   "dTop1": 0.011917303151465442,
+   "margin": -0.011026074325751978,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylie-jenner",
+   "rank": 1,
+   "top1": "kylie-jenner",
+   "dTrue": 0.003432419762088079,
+   "dTop1": 0.014202771274799297,
+   "margin": -0.010770351512711218,
+   "hasPortrait": true
+  },
+  {
+   "id": "laurence-fishburne",
+   "rank": 1,
+   "top1": "laurence-fishburne",
+   "dTrue": 0.005280266154864766,
+   "dTop1": 0.016595688621424243,
+   "margin": -0.011315422466559477,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-jung-jae",
+   "rank": 1,
+   "top1": "lee-jung-jae",
+   "dTrue": 0.0009224635990362495,
+   "dTop1": 0.011311983850379348,
+   "margin": -0.010389520251343098,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-min-ho",
+   "rank": 1,
+   "top1": "lee-min-ho",
+   "dTrue": 0.00040370356876484603,
+   "dTop1": 0.010720636479156997,
+   "margin": -0.010316932910392151,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-hemsworth",
+   "rank": 1,
+   "top1": "liam-hemsworth",
+   "dTrue": 0.0005133638886049008,
+   "dTop1": 0.011467354917744421,
+   "margin": -0.01095399102913952,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-neeson",
+   "rank": 1,
+   "top1": "liam-neeson",
+   "dTrue": 0.0024459451806686516,
+   "dTop1": 0.013315197013486824,
+   "margin": -0.010869251832818172,
+   "hasPortrait": true
+  },
+  {
+   "id": "lionel-messi",
+   "rank": 1,
+   "top1": "lionel-messi",
+   "dTrue": 0.002807559304533136,
+   "dTop1": 0.01432990740560236,
+   "margin": -0.011522348101069224,
+   "hasPortrait": true
+  },
+  {
+   "id": "lizzo",
+   "rank": 1,
+   "top1": "lizzo",
+   "dTrue": 0.0011788262757259638,
+   "dTop1": 0.012450929378477693,
+   "margin": -0.01127210310275173,
+   "hasPortrait": true
+  },
+  {
+   "id": "logan-lerman",
+   "rank": 1,
+   "top1": "logan-lerman",
+   "dTrue": 0.0008101990214017807,
+   "dTop1": 0.011388068985198951,
+   "margin": -0.01057786996379717,
+   "hasPortrait": true
+  },
+  {
+   "id": "luke-hemsworth",
+   "rank": 1,
+   "top1": "luke-hemsworth",
+   "dTrue": 0.062689986234581,
+   "dTop1": 0.07261881903910261,
+   "margin": -0.009928832804521615,
+   "hasPortrait": true
+  },
+  {
+   "id": "lupita-nyongo",
+   "rank": 1,
+   "top1": "lupita-nyongo",
+   "dTrue": 0.0007281736080047008,
+   "dTop1": 0.011793698128653385,
+   "margin": -0.011065524520648684,
+   "hasPortrait": true
+  },
+  {
+   "id": "mads-mikkelsen",
+   "rank": 1,
+   "top1": "mads-mikkelsen",
+   "dTrue": 0.001409736757076896,
+   "dTop1": 0.012339760384167286,
+   "margin": -0.01093002362709039,
+   "hasPortrait": true
+  },
+  {
+   "id": "margot-robbie",
+   "rank": 1,
+   "top1": "margot-robbie",
+   "dTrue": 0.0028371916441872758,
+   "dTop1": 0.014545974013079555,
+   "margin": -0.011708782368892279,
+   "hasPortrait": true
+  },
+  {
+   "id": "mark-zuckerberg",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.11759692309824676,
+   "dTop1": 0.05308376064839648,
+   "margin": 0.06451316244985028,
+   "hasPortrait": true
+  },
+  {
+   "id": "martin-freeman",
+   "rank": 1,
+   "top1": "martin-freeman",
+   "dTrue": 0.0019604595024144134,
+   "dTop1": 0.012457764240693892,
+   "margin": -0.010497304738279478,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-bomer",
+   "rank": 1,
+   "top1": "matt-bomer",
+   "dTrue": 0.000933188226332482,
+   "dTop1": 0.012471941638966033,
+   "margin": -0.011538753412633551,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-damon",
+   "rank": 1,
+   "top1": "matt-damon",
+   "dTrue": 0.0025694340987549857,
+   "dTop1": 0.013381833129343823,
+   "margin": -0.010812399030588837,
+   "hasPortrait": true
+  },
+  {
+   "id": "meryl-streep",
+   "rank": 1,
+   "top1": "meryl-streep",
+   "dTrue": 0.0014174655017681337,
+   "dTop1": 0.012973169687825914,
+   "margin": -0.01155570418605778,
+   "hasPortrait": true
+  },
+  {
+   "id": "michael-b-jordan",
+   "rank": 1,
+   "top1": "michael-b-jordan",
+   "dTrue": 0.0008034758595945046,
+   "dTop1": 0.01117317024211284,
+   "margin": -0.010369694382518335,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-obama",
+   "rank": 1,
+   "top1": "michelle-obama",
+   "dTrue": 0.00032754039410154423,
+   "dTop1": 0.01217435713372883,
+   "margin": -0.011846816739627286,
+   "hasPortrait": true
+  },
+  {
+   "id": "miles-teller",
+   "rank": 1,
+   "top1": "miles-teller",
+   "dTrue": 0.0013132366478760815,
+   "dTop1": 0.01172511105379681,
+   "margin": -0.010411874405920729,
+   "hasPortrait": true
+  },
+  {
+   "id": "millie-bobby-brown",
+   "rank": 1,
+   "top1": "millie-bobby-brown",
+   "dTrue": 0.004150269809012785,
+   "dTop1": 0.0152204715417944,
+   "margin": -0.011070201732781615,
+   "hasPortrait": true
+  },
+  {
+   "id": "morgan-freeman",
+   "rank": 1,
+   "top1": "morgan-freeman",
+   "dTrue": 0.0025336940443723144,
+   "dTop1": 0.013909746818198565,
+   "margin": -0.01137605277382625,
+   "hasPortrait": true
+  },
+  {
+   "id": "naomi-campbell",
+   "rank": 1,
+   "top1": "naomi-campbell",
+   "dTrue": 0.0012239616206357606,
+   "dTop1": 0.012570005721519117,
+   "margin": -0.011346044100883357,
+   "hasPortrait": true
+  },
+  {
+   "id": "natalie-portman",
+   "rank": 1,
+   "top1": "natalie-portman",
+   "dTrue": 0.002655448627399859,
+   "dTop1": 0.01414051157884244,
+   "margin": -0.011485062951442582,
+   "hasPortrait": true
+  },
+  {
+   "id": "neymar",
+   "rank": 1,
+   "top1": "neymar",
+   "dTrue": 0.0035560567946739674,
+   "dTop1": 0.01491010975939433,
+   "margin": -0.011354052964720363,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicholas-hoult",
+   "rank": 1,
+   "top1": "nicholas-hoult",
+   "dTrue": 0.0030308639531607673,
+   "dTop1": 0.013811626621437534,
+   "margin": -0.010780762668276767,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicki-minaj",
+   "rank": 1,
+   "top1": "nicki-minaj",
+   "dTrue": 0.007989919704694537,
+   "dTop1": 0.018997464303147082,
+   "margin": -0.011007544598452546,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicole-kidman",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.135809918250002,
+   "dTop1": 0.06294732467678632,
+   "margin": 0.07286259357321567,
+   "hasPortrait": true
+  },
+  {
+   "id": "oprah-winfrey",
+   "rank": 1,
+   "top1": "oprah-winfrey",
+   "dTrue": 0.0015625070462913504,
+   "dTop1": 0.01256565966873402,
+   "margin": -0.011003152622442669,
+   "hasPortrait": true
+  },
+  {
+   "id": "orlando-bloom",
+   "rank": 1,
+   "top1": "orlando-bloom",
+   "dTrue": 0.0023847488886754586,
+   "dTop1": 0.012673532783623598,
+   "margin": -0.01028878389494814,
+   "hasPortrait": true
+  },
+  {
+   "id": "oscar-isaac",
+   "rank": 1,
+   "top1": "oscar-isaac",
+   "dTrue": 0.0006693079436519422,
+   "dTop1": 0.012463318931215217,
+   "margin": -0.011794010987563275,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-mescal",
+   "rank": 1,
+   "top1": "paul-mescal",
+   "dTrue": 0.0004861530701081307,
+   "dTop1": 0.011022358248995334,
+   "margin": -0.010536205178887204,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-rudd",
+   "rank": 1,
+   "top1": "paul-rudd",
+   "dTrue": 0.00156146934114898,
+   "dTop1": 0.01233277011579037,
+   "margin": -0.01077130077464139,
+   "hasPortrait": true
+  },
+  {
+   "id": "pedro-pascal",
+   "rank": 1,
+   "top1": "pedro-pascal",
+   "dTrue": 0.008031326970100228,
+   "dTop1": 0.01828389487394988,
+   "margin": -0.010252567903849652,
+   "hasPortrait": true
+  },
+  {
+   "id": "penelope-cruz-m",
+   "rank": 1,
+   "top1": "penelope-cruz-m",
+   "dTrue": 0.009759063441479587,
+   "dTop1": 0.021331458778595547,
+   "margin": -0.01157239533711596,
+   "hasPortrait": true
+  },
+  {
+   "id": "pierce-brosnan",
+   "rank": 1,
+   "top1": "pierce-brosnan",
+   "dTrue": 0.004309877700228282,
+   "dTop1": 0.015659703468477337,
+   "margin": -0.011349825768249056,
+   "hasPortrait": true
+  },
+  {
+   "id": "rachel-mcadams",
+   "rank": 1,
+   "top1": "rachel-mcadams",
+   "dTrue": 0.0018958371710964261,
+   "dTop1": 0.012188857195647329,
+   "margin": -0.010293020024550903,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranveer-singh",
+   "rank": 1,
+   "top1": "ranveer-singh",
+   "dTrue": 0.0009661384937985629,
+   "dTop1": 0.01270992329815146,
+   "margin": -0.011743784804352897,
+   "hasPortrait": true
+  },
+  {
+   "id": "rebecca-ferguson",
+   "rank": 1,
+   "top1": "rebecca-ferguson",
+   "dTrue": 0.0014837305797920086,
+   "dTop1": 0.01395149769196613,
+   "margin": -0.012467767112174122,
+   "hasPortrait": true
+  },
+  {
+   "id": "reesewitherspoon",
+   "rank": 1,
+   "top1": "reesewitherspoon",
+   "dTrue": 0.008788939848563437,
+   "dTop1": 0.019750307097495035,
+   "margin": -0.010961367248931597,
+   "hasPortrait": true
+  },
+  {
+   "id": "riz-ahmed",
+   "rank": 1,
+   "top1": "riz-ahmed",
+   "dTrue": 0.0006673795116783898,
+   "dTop1": 0.011346364035480283,
+   "margin": -0.010678984523801893,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-downey-jr",
+   "rank": 1,
+   "top1": "robert-downey-jr",
+   "dTrue": 0.0009179583087545184,
+   "dTop1": 0.01099027969707811,
+   "margin": -0.01007232138832359,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-pattinson",
+   "rank": 1,
+   "top1": "robert-pattinson",
+   "dTrue": 0.0028840880931088053,
+   "dTop1": 0.01358010654547559,
+   "margin": -0.010696018452366785,
+   "hasPortrait": true
+  },
+  {
+   "id": "ryan-gosling",
+   "rank": 1,
+   "top1": "ryan-gosling",
+   "dTrue": 0.012411763612824811,
+   "dTop1": 0.02385271434414471,
+   "margin": -0.011440950731319899,
+   "hasPortrait": true
+  },
+  {
+   "id": "salma-hayek",
+   "rank": 1,
+   "top1": "salma-hayek",
+   "dTrue": 0.0027525746623229264,
+   "dTop1": 0.013931604843439138,
+   "margin": -0.011179030181116212,
+   "hasPortrait": true
+  },
+  {
+   "id": "sandra-bullock",
+   "rank": 1,
+   "top1": "sandra-bullock",
+   "dTrue": 0.0016401009793577392,
+   "dTop1": 0.013365938388556708,
+   "margin": -0.01172583740919897,
+   "hasPortrait": true
+  },
+  {
+   "id": "saoirse-ronan",
+   "rank": null,
+   "top1": "sebastian-stan",
+   "dTrue": 0.13524754277962414,
+   "dTop1": 0.08312638098481995,
+   "margin": 0.052121161794804194,
+   "hasPortrait": true
+  },
+  {
+   "id": "scarlett-johansson",
+   "rank": 1,
+   "top1": "scarlett-johansson",
+   "dTrue": 0.003039100131713046,
+   "dTop1": 0.01454316059797467,
+   "margin": -0.011504060466261623,
+   "hasPortrait": true
+  },
+  {
+   "id": "sebastian-stan",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.11610869768163046,
+   "dTop1": 0.05445471516581013,
+   "margin": 0.06165398251582033,
+   "hasPortrait": true
+  },
+  {
+   "id": "seth-rogen",
+   "rank": 1,
+   "top1": "seth-rogen",
+   "dTrue": 0.0025514810112560182,
+   "dTop1": 0.01324799917759989,
+   "margin": -0.010696518166343871,
+   "hasPortrait": true
+  },
+  {
+   "id": "shah-rukh-khan",
+   "rank": 1,
+   "top1": "shah-rukh-khan",
+   "dTrue": 0.00470926127476734,
+   "dTop1": 0.016851218535057555,
+   "margin": -0.012141957260290215,
+   "hasPortrait": true
+  },
+  {
+   "id": "shakira",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.13293349799014043,
+   "dTop1": 0.047429766259562856,
+   "margin": 0.08550373173057757,
+   "hasPortrait": true
+  },
+  {
+   "id": "simu-liu",
+   "rank": 1,
+   "top1": "simu-liu",
+   "dTrue": 0.00046321674744065344,
+   "dTop1": 0.011006027187594358,
+   "margin": -0.010542810440153705,
+   "hasPortrait": true
+  },
+  {
+   "id": "song-kang",
+   "rank": 1,
+   "top1": "song-kang",
+   "dTrue": 0.0004687187764575995,
+   "dTop1": 0.010772519060313512,
+   "margin": -0.010303800283855913,
+   "hasPortrait": true
+  },
+  {
+   "id": "sydney-sweeney",
+   "rank": 1,
+   "top1": "sydney-sweeney",
+   "dTrue": 0.0023404410654643826,
+   "dTop1": 0.013686964593712103,
+   "margin": -0.01134652352824772,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-lautner",
+   "rank": null,
+   "top1": "post-malone",
+   "dTrue": 0.10805030008448024,
+   "dTop1": 0.07569095301186912,
+   "margin": 0.03235934707261112,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-swift",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.09445672057023002,
+   "dTop1": 0.07262729248385313,
+   "margin": 0.02182942808637689,
+   "hasPortrait": true
+  },
+  {
+   "id": "timothee-chalamet",
+   "rank": 1,
+   "top1": "timothee-chalamet",
+   "dTrue": 0.0015870855216714164,
+   "dTop1": 0.013082696405384286,
+   "margin": -0.01149561088371287,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hanks",
+   "rank": 1,
+   "top1": "tom-hanks",
+   "dTrue": 0.00150113137874186,
+   "dTop1": 0.012045173600552683,
+   "margin": -0.010544042221810823,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hardy",
+   "rank": 1,
+   "top1": "tom-hardy",
+   "dTrue": 0.018021722208735436,
+   "dTop1": 0.02835947150940299,
+   "margin": -0.010337749300667554,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-holland",
+   "rank": 1,
+   "top1": "tom-holland",
+   "dTrue": 0.0037560708556504396,
+   "dTop1": 0.014182159557188045,
+   "margin": -0.010426088701537606,
+   "hasPortrait": true
+  },
+  {
+   "id": "tony-leung",
+   "rank": 1,
+   "top1": "tony-leung",
+   "dTrue": 0.057070466709483014,
+   "dTop1": 0.06693031583174569,
+   "margin": -0.009859849122262676,
+   "hasPortrait": true
+  },
+  {
+   "id": "trevor-noah",
+   "rank": 1,
+   "top1": "trevor-noah",
+   "dTrue": 0.0076834019747272775,
+   "dTop1": 0.01846050880101613,
+   "margin": -0.010777106826288851,
+   "hasPortrait": true
+  },
+  {
+   "id": "vanessa-kirby",
+   "rank": 1,
+   "top1": "vanessa-kirby",
+   "dTrue": 0.004613234844430436,
+   "dTop1": 0.015954900096970204,
+   "margin": -0.011341665252539768,
+   "hasPortrait": true
+  },
+  {
+   "id": "victoria-beckham",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.14007528307309292,
+   "dTop1": 0.07679787313755748,
+   "margin": 0.06327740993553543,
+   "hasPortrait": true
+  },
+  {
+   "id": "viola-davis",
+   "rank": 1,
+   "top1": "viola-davis",
+   "dTrue": 0.0022587076216031843,
+   "dTop1": 0.013794354532732034,
+   "margin": -0.01153564691112885,
+   "hasPortrait": true
+  },
+  {
+   "id": "will-smith",
+   "rank": null,
+   "top1": "the-weeknd",
+   "dTrue": 0.10872380519855074,
+   "dTop1": 0.09562008199262029,
+   "margin": 0.013103723205930451,
+   "hasPortrait": true
+  },
+  {
+   "id": "zac-efron",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.07040610712312279,
+   "dTop1": 0.05333371892000238,
+   "margin": 0.017072388203120403,
+   "hasPortrait": true
+  },
+  {
+   "id": "zayn-malik",
+   "rank": 1,
+   "top1": "zayn-malik",
+   "dTrue": 0.0021509664750452018,
+   "dTop1": 0.012607666644492754,
+   "margin": -0.010456700169447553,
+   "hasPortrait": true
+  },
+  {
+   "id": "zendaya",
+   "rank": 1,
+   "top1": "zendaya",
+   "dTrue": 0.0020001880908386838,
+   "dTop1": 0.012933403327197834,
+   "margin": -0.01093321523635915,
+   "hasPortrait": true
+  },
+  {
+   "id": "zoe-saldana",
+   "rank": 1,
+   "top1": "zoe-saldana",
+   "dTrue": 0.001020814092551392,
+   "dTop1": 0.012001307045294785,
+   "margin": -0.010980492952743393,
+   "hasPortrait": true
+  },
+  {
+   "id": "adam-driver",
+   "rank": 1,
+   "top1": "adam-driver",
+   "dTrue": 0.00099214098198952,
+   "dTop1": 0.01153913275997498,
+   "margin": -0.01054699177798546,
+   "hasPortrait": true
+  },
+  {
+   "id": "adele",
+   "rank": 1,
+   "top1": "adele",
+   "dTrue": 0.009083451241490459,
+   "dTop1": 0.020621105291972697,
+   "margin": -0.011537654050482238,
+   "hasPortrait": true
+  },
+  {
+   "id": "adriana-lima",
+   "rank": 1,
+   "top1": "adriana-lima",
+   "dTrue": 0.0017640559076390616,
+   "dTop1": 0.012982067561153388,
+   "margin": -0.011218011653514326,
+   "hasPortrait": true
+  },
+  {
+   "id": "alexander-skarsgard",
+   "rank": 1,
+   "top1": "alexander-skarsgard",
+   "dTrue": 0.004517698158085226,
+   "dTop1": 0.015722660679181377,
+   "margin": -0.011204962521096151,
+   "hasPortrait": true
+  },
+  {
+   "id": "alicia-vikander",
+   "rank": 1,
+   "top1": "alicia-vikander",
+   "dTrue": 0.0018447967282225752,
+   "dTop1": 0.012829638244032493,
+   "margin": -0.010984841515809918,
+   "hasPortrait": true
+  },
+  {
+   "id": "amy-adams",
+   "rank": null,
+   "top1": "john-boyega",
+   "dTrue": 0.17424645576894204,
+   "dTop1": 0.06794137780118426,
+   "margin": 0.10630507796775779,
+   "hasPortrait": true
+  },
+  {
+   "id": "ana-de-armas",
+   "rank": 1,
+   "top1": "ana-de-armas",
+   "dTrue": 0.002223093836670298,
+   "dTop1": 0.013796039644207614,
+   "margin": -0.011572945807537316,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-garfield",
+   "rank": 1,
+   "top1": "andrew-garfield",
+   "dTrue": 0.0026939477414696933,
+   "dTop1": 0.013545725343398485,
+   "margin": -0.010851777601928791,
+   "hasPortrait": true
+  },
+  {
+   "id": "angela-bassett",
+   "rank": 1,
+   "top1": "angela-bassett",
+   "dTrue": 0.001962042821898158,
+   "dTop1": 0.013021350138739174,
+   "margin": -0.011059307316841016,
+   "hasPortrait": true
+  },
+  {
+   "id": "angelina-jolie",
+   "rank": 1,
+   "top1": "angelina-jolie",
+   "dTrue": 0.0009045609933624466,
+   "dTop1": 0.011547634613303659,
+   "margin": -0.010643073619941212,
+   "hasPortrait": true
+  },
+  {
+   "id": "anthony-hopkins",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.1116452847118895,
+   "dTop1": 0.07305242775590337,
+   "margin": 0.03859285695598613,
+   "hasPortrait": true
+  },
+  {
+   "id": "antonio-banderas",
+   "rank": 2,
+   "top1": "hugh-jackman",
+   "dTrue": 0.07660255545643269,
+   "dTop1": 0.0798723600039365,
+   "margin": -0.0032698045475038073,
+   "hasPortrait": true
+  },
+  {
+   "id": "anya-taylor-joy",
+   "rank": 1,
+   "top1": "anya-taylor-joy",
+   "dTrue": 0.00116491116181483,
+   "dTop1": 0.012185594125521115,
+   "margin": -0.011020682963706285,
+   "hasPortrait": true
+  },
+  {
+   "id": "benedict-cumberbatch",
+   "rank": 1,
+   "top1": "benedict-cumberbatch",
+   "dTrue": 0.002264483599706102,
+   "dTop1": 0.01388814920620407,
+   "margin": -0.011623665606497968,
+   "hasPortrait": true
+  },
+  {
+   "id": "benedict-cumberbatch",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.09368315911983838,
+   "dTop1": 0.04900782710572993,
+   "margin": 0.04467533201410845,
+   "hasPortrait": true
+  },
+  {
+   "id": "beyonce",
+   "rank": 1,
+   "top1": "beyonce",
+   "dTrue": 0.01846327711021134,
+   "dTop1": 0.02901195407256918,
+   "margin": -0.01054867696235784,
+   "hasPortrait": true
+  },
+  {
+   "id": "billie-eilish",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.09133853422500293,
+   "dTop1": 0.051618948706904644,
+   "margin": 0.03971958551809829,
+   "hasPortrait": true
+  },
+  {
+   "id": "brad-pitt",
+   "rank": 1,
+   "top1": "brad-pitt",
+   "dTrue": 0.00602744880572792,
+   "dTop1": 0.01650602688813496,
+   "margin": -0.010478578082407042,
+   "hasPortrait": true
+  },
+  {
+   "id": "bradley-cooper",
+   "rank": 1,
+   "top1": "bradley-cooper",
+   "dTrue": 0.02062312974395386,
+   "dTop1": 0.03152640821482189,
+   "margin": -0.010903278470868027,
+   "hasPortrait": true
+  },
+  {
+   "id": "britney-spears",
+   "rank": 1,
+   "top1": "britney-spears",
+   "dTrue": 0.0008618853205607513,
+   "dTop1": 0.011803643286308896,
+   "margin": -0.010941757965748145,
+   "hasPortrait": true
+  },
+  {
+   "id": "cardi-b",
+   "rank": 1,
+   "top1": "cardi-b",
+   "dTrue": 0.0005876780515847724,
+   "dTop1": 0.012352702265336246,
+   "margin": -0.011765024213751474,
+   "hasPortrait": true
+  },
+  {
+   "id": "cate-blanchett",
+   "rank": 1,
+   "top1": "cate-blanchett",
+   "dTrue": 0.002608027777652233,
+   "dTop1": 0.013520038390869571,
+   "margin": -0.010912010613217338,
+   "hasPortrait": true
+  },
+  {
+   "id": "chadwick-boseman",
+   "rank": 1,
+   "top1": "chadwick-boseman",
+   "dTrue": 0.004439032223633288,
+   "dTop1": 0.01577413836359609,
+   "margin": -0.011335106139962803,
+   "hasPortrait": true
+  },
+  {
+   "id": "channing-tatum",
+   "rank": 1,
+   "top1": "channing-tatum",
+   "dTrue": 0.03299687657953454,
+   "dTop1": 0.043934344271225556,
+   "margin": -0.010937467691691016,
+   "hasPortrait": true
+  },
+  {
+   "id": "charlize-theron",
+   "rank": 1,
+   "top1": "charlize-theron",
+   "dTrue": 0.0021334026055960242,
+   "dTop1": 0.013582821689462121,
+   "margin": -0.011449419083866097,
+   "hasPortrait": true
+  },
+  {
+   "id": "chloe-grace-moretz",
+   "rank": 1,
+   "top1": "chloe-grace-moretz",
+   "dTrue": 0.0018073017905888555,
+   "dTop1": 0.01260075266316496,
+   "margin": -0.010793450872576105,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-evans",
+   "rank": 1,
+   "top1": "chris-evans",
+   "dTrue": 0.0026999601183167465,
+   "dTop1": 0.013848997137385188,
+   "margin": -0.011149037019068442,
+   "hasPortrait": true
+  },
+  {
+   "id": "chris-hemsworth",
+   "rank": 1,
+   "top1": "chris-hemsworth",
+   "dTrue": 0.0017210181708396943,
+   "dTop1": 0.011909080348164958,
+   "margin": -0.010188062177325263,
+   "hasPortrait": true
+  },
+  {
+   "id": "cillian-murphy",
+   "rank": 1,
+   "top1": "cillian-murphy",
+   "dTrue": 0.004520981754531639,
+   "dTop1": 0.014906118741453644,
+   "margin": -0.010385136986922006,
+   "hasPortrait": true
+  },
+  {
+   "id": "cole-sprouse",
+   "rank": 1,
+   "top1": "cole-sprouse",
+   "dTrue": 0.0035152699826136447,
+   "dTop1": 0.015046345712351195,
+   "margin": -0.01153107572973755,
+   "hasPortrait": true
+  },
+  {
+   "id": "denzel-washington",
+   "rank": 1,
+   "top1": "denzel-washington",
+   "dTrue": 0.0012800122326420693,
+   "dTop1": 0.012098621530977294,
+   "margin": -0.010818609298335224,
+   "hasPortrait": true
+  },
+  {
+   "id": "dev-patel",
+   "rank": 1,
+   "top1": "dev-patel",
+   "dTrue": 0.002192562195804104,
+   "dTop1": 0.012656351195952098,
+   "margin": -0.010463789000147994,
+   "hasPortrait": true
+  },
+  {
+   "id": "doja-cat",
+   "rank": 1,
+   "top1": "doja-cat",
+   "dTrue": 0.006357175905619017,
+   "dTop1": 0.01767956927591563,
+   "margin": -0.011322393370296613,
+   "hasPortrait": true
+  },
+  {
+   "id": "donald-glover",
+   "rank": 1,
+   "top1": "donald-glover",
+   "dTrue": 0.0006933513771590905,
+   "dTop1": 0.010956862647774734,
+   "margin": -0.010263511270615644,
+   "hasPortrait": true
+  },
+  {
+   "id": "dua-lipa",
+   "rank": 1,
+   "top1": "dua-lipa",
+   "dTrue": 0.004335193022233286,
+   "dTop1": 0.014999203673299988,
+   "margin": -0.010664010651066702,
+   "hasPortrait": true
+  },
+  {
+   "id": "eddie-redmayne",
+   "rank": 1,
+   "top1": "eddie-redmayne",
+   "dTrue": 0.00041321634926805295,
+   "dTop1": 0.010975985266833965,
+   "margin": -0.010562768917565912,
+   "hasPortrait": true
+  },
+  {
+   "id": "elijah-wood",
+   "rank": 1,
+   "top1": "elijah-wood",
+   "dTrue": 0.0027105692582866103,
+   "dTop1": 0.013472475424912922,
+   "margin": -0.010761906166626312,
+   "hasPortrait": true
+  },
+  {
+   "id": "elizabeth-olsen",
+   "rank": 1,
+   "top1": "elizabeth-olsen",
+   "dTrue": 0.0013903777607638945,
+   "dTop1": 0.01290199177345075,
+   "margin": -0.011511614012686855,
+   "hasPortrait": true
+  },
+  {
+   "id": "elon-musk",
+   "rank": 1,
+   "top1": "elon-musk",
+   "dTrue": 0.00043708013897336695,
+   "dTop1": 0.011734718058152627,
+   "margin": -0.01129763791917926,
+   "hasPortrait": true
+  },
+  {
+   "id": "emily-blunt",
+   "rank": 1,
+   "top1": "emily-blunt",
+   "dTrue": 0.0026900001182932343,
+   "dTop1": 0.013809543567719018,
+   "margin": -0.011119543449425784,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-stone",
+   "rank": 1,
+   "top1": "emma-stone",
+   "dTrue": 0.001105129584051845,
+   "dTop1": 0.012303508242413996,
+   "margin": -0.011198378658362151,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-watson",
+   "rank": 1,
+   "top1": "emma-watson",
+   "dTrue": 0.0007443861077087721,
+   "dTop1": 0.011417171483493638,
+   "margin": -0.010672785375784866,
+   "hasPortrait": true
+  },
+  {
+   "id": "eva-longoria",
+   "rank": null,
+   "top1": "cole-sprouse",
+   "dTrue": 0.2030789332599947,
+   "dTop1": 0.11385905184995693,
+   "margin": 0.08921988141003778,
+   "hasPortrait": true
+  },
+  {
+   "id": "fan-bingbing",
+   "rank": 1,
+   "top1": "fan-bingbing",
+   "dTrue": 0.010128636333704866,
+   "dTop1": 0.021462978654455234,
+   "margin": -0.011334342320750368,
+   "hasPortrait": true
+  },
+  {
+   "id": "florence-pugh",
+   "rank": 1,
+   "top1": "florence-pugh",
+   "dTrue": 0.03654384357071161,
+   "dTop1": 0.047165086931864275,
+   "margin": -0.010621243361152666,
+   "hasPortrait": true
+  },
+  {
+   "id": "gal-gadot",
+   "rank": 1,
+   "top1": "gal-gadot",
+   "dTrue": 0.004092162543005151,
+   "dTop1": 0.01553084689370432,
+   "margin": -0.011438684350699169,
+   "hasPortrait": true
+  },
+  {
+   "id": "gary-oldman",
+   "rank": 1,
+   "top1": "gary-oldman",
+   "dTrue": 0.02835362222191995,
+   "dTop1": 0.03814328628406727,
+   "margin": -0.009789664062147319,
+   "hasPortrait": true
+  },
+  {
+   "id": "gemma-chan",
+   "rank": 1,
+   "top1": "gemma-chan",
+   "dTrue": 0.001515358075386386,
+   "dTop1": 0.012383984436133977,
+   "margin": -0.01086862636074759,
+   "hasPortrait": true
+  },
+  {
+   "id": "george-clooney",
+   "rank": 1,
+   "top1": "george-clooney",
+   "dTrue": 0.033858961720730996,
+   "dTop1": 0.044346144513502384,
+   "margin": -0.010487182792771388,
+   "hasPortrait": true
+  },
+  {
+   "id": "gigi-hadid",
+   "rank": 1,
+   "top1": "gigi-hadid",
+   "dTrue": 0.0006228982906647529,
+   "dTop1": 0.01169492487324797,
+   "margin": -0.011072026582583216,
+   "hasPortrait": true
+  },
+  {
+   "id": "glen-powell",
+   "rank": 1,
+   "top1": "glen-powell",
+   "dTrue": 0.003468284594585924,
+   "dTop1": 0.014656016664102323,
+   "margin": -0.011187732069516398,
+   "hasPortrait": true
+  },
+  {
+   "id": "hailee-steinfeld",
+   "rank": 1,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.0020352904550497986,
+   "dTop1": 0.013238232649196435,
+   "margin": -0.011202942194146637,
+   "hasPortrait": true
+  },
+  {
+   "id": "halle-berry",
+   "rank": 1,
+   "top1": "halle-berry",
+   "dTrue": 0.00047351726496636104,
+   "dTop1": 0.010934827100601119,
+   "margin": -0.010461309835634758,
+   "hasPortrait": true
+  },
+  {
+   "id": "harry-styles",
+   "rank": 1,
+   "top1": "harry-styles",
+   "dTrue": 0.00544068426044908,
+   "dTop1": 0.0157731901414494,
+   "margin": -0.01033250588100032,
+   "hasPortrait": true
+  },
+  {
+   "id": "heidi-klum",
+   "rank": 1,
+   "top1": "heidi-klum",
+   "dTrue": 0.0020098090586049278,
+   "dTop1": 0.013187180378490537,
+   "margin": -0.01117737131988561,
+   "hasPortrait": true
+  },
+  {
+   "id": "helen-mirren",
+   "rank": 1,
+   "top1": "helen-mirren",
+   "dTrue": 0.0017595775296621596,
+   "dTop1": 0.012921442711737008,
+   "margin": -0.011161865182074848,
+   "hasPortrait": true
+  },
+  {
+   "id": "helena-bonham-carter",
+   "rank": 1,
+   "top1": "helena-bonham-carter",
+   "dTrue": 0.0016548086232976988,
+   "dTop1": 0.012789722461384767,
+   "margin": -0.011134913838087068,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-cavill",
+   "rank": 1,
+   "top1": "henry-cavill",
+   "dTrue": 0.001355642287890313,
+   "dTop1": 0.012093501350968427,
+   "margin": -0.010737859063078115,
+   "hasPortrait": true
+  },
+  {
+   "id": "hugh-jackman",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.10564940012277502,
+   "dTop1": 0.055121614536530306,
+   "margin": 0.05052778558624471,
+   "hasPortrait": true
+  },
+  {
+   "id": "idris-elba",
+   "rank": 1,
+   "top1": "idris-elba",
+   "dTrue": 0.0017919971333912876,
+   "dTop1": 0.012629042526322909,
+   "margin": -0.010837045392931621,
+   "hasPortrait": true
+  },
+  {
+   "id": "jackie-chan",
+   "rank": 1,
+   "top1": "jackie-chan",
+   "dTrue": 0.0035689395631224308,
+   "dTop1": 0.014430974278416886,
+   "margin": -0.010862034715294455,
+   "hasPortrait": true
+  },
+  {
+   "id": "jake-gyllenhaal",
+   "rank": 1,
+   "top1": "jake-gyllenhaal",
+   "dTrue": 0.0009324738074085737,
+   "dTop1": 0.011660691729263872,
+   "margin": -0.010728217921855299,
+   "hasPortrait": true
+  },
+  {
+   "id": "jamie-dornan",
+   "rank": 1,
+   "top1": "jamie-dornan",
+   "dTrue": 0.009232487029577907,
+   "dTop1": 0.0192810368037456,
+   "margin": -0.010048549774167692,
+   "hasPortrait": true
+  },
+  {
+   "id": "jason-momoa",
+   "rank": 1,
+   "top1": "jason-momoa",
+   "dTrue": 0.0022204306506460325,
+   "dTop1": 0.013172857151172668,
+   "margin": -0.010952426500526635,
+   "hasPortrait": true
+  },
+  {
+   "id": "javier-bardem",
+   "rank": 1,
+   "top1": "javier-bardem",
+   "dTrue": 0.002061454848938049,
+   "dTop1": 0.012385192959243119,
+   "margin": -0.01032373811030507,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennie-kim",
+   "rank": 1,
+   "top1": "jennie-kim",
+   "dTrue": 0.003477482148617317,
+   "dTop1": 0.014744774635754854,
+   "margin": -0.011267292487137537,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennifer-lawrence",
+   "rank": 1,
+   "top1": "jennifer-lawrence",
+   "dTrue": 0.0016504479328818267,
+   "dTop1": 0.012955653577655601,
+   "margin": -0.011305205644773775,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-alba",
+   "rank": 1,
+   "top1": "jessica-alba",
+   "dTrue": 0.0009903822819918862,
+   "dTop1": 0.01210901532224029,
+   "margin": -0.011118633040248405,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-chastain",
+   "rank": 1,
+   "top1": "jessica-chastain",
+   "dTrue": 0.0004119141222553857,
+   "dTop1": 0.011526533909934855,
+   "margin": -0.01111461978767947,
+   "hasPortrait": true
+  },
+  {
+   "id": "jisoo",
+   "rank": 1,
+   "top1": "jisoo",
+   "dTrue": 0.0027294602161170856,
+   "dTop1": 0.013544863750039715,
+   "margin": -0.01081540353392263,
+   "hasPortrait": true
+  },
+  {
+   "id": "joaquin-phoenix",
+   "rank": 1,
+   "top1": "joaquin-phoenix",
+   "dTrue": 0.0038954154895252113,
+   "dTop1": 0.014736659777321304,
+   "margin": -0.010841244287796092,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-krasinski",
+   "rank": 1,
+   "top1": "john-krasinski",
+   "dTrue": 0.0019018063440404687,
+   "dTop1": 0.013008778466213955,
+   "margin": -0.011106972122173486,
+   "hasPortrait": true
+  },
+  {
+   "id": "jonah-hill",
+   "rank": 1,
+   "top1": "jonah-hill",
+   "dTrue": 0.00025524288903544523,
+   "dTop1": 0.01159211234124613,
+   "margin": -0.011336869452210685,
+   "hasPortrait": true
+  },
+  {
+   "id": "joseph-gordon-levitt",
+   "rank": 1,
+   "top1": "joseph-gordon-levitt",
+   "dTrue": 0.002236488881644849,
+   "dTop1": 0.012544715436465292,
+   "margin": -0.010308226554820443,
+   "hasPortrait": true
+  },
+  {
+   "id": "josh-hutcherson",
+   "rank": 1,
+   "top1": "josh-hutcherson",
+   "dTrue": 0.05029704639373389,
+   "dTop1": 0.0611425548387744,
+   "margin": -0.010845508445040508,
+   "hasPortrait": true
+  },
+  {
+   "id": "julia-roberts",
+   "rank": 1,
+   "top1": "julia-roberts",
+   "dTrue": 0.000329577006210946,
+   "dTop1": 0.012044957141975399,
+   "margin": -0.011715380135764453,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-winslet",
+   "rank": 1,
+   "top1": "kate-winslet",
+   "dTrue": 0.0013756745094657408,
+   "dTop1": 0.013061665513503407,
+   "margin": -0.011685991004037666,
+   "hasPortrait": true
+  },
+  {
+   "id": "keanu-reeves",
+   "rank": 1,
+   "top1": "keanu-reeves",
+   "dTrue": 0.003758918360481478,
+   "dTop1": 0.015434488563218829,
+   "margin": -0.011675570202737351,
+   "hasPortrait": true
+  },
+  {
+   "id": "keira-knightley",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.13276512960106734,
+   "dTop1": 0.07823376645198366,
+   "margin": 0.05453136314908369,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendall-jenner",
+   "rank": 1,
+   "top1": "kendall-jenner",
+   "dTrue": 0.0013782990274742168,
+   "dTop1": 0.01234464760977183,
+   "margin": -0.010966348582297614,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendrick-lamar",
+   "rank": 1,
+   "top1": "kendrick-lamar",
+   "dTrue": 0.005011395288246234,
+   "dTop1": 0.015868484697584173,
+   "margin": -0.010857089409337939,
+   "hasPortrait": true
+  },
+  {
+   "id": "kerry-washington",
+   "rank": 1,
+   "top1": "kerry-washington",
+   "dTrue": 0.0018913691662881815,
+   "dTop1": 0.013177802895511292,
+   "margin": -0.011286433729223111,
+   "hasPortrait": true
+  },
+  {
+   "id": "kevin-hart",
+   "rank": 4,
+   "top1": "donald-glover",
+   "dTrue": 0.08177325159558613,
+   "dTop1": 0.08186775641807786,
+   "margin": -0.00009450482249173664,
+   "hasPortrait": true
+  },
+  {
+   "id": "kim-kardashian",
+   "rank": 1,
+   "top1": "kim-kardashian",
+   "dTrue": 0.0013619356953873396,
+   "dTop1": 0.01301150929062378,
+   "margin": -0.01164957359523644,
+   "hasPortrait": true
+  },
+  {
+   "id": "kristen-stewart",
+   "rank": 1,
+   "top1": "kristen-stewart",
+   "dTrue": 0.0015266383550518459,
+   "dTop1": 0.01398539536842236,
+   "margin": -0.012458757013370514,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylie-jenner",
+   "rank": 2,
+   "top1": "kendall-jenner",
+   "dTrue": 0.0013782990274742168,
+   "dTop1": 0.01234464760977183,
+   "margin": -0.010966348582297614,
+   "hasPortrait": true
+  },
+  {
+   "id": "laurence-fishburne",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.10740175699849308,
+   "dTop1": 0.059308951103887786,
+   "margin": 0.048092805894605295,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-min-ho",
+   "rank": 1,
+   "top1": "lee-min-ho",
+   "dTrue": 0.0022937309455193233,
+   "dTop1": 0.013028257540061539,
+   "margin": -0.010734526594542215,
+   "hasPortrait": true
+  },
+  {
+   "id": "leonardo-dicaprio",
+   "rank": 1,
+   "top1": "leonardo-dicaprio",
+   "dTrue": 0.001049711993842073,
+   "dTop1": 0.012336273078473514,
+   "margin": -0.011286561084631441,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-hemsworth",
+   "rank": 1,
+   "top1": "liam-hemsworth",
+   "dTrue": 0.00154629814773255,
+   "dTop1": 0.012047230409099607,
+   "margin": -0.010500932261367057,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-neeson",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.08603225511622647,
+   "dTop1": 0.06884205543022548,
+   "margin": 0.017190199686000995,
+   "hasPortrait": true
+  },
+  {
+   "id": "lionel-messi",
+   "rank": 1,
+   "top1": "lionel-messi",
+   "dTrue": 0.01151857050885885,
+   "dTop1": 0.02268836286282061,
+   "margin": -0.01116979235396176,
+   "hasPortrait": true
+  },
+  {
+   "id": "lizzo",
+   "rank": 1,
+   "top1": "lizzo",
+   "dTrue": 0.0033386026463766427,
+   "dTop1": 0.013867351290731245,
+   "margin": -0.010528748644354602,
+   "hasPortrait": true
+  },
+  {
+   "id": "logan-lerman",
+   "rank": 1,
+   "top1": "logan-lerman",
+   "dTrue": 0.001126035403624881,
+   "dTop1": 0.012208194781233805,
+   "margin": -0.011082159377608924,
+   "hasPortrait": true
+  },
+  {
+   "id": "lupita-nyongo",
+   "rank": 1,
+   "top1": "lupita-nyongo",
+   "dTrue": 0.0006875339244906131,
+   "dTop1": 0.011734244221297208,
+   "margin": -0.011046710296806594,
+   "hasPortrait": true
+  },
+  {
+   "id": "mads-mikkelsen",
+   "rank": 1,
+   "top1": "mads-mikkelsen",
+   "dTrue": 0.0034185204725454277,
+   "dTop1": 0.01444906965139825,
+   "margin": -0.011030549178852822,
+   "hasPortrait": true
+  },
+  {
+   "id": "margot-robbie",
+   "rank": 1,
+   "top1": "margot-robbie",
+   "dTrue": 0.0005151014193415238,
+   "dTop1": 0.012248740366208488,
+   "margin": -0.011733638946866964,
+   "hasPortrait": true
+  },
+  {
+   "id": "martin-freeman",
+   "rank": 1,
+   "top1": "martin-freeman",
+   "dTrue": 0.0013664760298363055,
+   "dTop1": 0.011566592761269479,
+   "margin": -0.010200116731433173,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-bomer",
+   "rank": 1,
+   "top1": "matt-bomer",
+   "dTrue": 0.0020839472867696385,
+   "dTop1": 0.012859464883665628,
+   "margin": -0.01077551759689599,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-damon",
+   "rank": 1,
+   "top1": "matt-damon",
+   "dTrue": 0.0157462878572463,
+   "dTop1": 0.026351202801975226,
+   "margin": -0.010604914944728927,
+   "hasPortrait": true
+  },
+  {
+   "id": "meghan-markle",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.10353281563976469,
+   "dTop1": 0.07291237632676673,
+   "margin": 0.03062043931299796,
+   "hasPortrait": true
+  },
+  {
+   "id": "meryl-streep",
+   "rank": 1,
+   "top1": "meryl-streep",
+   "dTrue": 0.001784785351633178,
+   "dTop1": 0.013172011960287833,
+   "margin": -0.011387226608654655,
+   "hasPortrait": true
+  },
+  {
+   "id": "michael-b-jordan",
+   "rank": 1,
+   "top1": "michael-b-jordan",
+   "dTrue": 0.00248079163686743,
+   "dTop1": 0.012636780722350305,
+   "margin": -0.010155989085482875,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-obama",
+   "rank": 1,
+   "top1": "michelle-obama",
+   "dTrue": 0.0013682966944807973,
+   "dTop1": 0.012680606804627792,
+   "margin": -0.011312310110146995,
+   "hasPortrait": true
+  },
+  {
+   "id": "miles-teller",
+   "rank": 1,
+   "top1": "miles-teller",
+   "dTrue": 0.00091341887227947,
+   "dTop1": 0.011829059097010042,
+   "margin": -0.010915640224730572,
+   "hasPortrait": true
+  },
+  {
+   "id": "millie-bobby-brown",
+   "rank": 1,
+   "top1": "millie-bobby-brown",
+   "dTrue": 0.001848376622413328,
+   "dTop1": 0.013176548787635745,
+   "margin": -0.011328172165222417,
+   "hasPortrait": true
+  },
+  {
+   "id": "morgan-freeman",
+   "rank": 1,
+   "top1": "morgan-freeman",
+   "dTrue": 0.010642354857050118,
+   "dTop1": 0.021356298650715977,
+   "margin": -0.010713943793665859,
+   "hasPortrait": true
+  },
+  {
+   "id": "naomi-campbell",
+   "rank": 1,
+   "top1": "naomi-campbell",
+   "dTrue": 0.002255448122264303,
+   "dTop1": 0.013508127269249326,
+   "margin": -0.011252679146985023,
+   "hasPortrait": true
+  },
+  {
+   "id": "natalie-portman",
+   "rank": 1,
+   "top1": "natalie-portman",
+   "dTrue": 0.012023317058002969,
+   "dTop1": 0.023561127756062228,
+   "margin": -0.011537810698059259,
+   "hasPortrait": true
+  },
+  {
+   "id": "neymar",
+   "rank": null,
+   "top1": "post-malone",
+   "dTrue": 0.11820125974766171,
+   "dTop1": 0.062485660265293896,
+   "margin": 0.05571559948236782,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicholas-hoult",
+   "rank": 1,
+   "top1": "nicholas-hoult",
+   "dTrue": 0.0027644505089238214,
+   "dTop1": 0.013551126705616756,
+   "margin": -0.010786676196692935,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicole-kidman",
+   "rank": 1,
+   "top1": "nicole-kidman",
+   "dTrue": 0.0010782447173711684,
+   "dTop1": 0.01256402604059037,
+   "margin": -0.011485781323219202,
+   "hasPortrait": true
+  },
+  {
+   "id": "olivia-rodrigo",
+   "rank": 1,
+   "top1": "olivia-rodrigo",
+   "dTrue": 0.003036742381531843,
+   "dTop1": 0.014242015988930823,
+   "margin": -0.01120527360739898,
+   "hasPortrait": true
+  },
+  {
+   "id": "oprah-winfrey",
+   "rank": 1,
+   "top1": "oprah-winfrey",
+   "dTrue": 0.003316087883303398,
+   "dTop1": 0.014387141636442835,
+   "margin": -0.011071053753139437,
+   "hasPortrait": true
+  },
+  {
+   "id": "orlando-bloom",
+   "rank": 1,
+   "top1": "orlando-bloom",
+   "dTrue": 0.001210565212436454,
+   "dTop1": 0.01187639168138288,
+   "margin": -0.010665826468946427,
+   "hasPortrait": true
+  },
+  {
+   "id": "oscar-isaac",
+   "rank": 1,
+   "top1": "oscar-isaac",
+   "dTrue": 0.0038510442794056354,
+   "dTop1": 0.014554552037604696,
+   "margin": -0.01070350775819906,
+   "hasPortrait": true
+  },
+  {
+   "id": "park-seo-joon",
+   "rank": 1,
+   "top1": "park-seo-joon",
+   "dTrue": 0.0005543086631546457,
+   "dTop1": 0.011304875984430085,
+   "margin": -0.01075056732127544,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-mescal",
+   "rank": 1,
+   "top1": "paul-mescal",
+   "dTrue": 0.054862285808627176,
+   "dTop1": 0.06558282536787996,
+   "margin": -0.010720539559252784,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-rudd",
+   "rank": 1,
+   "top1": "paul-rudd",
+   "dTrue": 0.030591112735061987,
+   "dTop1": 0.041355626852032534,
+   "margin": -0.010764514116970547,
+   "hasPortrait": true
+  },
+  {
+   "id": "pedro-pascal",
+   "rank": 1,
+   "top1": "pedro-pascal",
+   "dTrue": 0.0028137351078246775,
+   "dTop1": 0.012637134221068602,
+   "margin": -0.009823399113243925,
+   "hasPortrait": true
+  },
+  {
+   "id": "penelope-cruz-m",
+   "rank": 1,
+   "top1": "penelope-cruz-m",
+   "dTrue": 0.0032439824410723794,
+   "dTop1": 0.01362410075085152,
+   "margin": -0.01038011830977914,
+   "hasPortrait": true
+  },
+  {
+   "id": "pierce-brosnan",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.10530041627604947,
+   "dTop1": 0.06975489015240743,
+   "margin": 0.035545526123642035,
+   "hasPortrait": true
+  },
+  {
+   "id": "rachel-mcadams",
+   "rank": 1,
+   "top1": "rachel-mcadams",
+   "dTrue": 0.0014616871464655512,
+   "dTop1": 0.011940334354518023,
+   "margin": -0.010478647208052472,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranbir-kapoor",
+   "rank": 1,
+   "top1": "ranbir-kapoor",
+   "dTrue": 0.0007083277816805067,
+   "dTop1": 0.01219913379474069,
+   "margin": -0.011490806013060184,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranbir-kapoor",
+   "rank": 1,
+   "top1": "ranbir-kapoor",
+   "dTrue": 0.0011658233788237604,
+   "dTop1": 0.012947627657009297,
+   "margin": -0.011781804278185537,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranveer-singh",
+   "rank": 1,
+   "top1": "ranveer-singh",
+   "dTrue": 0.006051392703909864,
+   "dTop1": 0.01741934110352661,
+   "margin": -0.011367948399616745,
+   "hasPortrait": true
+  },
+  {
+   "id": "reesewitherspoon",
+   "rank": 1,
+   "top1": "reesewitherspoon",
+   "dTrue": 0.002783440657476488,
+   "dTop1": 0.014356560559041665,
+   "margin": -0.011573119901565176,
+   "hasPortrait": true
+  },
+  {
+   "id": "riz-ahmed",
+   "rank": 1,
+   "top1": "riz-ahmed",
+   "dTrue": 0.0010491310981322055,
+   "dTop1": 0.01147367118014564,
+   "margin": -0.010424540082013434,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-downey-jr",
+   "rank": 1,
+   "top1": "robert-downey-jr",
+   "dTrue": 0.0012640865169365467,
+   "dTop1": 0.011410973650743839,
+   "margin": -0.010146887133807292,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-pattinson",
+   "rank": 1,
+   "top1": "robert-pattinson",
+   "dTrue": 0.003903411423145653,
+   "dTop1": 0.014304584239098639,
+   "margin": -0.010401172815952986,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-pattinson",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.12173934903255867,
+   "dTop1": 0.05426699258462153,
+   "margin": 0.06747235644793714,
+   "hasPortrait": true
+  },
+  {
+   "id": "ryan-gosling",
+   "rank": 1,
+   "top1": "ryan-gosling",
+   "dTrue": 0.0023184607802677615,
+   "dTop1": 0.013200068753408623,
+   "margin": -0.010881607973140861,
+   "hasPortrait": true
+  },
+  {
+   "id": "salma-hayek",
+   "rank": 1,
+   "top1": "salma-hayek",
+   "dTrue": 0.012007815810156974,
+   "dTop1": 0.022547573637590745,
+   "margin": -0.010539757827433771,
+   "hasPortrait": true
+  },
+  {
+   "id": "sandra-bullock",
+   "rank": 1,
+   "top1": "sandra-bullock",
+   "dTrue": 0.001229981591690299,
+   "dTop1": 0.01257861383409642,
+   "margin": -0.01134863224240612,
+   "hasPortrait": true
+  },
+  {
+   "id": "saoirse-ronan",
+   "rank": 1,
+   "top1": "saoirse-ronan",
+   "dTrue": 0.0057025711298389625,
+   "dTop1": 0.01687082138287166,
+   "margin": -0.011168250253032697,
+   "hasPortrait": true
+  },
+  {
+   "id": "scarlett-johansson",
+   "rank": 1,
+   "top1": "scarlett-johansson",
+   "dTrue": 0.0009288307761946557,
+   "dTop1": 0.012560573607032333,
+   "margin": -0.011631742830837677,
+   "hasPortrait": true
+  },
+  {
+   "id": "sebastian-stan",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.11370008648744145,
+   "dTop1": 0.0727858813824952,
+   "margin": 0.040914205104946255,
+   "hasPortrait": true
+  },
+  {
+   "id": "selena-gomez",
+   "rank": 1,
+   "top1": "selena-gomez",
+   "dTrue": 0.0007701768655816732,
+   "dTop1": 0.012053126251934332,
+   "margin": -0.011282949386352659,
+   "hasPortrait": true
+  },
+  {
+   "id": "seth-rogen",
+   "rank": 1,
+   "top1": "seth-rogen",
+   "dTrue": 0.0034165603471968398,
+   "dTop1": 0.014720288553857874,
+   "margin": -0.011303728206661035,
+   "hasPortrait": true
+  },
+  {
+   "id": "shah-rukh-khan",
+   "rank": 1,
+   "top1": "shah-rukh-khan",
+   "dTrue": 0.0031818122721651854,
+   "dTop1": 0.014520854197499489,
+   "margin": -0.011339041925334303,
+   "hasPortrait": true
+  },
+  {
+   "id": "shakira",
+   "rank": 1,
+   "top1": "shakira",
+   "dTrue": 0.0006089591196536404,
+   "dTop1": 0.011732558267498971,
+   "margin": -0.011123599147845331,
+   "hasPortrait": true
+  },
+  {
+   "id": "stephen-curry",
+   "rank": 1,
+   "top1": "stephen-curry",
+   "dTrue": 0.010905184581746608,
+   "dTop1": 0.022131725168397343,
+   "margin": -0.011226540586650735,
+   "hasPortrait": true
+  },
+  {
+   "id": "sydney-sweeney",
+   "rank": 1,
+   "top1": "sydney-sweeney",
+   "dTrue": 0.0006619384017901853,
+   "dTop1": 0.012282075740867482,
+   "margin": -0.011620137339077297,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-lautner",
+   "rank": 1,
+   "top1": "taylor-lautner",
+   "dTrue": 0.001181912595717094,
+   "dTop1": 0.011726922455386313,
+   "margin": -0.010545009859669219,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-swift",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.0953995631934611,
+   "dTop1": 0.06668264213905184,
+   "margin": 0.02871692105440926,
+   "hasPortrait": true
+  },
+  {
+   "id": "the-weeknd",
+   "rank": 3,
+   "top1": "trevor-noah",
+   "dTrue": 0.07009839685082286,
+   "dTop1": 0.06619661813727151,
+   "margin": 0.0039017787135513515,
+   "hasPortrait": true
+  },
+  {
+   "id": "tiffany-haddish",
+   "rank": 1,
+   "top1": "tiffany-haddish",
+   "dTrue": 0.0014314920530306141,
+   "dTop1": 0.012586646762313358,
+   "margin": -0.011155154709282744,
+   "hasPortrait": true
+  },
+  {
+   "id": "timothee-chalamet",
+   "rank": 1,
+   "top1": "timothee-chalamet",
+   "dTrue": 0.0005744965336451635,
+   "dTop1": 0.010847719821104329,
+   "margin": -0.010273223287459166,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hanks",
+   "rank": 1,
+   "top1": "tom-hanks",
+   "dTrue": 0.0013687933311836709,
+   "dTop1": 0.012636867101256333,
+   "margin": -0.011268073770072662,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-holland",
+   "rank": 1,
+   "top1": "tom-holland",
+   "dTrue": 0.0037560708556504396,
+   "dTop1": 0.014182159557188045,
+   "margin": -0.010426088701537606,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-holland",
+   "rank": 1,
+   "top1": "tom-holland",
+   "dTrue": 0.0017459695672441544,
+   "dTop1": 0.012761880627121469,
+   "margin": -0.011015911059877315,
+   "hasPortrait": true
+  },
+  {
+   "id": "victoria-beckham",
+   "rank": 1,
+   "top1": "victoria-beckham",
+   "dTrue": 0.0009321960917890726,
+   "dTop1": 0.011688348368787516,
+   "margin": -0.010756152276998443,
+   "hasPortrait": true
+  },
+  {
+   "id": "will-smith",
+   "rank": 1,
+   "top1": "will-smith",
+   "dTrue": 0.04430155398374458,
+   "dTop1": 0.054165892325965914,
+   "margin": -0.009864338342221335,
+   "hasPortrait": true
+  },
+  {
+   "id": "zendaya",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.1683962330882548,
+   "dTop1": 0.08620517716940235,
+   "margin": 0.08219105591885245,
+   "hasPortrait": true
+  },
+  {
+   "id": "aaron-taylor-johnson",
+   "rank": 1,
+   "top1": "aaron-taylor-johnson",
+   "dTrue": 0.010947147642440314,
+   "dTop1": 0.022380664664146677,
+   "margin": -0.011433517021706363,
+   "hasPortrait": true
+  },
+  {
+   "id": "alia-bhatt",
+   "rank": 1,
+   "top1": "alia-bhatt",
+   "dTrue": 0.0011184170150284611,
+   "dTop1": 0.011845566522461826,
+   "margin": -0.010727149507433364,
+   "hasPortrait": true
+  },
+  {
+   "id": "andrew-scott",
+   "rank": 1,
+   "top1": "andrew-scott",
+   "dTrue": 0.003930144853393158,
+   "dTop1": 0.014719368481383555,
+   "margin": -0.010789223627990396,
+   "hasPortrait": true
+  },
+  {
+   "id": "anthony-hopkins",
+   "rank": 1,
+   "top1": "anthony-hopkins",
+   "dTrue": 0.0013224810095980866,
+   "dTop1": 0.011864203904527137,
+   "margin": -0.010541722894929051,
+   "hasPortrait": true
+  },
+  {
+   "id": "ariana-grande",
+   "rank": 1,
+   "top1": "ariana-grande",
+   "dTrue": 0.021633863872337677,
+   "dTop1": 0.03294907173502992,
+   "margin": -0.011315207862692245,
+   "hasPortrait": true
+  },
+  {
+   "id": "austin-butler",
+   "rank": 1,
+   "top1": "austin-butler",
+   "dTrue": 0.0020719623455718317,
+   "dTop1": 0.012255537395316374,
+   "margin": -0.010183575049744542,
+   "hasPortrait": true
+  },
+  {
+   "id": "awkwafina",
+   "rank": 1,
+   "top1": "awkwafina",
+   "dTrue": 0.00018361439909087007,
+   "dTop1": 0.011343008850733804,
+   "margin": -0.011159394451642934,
+   "hasPortrait": true
+  },
+  {
+   "id": "barack-obama",
+   "rank": 1,
+   "top1": "barack-obama",
+   "dTrue": 0.010712051288105262,
+   "dTop1": 0.02111859881802891,
+   "margin": -0.010406547529923649,
+   "hasPortrait": true
+  },
+  {
+   "id": "bella-hadid",
+   "rank": null,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.10674601912046022,
+   "dTop1": 0.07551462067874959,
+   "margin": 0.031231398441710634,
+   "hasPortrait": true
+  },
+  {
+   "id": "chadwick-boseman",
+   "rank": 1,
+   "top1": "chadwick-boseman",
+   "dTrue": 0.0009221926531097768,
+   "dTop1": 0.012318980934881707,
+   "margin": -0.01139678828177193,
+   "hasPortrait": true
+  },
+  {
+   "id": "cristiano-ronaldo",
+   "rank": 1,
+   "top1": "cristiano-ronaldo",
+   "dTrue": 0.001271395655865759,
+   "dTop1": 0.01223932655462856,
+   "margin": -0.010967930898762801,
+   "hasPortrait": true
+  },
+  {
+   "id": "daniel-craig",
+   "rank": 1,
+   "top1": "daniel-craig",
+   "dTrue": 0.003036127584601256,
+   "dTop1": 0.013330095316791968,
+   "margin": -0.010293967732190712,
+   "hasPortrait": true
+  },
+  {
+   "id": "deepika-padukone",
+   "rank": 1,
+   "top1": "deepika-padukone",
+   "dTrue": 0.0010436396915167734,
+   "dTop1": 0.011957852718750495,
+   "margin": -0.010914213027233721,
+   "hasPortrait": true
+  },
+  {
+   "id": "doja-cat",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.12031241896269607,
+   "dTop1": 0.07124483988887398,
+   "margin": 0.04906757907382209,
+   "hasPortrait": true
+  },
+  {
+   "id": "donnie-yen",
+   "rank": 1,
+   "top1": "donnie-yen",
+   "dTrue": 0.001321881824634663,
+   "dTop1": 0.013156452355976955,
+   "margin": -0.011834570531342292,
+   "hasPortrait": true
+  },
+  {
+   "id": "drake",
+   "rank": 1,
+   "top1": "drake",
+   "dTrue": 0.05760743881986741,
+   "dTop1": 0.06770904820132362,
+   "margin": -0.010101609381456211,
+   "hasPortrait": true
+  },
+  {
+   "id": "drake",
+   "rank": 1,
+   "top1": "drake",
+   "dTrue": 0.03959765776620028,
+   "dTop1": 0.04989232484296191,
+   "margin": -0.010294667076761632,
+   "hasPortrait": true
+  },
+  {
+   "id": "dwayne-johnson",
+   "rank": 1,
+   "top1": "dwayne-johnson",
+   "dTrue": 0.0007486373362874943,
+   "dTop1": 0.011857514294581817,
+   "margin": -0.011108876958294323,
+   "hasPortrait": true
+  },
+  {
+   "id": "ed-sheeran",
+   "rank": 1,
+   "top1": "ed-sheeran",
+   "dTrue": 0.0016827928562272998,
+   "dTop1": 0.012212217514446233,
+   "margin": -0.010529424658218933,
+   "hasPortrait": true
+  },
+  {
+   "id": "ed-sheeran",
+   "rank": 1,
+   "top1": "ed-sheeran",
+   "dTrue": 0.001745608636702145,
+   "dTop1": 0.011746072544412844,
+   "margin": -0.0100004639077107,
+   "hasPortrait": true
+  },
+  {
+   "id": "eddie-redmayne",
+   "rank": 1,
+   "top1": "eddie-redmayne",
+   "dTrue": 0.001216656320184084,
+   "dTop1": 0.012082232192833775,
+   "margin": -0.010865575872649691,
+   "hasPortrait": true
+  },
+  {
+   "id": "elijah-wood",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.11548162189445177,
+   "dTop1": 0.07309789493443075,
+   "margin": 0.04238372696002102,
+   "hasPortrait": true
+  },
+  {
+   "id": "elon-musk",
+   "rank": 1,
+   "top1": "elon-musk",
+   "dTrue": 0.001177146068222945,
+   "dTop1": 0.012962259903693818,
+   "margin": -0.011785113835470873,
+   "hasPortrait": true
+  },
+  {
+   "id": "emily-blunt",
+   "rank": null,
+   "top1": "emma-watson",
+   "dTrue": 0.08097847607240904,
+   "dTop1": 0.06998503329802863,
+   "margin": 0.010993442774380413,
+   "hasPortrait": true
+  },
+  {
+   "id": "emma-watson",
+   "rank": 1,
+   "top1": "emma-watson",
+   "dTrue": 0.0012720797649208304,
+   "dTop1": 0.01192742239772604,
+   "margin": -0.01065534263280521,
+   "hasPortrait": true
+  },
+  {
+   "id": "eva-longoria",
+   "rank": 1,
+   "top1": "eva-longoria",
+   "dTrue": 0.003890705887213186,
+   "dTop1": 0.015679257977801675,
+   "margin": -0.011788552090588489,
+   "hasPortrait": true
+  },
+  {
+   "id": "fan-bingbing",
+   "rank": 1,
+   "top1": "fan-bingbing",
+   "dTrue": 0.0011603714034656987,
+   "dTop1": 0.012634542178725505,
+   "margin": -0.011474170775259807,
+   "hasPortrait": true
+  },
+  {
+   "id": "gary-oldman",
+   "rank": 1,
+   "top1": "gary-oldman",
+   "dTrue": 0.002838898120347988,
+   "dTop1": 0.012929797848394875,
+   "margin": -0.010090899728046887,
+   "hasPortrait": true
+  },
+  {
+   "id": "gemma-chan",
+   "rank": 1,
+   "top1": "gemma-chan",
+   "dTrue": 0.0018689556175365274,
+   "dTop1": 0.012768860341378141,
+   "margin": -0.010899904723841614,
+   "hasPortrait": true
+  },
+  {
+   "id": "gigi-hadid",
+   "rank": 1,
+   "top1": "gigi-hadid",
+   "dTrue": 0.0017412040551068042,
+   "dTop1": 0.012525197544527078,
+   "margin": -0.010783993489420274,
+   "hasPortrait": true
+  },
+  {
+   "id": "glen-powell",
+   "rank": 1,
+   "top1": "glen-powell",
+   "dTrue": 0.00022268486397303278,
+   "dTop1": 0.012131452162056688,
+   "margin": -0.011908767298083656,
+   "hasPortrait": true
+  },
+  {
+   "id": "hailee-steinfeld",
+   "rank": 1,
+   "top1": "hailee-steinfeld",
+   "dTrue": 0.018941798839630986,
+   "dTop1": 0.029455107770363975,
+   "margin": -0.01051330893073299,
+   "hasPortrait": true
+  },
+  {
+   "id": "halle-berry",
+   "rank": 1,
+   "top1": "halle-berry",
+   "dTrue": 0.0015419881255690493,
+   "dTop1": 0.01232056141493254,
+   "margin": -0.010778573289363491,
+   "hasPortrait": true
+  },
+  {
+   "id": "heidi-klum",
+   "rank": 1,
+   "top1": "heidi-klum",
+   "dTrue": 0.052028906248602236,
+   "dTop1": 0.06351485705837023,
+   "margin": -0.011485950809767997,
+   "hasPortrait": true
+  },
+  {
+   "id": "helen-mirren",
+   "rank": 1,
+   "top1": "helen-mirren",
+   "dTrue": 0.002109781411151812,
+   "dTop1": 0.01380266211177994,
+   "margin": -0.011692880700628128,
+   "hasPortrait": true
+  },
+  {
+   "id": "helena-bonham-carter",
+   "rank": 1,
+   "top1": "helena-bonham-carter",
+   "dTrue": 0.000362124018258414,
+   "dTop1": 0.011573674175054505,
+   "margin": -0.01121155015679609,
+   "hasPortrait": true
+  },
+  {
+   "id": "henry-golding",
+   "rank": 1,
+   "top1": "henry-golding",
+   "dTrue": 0.0020490598059499376,
+   "dTop1": 0.012462774936056409,
+   "margin": -0.010413715130106471,
+   "hasPortrait": true
+  },
+  {
+   "id": "hugh-jackman",
+   "rank": 1,
+   "top1": "hugh-jackman",
+   "dTrue": 0.002431226298958644,
+   "dTop1": 0.013687989111905163,
+   "margin": -0.01125676281294652,
+   "hasPortrait": true
+  },
+  {
+   "id": "hunter-schafer",
+   "rank": 1,
+   "top1": "hunter-schafer",
+   "dTrue": 0.0017189802065229465,
+   "dTop1": 0.013489218110498746,
+   "margin": -0.0117702379039758,
+   "hasPortrait": true
+  },
+  {
+   "id": "jackie-chan",
+   "rank": 1,
+   "top1": "jackie-chan",
+   "dTrue": 0.004979091468563568,
+   "dTop1": 0.015852886241730313,
+   "margin": -0.010873794773166745,
+   "hasPortrait": true
+  },
+  {
+   "id": "jake-gyllenhaal",
+   "rank": 1,
+   "top1": "jake-gyllenhaal",
+   "dTrue": 0.001601319286080205,
+   "dTop1": 0.012498230918637332,
+   "margin": -0.010896911632557127,
+   "hasPortrait": true
+  },
+  {
+   "id": "jamie-dornan",
+   "rank": 1,
+   "top1": "jamie-dornan",
+   "dTrue": 0.0018563125045506501,
+   "dTop1": 0.012770662630335772,
+   "margin": -0.010914350125785122,
+   "hasPortrait": true
+  },
+  {
+   "id": "jason-momoa",
+   "rank": 1,
+   "top1": "jason-momoa",
+   "dTrue": 0.0013274163672165606,
+   "dTop1": 0.01214360587132779,
+   "margin": -0.010816189504111229,
+   "hasPortrait": true
+  },
+  {
+   "id": "javier-bardem",
+   "rank": 1,
+   "top1": "javier-bardem",
+   "dTrue": 0.0003952319799285231,
+   "dTop1": 0.011070916457916913,
+   "margin": -0.01067568447798839,
+   "hasPortrait": true
+  },
+  {
+   "id": "jennie-kim",
+   "rank": 1,
+   "top1": "jennie-kim",
+   "dTrue": 0.019045962778307612,
+   "dTop1": 0.029984691388516227,
+   "margin": -0.010938728610208615,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-alba",
+   "rank": 1,
+   "top1": "jessica-alba",
+   "dTrue": 0.0021418231100460705,
+   "dTop1": 0.012899988862980383,
+   "margin": -0.010758165752934312,
+   "hasPortrait": true
+  },
+  {
+   "id": "jessica-chastain",
+   "rank": 1,
+   "top1": "jessica-chastain",
+   "dTrue": 0.0009308656944125859,
+   "dTop1": 0.0114558578661208,
+   "margin": -0.010524992171708214,
+   "hasPortrait": true
+  },
+  {
+   "id": "jet-li",
+   "rank": 1,
+   "top1": "jet-li",
+   "dTrue": 0.0018901564511802915,
+   "dTop1": 0.013081014380526335,
+   "margin": -0.011190857929346043,
+   "hasPortrait": true
+  },
+  {
+   "id": "jisoo",
+   "rank": 1,
+   "top1": "jisoo",
+   "dTrue": 0.0023470871339816846,
+   "dTop1": 0.012957266932092648,
+   "margin": -0.010610179798110964,
+   "hasPortrait": true
+  },
+  {
+   "id": "joaquin-phoenix",
+   "rank": 1,
+   "top1": "joaquin-phoenix",
+   "dTrue": 0.005719523700770557,
+   "dTop1": 0.016326525527472602,
+   "margin": -0.010607001826702045,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-boyega",
+   "rank": 1,
+   "top1": "john-boyega",
+   "dTrue": 0.0015063544178002264,
+   "dTop1": 0.012113081281430627,
+   "margin": -0.0106067268636304,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-cho",
+   "rank": 1,
+   "top1": "john-cho",
+   "dTrue": 0.000883651847562783,
+   "dTop1": 0.01135846717353961,
+   "margin": -0.010474815325976827,
+   "hasPortrait": true
+  },
+  {
+   "id": "john-krasinski",
+   "rank": 1,
+   "top1": "john-krasinski",
+   "dTrue": 0.002253450003180557,
+   "dTop1": 0.01313732640118126,
+   "margin": -0.010883876398000703,
+   "hasPortrait": true
+  },
+  {
+   "id": "jonah-hill",
+   "rank": 1,
+   "top1": "jonah-hill",
+   "dTrue": 0.002805585116341436,
+   "dTop1": 0.013971135157224701,
+   "margin": -0.011165550040883265,
+   "hasPortrait": true
+  },
+  {
+   "id": "joseph-gordon-levitt",
+   "rank": 1,
+   "top1": "joseph-gordon-levitt",
+   "dTrue": 0.0027939332306015086,
+   "dTop1": 0.012838425377151741,
+   "margin": -0.010044492146550232,
+   "hasPortrait": true
+  },
+  {
+   "id": "josh-hutcherson",
+   "rank": 1,
+   "top1": "josh-hutcherson",
+   "dTrue": 0.001986361009978954,
+   "dTop1": 0.013518619055449821,
+   "margin": -0.011532258045470867,
+   "hasPortrait": true
+  },
+  {
+   "id": "julia-roberts",
+   "rank": 1,
+   "top1": "julia-roberts",
+   "dTrue": 0.001993314514285527,
+   "dTop1": 0.013920010471725752,
+   "margin": -0.011926695957440225,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-middleton",
+   "rank": null,
+   "top1": "bad-bunny",
+   "dTrue": 0.08825638738080721,
+   "dTop1": 0.0829285750044032,
+   "margin": 0.005327812376404006,
+   "hasPortrait": true
+  },
+  {
+   "id": "kate-winslet",
+   "rank": null,
+   "top1": "billie-eilish",
+   "dTrue": 0.10486030427319004,
+   "dTop1": 0.08799742839695246,
+   "margin": 0.016862875876237582,
+   "hasPortrait": true
+  },
+  {
+   "id": "keira-knightley",
+   "rank": 1,
+   "top1": "keira-knightley",
+   "dTrue": 0.009557906210249878,
+   "dTop1": 0.020756832827424465,
+   "margin": -0.011198926617174587,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendall-jenner",
+   "rank": 1,
+   "top1": "kendall-jenner",
+   "dTrue": 0.0011344982383464375,
+   "dTop1": 0.011906261150222974,
+   "margin": -0.010771762911876537,
+   "hasPortrait": true
+  },
+  {
+   "id": "kendrick-lamar",
+   "rank": 1,
+   "top1": "kendrick-lamar",
+   "dTrue": 0.002064864763245522,
+   "dTop1": 0.013220834182872898,
+   "margin": -0.011155969419627376,
+   "hasPortrait": true
+  },
+  {
+   "id": "kerry-washington",
+   "rank": 1,
+   "top1": "kerry-washington",
+   "dTrue": 0.0027403758874295914,
+   "dTop1": 0.014047367526011989,
+   "margin": -0.011306991638582398,
+   "hasPortrait": true
+  },
+  {
+   "id": "kevin-hart",
+   "rank": 1,
+   "top1": "kevin-hart",
+   "dTrue": 0.0017457878562837648,
+   "dTop1": 0.01251767420979033,
+   "margin": -0.010771886353506566,
+   "hasPortrait": true
+  },
+  {
+   "id": "kim-kardashian",
+   "rank": 1,
+   "top1": "kim-kardashian",
+   "dTrue": 0.0009830212003318906,
+   "dTop1": 0.012506154967305005,
+   "margin": -0.011523133766973115,
+   "hasPortrait": true
+  },
+  {
+   "id": "kristen-stewart",
+   "rank": 1,
+   "top1": "kristen-stewart",
+   "dTrue": 0.0020370482715672544,
+   "dTop1": 0.013635013682568253,
+   "margin": -0.011597965411000999,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylian-mbappe",
+   "rank": 3,
+   "top1": "bad-bunny",
+   "dTrue": 0.07830877936560521,
+   "dTop1": 0.07694662774333472,
+   "margin": 0.001362151622270491,
+   "hasPortrait": true
+  },
+  {
+   "id": "kylie-jenner",
+   "rank": 1,
+   "top1": "kylie-jenner",
+   "dTrue": 0.0004105061021860701,
+   "dTop1": 0.011160219714845598,
+   "margin": -0.010749713612659528,
+   "hasPortrait": true
+  },
+  {
+   "id": "laurence-fishburne",
+   "rank": 1,
+   "top1": "laurence-fishburne",
+   "dTrue": 0.0018303559549667225,
+   "dTop1": 0.01331318211510324,
+   "margin": -0.011482826160136517,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-jung-jae",
+   "rank": 1,
+   "top1": "lee-jung-jae",
+   "dTrue": 0.0025854702458388834,
+   "dTop1": 0.012957693466264741,
+   "margin": -0.010372223220425858,
+   "hasPortrait": true
+  },
+  {
+   "id": "lee-min-ho",
+   "rank": 1,
+   "top1": "lee-min-ho",
+   "dTrue": 0.0030599802296294998,
+   "dTop1": 0.012760154385566658,
+   "margin": -0.009700174155937158,
+   "hasPortrait": true
+  },
+  {
+   "id": "leonardo-dicaprio",
+   "rank": 1,
+   "top1": "leonardo-dicaprio",
+   "dTrue": 0.01972101142297611,
+   "dTop1": 0.03062158441771623,
+   "margin": -0.010900572994740121,
+   "hasPortrait": true
+  },
+  {
+   "id": "leonardo-dicaprio",
+   "rank": 1,
+   "top1": "leonardo-dicaprio",
+   "dTrue": 0.0013534881203615123,
+   "dTop1": 0.012434781392649863,
+   "margin": -0.01108129327228835,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-hemsworth",
+   "rank": 1,
+   "top1": "liam-hemsworth",
+   "dTrue": 0.0012279506639885085,
+   "dTop1": 0.011936317171744482,
+   "margin": -0.010708366507755973,
+   "hasPortrait": true
+  },
+  {
+   "id": "liam-neeson",
+   "rank": 1,
+   "top1": "liam-neeson",
+   "dTrue": 0.01134603791979738,
+   "dTop1": 0.022047138121574994,
+   "margin": -0.010701100201777614,
+   "hasPortrait": true
+  },
+  {
+   "id": "lionel-messi",
+   "rank": 1,
+   "top1": "lionel-messi",
+   "dTrue": 0.002877440400767317,
+   "dTop1": 0.014221142882016924,
+   "margin": -0.011343702481249607,
+   "hasPortrait": true
+  },
+  {
+   "id": "lisa-blackpink",
+   "rank": null,
+   "top1": "billie-eilish",
+   "dTrue": 0.13569499833907617,
+   "dTop1": 0.06873575675425503,
+   "margin": 0.06695924158482114,
+   "hasPortrait": true
+  },
+  {
+   "id": "lisa-blackpink",
+   "rank": 1,
+   "top1": "lisa-blackpink",
+   "dTrue": 0.0011922745259500545,
+   "dTop1": 0.01106038707388246,
+   "margin": -0.009868112547932406,
+   "hasPortrait": true
+  },
+  {
+   "id": "liu-yifei",
+   "rank": 1,
+   "top1": "liu-yifei",
+   "dTrue": 0.02918866649243057,
+   "dTop1": 0.04011827642804766,
+   "margin": -0.01092960993561709,
+   "hasPortrait": true
+  },
+  {
+   "id": "lizzo",
+   "rank": 1,
+   "top1": "lizzo",
+   "dTrue": 0.0008423344197840965,
+   "dTop1": 0.012028485964799107,
+   "margin": -0.01118615154501501,
+   "hasPortrait": true
+  },
+  {
+   "id": "logan-lerman",
+   "rank": 1,
+   "top1": "logan-lerman",
+   "dTrue": 0.005037040217376609,
+   "dTop1": 0.01526897826034046,
+   "margin": -0.01023193804296385,
+   "hasPortrait": true
+  },
+  {
+   "id": "luke-hemsworth",
+   "rank": 1,
+   "top1": "luke-hemsworth",
+   "dTrue": 0.014336142701180887,
+   "dTop1": 0.02455695086684484,
+   "margin": -0.010220808165663953,
+   "hasPortrait": true
+  },
+  {
+   "id": "mads-mikkelsen",
+   "rank": 1,
+   "top1": "mads-mikkelsen",
+   "dTrue": 0.0008401199462721998,
+   "dTop1": 0.011705332079282038,
+   "margin": -0.010865212133009838,
+   "hasPortrait": true
+  },
+  {
+   "id": "mark-zuckerberg",
+   "rank": 1,
+   "top1": "mark-zuckerberg",
+   "dTrue": 0.0008132147696864322,
+   "dTop1": 0.01188055243611752,
+   "margin": -0.011067337666431087,
+   "hasPortrait": true
+  },
+  {
+   "id": "martin-freeman",
+   "rank": 1,
+   "top1": "martin-freeman",
+   "dTrue": 0.0021523940003964626,
+   "dTop1": 0.013005904050935269,
+   "margin": -0.010853510050538806,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-bomer",
+   "rank": 1,
+   "top1": "matt-bomer",
+   "dTrue": 0.001328654634672799,
+   "dTop1": 0.012683557944458745,
+   "margin": -0.011354903309785946,
+   "hasPortrait": true
+  },
+  {
+   "id": "matt-damon",
+   "rank": 1,
+   "top1": "matt-damon",
+   "dTrue": 0.0020977592774544807,
+   "dTop1": 0.01336603305748818,
+   "margin": -0.0112682737800337,
+   "hasPortrait": true
+  },
+  {
+   "id": "meghan-markle",
+   "rank": 1,
+   "top1": "meghan-markle",
+   "dTrue": 0.0013321278981641704,
+   "dTop1": 0.012540482939316755,
+   "margin": -0.011208355041152585,
+   "hasPortrait": true
+  },
+  {
+   "id": "meryl-streep",
+   "rank": 1,
+   "top1": "meryl-streep",
+   "dTrue": 0.002038145648963763,
+   "dTop1": 0.013309579036061336,
+   "margin": -0.011271433387097574,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-obama",
+   "rank": 1,
+   "top1": "michelle-obama",
+   "dTrue": 0.0011235514805768565,
+   "dTop1": 0.012607321878018607,
+   "margin": -0.01148377039744175,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-yeoh",
+   "rank": 1,
+   "top1": "michelle-yeoh",
+   "dTrue": 0.0035582853223788957,
+   "dTop1": 0.015197737162407687,
+   "margin": -0.011639451840028792,
+   "hasPortrait": true
+  },
+  {
+   "id": "michelle-yeoh",
+   "rank": 1,
+   "top1": "michelle-yeoh",
+   "dTrue": 0.0003087546316816736,
+   "dTop1": 0.011915822045949098,
+   "margin": -0.011607067414267425,
+   "hasPortrait": true
+  },
+  {
+   "id": "miles-teller",
+   "rank": 1,
+   "top1": "miles-teller",
+   "dTrue": 0.00414982632534211,
+   "dTop1": 0.014363912901786291,
+   "margin": -0.010214086576444181,
+   "hasPortrait": true
+  },
+  {
+   "id": "morgan-freeman",
+   "rank": 1,
+   "top1": "morgan-freeman",
+   "dTrue": 0.00230154481575362,
+   "dTop1": 0.013087355556235747,
+   "margin": -0.010785810740482127,
+   "hasPortrait": true
+  },
+  {
+   "id": "naomi-osaka",
+   "rank": null,
+   "top1": "karol-g",
+   "dTrue": 0.08483719579236726,
+   "dTop1": 0.05664683374690971,
+   "margin": 0.02819036204545755,
+   "hasPortrait": true
+  },
+  {
+   "id": "naomi-osaka",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.09259494260234902,
+   "dTop1": 0.04499665072061354,
+   "margin": 0.04759829188173548,
+   "hasPortrait": true
+  },
+  {
+   "id": "natalie-portman",
+   "rank": 1,
+   "top1": "natalie-portman",
+   "dTrue": 0.0005364048769811447,
+   "dTop1": 0.011758940566746423,
+   "margin": -0.011222535689765278,
+   "hasPortrait": true
+  },
+  {
+   "id": "neymar",
+   "rank": null,
+   "top1": "tony-leung",
+   "dTrue": 0.09543311933984833,
+   "dTop1": 0.0685347751297819,
+   "margin": 0.026898344210066427,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicholas-hoult",
+   "rank": 1,
+   "top1": "nicholas-hoult",
+   "dTrue": 0.001407570814650927,
+   "dTop1": 0.012462584746868566,
+   "margin": -0.011055013932217639,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicki-minaj",
+   "rank": 1,
+   "top1": "nicki-minaj",
+   "dTrue": 0.0007294791469458772,
+   "dTop1": 0.011590207975897826,
+   "margin": -0.010860728828951949,
+   "hasPortrait": true
+  },
+  {
+   "id": "nicole-kidman",
+   "rank": 1,
+   "top1": "nicole-kidman",
+   "dTrue": 0.0033301478721944333,
+   "dTop1": 0.014837517563515812,
+   "margin": -0.011507369691321379,
+   "hasPortrait": true
+  },
+  {
+   "id": "olivia-colman",
+   "rank": 1,
+   "top1": "olivia-colman",
+   "dTrue": 0.0015057920186841711,
+   "dTop1": 0.012513486347045077,
+   "margin": -0.011007694328360906,
+   "hasPortrait": true
+  },
+  {
+   "id": "olivia-rodrigo",
+   "rank": 1,
+   "top1": "olivia-rodrigo",
+   "dTrue": 0.001167040139643638,
+   "dTop1": 0.012226317765090977,
+   "margin": -0.011059277625447339,
+   "hasPortrait": true
+  },
+  {
+   "id": "oprah-winfrey",
+   "rank": 1,
+   "top1": "oprah-winfrey",
+   "dTrue": 0.0011516111910323534,
+   "dTop1": 0.012270286188671653,
+   "margin": -0.0111186749976393,
+   "hasPortrait": true
+  },
+  {
+   "id": "orlando-bloom",
+   "rank": null,
+   "top1": "will-smith",
+   "dTrue": 0.0735428467214051,
+   "dTop1": 0.05390465968583813,
+   "margin": 0.019638187035566967,
+   "hasPortrait": true
+  },
+  {
+   "id": "park-seo-joon",
+   "rank": 1,
+   "top1": "park-seo-joon",
+   "dTrue": 0.0008413771035625794,
+   "dTop1": 0.012055525013095258,
+   "margin": -0.011214147909532679,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-mescal",
+   "rank": 1,
+   "top1": "paul-mescal",
+   "dTrue": 0.001997332039949673,
+   "dTop1": 0.013173128936250889,
+   "margin": -0.011175796896301216,
+   "hasPortrait": true
+  },
+  {
+   "id": "paul-rudd",
+   "rank": 1,
+   "top1": "paul-rudd",
+   "dTrue": 0.001034594760133234,
+   "dTop1": 0.012568120650124803,
+   "margin": -0.01153352588999157,
+   "hasPortrait": true
+  },
+  {
+   "id": "penelope-cruz-m",
+   "rank": 1,
+   "top1": "penelope-cruz-m",
+   "dTrue": 0.014719163768295851,
+   "dTop1": 0.026233582502462882,
+   "margin": -0.011514418734167031,
+   "hasPortrait": true
+  },
+  {
+   "id": "pierce-brosnan",
+   "rank": 1,
+   "top1": "pierce-brosnan",
+   "dTrue": 0.011143582609041247,
+   "dTop1": 0.021735854456887416,
+   "margin": -0.010592271847846169,
+   "hasPortrait": true
+  },
+  {
+   "id": "prince-harry",
+   "rank": 1,
+   "top1": "prince-harry",
+   "dTrue": 0.06750570478724627,
+   "dTop1": 0.0779120679762324,
+   "margin": -0.010406363188986134,
+   "hasPortrait": true
+  },
+  {
+   "id": "priyanka-chopra",
+   "rank": 1,
+   "top1": "priyanka-chopra",
+   "dTrue": 0.0016835370265351202,
+   "dTop1": 0.012584752656155107,
+   "margin": -0.010901215629619987,
+   "hasPortrait": true
+  },
+  {
+   "id": "rachel-mcadams",
+   "rank": 1,
+   "top1": "rachel-mcadams",
+   "dTrue": 0.0006797283876541771,
+   "dTop1": 0.01128074581324523,
+   "margin": -0.010601017425591053,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranbir-kapoor",
+   "rank": 1,
+   "top1": "ranbir-kapoor",
+   "dTrue": 0.0010242228113023222,
+   "dTop1": 0.012365421906590401,
+   "margin": -0.01134119909528808,
+   "hasPortrait": true
+  },
+  {
+   "id": "ranveer-singh",
+   "rank": null,
+   "top1": "john-boyega",
+   "dTrue": 0.17242030365209327,
+   "dTop1": 0.08242600718155435,
+   "margin": 0.08999429647053891,
+   "hasPortrait": true
+  },
+  {
+   "id": "rebecca-ferguson",
+   "rank": 1,
+   "top1": "rebecca-ferguson",
+   "dTrue": 0.0009672762232207921,
+   "dTop1": 0.01344149284332119,
+   "margin": -0.012474216620100398,
+   "hasPortrait": true
+  },
+  {
+   "id": "reesewitherspoon",
+   "rank": 1,
+   "top1": "reesewitherspoon",
+   "dTrue": 0.003516585352145052,
+   "dTop1": 0.014723122020261825,
+   "margin": -0.011206536668116773,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-downey-jr",
+   "rank": 1,
+   "top1": "robert-downey-jr",
+   "dTrue": 0.005303274721753404,
+   "dTop1": 0.01593341856971331,
+   "margin": -0.010630143847959905,
+   "hasPortrait": true
+  },
+  {
+   "id": "robert-pattinson",
+   "rank": 1,
+   "top1": "robert-pattinson",
+   "dTrue": 0.0021881312975421396,
+   "dTop1": 0.012600773337545168,
+   "margin": -0.010412642040003028,
+   "hasPortrait": true
+  },
+  {
+   "id": "sam-claflin",
+   "rank": 1,
+   "top1": "sam-claflin",
+   "dTrue": 0.039514804041613893,
+   "dTop1": 0.04990025665728892,
+   "margin": -0.010385452615675028,
+   "hasPortrait": true
+  },
+  {
+   "id": "sam-smith",
+   "rank": 1,
+   "top1": "sam-smith",
+   "dTrue": 0.0022031430717571743,
+   "dTop1": 0.013541802091046384,
+   "margin": -0.01133865901928921,
+   "hasPortrait": true
+  },
+  {
+   "id": "sandra-bullock",
+   "rank": 1,
+   "top1": "sandra-bullock",
+   "dTrue": 0.0005433815791685559,
+   "dTop1": 0.011982692371699577,
+   "margin": -0.011439310792531021,
+   "hasPortrait": true
+  },
+  {
+   "id": "saoirse-ronan",
+   "rank": 1,
+   "top1": "saoirse-ronan",
+   "dTrue": 0.001119548707393614,
+   "dTop1": 0.011958450507406515,
+   "margin": -0.010838901800012901,
+   "hasPortrait": true
+  },
+  {
+   "id": "sebastian-stan",
+   "rank": 1,
+   "top1": "sebastian-stan",
+   "dTrue": 0.0034290893178399173,
+   "dTop1": 0.014313262176576025,
+   "margin": -0.010884172858736108,
+   "hasPortrait": true
+  },
+  {
+   "id": "selena-gomez",
+   "rank": 1,
+   "top1": "selena-gomez",
+   "dTrue": 0.0012049045088222687,
+   "dTop1": 0.012167402451427445,
+   "margin": -0.010962497942605176,
+   "hasPortrait": true
+  },
+  {
+   "id": "serena-williams",
+   "rank": 1,
+   "top1": "serena-williams",
+   "dTrue": 0.05730997690361206,
+   "dTop1": 0.06820816477605063,
+   "margin": -0.01089818787243857,
+   "hasPortrait": true
+  },
+  {
+   "id": "seth-rogen",
+   "rank": 1,
+   "top1": "seth-rogen",
+   "dTrue": 0.0016418440679486501,
+   "dTop1": 0.012711042041372966,
+   "margin": -0.011069197973424316,
+   "hasPortrait": true
+  },
+  {
+   "id": "shah-rukh-khan",
+   "rank": 1,
+   "top1": "shah-rukh-khan",
+   "dTrue": 0.017063798519771467,
+   "dTop1": 0.02813573329308472,
+   "margin": -0.011071934773313252,
+   "hasPortrait": true
+  },
+  {
+   "id": "simu-liu",
+   "rank": 1,
+   "top1": "simu-liu",
+   "dTrue": 0.0011602794236735825,
+   "dTop1": 0.011565170874100472,
+   "margin": -0.01040489145042689,
+   "hasPortrait": true
+  },
+  {
+   "id": "stephen-curry",
+   "rank": 1,
+   "top1": "stephen-curry",
+   "dTrue": 0.0021670882221024312,
+   "dTop1": 0.013573719966957776,
+   "margin": -0.011406631744855344,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-lautner",
+   "rank": null,
+   "top1": "naomi-osaka",
+   "dTrue": 0.1155387289144667,
+   "dTop1": 0.08014604095066014,
+   "margin": 0.03539268796380657,
+   "hasPortrait": true
+  },
+  {
+   "id": "taylor-swift",
+   "rank": 1,
+   "top1": "taylor-swift",
+   "dTrue": 0.0016346101625348552,
+   "dTop1": 0.013289249765108146,
+   "margin": -0.011654639602573291,
+   "hasPortrait": true
+  },
+  {
+   "id": "the-weeknd",
+   "rank": 1,
+   "top1": "the-weeknd",
+   "dTrue": 0.004772923804526208,
+   "dTop1": 0.015739093232552737,
+   "margin": -0.010966169428026529,
+   "hasPortrait": true
+  },
+  {
+   "id": "tiffany-haddish",
+   "rank": 1,
+   "top1": "tiffany-haddish",
+   "dTrue": 0.010763179746235196,
+   "dTop1": 0.02193855683831969,
+   "margin": -0.011175377092084493,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hanks",
+   "rank": 1,
+   "top1": "tom-hanks",
+   "dTrue": 0.002606108445646682,
+   "dTop1": 0.012652186932261555,
+   "margin": -0.010046078486614873,
+   "hasPortrait": true
+  },
+  {
+   "id": "tom-hardy",
+   "rank": 1,
+   "top1": "tom-hardy",
+   "dTrue": 0.0012229155263945302,
+   "dTop1": 0.011443677036799382,
+   "margin": -0.010220761510404852,
+   "hasPortrait": true
+  },
+  {
+   "id": "tony-leung",
+   "rank": 1,
+   "top1": "tony-leung",
+   "dTrue": 0.0132706664358051,
+   "dTop1": 0.02278989179512536,
+   "margin": -0.00951922535932026,
+   "hasPortrait": true
+  },
+  {
+   "id": "trevor-noah",
+   "rank": 1,
+   "top1": "trevor-noah",
+   "dTrue": 0.01477359477611806,
+   "dTop1": 0.025090827094025436,
+   "margin": -0.010317232317907377,
+   "hasPortrait": true
+  },
+  {
+   "id": "vanessa-kirby",
+   "rank": 1,
+   "top1": "vanessa-kirby",
+   "dTrue": 0.007058984327749651,
+   "dTop1": 0.01840136366864753,
+   "margin": -0.011342379340897879,
+   "hasPortrait": true
+  },
+  {
+   "id": "victoria-beckham",
+   "rank": 1,
+   "top1": "victoria-beckham",
+   "dTrue": 0.0037601484255808115,
+   "dTop1": 0.01503264603350385,
+   "margin": -0.011272497607923038,
+   "hasPortrait": true
+  },
+  {
+   "id": "viola-davis",
+   "rank": 1,
+   "top1": "viola-davis",
+   "dTrue": 0.0011594835659254343,
+   "dTop1": 0.012330336489273286,
+   "margin": -0.011170852923347852,
+   "hasPortrait": true
+  },
+  {
+   "id": "zac-efron",
+   "rank": 1,
+   "top1": "zac-efron",
+   "dTrue": 0.008876335211779884,
+   "dTop1": 0.01860954414465188,
+   "margin": -0.009733208932871995,
+   "hasPortrait": true
+  },
+  {
+   "id": "zhang-ziyi",
+   "rank": 1,
+   "top1": "zhang-ziyi",
+   "dTrue": 0.0013011637239702667,
+   "dTop1": 0.012678968339447372,
+   "margin": -0.011377804615477105,
+   "hasPortrait": true
+  },
+  {
+   "id": "zoe-saldana",
+   "rank": 1,
+   "top1": "zoe-saldana",
+   "dTrue": 0.0012971304002472595,
+   "dTop1": 0.012408469432512947,
+   "margin": -0.011111339032265688,
+   "hasPortrait": true
+  }
+ ]
+}

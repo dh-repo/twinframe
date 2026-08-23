@@ -35,6 +35,10 @@ tmp/
 # enroll helper (dev only)
 public/enroll.html
 
+# raw held-out probe photos stay local-only (~200MB); the tracked
+# public/celebs/held-out/descriptors.json is the eval input CI uses.
+public/celebs/held-out/*/
+
 # editor
 .idea/
 .vscode/
