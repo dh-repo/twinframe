@@ -13,6 +13,7 @@ import {
 } from "./embeddings.ts";
 import { distanceLookalikeGate } from "./lookalike-policy.ts";
 import { applyOpenSetLookalikePercents, rankMargin } from "./open-set-score.ts";
+import { calibratedRank1Probability } from "./calibration.ts";
 
 export { computeMatchConfidence };
 
@@ -95,6 +96,9 @@ export function rankByDescriptor(
     user.faceCoverage ?? 0.25,
     userGenderProb,
   );
+  const probabilityCorrect = calibratedRank1Probability(
+    top.map((t) => ({ celebrityId: t.celeb.id, distance: t.dist })),
+  );
 
   return top.map((t, i) => {
     const meta = mergeWithProfile(t.celeb, CELEBRITIES);
@@ -121,6 +125,7 @@ export function rankByDescriptor(
       photoUrl192: anyPath.path192,
       fallbackPhotoUrl: anyPath.fallbackPath,
       distance: t.dist,
+      probabilityCorrect: i === 0 ? probabilityCorrect : undefined,
     };
   });
 }

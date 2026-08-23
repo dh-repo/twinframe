@@ -124,6 +124,14 @@ export function MatchRevealCard({
           <div className="mt-4">
             <Progress value={topMatch.matchPercent} className="h-1.5" />
           </div>
+
+          {typeof topMatch.probabilityCorrect === "number" && (
+            <p className="mt-2 text-[10px] font-mono leading-relaxed tracking-wide text-fg-subtle">
+              ≈{Math.round(topMatch.probabilityCorrect * 100)}% chance this is your single
+              closest identity in the gallery — calibrated on held-out photos, not a
+              similarity score.
+            </p>
+          )}
         </div>
 
         <div className="relative z-10 p-5 sm:p-6 bg-bg-elevated">

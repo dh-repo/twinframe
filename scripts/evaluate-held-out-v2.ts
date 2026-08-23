@@ -150,6 +150,7 @@ export interface EvaluatedRecord {
   dTrue: number;
   dTop1: number;
   dMinSameId: number;
+  dBestWrong: number;
   margin: number;
   priorFlipped: boolean;
   leaked: boolean;
@@ -217,11 +218,13 @@ export function evaluateHeldOutCases(
     // raw cosine distances (no priors) for calibration stats
     const q = l2Normalize(c.descriptor);
     let dMinSameId = Infinity;
+    let dBestWrong = Infinity;
     for (const g of gallery) {
-      if (g.id !== c.id) continue;
-      dMinSameId = Math.min(dMinSameId, cosineDistance(q, g.descriptor));
+      const d = cosineDistance(q, g.descriptor);
+      if (g.id === c.id) dMinSameId = Math.min(dMinSameId, d);
+      else dBestWrong = Math.min(dBestWrong, d);
     }
-    if (matches.length === 0) {
+    if (!Number.isFinite(matches[0]?.distance)) {
       // Matcher refused every candidate (distance gate). Counted as a miss.
       records.push({
         id: c.id,
@@ -230,6 +233,7 @@ export function evaluateHeldOutCases(
         dTrue: dMinSameId,
         dTop1: NaN,
         dMinSameId,
+        dBestWrong,
         margin: NaN,
         priorFlipped: false,
         leaked,
@@ -244,6 +248,7 @@ export function evaluateHeldOutCases(
       dTrue: dMinSameId,
       dTop1,
       dMinSameId,
+      dBestWrong,
       margin: Math.max(0, dTop1 - dMinSameId),
       priorFlipped: dTop1 > dMinSameId + 1e-9,
       leaked,

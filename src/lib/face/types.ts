@@ -117,6 +117,12 @@ export interface CelebrityMatch {
   hillPercent?: number;
   /** Adjusted d2 − d1. Small values mean a crowded nearest-neighbor, not a doppelgänger. */
   rankMargin?: number;
+  /**
+   * Calibrated P(this candidate is the true identity), measured on the leak-excluded
+   * held-out protocol (see src/lib/face/calibration.ts). Set on rank-1 only — the
+   * claim is not defined for deeper ranks.
+   */
+  probabilityCorrect?: number;
 }
 
 /**
