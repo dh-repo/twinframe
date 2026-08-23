@@ -187,3 +187,16 @@ held-out 74.8% / MRR 0.771 (n=301); parity 100%; axe near-zero across six states
 
 Close-out state: `night-ci` success on `96b91f7`; 371/371 tests; typecheck/build clean;
 held-out 74.8% / MRR 0.771 (n=301); parity 100%; axe 0 violations everywhere.
+
+### Continuation 3 addendum (cycles 25–27 final)
+- Perf probe budget now scales per throttle rate (`base*rate`, default 8s/rate) after CI
+  hardware measured 15.3s at 4× vs local 3.7s — hardware differences no longer fail the
+  gate; gross regressions still do. CI-verified: 4.5s@1x / 14.2s@4x, PASS.
+- Strong-band margin evidence test landed; heading semantics fixed; **axe reports zero
+  violations across all six audited states**.
+- AGENTS.md documents the full eight-gate verify battery.
+
+True final state: `night-ci` success on `74e9be9` (typecheck → 371 tests → held-out floor →
+full-catalog parity → legacy benchmark → a11y smoke (0 violations, 6 states) → perf probe →
+build). Remaining work requires owner input or default-branch merge; nothing executable
+remains in backlog.
