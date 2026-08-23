@@ -37,13 +37,39 @@ leakage-aware eval claims; real verify commands with recorded exit codes.
 ## Verify battery — cycle 0 results
 | Command | Exit | Result |
 |---|---|---|
-| `npm test` | **1** | 330 tests / 328 pass / **2 fail**: `m1-m2-empirical-challenger.test.ts` "640px pre-downscaled CLAHE contrast boost…" (assert `false !== true`, src/lib/face/m1-m2-empirical-challenger.test.ts:156) and `m4-challenger-stress.test.ts:294` "executes rankByDescriptor…" (`1 !== 2`). Logs: `logs/c0-npm-test.log` |
+| `npm test` | **1** | 330 tests / 328 pass / **2 fail**: `m1-m2-empirical-challenger.test.ts` "640px pre-downscaled CLAHE contrast boost…" (68.38ms vs 50ms budget — load flake, see cycle 1) and `m4-challenger-stress.test.ts:294` "executes rankByDescriptor…" (`1 !== 2`, stale expectation). Logs: `logs/c0-npm-test.log` |
 | `npm run test:match` | **1** | 279 tests / 278 pass / 1 fail (the m4 one). Logs: `logs/c0-test-match.log` |
 | `npm run typecheck` | **2** | 3 × TS2322 in `src/routes/held-out-encode.tsx:115`, `src/routes/re-encode.tsx:199`, `src/routes/re-encode.tsx:247` (`"male"\|"female"\|"unknown"` vs `"male"\|"female"`). Logs: `logs/c0-typecheck.log` |
 | `npm run build` | **0** | Vite + SSR + Nitro clean; ort copy no-op; db:migrate skipped (no DATABASE_URL). Logs: `logs/c0-build.log` |
 | `node scripts/evaluate-accuracy.mjs` | (running) | Launched background PID 40618; 273 Tier-1 probes @ concurrency 2. Log streamed to `logs/c0-evaluate-accuracy.log`; final result recorded next update. |
 
-Note: env notes claimed only ONE failing test; baseline shows TWO. The CLAHE one is new information.
+Note: env notes claimed only ONE failing test; baseline shows TWO. The CLAHE one is load-flake, not logic.
+
+## Cycle 1 (2026-08-23)
+SCOPE: AGENTS.md, README.md, PROJECT.md, src/lib/face/m4-challenger-stress.test.ts,
+src/routes/re-encode.tsx, src/routes/held-out-encode.tsx, package.json.
+DECIDED: serialize node --test file execution (`--test-concurrency=1`) instead of inflating
+wall-clock budgets — timing assertions must measure code, not scheduler noise. Falsifier:
+if serial suite time balloons or flakes persist on CI hardware, raise budgets instead.
+Root-caused m4 failure as a stale test predating the deliberate presentable-rank gender policy
+(match.ts:131), NOT an app bug: match.test.ts:415 already pins the policy. Fixed the test and
+added an explicit cross-gender-drop regression subtest. Gender type errors fixed by widening
+recorded output to include "unknown" (honest recording) rather than coercing data.
+DONE: real AGENTS.md (verify commands, on-device constraint, legal surface, eval rules,
+architecture map with verified dims: EdgeFace-M 256-d live path, 1000-bucket v4 q8 gallery +
+552 runtime templates, 735 held-out probes); README rewritten around honest held-out headline;
+PROJECT.md tier numbers marked as enrollment-overlapping upper bound.
+TESTED: `npm test` exit **0** ×2 (331/331, 7.2s serial, while eval saturates CPU);
+`npm run typecheck` exit **0**; `npm run build` exit **0**.
+COVERAGE: n/a this cycle (behavior-preserving fixes + 1 new regression subtest).
+ADVERSARIAL: cross-gender #2 drop case now pinned by test.
+REGRESSION: suite went 330→331 tests (added policy subtest); all green.
+BACKLOG: eval still running in background; CLAHE budgets to revisit against idle+CI hardware.
+NEXT: cycle 2 — wire `test:heldout`, leakage-prevention tests, margin-metric methodology test.
+
+## Commits (cycle 1)
+- `739f77e` Make the unit gate deterministic: fix stale expectation and runner contention
+- `1ed8681` Replace sandbox boilerplate with a real product AGENTS.md and honest docs
 
 ## Commits (cycle 0)
 - `c172a96` Land honest held-out eval protocol and v5 gallery rebuild tooling (+ .gitignore for raw probe photos)
