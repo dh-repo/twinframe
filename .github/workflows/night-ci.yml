@@ -46,8 +46,6 @@ jobs:
       - name: Install Playwright browser for interactive gates
         run: npx playwright install --with-deps chromium
 
-      - name: Install Playwright browser for interactive gates
-        run: npx playwright install --with-deps chromium
 
       - name: Interactive gates (axe a11y smoke + throttled-CPU perf)
         run: |
