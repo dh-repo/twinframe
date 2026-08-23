@@ -25,11 +25,18 @@ function arg(name) {
 const descPath = arg("desc");
 let age = Number(arg("age"));
 const gender = arg("gender");
-const genderProb = Number(arg("genderProb") ?? 0.9);
+const genderProbRaw = arg("genderProb");
+const genderProb = Number(genderProbRaw);
 const nameOverride = arg("name");
 
-if (!descPath || !Number.isFinite(age) || (gender !== "male" && gender !== "female")) {
-  console.error("usage: --desc <descriptors.json> --age N --gender male|female [--genderProb P] [--name \"Name\"]");
+if (
+  !descPath ||
+  !Number.isFinite(age) || age < 0 || age > 120 ||
+  (gender !== "male" && gender !== "female") ||
+  genderProbRaw === undefined || !Number.isFinite(genderProb) || genderProb < 0 || genderProb > 1
+) {
+  console.error("usage: --desc <descriptors.json> --age N(0-120) --gender male|female --genderProb P(0-1) [--name \"Name\"]");
+  console.error("demographics are required explicitly — they are never fabricated or defaulted");
   process.exit(1);
 }
 
@@ -63,7 +70,19 @@ const id = requestedId ?? entry.id;
 if (!id) throw new Error("descriptor has no id and --id not given");
 
 const buckets = JSON.parse(fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"));
-if (buckets.some((b) => b.id === id)) throw new Error(`slot already exists: ${id} (use patch-gallery-slot.ts)`);
+const index = JSON.parse(fs.readFileSync(path.join(CELEBS, "index.json"), "utf8"));
+// Preflight: all artifacts must agree before any is mutated (drop-gallery-slot
+// asserts the same invariant; a crash mid-write here would fail the loader and
+// silently downgrade the app to the legacy gallery path).
+if (count !== buckets.length) throw new Error(`header ${count} != buckets ${buckets.length} — repair before enrolling`);
+if (index.length !== buckets.length) throw new Error(`index ${index.length} != buckets ${buckets.length} — repair before enrolling`);
+if (buckets.some((b) => b.id === id) || index.some((e) => e.id === id)) {
+  throw new Error(`id already present in catalog: ${id} (use patch-gallery-slot.ts to replace)`);
+}
+for (const size of [96, 192]) {
+  const thumbPath = path.join(CELEBS, `thumbs/${size}/${id}.webp`);
+  if (!fs.existsSync(thumbPath)) throw new Error(`missing thumb ${thumbPath} — generate it before enrolling`);
+}
 
 // Extend binary: header count+1, one more record appended.
 view.setUint32(8, count + 1, true);
@@ -90,8 +109,6 @@ buckets.push({
 });
 fs.writeFileSync(path.join(CELEBS, "gallery.buckets.json"), JSON.stringify(buckets, null, 2));
 
-const indexPath = path.join(CELEBS, "index.json");
-const index = JSON.parse(fs.readFileSync(indexPath, "utf8"));
 index.push({
   id,
   name: displayName,
@@ -104,6 +121,14 @@ index.push({
   genderProb,
 });
 fs.writeFileSync(indexPath, JSON.stringify(index, null, 2));
+
+const metaPath = path.join(CELEBS, "embeddings.v4.meta.json");
+if (fs.existsSync(metaPath)) {
+  const meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
+  meta.countBuckets = count + 1;
+  meta.countCelebs = count + 1;
+  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+}
 
 console.log(
   `appended slot "${id}" (${displayName}) as row ${count}; gallery now ${count + 1} buckets, dim ${dim}`,

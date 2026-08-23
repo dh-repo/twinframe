@@ -19,7 +19,7 @@
     "test:heldout": "node --experimental-strip-types scripts/evaluate-held-out-v2.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test:parity": "node --experimental-strip-types scripts/evaluate-tier-parity.ts"
+    "test:parity": "node --experimental-strip-types scripts/evaluate-tier-parity.ts --descriptors public/celebs/tier-descriptors-full.json"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

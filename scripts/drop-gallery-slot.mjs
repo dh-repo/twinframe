@@ -50,4 +50,16 @@ fs.writeFileSync(
   path.join(CELEBS, "index.json"),
   JSON.stringify(index.filter((e) => e.id !== id), null, 2),
 );
+// Remove orphaned thumbs so the dirs stay aligned with the catalog.
+for (const size of [96, 192]) {
+  const thumbPath = path.join(CELEBS, `thumbs/${size}/${id}.webp`);
+  if (fs.existsSync(thumbPath)) fs.unlinkSync(thumbPath);
+}
+const metaPath = path.join(CELEBS, "embeddings.v4.meta.json");
+if (fs.existsSync(metaPath)) {
+  const meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
+  meta.countBuckets = count - 1;
+  meta.countCelebs = count - 1;
+  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+}
 console.log(`dropped slot "${id}" (was row ${slot}); gallery now ${count - 1} buckets`);

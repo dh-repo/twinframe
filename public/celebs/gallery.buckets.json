@@ -10000,16 +10000,6 @@
     "fallbackPath": "/celebs/anya-chalotra.jpg"
   },
   {
-    "id": "anya-taylor",
-    "name": "Anya Taylor",
-    "age": 34,
-    "gender": "female",
-    "genderProb": 0.9233264997601509,
-    "path": "/celebs/thumbs/96/anya-taylor.webp",
-    "path192": "/celebs/thumbs/192/anya-taylor.webp",
-    "fallbackPath": "/celebs/anya-taylor.jpg"
-  },
-  {
     "id": "aubrey-plaza",
     "name": "Aubrey Plaza",
     "age": 27,

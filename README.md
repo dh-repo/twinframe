@@ -24,8 +24,7 @@ Three different numbers exist and they mean different things:
 | Historical "held-out" reports (≤ 2026-08-23) | 735 / 274 | ~~86.5%~~ / ~~46.0%~~ | Both invalid: the first scored 128-d probes against a 512-d gallery with 531/735 leaked probe files; the second parsed the 512-d binary at a 256 stride, i.e. half-vectors |
 
 Treat **73.6% held-out Rank-1** as the honest headline. After enrolling 26 previously-missing celebrities, 33 held-out probe ids became evaluable; their harder cases compose the current population (the original 270 still score 75.9%). Protocol details: probes re-encoded
-through the live ONNX pipeline in headless Chromium; 33 ids not enrolled in the shipped
-gallery excluded and reported; gate refusals counted as misses; two byte-level duplicate
+through the live ONNX pipeline in headless Chromium; gate refusals counted as misses; two byte-level duplicate
 probes removed; age/gender priors come from recorded detector output exactly as the live
 pipeline would see them. Methodology lives in code and tests
 (`scripts/evaluate-held-out-v2.ts`, `scripts/held-out-protocol.test.mjs`) — not in blog

@@ -81,7 +81,7 @@ export function AnalyzingState({
           <span className="shrink-0 text-xs font-medium tabular-nums text-fg-muted">{pct}%</span>
         </div>
         <div className="mt-3">
-          <Progress value={pct} className="h-1.5" />
+          <Progress value={pct} className="h-1.5" aria-label={`Analyzing face, ${pct}%`} />
         </div>
       </div>
 

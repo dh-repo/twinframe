@@ -23,6 +23,8 @@ const ROUTES = ["/", "/held-out-encode"];
 const UPLOAD_FIXTURE = path.join(ROOT, "public/celebs/adam-driver.jpg");
 
 let failures = 0;
+const REQUIRED_STATES = new Set(["crop-review", "results", "webcam-modal"]);
+const reachedStates = new Set();
 
 function report(label, results) {
   const serious = results.violations.filter((v) => ["serious", "critical"].includes(v.impact));
@@ -85,12 +87,18 @@ try {
 
   await page.waitForSelector("text=Choose a face", { timeout: 30_000 });
   await page.waitForTimeout(1200);
+  reachedStates.add("crop-review");
   await axeRun(page, "crop-review");
 
-  // Approve the primary face and wait for analysis to finish.
-  const approve = page.locator("button:has-text('Approve'), button:has-text('Match')").last();
+  // Approve the primary face and wait for analysis to finish. Pinned by
+  // accessible name — a substring .last() click silently degrades on DOM reorder.
+  const approve = page.getByRole("button", { name: "Approve & Match" }).first();
+  if ((await approve.count()) === 0) throw new Error('"Approve & Match" button not found');
   await approve.click();
-  const resultMarkers = ["DOPPELGÄNGER MATCH", "NEAREST GALLERY NEIGHBOR", "POSSIBLE LOOK-ALIKE", "quality too low"];
+  // Only real match-results headlines count as coverage — the quality-refusal
+  // card is a different state (substring-matching it here once let a broken
+  // results screen pass as covered).
+  const resultMarkers = ["DOPPELGÄNGER MATCH", "NEAREST GALLERY NEIGHBOR", "POSSIBLE LOOK-ALIKE"];
   let reachedResults = false;
   for (let i = 0; i < 24 && !reachedResults; i++) {
     await page.waitForTimeout(5000);
@@ -98,7 +106,10 @@ try {
     reachedResults = resultMarkers.some((m) => txt.includes(m));
   }
   if (!reachedResults) {
-    console.log("[a11y] results screen not reached within budget; skipping that state");
+    failures++;
+    console.log("[a11y] FAIL: results screen not reached within budget — interactive core uncovered");
+  } else {
+    reachedStates.add("results");
   }
   if (reachedResults) {
     await page.waitForTimeout(1500);
@@ -108,21 +119,36 @@ try {
   // ---- Webcam modal via fake camera ----
   await page.goto(new URL("/", url).href, { waitUntil: "networkidle", timeout: 45_000 });
   const cameraButton = page.locator('button:has-text("Use My Camera")').first();
-  if ((await cameraButton.count()) > 0) {
+  if ((await cameraButton.count()) === 0) {
+    failures++;
+    console.log("[a11y] FAIL: no camera entry point found");
+  } else {
     await cameraButton.click();
     const dialog = page.locator('[role="dialog"]');
     try {
       await dialog.waitFor({ state: "visible", timeout: 15_000 });
       await page.waitForTimeout(1000);
+      reachedStates.add("webcam-modal");
       await axeRun(page, "webcam-modal");
     } catch {
-      console.log("[a11y] webcam modal did not open (fake stream unavailable); skipping");
+      failures++;
+      console.log("[a11y] FAIL: webcam modal did not open under fake media stream");
     }
-  } else {
-    console.log("[a11y] no camera entry point found; skipping webcam modal");
   }
 } finally {
   await browser.close();
+}
+
+// Fail-closed: a gate that silently skips the states it exists to cover is a
+// false green. Every required interactive state must have been reached.
+for (const state of REQUIRED_STATES) {
+  if (!reachedStates.has(state)) {
+    failures++;
+    console.log(`[a11y] FAIL: required state never reached: ${state}`);
+  }
+}
+if (reachedStates.size) {
+  console.log(`[a11y] states covered: ${[...reachedStates].sort().join(", ")}`);
 }
 
 process.exit(failures > 0 ? 1 : 0);

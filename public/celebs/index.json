@@ -14969,19 +14969,6 @@
     "genderProb": 0.9470318779349327
   },
   {
-    "id": "anya-taylor",
-    "name": "Anya Taylor",
-    "path": "/celebs/thumbs/96/anya-taylor.webp",
-    "path192": "/celebs/thumbs/192/anya-taylor.webp",
-    "fallbackPath": "/celebs/anya-taylor.jpg",
-    "baseAge": 34,
-    "ageBuckets": [
-      34
-    ],
-    "gender": "female",
-    "genderProb": 0.9233264997601509
-  },
-  {
     "id": "aubrey-plaza",
     "name": "Aubrey Plaza",
     "path": "/celebs/thumbs/96/aubrey-plaza.webp",
