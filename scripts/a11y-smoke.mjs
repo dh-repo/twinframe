@@ -46,7 +46,7 @@ async function axeRun(page, label) {
   const results = await page.evaluate(async () => {
     return window.axe.run(document, {
       resultTypes: ["violations"],
-      rules: { "color-contrast": { enabled: false } },
+      rules: {},
     });
   });
   report(label, results);

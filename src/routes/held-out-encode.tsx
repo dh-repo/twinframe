@@ -241,7 +241,7 @@ function HeldOutEncodePage() {
       <p className="mt-2 text-sm text-zinc-400">
         {status} · {okCount}/{done} ok · {done}/{total} ({pct}%)
       </p>
-      <pre className="mt-6 text-xs text-zinc-500 whitespace-pre-wrap max-h-[70vh] overflow-auto">
+      <pre className="mt-6 text-xs text-zinc-400 whitespace-pre-wrap max-h-[70vh] overflow-auto">
         {logs.join("\n")}
       </pre>
     </div>

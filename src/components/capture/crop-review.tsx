@@ -453,7 +453,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
                         >
                           {c.label}
                         </span>
-                        <span className="block text-[10px] text-fg-subtle">
+                        <span className="block text-[10px] text-white/70">
                           {isSelected ? "Matching this face" : "Tap to select"}
                         </span>
                       </span>
