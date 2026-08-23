@@ -5,10 +5,11 @@
  *
  *   node scripts/perf-throttle.mjs http://127.0.0.1:8080 [rates=1,4,6]
  *
- * Per-rate budget scales as BUDGET_BASE_MS * rate (default base 8000): slower
- * is expected at higher throttle, so one flat number cannot serve both a Mac
- * Studio and 2-core CI runners. Measured baselines 2026-08: ~4-5s at 1x and
- * ~15s at 4x on CI hardware.
+ * Per-rate budget scales as BUDGET_BASE_MS * rate (default base 20000): slower
+ * is expected at higher throttle and on weaker hardware, so one flat number
+ * cannot serve both a Mac Studio and 2-core CI runners. Measured 2026-08:
+ * ~4.5s at 1x / ~14s at 4x on 2-core CI; ~2.4s/3.9s locally. The gate catches
+ * gross regressions (model reload loops, accidental sync work), not hardware.
  */
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,7 +20,7 @@ const FIXTURE = path.join(ROOT, "public/celebs/adam-driver.jpg");
 
 const url = process.argv[2] || "http://127.0.0.1:8080/";
 const rates = (process.argv[3] || "1,4,6").split(",").map(Number).filter(Boolean);
-const BUDGET_BASE_MS = Number(process.env.PERF_BUDGET_BASE_MS || 8_000);
+const BUDGET_BASE_MS = Number(process.env.PERF_BUDGET_BASE_MS || 20_000);
 const budgetFor = (rate) => Math.ceil(BUDGET_BASE_MS * rate);
 
 const RESULT_MARKER = /DOPPELGÄNGER MATCH|NEAREST GALLERY NEIGHBOR|POSSIBLE LOOK-ALIKE|quality too low|Couldn't analyze/;
