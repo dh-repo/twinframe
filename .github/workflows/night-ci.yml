@@ -1,0 +1,38 @@
+name: night-ci
+
+on:
+  push:
+    branches:
+      - "night/**"
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # The committed lockfile is intentionally slightly out of sync; npm ci fails.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit + integration + hard-case tests
+        run: npm test
+
+      - name: Held-out eval gate (leak-excluded, rank-1 floor)
+        run: npm run test:heldout -- --floor 40
+
+      - name: Sampled tier-probe eval (pipeline sanity)
+        run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 3 --concurrency 2
+
+      - name: Production build
+        run: npm run build

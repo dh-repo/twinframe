@@ -268,6 +268,9 @@ export function assertDimensionsCompatible(
 
 function main() {
   const includeLeaked = process.argv.includes("--include-leaked");
+  const floorArg = process.argv.indexOf("--floor");
+  const rankFloor = floorArg >= 0 ? Number(process.argv[floorArg + 1]) : null;
+
   const gallery = mergeExtraTemplates(parseV4AndLoad());
 
   const packPath = path.join(CELEBS, "held-out/descriptors.json");
@@ -294,6 +297,15 @@ function main() {
   }
   console.log("");
   console.log(`  CLEAN       Rank-1: ${clean.rank1Pct.toFixed(1)}%  Rank-5: ${clean.rank5Pct.toFixed(1)}%  MRR: ${clean.mrr.toFixed(3)}  (n=${clean.n})`);
+  if (rankFloor !== null && Number.isFinite(rankFloor)) {
+    const ok = clean.n > 0 && clean.rank1Pct >= rankFloor;
+    console.log(
+      ok
+        ? `  floor check: PASS (${clean.rank1Pct.toFixed(1)}% >= ${rankFloor}%)`
+        : `  floor check: FAIL (${clean.rank1Pct.toFixed(1)}% < ${rankFloor}% or n=0)`,
+    );
+    if (!ok) process.exitCode = 1;
+  }
   console.log(`  ALL(eval'd) Rank-1: ${all.rank1Pct.toFixed(1)}%  Rank-5: ${all.rank5Pct.toFixed(1)}%  MRR: ${all.mrr.toFixed(3)}  (n=${all.n})`);
   const refused = records.filter((r) => !Number.isFinite(r.dTop1)).length;
   const flips = records.filter((r) => r.priorFlipped).length;
