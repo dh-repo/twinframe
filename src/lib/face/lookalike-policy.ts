@@ -18,15 +18,25 @@ export const HARD_DET_CONFIDENCE_MIN = 0.35;
 export const HARD_FACE_COVERAGE_MIN = 0.02;
 
 /**
- * Max adjusted cosine distance still treated as a presentable nearest neighbor.
- * Beyond this, rankByDescriptor returns [] (orthogonal / garbage probes).
- * EdgeFace-512 calibration: best-of-1000 impostor p90 ≈ 0.67.
+ * Max adjusted cosine distance treated as presentable at all. Beyond this,
+ * rankByDescriptor returns [] — the probe is orthogonal/garbage and even a
+ * labeled Distant Twin card would be fiction.
  *
- * Percents below Distant Twin (<55%) are still a card — labeled Distant Twin,
- * not a doppelgänger. Refusing those emptied the product for ordinary selfies.
+ * Evidence (held-out v2.1 sweep over 270 clean probes, full 512-d geometry):
+ * both 0.65 and 0.72 lose ZERO rank-1 correct matches. Under the Distant Twin
+ * UX the band between them shows an honestly labeled nearest-neighbor card
+ * instead of an empty screen, so the higher floor keeps the product alive
+ * without making any false look-alike claim. EdgeFace-512 impostor p90 ~0.67.
  */
 export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.72;
 
+/**
+ * Match percent below this is not shown as a look-alike top-K.
+ * Defense-in-depth only: with the floor at 0.65 the Hill curve never drops
+ * below ~42% inside rankByDescriptor, so rankByDescriptor itself cannot hit
+ * this branch — it guards other callers that may pass raw percents.
+ */
+export const LOOKALIKE_MIN_PERCENT = 32;
 export interface PoseGateInput {
   yaw?: number | null;
   pitch?: number | null;

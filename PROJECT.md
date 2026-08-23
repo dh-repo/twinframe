@@ -42,12 +42,23 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
   - `scripts/test-challenger-m3-2.mjs`: **14 / 14 PASSED**.
   - `scripts/m4-challenger-empirical.mjs`: **35 / 35 PASSED**.
 
+> **Honesty note (2026-08, rev 3).** The tier-probe numbers above overlap the enrollment
+> imagery — they measure pipeline sanity and are an upper bound, not user-facing accuracy.
+> The honest headline comes from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded,
+> full 512-d geometry): **74.8% Rank-1 / MRR 0.771 over 301 clean probes**
+> (`reports/held-out-v2-baseline.json`), using photos that match no gallery artifact by path
+> or content hash, encoded through the same SCRFD → align → EdgeFace-512d path the browser
+> runs. Two earlier internal claims were invalidated on the way here: ~86% "held-out"
+> (128-d probes vs a 512-d gallery, with most probe files doubling as gallery templates) and
+> a 46.0% intermediate figure produced by parsing the binary at half stride. Any new accuracy
+> claim must state which protocol produced it; see AGENTS.md "Eval scripts".
+
 
 
 ## Interface Contracts
 
 ### Query Face Pipeline ↔ Matcher
-- **Input**: `UserFaceQuery` containing `descriptor: Float32Array` (length 128 or 256, L2-normalized $\|\text{desc}\|_2 = 1.0 \pm 10^{-4}$), `age?: number`, `gender?: 'male' | 'female' | 'unknown'`, `genderProbability?: number`.
+- **Input**: `UserFaceQuery` containing `descriptor` (L2-normalized; the live EdgeFace path and shipped gallery are both 512-d — trust the "AFv4" header for width), `age?: number`, `gender?: 'male' | 'female' | 'unknown'`, `genderProbability?: number`.
 - **Output**: `CelebrityMatch[]` sorted ascending by `adjusted` distance, containing `celeb: CelebrityProfile`, `distance: number`, `matchPercent: number`, `rank: number`, `confidence: number`, `traits: DescriptorTraits`.
 
 ### Gallery Loader ↔ Matcher

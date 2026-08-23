@@ -3,14 +3,25 @@ import type { FaceFeatures, FaceQuality, FaceTelemetry, MatchResult } from "./ty
 import { ENGINE_VERSION } from "./types.ts";
 import { emptyFeatures } from "./math.ts";
 import { rankByDescriptor } from "./match.ts";
-import {
-  detectAndDescribe,
-  detectAndDescribeWithTTA,
-  prefetchFaceApi,
-  assessDetectionQuality,
-  logFaceTelemetry,
-  type FaceDetectionResult,
-} from "./faceapi-engine.ts";
+import type { FaceDetectionResult } from "./faceapi-engine.ts";
+
+/**
+ * The legacy FaceNet engine (face-api.esm + tfjs, ~320KB gz) is only needed for the
+ * demographic attribute pass and the full fallback — never on the critical path of a
+ * healthy EdgeFace analysis. Load it lazily so mid-range phones do not download it up front.
+ */
+let faceApiEnginePromise: Promise<typeof import("./faceapi-engine.ts")> | null = null;
+function loadFaceApiEngine() {
+  if (!faceApiEnginePromise) {
+    // A rejected import must not stay cached — one transient chunk-load failure
+    // would otherwise poison every later analysis until a full page reload.
+    faceApiEnginePromise = import("./faceapi-engine.ts").catch((err) => {
+      faceApiEnginePromise = null;
+      throw err;
+    });
+  }
+  return faceApiEnginePromise;
+}
 import { loadCelebrityEmbeddings, prefetchEmbeddings } from "./embeddings.ts";
 import { loadAppearanceFamilies } from "../celebrities/load-appearance-families.ts";
 import { loadGalleryFeatures } from "../celebrities/load-gallery-features.ts";
@@ -42,14 +53,25 @@ export type FaceAnalyzeSource =
 /** Warm models + gallery in the background. */
 export function prefetchModel(): void {
   if (typeof window === "undefined") return;
-  prefetchFaceApi();
   prefetchEmbeddings();
   void loadGalleryFeatures();
   void loadAppearanceFamilies();
+  // The legacy engine (~320KB gz with tfjs) must not compete with first paint;
+  // warm it once the browser goes idle, before the user likely finishes picking a photo.
+  const idle = (cb: () => void) => {
+    if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(() => cb());
+    else setTimeout(cb, 2000);
+  };
+  idle(() => {
+    // Best-effort warmup; failures are fine here (the analysis path retries).
+    loadFaceApiEngine()
+      .then((m) => m.prefetchFaceApi())
+      .catch(() => {});
+  });
 }
 
 /** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */
-function padSourceForDetection(
+export function padSourceForDetection(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
   marginRatio = 0.6,
 ): HTMLCanvasElement | null {
@@ -402,9 +424,10 @@ async function completeQueryAnalysis(
       hasEdgeFace: Boolean(edgeFaceEmbedding),
       hasScrfd: Boolean(scrfdResult?.primary),
     });
+    const engine = await loadFaceApiEngine();
     det = edgeFaceEmbedding
-      ? await detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
-      : await detectAndDescribeWithTTA(source, options);
+      ? await engine.detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
+      : await engine.detectAndDescribeWithTTA(source, options);
     pipelineLog("faceapi:fallback-done");
   }
 
@@ -451,6 +474,7 @@ async function completeQueryAnalysis(
       telemetry: det.telemetry,
     });
     if (det.telemetry) {
+      const { logFaceTelemetry } = await loadFaceApiEngine();
       logFaceTelemetry(det.telemetry);
     }
   }
@@ -483,6 +507,7 @@ async function completeQueryAnalysis(
     };
   }
 
+  const { assessDetectionQuality } = await loadFaceApiEngine();
   const quality: FaceQuality = assessDetectionQuality(det);
   const faceCoverage =
     (det.box.width * det.box.height) /

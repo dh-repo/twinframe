@@ -608,7 +608,7 @@ export function AppHome() {
                 <div className="flex items-center gap-2.5">
                   <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-white/20 shadow-xl bg-neutral-900">
                     <img
-                      src="/celebs/sample_user.jpg"
+                      src="/img/sample-portrait.jpg"
                       alt="User portrait sample"
                       className="h-full w-full object-cover"
                     />

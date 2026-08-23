@@ -1270,16 +1270,6 @@
     "genderProb": 0.9752494096755981
   },
   {
-    "id": "gwenyth-paltrow",
-    "name": "Gwenyth Paltrow",
-    "path": "/celebs/thumbs/96/gwenyth-paltrow.webp",
-    "path192": "/celebs/thumbs/192/gwenyth-paltrow.webp",
-    "fallbackPath": "/celebs/gwenyth-paltrow.jpg",
-    "age": 48,
-    "gender": "female",
-    "genderProb": 0.9417712613940239
-  },
-  {
     "id": "gwyneth-paltrow",
     "name": "Gwyneth Paltrow",
     "path": "/celebs/thumbs/96/gwyneth-paltrow.webp",
@@ -2834,20 +2824,20 @@
     "name": "Paul Giamatti",
     "path": "/celebs/thumbs/96/paul-giamatti.webp",
     "path192": "/celebs/thumbs/192/paul-giamatti.webp",
-    "fallbackPath": "/celebs/thumbs/96/paul-giamatti.webp",
-    "age": 57,
+    "fallbackPath": "/celebs/paul-giamatti.jpg",
+    "age": 47,
     "gender": "male",
-    "genderProb": 0.98
+    "genderProb": 0.991
   },
   {
     "id": "tilda-swinton",
     "name": "Tilda Swinton",
     "path": "/celebs/thumbs/96/tilda-swinton.webp",
     "path192": "/celebs/thumbs/192/tilda-swinton.webp",
-    "fallbackPath": "/celebs/thumbs/96/tilda-swinton.webp",
-    "age": 63,
+    "fallbackPath": "/celebs/tilda-swinton.jpg",
+    "age": 39,
     "gender": "female",
-    "genderProb": 0.98
+    "genderProb": 0.921
   },
   {
     "id": "uma-thurman",
@@ -3114,10 +3104,10 @@
     "name": "Son Ye-jin",
     "path": "/celebs/thumbs/96/son-ye-jin.webp",
     "path192": "/celebs/thumbs/192/son-ye-jin.webp",
-    "fallbackPath": "/celebs/thumbs/96/son-ye-jin.webp",
-    "age": 42,
+    "fallbackPath": "/celebs/son-ye-jin.jpg",
+    "age": 24,
     "gender": "female",
-    "genderProb": 0.98
+    "genderProb": 0.949
   },
   {
     "id": "iu",
@@ -9998,5 +9988,255 @@
     "age": 30,
     "gender": "male",
     "genderProb": 0.9523228406906128
+  },
+  {
+    "id": "anya-chalotra",
+    "name": "Anya Chalotra",
+    "age": 29,
+    "gender": "female",
+    "genderProb": 0.9470318779349327,
+    "path": "/celebs/thumbs/96/anya-chalotra.webp",
+    "path192": "/celebs/thumbs/192/anya-chalotra.webp",
+    "fallbackPath": "/celebs/anya-chalotra.jpg"
+  },
+  {
+    "id": "aubrey-plaza",
+    "name": "Aubrey Plaza",
+    "age": 42,
+    "gender": "female",
+    "genderProb": 0.9097419157624245,
+    "path": "/celebs/thumbs/96/aubrey-plaza.webp",
+    "path192": "/celebs/thumbs/192/aubrey-plaza.webp",
+    "fallbackPath": "/celebs/aubrey-plaza.jpg"
+  },
+  {
+    "id": "bae-doona",
+    "name": "Bae Doona",
+    "age": 47,
+    "gender": "female",
+    "genderProb": 0.9081714600324631,
+    "path": "/celebs/thumbs/96/bae-doona.webp",
+    "path192": "/celebs/thumbs/192/bae-doona.webp",
+    "fallbackPath": "/celebs/bae-doona.jpg"
+  },
+  {
+    "id": "brian-tyree-henry",
+    "name": "Brian Tyree Henry",
+    "age": 44,
+    "gender": "male",
+    "genderProb": 0.9598519802093506,
+    "path": "/celebs/thumbs/96/brian-tyree-henry.webp",
+    "path192": "/celebs/thumbs/192/brian-tyree-henry.webp",
+    "fallbackPath": "/celebs/brian-tyree-henry.jpg"
+  },
+  {
+    "id": "cailee-spaeny",
+    "name": "Cailee Spaeny",
+    "age": 28,
+    "gender": "female",
+    "genderProb": 0.915293276309967,
+    "path": "/celebs/thumbs/96/cailee-spaeny.webp",
+    "path192": "/celebs/thumbs/192/cailee-spaeny.webp",
+    "fallbackPath": "/celebs/cailee-spaeny.jpg"
+  },
+  {
+    "id": "daisy-edgar-jones",
+    "name": "Daisy Edgar-Jones",
+    "age": 28,
+    "gender": "female",
+    "genderProb": 0.9099019020795822,
+    "path": "/celebs/thumbs/96/daisy-edgar-jones.webp",
+    "path192": "/celebs/thumbs/192/daisy-edgar-jones.webp",
+    "fallbackPath": "/celebs/daisy-edgar-jones.jpg"
+  },
+  {
+    "id": "demi-moore",
+    "name": "Demi Moore",
+    "age": 64,
+    "gender": "female",
+    "genderProb": 0.9089106395840645,
+    "path": "/celebs/thumbs/96/demi-moore.webp",
+    "path192": "/celebs/thumbs/192/demi-moore.webp",
+    "fallbackPath": "/celebs/demi-moore.jpg"
+  },
+  {
+    "id": "dominic-sessa",
+    "name": "Dominic Sessa",
+    "age": 24,
+    "gender": "male",
+    "genderProb": 0.9638022184371948,
+    "path": "/celebs/thumbs/96/dominic-sessa.webp",
+    "path192": "/celebs/thumbs/192/dominic-sessa.webp",
+    "fallbackPath": "/celebs/dominic-sessa.jpg"
+  },
+  {
+    "id": "don-cheadle",
+    "name": "Don Cheadle",
+    "age": 62,
+    "gender": "male",
+    "genderProb": 0.986,
+    "path": "/celebs/thumbs/96/don-cheadle.webp",
+    "path192": "/celebs/thumbs/192/don-cheadle.webp",
+    "fallbackPath": "/celebs/don-cheadle.jpg"
+  },
+  {
+    "id": "fantasia-barrino",
+    "name": "Fantasia Barrino",
+    "age": 42,
+    "gender": "female",
+    "genderProb": 0.8842245936393738,
+    "path": "/celebs/thumbs/96/fantasia-barrino.webp",
+    "path192": "/celebs/thumbs/192/fantasia-barrino.webp",
+    "fallbackPath": "/celebs/fantasia-barrino.jpg"
+  },
+  {
+    "id": "greta-lee",
+    "name": "Greta Lee",
+    "age": 43,
+    "gender": "female",
+    "genderProb": 0.947,
+    "path": "/celebs/thumbs/96/greta-lee.webp",
+    "path192": "/celebs/thumbs/192/greta-lee.webp",
+    "fallbackPath": "/celebs/greta-lee.jpg"
+  },
+  {
+    "id": "jeremy-strong",
+    "name": "Jeremy Strong",
+    "age": 48,
+    "gender": "male",
+    "genderProb": 0.9713490009307861,
+    "path": "/celebs/thumbs/96/jeremy-strong.webp",
+    "path192": "/celebs/thumbs/192/jeremy-strong.webp",
+    "fallbackPath": "/celebs/jeremy-strong.jpg"
+  },
+  {
+    "id": "jharrel-jerome",
+    "name": "Jharrel Jerome",
+    "age": 29,
+    "gender": "male",
+    "genderProb": 0.950518786907196,
+    "path": "/celebs/thumbs/96/jharrel-jerome.webp",
+    "path192": "/celebs/thumbs/192/jharrel-jerome.webp",
+    "fallbackPath": "/celebs/jharrel-jerome.jpg"
+  },
+  {
+    "id": "jun-ji-hyun",
+    "name": "Jun Ji Hyun",
+    "age": 45,
+    "gender": "female",
+    "genderProb": 0.9598962478339672,
+    "path": "/celebs/thumbs/96/jun-ji-hyun.webp",
+    "path192": "/celebs/thumbs/192/jun-ji-hyun.webp",
+    "fallbackPath": "/celebs/jun-ji-hyun.jpg"
+  },
+  {
+    "id": "jung-ho-yeon",
+    "name": "Jung Ho Yeon",
+    "age": 32,
+    "gender": "female",
+    "genderProb": 0.9485806785523891,
+    "path": "/celebs/thumbs/96/jung-ho-yeon.webp",
+    "path192": "/celebs/thumbs/192/jung-ho-yeon.webp",
+    "fallbackPath": "/celebs/jung-ho-yeon.jpg"
+  },
+  {
+    "id": "kieran-culkin",
+    "name": "Kieran Culkin",
+    "age": 44,
+    "gender": "male",
+    "genderProb": 0.9870399832725525,
+    "path": "/celebs/thumbs/96/kieran-culkin.webp",
+    "path192": "/celebs/thumbs/192/kieran-culkin.webp",
+    "fallbackPath": "/celebs/kieran-culkin.jpg"
+  },
+  {
+    "id": "lakeith-stanfield",
+    "name": "Lakeith Stanfield",
+    "age": 35,
+    "gender": "male",
+    "genderProb": 0.9818037748336792,
+    "path": "/celebs/thumbs/96/lakeith-stanfield.webp",
+    "path192": "/celebs/thumbs/192/lakeith-stanfield.webp",
+    "fallbackPath": "/celebs/lakeith-stanfield.jpg"
+  },
+  {
+    "id": "letitia-wright",
+    "name": "Letitia Wright",
+    "age": 31,
+    "gender": "female",
+    "genderProb": 0.929268591105938,
+    "path": "/celebs/thumbs/96/letitia-wright.webp",
+    "path192": "/celebs/thumbs/192/letitia-wright.webp",
+    "fallbackPath": "/celebs/letitia-wright.jpg"
+  },
+  {
+    "id": "mikey-madison",
+    "name": "Mikey Madison",
+    "age": 26,
+    "gender": "female",
+    "genderProb": 0.9395069479942322,
+    "path": "/celebs/thumbs/96/mikey-madison.webp",
+    "path192": "/celebs/thumbs/192/mikey-madison.webp",
+    "fallbackPath": "/celebs/mikey-madison.jpg"
+  },
+  {
+    "id": "octavia-spencer",
+    "name": "Octavia Spencer",
+    "age": 56,
+    "gender": "female",
+    "genderProb": 0.9680954739451408,
+    "path": "/celebs/thumbs/96/octavia-spencer.webp",
+    "path192": "/celebs/thumbs/192/octavia-spencer.webp",
+    "fallbackPath": "/celebs/octavia-spencer.jpg"
+  },
+  {
+    "id": "sarah-snook",
+    "name": "Sarah Snook",
+    "age": 38,
+    "gender": "female",
+    "genderProb": 0.8107863664627075,
+    "path": "/celebs/thumbs/96/sarah-snook.webp",
+    "path192": "/celebs/thumbs/192/sarah-snook.webp",
+    "fallbackPath": "/celebs/sarah-snook.jpg"
+  },
+  {
+    "id": "song-kang-ho",
+    "name": "Song Kang Ho",
+    "age": 59,
+    "gender": "male",
+    "genderProb": 0.9960748553276062,
+    "path": "/celebs/thumbs/96/song-kang-ho.webp",
+    "path192": "/celebs/thumbs/192/song-kang-ho.webp",
+    "fallbackPath": "/celebs/song-kang-ho.jpg"
+  },
+  {
+    "id": "stephan-james",
+    "name": "Stephan James (actor)",
+    "age": 33,
+    "gender": "male",
+    "genderProb": 0.9868059158325195,
+    "path": "/celebs/thumbs/96/stephan-james.webp",
+    "path192": "/celebs/thumbs/192/stephan-james.webp",
+    "fallbackPath": "/celebs/stephan-james.jpg"
+  },
+  {
+    "id": "teo-yoo",
+    "name": "Teo Yoo",
+    "age": 45,
+    "gender": "male",
+    "genderProb": 0.9602953195571899,
+    "path": "/celebs/thumbs/96/teo-yoo.webp",
+    "path192": "/celebs/thumbs/192/teo-yoo.webp",
+    "fallbackPath": "/celebs/teo-yoo.jpg"
+  },
+  {
+    "id": "willem-dafoe",
+    "name": "Willem Dafoe",
+    "age": 71,
+    "gender": "male",
+    "genderProb": 0.9638102054595947,
+    "path": "/celebs/thumbs/96/willem-dafoe.webp",
+    "path192": "/celebs/thumbs/192/willem-dafoe.webp",
+    "fallbackPath": "/celebs/willem-dafoe.jpg"
   }
 ]

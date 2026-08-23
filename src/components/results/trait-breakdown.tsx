@@ -14,8 +14,8 @@ import { composeBreakdownRows } from "@/lib/ux/match-blurb";
 
 export interface TraitBreakdownProps {
   match: CelebrityMatch;
-  userFeatures?: FaceFeatures | null;
-  celebFeatures?: FaceFeatures | null;
+  userFeatures?: Partial<FaceFeatures> | null;
+  celebFeatures?: Partial<FaceFeatures> | null;
   className?: string;
 }
 
@@ -63,10 +63,10 @@ export function TraitBreakdown({
   return (
     <div className={cn("space-y-3.5", className)}>
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <h4 className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-fg-subtle">
+        <h3 className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-fg-subtle">
           <Sparkles className="h-3.5 w-3.5 shrink-0 text-match" />
           Feature breakdown
-        </h4>
+        </h3>
         <span className="text-[11px] font-mono font-medium text-match">
           512-d match
         </span>
@@ -104,7 +104,7 @@ export function TraitBreakdown({
                 </p>
 
                 <div className="mt-2.5">
-                  <Progress value={row.score} className="h-1 bg-border/60" />
+                  <Progress value={row.score} className="h-1 bg-border/60" aria-label={`${row.name}: ${Math.round(row.score)}%`} />
                 </div>
               </div>
             );

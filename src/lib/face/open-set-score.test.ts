@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { distanceToMatchPercent } from "./embeddings.ts";
 import {
+  STRONG_LOOKALIKE_MIN_MARGIN,
   OPEN_SET_IDENTITY_DISTANCE,
   OPEN_SET_MARGIN_FACTOR_MIN,
   OPEN_SET_MARGIN_FLOOR,
@@ -69,5 +70,39 @@ describe("open-set look-alike scoring", () => {
     assert.ok(scaled[0]! > scaled[1]!);
     assert.ok(scaled[1]! > scaled[2]!);
     assert.ok(scaled[0]! < 55);
+  });
+});
+
+describe("strong-band margin gate: evidentiary basis (held-out v2.1)", () => {
+  it("strong-band probes clearing the margin threshold stay overwhelmingly correct", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+    const reportPath = path.join(root, "reports/held-out-v2-baseline.json");
+    if (!fs.existsSync(reportPath)) return; // artifact optional in sparse checkouts
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8")) as {
+      records: Array<{ dTop1: number | null; dBestWrong: number | null; rank: number }>;
+    };
+    // Reproduce the display pipeline's inputs: hill percent from raw distance,
+    // discriminative margin from best wrong identity.
+    const D0 = 0.6;
+    const N = 4.1;
+    const hill = (d: number) => 100 / (1 + (d / D0) ** N);
+    const strong: number[] = [];
+    for (const r of report.records) {
+      if (r.dTop1 === null || !Number.isFinite(r.dTop1)) continue;
+      if (r.dBestWrong === null || !Number.isFinite(r.dBestWrong)) continue;
+      if (hill(r.dTop1) < 70) continue;
+      if (r.dBestWrong - r.dTop1 >= STRONG_LOOKALIKE_MIN_MARGIN) {
+        strong.push(r.rank === 1 ? 1 : 0);
+      }
+    }
+    assert.ok(strong.length >= 100, `expected a real strong-band population, got ${strong.length}`);
+    const precision = strong.reduce((a, b) => a + b, 0) / strong.length;
+    assert.ok(
+      precision >= 0.95,
+      `"TOP DOPPELGÄNGER MATCH" label degraded to ${((precision * 100)).toFixed(1)}% correctness (${strong.length} probes) — recalibrate band thresholds`,
+    );
   });
 });

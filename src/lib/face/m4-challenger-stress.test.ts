@@ -291,22 +291,10 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
   });
 
   describe("7. End-to-End Pipeline Stress Test with rankByDescriptor", () => {
-    it("executes rankByDescriptor without error and returns valid MatchResult properties", () => {
-      const userVec = Float32Array.from(l2Normalize(new Array(128).fill(0.1)));
+    function stressGallery(secondGender: "male" | "female"): CelebrityEmbedding[] {
       const celebVec1 = Float32Array.from(l2Normalize(new Array(128).fill(0.12)));
       const celebVec2 = Float32Array.from(l2Normalize(new Array(128).fill(0.40)));
-
-      const query: UserFaceQuery = {
-        descriptor: userVec,
-        age: 28,
-        gender: "female",
-        genderProbability: 0.95,
-        detConfidence: 0.98,
-        sharpness: 85,
-        faceCoverage: 0.22,
-      };
-
-      const gallery: CelebrityEmbedding[] = [
+      return [
         {
           id: "celeb-1",
           name: "Celeb One",
@@ -322,12 +310,24 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
           path: "/celeb2.webp",
           descriptor: Array.from(celebVec2),
           age: 45,
-          gender: "female",
+          gender: secondGender,
           genderProb: 0.90,
         },
       ];
+    }
 
-      const results = rankByDescriptor(query, gallery, 2);
+    const femaleQuery: UserFaceQuery = {
+      descriptor: Float32Array.from(l2Normalize(new Array(128).fill(0.1))),
+      age: 28,
+      gender: "female",
+      genderProbability: 0.95,
+      detConfidence: 0.98,
+      sharpness: 85,
+      faceCoverage: 0.22,
+    };
+
+    it("executes rankByDescriptor without error and returns valid MatchResult properties", () => {
+      const results = rankByDescriptor(femaleQuery, stressGallery("female"), 2);
       assert.equal(results.length, 2);
 
       for (const res of results) {
@@ -344,6 +344,13 @@ describe("M4 Challenger Empirical Stress Suite - Calibration & Matching Math", (
       }
 
       // Top result should be celeb-1 due to lower vector distance + age/gender affinity
+      assert.equal(results[0]?.celebrityId, "celeb-1");
+    });
+
+    it("drops a confident cross-gender #2 from presentable ranks (deliberate lookalike policy)", () => {
+      const results = rankByDescriptor(femaleQuery, stressGallery("male"), 2);
+      // #1 of any gender survives; #2+ must share the probe's confident gender.
+      assert.equal(results.length, 1);
       assert.equal(results[0]?.celebrityId, "celeb-1");
     });
   });

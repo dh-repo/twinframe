@@ -28,18 +28,29 @@ if (!id || !descPath) {
   process.exit(1);
 }
 
+// Gallery width comes from the shipped binary header — a hardcoded dim once
+// half-strided every vector (cycle-6 P0).
+const binPath = path.join(CELEBS, "embeddings.v4.q8.bin");
+const bin = fs.readFileSync(binPath);
+if (bin.subarray(0, 4).toString("latin1") !== "AFv4") throw new Error("Bad v4 magic");
+const headerView = new DataView(bin.buffer, bin.byteOffset, bin.byteLength);
+const galleryDim = headerView.getUint16(12, true);
+if (galleryDim !== 256 && galleryDim !== 512) throw new Error(`unsupported gallery dim ${galleryDim}`);
+
 const pack = JSON.parse(fs.readFileSync(descPath, "utf8")) as {
   descriptor?: number[];
+  dim?: number;
   cases?: Array<{ id: string; descriptor: number[] }>;
 };
 const raw =
   pack.descriptor ??
   pack.cases?.find((c) => c.id === id)?.descriptor ??
   pack.cases?.[0]?.descriptor;
-if (!raw || raw.length !== 128) throw new Error("need 128-d descriptor");
+if (!raw || raw.length !== galleryDim) {
+  throw new Error(`need a ${galleryDim}-d descriptor (got ${raw?.length ?? "none"}); encode via scripts/encode-held-out-browser.mjs`);
+}
 const vec = l2Normalize(raw);
 
-const meta = JSON.parse(fs.readFileSync(path.join(CELEBS, "embeddings.meta.json"), "utf8"));
 const buckets = JSON.parse(fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8")) as Array<{
   id: string;
   name: string;
@@ -53,21 +64,16 @@ const buckets = JSON.parse(fs.readFileSync(path.join(CELEBS, "gallery.buckets.js
 const idx = buckets.findIndex((b) => b.id === id);
 if (idx < 0) throw new Error(`id not in buckets: ${id}`);
 
-const dim = meta.dim || 128;
-const scale = meta.scale || 0.003;
-const f32Path = path.join(CELEBS, "embeddings.f32.bin");
-const q8Path = path.join(CELEBS, "embeddings.q8.bin");
-const f32 = new Float32Array(fs.readFileSync(f32Path).buffer);
-const q8 = Uint8Array.from(fs.readFileSync(q8Path));
-const off = idx * dim;
-for (let j = 0; j < dim; j++) {
+// Rewrite the slot inside the shipped AFv4 binary (32-byte header, int8 biased
+// by 128 and scaled by header globalScale — exactly what the browser dequantizes).
+const scale = headerView.getFloat32(16, true);
+const byteOff = 32 + idx * galleryDim;
+for (let j = 0; j < galleryDim; j++) {
   const v = vec[j] ?? 0;
-  f32[off + j] = v;
   const q = Math.max(-127, Math.min(127, Math.round(v / scale)));
-  q8[off + j] = q + 127;
+  bin[byteOff + j] = q + 128;
 }
-fs.writeFileSync(f32Path, Buffer.from(f32.buffer));
-fs.writeFileSync(q8Path, Buffer.from(q8.buffer));
+fs.writeFileSync(binPath, bin);
 
 const jpg = `/celebs/${id}.jpg`;
 buckets[idx] = {

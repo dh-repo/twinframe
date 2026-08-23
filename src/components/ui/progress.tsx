@@ -4,10 +4,13 @@ export function Progress({
   value,
   className,
   barClassName,
+  "aria-label": ariaLabel,
 }: {
   value: number;
   className?: string;
   barClassName?: string;
+  /** Accessible name — progressbars without one fail axe `aria-progressbar-name`. */
+  "aria-label"?: string;
 }) {
   const v = Math.max(0, Math.min(100, value));
   return (
@@ -17,6 +20,7 @@ export function Progress({
         className,
       )}
       role="progressbar"
+      aria-label={ariaLabel}
       aria-valuenow={v}
       aria-valuemin={0}
       aria-valuemax={100}

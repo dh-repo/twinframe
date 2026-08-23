@@ -1,0 +1,30 @@
+name: nightly-eval
+on:
+  schedule:
+  - cron: 0 4 * * *
+  workflow_dispatch:
+jobs:
+  full-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+    - name: Install dependencies
+      run: npm install --no-audit --no-fund
+    - name: Full held-out protocol (leak-excluded)
+      run: npm run test:heldout -- --json reports/held-out-v2-nightly.json
+    - name: Sampled tier-probe benchmark (larger slice than PR gate)
+      run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 24 --concurrency 2
+        --json reports/accuracy-nightly.json
+    - name: Enroll/query parity check (browser-encoded tier sample)
+      run: npm run test:parity -- --floor 85
+    - name: Upload eval artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nightly-eval-reports
+        path: reports/*nightly*.json
+        retention-days: 30

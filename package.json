@@ -14,12 +14,14 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts' 'src/lib/ux/**/*.test.ts' 'src/lib/celebrities/**/*.test.ts' 'scripts/**/*.test.mjs'",
-    "test:match": "node --experimental-strip-types --test 'src/lib/face/**/*.test.ts'",
+    "test": "node --experimental-strip-types --test --test-concurrency=1 'src/lib/face/**/*.test.ts' 'src/lib/ux/**/*.test.ts' 'src/lib/celebrities/**/*.test.ts' 'scripts/**/*.test.mjs'",
+    "test:match": "node --experimental-strip-types --test --test-concurrency=1 'src/lib/face/**/*.test.ts'",
+    "test:heldout": "node --experimental-strip-types scripts/evaluate-held-out-v2.ts",
     "test:swing": "node scripts/swing-probe-tour.mjs --mode solo",
     "test:swing:all": "node scripts/swing-probe-tours.mjs",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:parity": "node --experimental-strip-types scripts/evaluate-tier-parity.ts --descriptors public/celebs/tier-descriptors-full.json"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -86,6 +88,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "axe-core": "^4.10.2",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.6",
@@ -100,7 +103,7 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
   },
-  "description": "Celebrity look-alike matcher — on-device FaceNet embeddings against 1000 stars",
+  "description": "Celebrity look-alike matcher \u2014 on-device FaceNet embeddings against 1000 stars",
   "allowScripts": {
     "canvas@3.2.3": true,
     "sharp@0.35.3": true

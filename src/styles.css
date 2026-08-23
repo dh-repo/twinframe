@@ -7,7 +7,7 @@
   --color-bg-subtle: #1a1a1e;
   --color-fg: #f4f4f5;
   --color-fg-muted: #a1a1aa;
-  --color-fg-subtle: #71717a;
+  --color-fg-subtle: #8b8b93; /* >=4.5:1 on bg/bg-elevated/bg-subtle (axe color-contrast gate) */
   --color-border: color-mix(in oklab, var(--color-fg) 12%, transparent);
   --color-border-strong: color-mix(in oklab, var(--color-fg) 22%, transparent);
   --color-accent: #e4e4e7;

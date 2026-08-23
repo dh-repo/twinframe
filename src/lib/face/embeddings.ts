@@ -136,8 +136,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
   } catch {}
 }
 
-/** Gallery cache-busting version — bump when the binary gallery or its extra templates change. */
-const GALLERY_VERSION = "5.1.0";
+/** Gallery cache-busting version — bump when the binary gallery, its extra
+ * templates, or catalog metadata change. This key gates the IndexedDB
+ * short-circuit and the templates fetch URL below; skipping the bump pins
+ * returning visitors to stale artifacts indefinitely (cycle-22 review P1).
+ * 5.5.0: multi-shot repair + mislabeled-portrait fix + reconciled demographics.
+ */
+const GALLERY_VERSION = "5.6.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

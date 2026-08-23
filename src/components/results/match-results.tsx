@@ -203,7 +203,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
                       <NumberCounter value={m.matchPercent} duration={1000} decimals={0} />
                       <span className="text-xs">%</span>
                     </div>
-                    <span className="text-[9px] font-mono text-white/40 group-hover:text-match uppercase">
+                    <span className="text-[9px] font-mono text-white/65 group-hover:text-match uppercase">
                       Inspect ➔
                     </span>
                   </div>

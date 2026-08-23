@@ -23,7 +23,7 @@ describe("Twinframe Accuracy Benchmark Evaluation Suite (M1 / R1)", () => {
 
     const jpgFiles = fs
       .readdirSync(CELEBS_DIR)
-      .filter((f) => f.endsWith(".jpg") && f !== "sample_user.jpg");
+      .filter((f) => f.endsWith(".jpg"));
 
     assert.ok(jpgFiles.length >= 268, "Must contain at least 268 celebrity portraits");
 

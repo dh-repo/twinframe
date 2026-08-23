@@ -105,7 +105,7 @@ function ReEncodePage() {
           name: string;
           descriptor: number[];
           age: number;
-          gender: "male" | "female";
+          gender: "male" | "female" | "unknown";
           genderProb: number;
           confidence: number;
           source: string;

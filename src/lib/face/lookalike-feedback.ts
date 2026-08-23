@@ -81,28 +81,34 @@ function feedbackTier(verdict?: VerdictTier): VerdictTier {
   return verdict ?? "soft-match";
 }
 
-/** Prompt + buttons. Distant Twin asks about nearest-neighbor honesty, not look-alikes. */
+const FEEDBACK_COPY: Record<VerdictTier, LookalikeFeedbackCopy> = {
+  "distant-twin": {
+    prompt: "Was the nearest face at least plausible?",
+    negativeLabel: "Wrong nearest",
+    fairNearestLabel: "Fair nearest",
+  },
+  "dead-ringer": {
+    prompt: "Was this a good look-alike?",
+    negativeLabel: "Not really",
+    fairNearestLabel: null,
+  },
+  "strong-resemblance": {
+    prompt: "Was this a good look-alike?",
+    negativeLabel: "Not really",
+    fairNearestLabel: null,
+  },
+  "soft-match": {
+    prompt: "Was this a good look-alike?",
+    negativeLabel: "Not really",
+    fairNearestLabel: null,
+  },
+};
+
+/** Prompt + buttons. Distant Twin asks about nearest-neighbor honesty, not look-alikes.
+ * A Record over the tier union keeps this exhaustive without relying on
+ * switch-narrowing, which failed under the merged toolchain. */
 export function lookalikeFeedbackCopy(verdict?: VerdictTier): LookalikeFeedbackCopy {
-  switch (feedbackTier(verdict)) {
-    case "distant-twin":
-      return {
-        prompt: "Was the nearest face at least plausible?",
-        negativeLabel: "Wrong nearest",
-        fairNearestLabel: "Fair nearest",
-      };
-    case "dead-ringer":
-    case "strong-resemblance":
-    case "soft-match":
-      return {
-        prompt: "Was this a good look-alike?",
-        negativeLabel: "Not really",
-        fairNearestLabel: null,
-      };
-    default: {
-      const _exhaustive: never = feedbackTier(verdict);
-      return _exhaustive;
-    }
-  }
+  return FEEDBACK_COPY[feedbackTier(verdict)];
 }
 
 export function lookalikeFeedbackThanks(

@@ -125,6 +125,12 @@ export interface CelebrityMatch {
   verdict?: VerdictTier;
   /** One-line shared-trait copy for the reveal / share card. */
   blurb?: string;
+  /**
+   * Calibrated P(this candidate is the true identity), measured on the leak-excluded
+   * held-out protocol (see src/lib/face/calibration.ts). Set on rank-1 only — the
+   * claim is not defined for deeper ranks.
+   */
+  probabilityCorrect?: number;
 }
 
 /**
