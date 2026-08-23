@@ -8,6 +8,7 @@ import {
   l2Normalize,
   dotProduct256,
   cosineDistance256,
+  cosineDistance,
   distanceToMatchPercent,
 } from "./embeddings.ts";
 
@@ -78,6 +79,22 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     // Hill: P(0) = 100%, P(HILL_D0=0.6) = 50%
     assert.equal(distanceToMatchPercent(0.0), 100.0);
     assert.equal(distanceToMatchPercent(0.6), 50.0);
+  });
+
+  test("4b. cosineDistance pins min-length-prefix semantics for mismatched dims", () => {
+    // PINNED FOOTGUN: for vectors of different length, cosineDistance compares only the
+    // first min(len) coordinates and returns a plausible [0,2] value instead of throwing.
+    // Cross-embedding-space comparison (e.g. a 128-d probe vs a 512-d gallery) is
+    // mathematically meaningless, which is why scripts/evaluate-held-out-v2.ts enforces
+    // probe dim == gallery header dim before ranking anything.
+    const a = new Float32Array([1, 0, 0, 0]);
+    const b = new Float32Array([1, 0]);
+    const d = cosineDistance(a, b);
+    assert.ok(Math.abs(d - 0) < 1e-6, `identical prefixes must give distance 0, got ${d}`);
+
+    const c = new Float32Array([-1, 0]);
+    const dOpp = cosineDistance(a, c);
+    assert.ok(Math.abs(dOpp - 2) < 1e-6, `opposite prefixes must give distance 2, got ${dOpp}`);
   });
 
   test("5. Catalog Synchronization Audit across Binary and JSON", () => {

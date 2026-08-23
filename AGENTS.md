@@ -26,7 +26,7 @@ npm run build                       # ort asset copy + vite build + post-build p
 | Script | What it measures | Honest? |
 |---|---|---|
 | `scripts/evaluate-accuracy.mjs` | Tier-probe Top-1/Top-5/MRR/margins/latency vs v4 q8 gallery | Probes overlap enrollment portraits — treat as *pipeline sanity*, never as user-facing accuracy |
-| `scripts/evaluate-held-out-v2.ts` | Rank-1 of browser-encoded held-out descriptors vs the exact gallery the app loads, using the real `rankByDescriptor` | This is the headline number. Probes come from photos disjoint from enrollment centroids |
+| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d EdgeFace) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (46.0% Rank-1 / MRR 0.535, n=274, 2026-08). Enforces probe dim == gallery header dim and excludes any probe whose source file contributed to a gallery artifact; `scripts/held-out-protocol.test.mjs` pins both rules |
 | `scripts/rebuild-gallery-v5.mjs` | embed/fetch/assemble/eval/thumbnails phases for the multi-shot v5 gallery | Resumable, sha256-cached; excludes anything that fails detection/clustering |
 | `scripts/test-non-face-rejection.mjs` | Non-face input rejection end-to-end | Hard-case suite; port into CI |
 
@@ -88,7 +88,7 @@ src/lib/face/
 public/celebs/
   embeddings.v4.q8.bin + gallery.buckets.json + index.json   # shipped gallery (1000 enrolled)
   extra-templates.json                                       # +552 templates merged at runtime
-  held-out/descriptors.json                                  # tracked eval probes (browser-encoded)
+  held-out/descriptors.json                                  # tracked eval probes (browser-encoded, EdgeFace-512d)
 reports/                           # generated eval artifacts (tracked; restore after local runs)
 migrations/0001_auth.sql           # better-auth schema (do not edit)
 ```

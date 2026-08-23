@@ -8,7 +8,18 @@
  * query age/gender come from the recorded ageGenderNet predictions on the probe photo,
  * which is what the live pipeline would produce.
  *
- * Run: node --experimental-strip-types scripts/evaluate-held-out-v2.ts [--json reports/x.json]
+ * Leakage rule (v2.1): any probe whose source file also contributed to ANY gallery
+ * artifact (v4 bucket portrait, index.json entry, or extra-template source) is excluded
+ * from the headline metrics and reported separately. Scoring a probe against its own
+ * enrollment image is leakage, not accuracy. Run with --include-leaked to reproduce
+ * the old contaminated number for comparison.
+ *
+ * Margin semantics: dTop1 is the raw cosine distance of the bucket rankByDescriptor
+ * selected (best prior-adjusted); dMinSameId is the min RAW cosine across that celeb's
+ * buckets. margin = dTop1 - dMinSameId >= 0 measures how much age/gender priors shifted
+ * the within-id bucket choice; it is never negative by construction.
+ *
+ * Run: node --experimental-strip-types scripts/evaluate-held-out-v2.ts [--json reports/x.json] [--include-leaked]
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -19,6 +30,10 @@ import { l2Normalize, cosineDistance } from "../src/lib/face/embeddings.ts";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
 
+export function normalizeSource(source: string): string {
+  return source.replace(/^\/?celebs\//, "").replace(/^\//, "");
+}
+
 interface GalleryEntry {
   id: string;
   name: string;
@@ -28,6 +43,19 @@ interface GalleryEntry {
   gender: "male" | "female";
   genderProb: number;
 }
+
+export interface HeldOutCase {
+  id: string;
+  name?: string;
+  descriptor: number[];
+  age?: number;
+  gender?: "male" | "female";
+  genderProb?: number;
+  ok?: boolean;
+  source?: string;
+}
+
+let GALLERY_DIM = 512;
 
 function parseV4AndLoad(): GalleryEntry[] {
   const buckets = JSON.parse(
@@ -48,9 +76,13 @@ function parseV4AndLoad(): GalleryEntry[] {
   const vectorCount = view.getUint32(8, true);
   const dimension = view.getUint16(12, true);
   const scale = view.getFloat32(16, true);
-  if (vectorCount !== buckets.length || dimension !== 256) {
-    throw new Error(`v4 header mismatch: ${vectorCount} vs ${buckets.length} buckets, dim=${dimension}`);
+  if (vectorCount !== buckets.length) {
+    throw new Error(`v4 header mismatch: ${vectorCount} vs ${buckets.length} buckets`);
   }
+  if (dimension !== 256 && dimension !== 512) {
+    throw new Error(`v4 header has unsupported dim ${dimension}`);
+  }
+  GALLERY_DIM = dimension;
   const out: GalleryEntry[] = new Array(buckets.length);
   for (let i = 0; i < buckets.length; i++) {
     const off = 32 + i * 256;
@@ -87,45 +119,88 @@ function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
   return extras.length ? base.concat(extras) : base;
 }
 
-function main() {
-  const gallery = mergeExtraTemplates(parseV4AndLoad());
-  const galleryIds = new Set(gallery.map((g) => g.id));
-  const portraitIds = new Set(
-    fs.readdirSync(CELEBS).filter((f) => f.endsWith(".jpg")).map((f) => f.replace(/\.jpg$/, "")),
-  );
+/** Every image file that contributed to any shipped gallery artifact. */
+export function collectGallerySources(celebsDir = CELEBS): Set<string> {
+  const sources = new Set<string>();
+  const buckets = JSON.parse(
+    fs.readFileSync(path.join(celebsDir, "gallery.buckets.json"), "utf8"),
+  ) as Array<{ path?: string }>;
+  for (const b of buckets) if (b.path) sources.add(normalizeSource(b.path));
+  const index = JSON.parse(fs.readFileSync(path.join(celebsDir, "index.json"), "utf8")) as Array<{
+    path?: string;
+    path192?: string;
+    fallbackPath?: string;
+  }>;
+  for (const e of index)
+    for (const p of [e.path, e.path192, e.fallbackPath]) if (p) sources.add(normalizeSource(p));
+  const templatesFile = path.join(celebsDir, "extra-templates.json");
+  if (fs.existsSync(templatesFile)) {
+    const data = JSON.parse(fs.readFileSync(templatesFile, "utf8")) as {
+      templates?: Array<{ source?: string }>;
+    };
+    for (const t of data.templates ?? []) if (t.source) sources.add(normalizeSource(t.source));
+  }
+  return sources;
+}
 
-  const packPath = path.join(CELEBS, "held-out/descriptors.json");
-  const pack = JSON.parse(fs.readFileSync(packPath, "utf8")) as {
-    cases: Array<{
-      id: string;
-      name: string;
-      descriptor: number[];
-      age?: number;
-      gender?: "male" | "female";
-      genderProb?: number;
-      ok?: boolean;
-    }>;
+export interface EvaluatedRecord {
+  id: string;
+  rank: number;
+  top1: string;
+  dTrue: number;
+  dTop1: number;
+  dMinSameId: number;
+  margin: number;
+  priorFlipped: boolean;
+  leaked: boolean;
+}
+
+export interface HeldOutMetrics {
+  n: number;
+  rank1Pct: number;
+  rank5Pct: number;
+  mrr: number;
+}
+
+function metricsFor(records: readonly EvaluatedRecord[], pred: (r: EvaluatedRecord) => boolean): HeldOutMetrics {
+  const rs = records.filter(pred);
+  const n = rs.length;
+  if (n === 0) return { n: 0, rank1Pct: 0, rank5Pct: 0, mrr: 0 };
+  const rank1 = rs.filter((r) => r.rank === 1).length;
+  const rank5 = rs.filter((r) => r.rank >= 1 && r.rank <= 5).length;
+  const mrr = rs.reduce((a, r) => a + (Number.isFinite(r.rank) ? 1 / r.rank : 0), 0) / n;
+  return {
+    n,
+    rank1Pct: (rank1 / n) * 100,
+    rank5Pct: (rank5 / n) * 100,
+    mrr,
   };
+}
 
-  const records: Array<{
-    id: string;
-    rank: number;
-    top1: string;
-    dTrue: number;
-    dTop1: number;
-    margin: number;
-    hasPortrait: boolean;
-  }> = [];
+export function evaluateHeldOutCases(
+  gallery: readonly GalleryEntry[],
+  cases: readonly HeldOutCase[],
+  opts: { excludeLeaked: boolean },
+): { records: EvaluatedRecord[]; skipped: number; notEnrolled: number; leakedExcluded: number } {
+  const galleryIds = new Set(gallery.map((g) => g.id));
+  const leakedSources = collectGallerySources();
+  const records: EvaluatedRecord[] = [];
   let skipped = 0;
   let notEnrolled = 0;
+  let leakedExcluded = 0;
 
-  for (const c of pack.cases) {
+  for (const c of cases) {
     if (c.ok === false || !c.descriptor?.length) {
       skipped++;
       continue;
     }
     if (!galleryIds.has(c.id)) {
       notEnrolled++;
+      continue;
+    }
+    const leaked = c.source ? leakedSources.has(normalizeSource(c.source)) : false;
+    if (opts.excludeLeaked && leaked) {
+      leakedExcluded++;
       continue;
     }
     const matches = rankByDescriptor(
@@ -135,60 +210,100 @@ function main() {
         gender: c.gender ?? "unknown",
         genderProbability: c.genderProb ?? 0.9,
       },
-      gallery,
+      gallery as GalleryEntry[],
       5,
     );
     const rank = matches.findIndex((m) => m.celebrityId === c.id) + 1;
     // raw cosine distances (no priors) for calibration stats
     const q = l2Normalize(c.descriptor);
-    let dTrue = Infinity;
+    let dMinSameId = Infinity;
     for (const g of gallery) {
       if (g.id !== c.id) continue;
-      dTrue = Math.min(dTrue, cosineDistance(q, g.descriptor));
+      dMinSameId = Math.min(dMinSameId, cosineDistance(q, g.descriptor));
     }
-    const dTop1 = matches[0]?.distance ?? Infinity;
+    if (matches.length === 0) {
+      // Matcher refused every candidate (distance gate). Counted as a miss.
+      records.push({
+        id: c.id,
+        rank: Infinity,
+        top1: "",
+        dTrue: dMinSameId,
+        dTop1: NaN,
+        dMinSameId,
+        margin: NaN,
+        priorFlipped: false,
+        leaked,
+      });
+      continue;
+    }
+    const dTop1 = matches[0]!.distance;
     records.push({
       id: c.id,
       rank: rank === 0 ? Infinity : rank,
-      top1: matches[0]?.celebrityId ?? "",
-      dTrue,
+      top1: matches[0]!.celebrityId,
+      dTrue: dMinSameId,
       dTop1,
-      margin: dTop1 === dTrue ? NaN : dTrue - dTop1, // negative = true is closer than adjusted-top1
-      hasPortrait: portraitIds.has(c.id),
+      dMinSameId,
+      margin: Math.max(0, dTop1 - dMinSameId),
+      priorFlipped: dTop1 > dMinSameId + 1e-9,
+      leaked,
     });
   }
+  return { records, skipped, notEnrolled, leakedExcluded };
+}
 
-  const n = records.length;
-  const rank1 = records.filter((r) => r.rank === 1).length;
-  const rank5 = records.filter((r) => r.rank >= 1 && r.rank <= 5).length;
-  const mrr = records.reduce((a, r) => a + (r.rank > 0 ? 1 / r.rank : 0), 0) / Math.max(1, n);
+export function assertDimensionsCompatible(
+  cases: readonly HeldOutCase[],
+  galleryDim: number,
+): void {
+  const badDim = cases.filter((c) => c.descriptor?.length && c.descriptor.length !== galleryDim);
+  if (badDim.length > 0) {
+    throw new Error(
+      `Probe/gallery dimension mismatch: probes are ${badDim[0]!.descriptor.length}-d but the shipped ` +
+        `gallery is ${galleryDim}-d (${badDim.length}/${cases.length} probes). Cross-space cosine ` +
+        `is meaningless — re-encode probes with scripts/encode-held-out-browser.mjs (engine=edgeface).`,
+    );
+  }
+}
 
-  const subset = (pred: (r: (typeof records)[number]) => boolean) => {
-    const rs = records.filter(pred);
-    const nn = rs.length;
-    return {
-      n: nn,
-      rank1Pct: (rs.filter((r) => r.rank === 1).length / Math.max(1, nn)) * 100,
-      rank5Pct: (rs.filter((r) => r.rank >= 1 && r.rank <= 5).length / Math.max(1, nn)) * 100,
-    };
-  };
+function main() {
+  const includeLeaked = process.argv.includes("--include-leaked");
+  const gallery = mergeExtraTemplates(parseV4AndLoad());
 
-  const withPortrait = subset((r) => r.hasPortrait);
-  const withoutPortrait = subset((r) => !r.hasPortrait);
+  const packPath = path.join(CELEBS, "held-out/descriptors.json");
+  const pack = JSON.parse(fs.readFileSync(packPath, "utf8")) as { cases: HeldOutCase[] };
 
-  const dTrueVals = records.map((r) => r.dTrue).filter(Number.isFinite).sort((a, b) => a - b);
-  const q = (p: number) => dTrueVals[Math.min(dTrueVals.length - 1, Math.floor(p * dTrueVals.length))] ?? NaN;
+  assertDimensionsCompatible(pack.cases, GALLERY_DIM);
+
+  const { records, skipped, notEnrolled, leakedExcluded } = evaluateHeldOutCases(gallery, pack.cases, {
+    excludeLeaked: !includeLeaked,
+  });
+
+  const clean = metricsFor(records, (r) => !r.leaked);
+  const all = metricsFor(records, () => true);
 
   console.log("=".repeat(72));
-  console.log("  TWINFRAME HELD-OUT RANK-1 (v2) — honest protocol");
+  console.log("  TWINFRAME HELD-OUT RANK-1 (v2.1) — leak-excluded protocol");
   console.log("=".repeat(72));
-  console.log(`  gallery buckets+templates: ${gallery.length} | probes: ${n} (skipped ${skipped}, not enrolled ${notEnrolled})`);
+  console.log(
+    `  gallery buckets+templates: ${gallery.length} | evaluated: ${records.length}` +
+      ` (skipped ${skipped}, not enrolled ${notEnrolled}, LEAKED EXCLUDED ${leakedExcluded})`,
+  );
+  if (includeLeaked) {
+    console.log("  !! --include-leaked set: headline numbers below CONTAMINATED (probes scored against their own gallery images)");
+  }
   console.log("");
-  console.log(`  OVERALL      Rank-1: ${((rank1 / Math.max(1, n)) * 100).toFixed(1)}%  Rank-5: ${((rank5 / Math.max(1, n)) * 100).toFixed(1)}%  MRR: ${mrr.toFixed(3)}`);
-  console.log(`  w/ portrait  Rank-1: ${withPortrait.rank1Pct.toFixed(1)}%  Rank-5: ${withPortrait.rank5Pct.toFixed(1)}%  (n=${withPortrait.n})`);
-  console.log(`  no portrait  Rank-1: ${withoutPortrait.rank1Pct.toFixed(1)}%  Rank-5: ${withoutPortrait.rank5Pct.toFixed(1)}%  (n=${withoutPortrait.n})`);
-  console.log("");
-  console.log(`  d_true distribution: p10=${q(0.1).toFixed(3)} p50=${q(0.5).toFixed(3)} p90=${q(0.9).toFixed(3)}`);
+  console.log(`  CLEAN       Rank-1: ${clean.rank1Pct.toFixed(1)}%  Rank-5: ${clean.rank5Pct.toFixed(1)}%  MRR: ${clean.mrr.toFixed(3)}  (n=${clean.n})`);
+  console.log(`  ALL(eval'd) Rank-1: ${all.rank1Pct.toFixed(1)}%  Rank-5: ${all.rank5Pct.toFixed(1)}%  MRR: ${all.mrr.toFixed(3)}  (n=${all.n})`);
+  const refused = records.filter((r) => !Number.isFinite(r.dTop1)).length;
+  const flips = records.filter((r) => r.priorFlipped).length;
+  console.log(`  gate refusals (no candidate passed the floor): ${refused}/${records.length}`);
+  console.log(`  prior-bucket flips (margin>0): ${flips}/${records.length}`);
+  const margins = records.map((r) => r.margin).filter((m) => Number.isFinite(m)).sort((a, b) => a - b);
+  if (margins.length) {
+    const mq = (p: number) => margins[Math.min(margins.length - 1, Math.floor(p * margins.length))]!.toFixed(4);
+    console.log(`  margin (dTop1-dMinSameId): p50=${mq(0.5)} p90=${mq(0.9)} max=${margins[margins.length - 1]!.toFixed(4)}`);
+  }
 
   const misses = records
     .filter((r) => r.rank !== 1)
@@ -212,13 +327,15 @@ function main() {
     JSON.stringify(
       {
         at: new Date().toISOString(),
+        protocol: "held-out-v2.1-leak-excluded",
+        includeLeaked,
         gallerySize: gallery.length,
-        probes: n,
-        rank1Pct: (rank1 / Math.max(1, n)) * 100,
-        rank5Pct: (rank5 / Math.max(1, n)) * 100,
-        mrr,
-        withPortrait,
-        withoutPortrait,
+        probesTotal: pack.cases.length,
+        skipped,
+        notEnrolled,
+        leakedExcluded,
+        clean,
+        allEvaluated: all,
         records,
       },
       null,
@@ -229,4 +346,6 @@ function main() {
   console.log(`  report: ${path.relative(ROOT, outPath!)}`);
 }
 
-main();
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main();
+}

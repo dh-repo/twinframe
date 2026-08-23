@@ -1,0 +1,1544 @@
+{
+ "cases": [
+  {
+   "id": "aaron-taylor-johnson",
+   "name": "Aaron Taylor Johnson",
+   "imagePath": "/celebs/held-out/aaron-taylor-johnson/001.jpg"
+  },
+  {
+   "id": "adam-driver",
+   "name": "Adam Driver",
+   "imagePath": "/celebs/held-out/adam-driver/001.jpg"
+  },
+  {
+   "id": "adam-driver",
+   "name": "Adam Driver",
+   "imagePath": "/celebs/held-out/adam-driver/004.jpg"
+  },
+  {
+   "id": "adam-sandler",
+   "name": "Adam Sandler",
+   "imagePath": "/celebs/held-out/adam-sandler/001.jpg"
+  },
+  {
+   "id": "adam-sandler",
+   "name": "Adam Sandler",
+   "imagePath": "/celebs/held-out/adam-sandler/002.jpg"
+  },
+  {
+   "id": "adele",
+   "name": "Adele",
+   "imagePath": "/celebs/held-out/adele/001.jpg"
+  },
+  {
+   "id": "adriana-lima",
+   "name": "Adriana Lima",
+   "imagePath": "/celebs/held-out/adriana-lima/001.jpg"
+  },
+  {
+   "id": "aishwarya-rai",
+   "name": "Aishwarya Rai",
+   "imagePath": "/celebs/held-out/aishwarya-rai/001.jpg"
+  },
+  {
+   "id": "aishwarya-rai",
+   "name": "Aishwarya Rai",
+   "imagePath": "/celebs/held-out/aishwarya-rai/002.jpg"
+  },
+  {
+   "id": "al-pacino",
+   "name": "Al Pacino",
+   "imagePath": "/celebs/held-out/al-pacino/001.jpg"
+  },
+  {
+   "id": "al-pacino",
+   "name": "Al Pacino",
+   "imagePath": "/celebs/held-out/al-pacino/002.jpg"
+  },
+  {
+   "id": "alexander-skarsgard",
+   "name": "Alexander Skarsgard",
+   "imagePath": "/celebs/held-out/alexander-skarsgard/001.jpg"
+  },
+  {
+   "id": "ali-wong",
+   "name": "Ali Wong",
+   "imagePath": "/celebs/held-out/ali-wong/001.jpg"
+  },
+  {
+   "id": "ali-wong",
+   "name": "Ali Wong",
+   "imagePath": "/celebs/held-out/ali-wong/002.jpg"
+  },
+  {
+   "id": "alia-bhatt",
+   "name": "Alia Bhatt",
+   "imagePath": "/celebs/held-out/alia-bhatt/001.jpg"
+  },
+  {
+   "id": "alicia-vikander",
+   "name": "Alicia Vikander",
+   "imagePath": "/celebs/held-out/alicia-vikander/001.jpg"
+  },
+  {
+   "id": "amy-adams",
+   "name": "Amy Adams",
+   "imagePath": "/celebs/held-out/amy-adams/001.jpg"
+  },
+  {
+   "id": "ana-de-armas",
+   "name": "Ana De Armas",
+   "imagePath": "/celebs/held-out/ana-de-armas/001.jpg"
+  },
+  {
+   "id": "andrew-garfield",
+   "name": "Andrew Garfield",
+   "imagePath": "/celebs/held-out/andrew-garfield/001.jpg"
+  },
+  {
+   "id": "andrew-scott",
+   "name": "Andrew Scott",
+   "imagePath": "/celebs/held-out/andrew-scott/001.jpg"
+  },
+  {
+   "id": "angela-bassett",
+   "name": "Angela Bassett",
+   "imagePath": "/celebs/held-out/angela-bassett/001.jpg"
+  },
+  {
+   "id": "angelina-jolie",
+   "name": "Angelina Jolie",
+   "imagePath": "/celebs/held-out/angelina-jolie/001.jpg"
+  },
+  {
+   "id": "anna-sawai",
+   "name": "Anna Sawai",
+   "imagePath": "/celebs/held-out/anna-sawai/001.jpg"
+  },
+  {
+   "id": "ansel-elgort",
+   "name": "Ansel Elgort",
+   "imagePath": "/celebs/held-out/ansel-elgort/001.jpg"
+  },
+  {
+   "id": "ansel-elgort",
+   "name": "Ansel Elgort",
+   "imagePath": "/celebs/held-out/ansel-elgort/002.jpg"
+  },
+  {
+   "id": "anthony-hopkins",
+   "name": "Anthony Hopkins",
+   "imagePath": "/celebs/held-out/anthony-hopkins/001.jpg"
+  },
+  {
+   "id": "anthony-mackie",
+   "name": "Anthony Mackie",
+   "imagePath": "/celebs/held-out/anthony-mackie/001.jpg"
+  },
+  {
+   "id": "antonio-banderas",
+   "name": "Antonio Banderas",
+   "imagePath": "/celebs/held-out/antonio-banderas/001.jpg"
+  },
+  {
+   "id": "anya-taylor-joy",
+   "name": "Anya Taylor Joy",
+   "imagePath": "/celebs/held-out/anya-taylor-joy/001.jpg"
+  },
+  {
+   "id": "anya-taylor",
+   "name": "Anya Taylor",
+   "imagePath": "/celebs/held-out/anya-taylor/001.jpg"
+  },
+  {
+   "id": "anya-taylor",
+   "name": "Anya Taylor",
+   "imagePath": "/celebs/held-out/anya-taylor/002.jpg"
+  },
+  {
+   "id": "ariana-grande",
+   "name": "Ariana Grande",
+   "imagePath": "/celebs/held-out/ariana-grande/001.jpg"
+  },
+  {
+   "id": "aubrey-plaza",
+   "name": "Aubrey Plaza",
+   "imagePath": "/celebs/held-out/aubrey-plaza/001.jpg"
+  },
+  {
+   "id": "aubrey-plaza",
+   "name": "Aubrey Plaza",
+   "imagePath": "/celebs/held-out/aubrey-plaza/002.jpg"
+  },
+  {
+   "id": "austin-butler",
+   "name": "Austin Butler",
+   "imagePath": "/celebs/held-out/austin-butler/001.jpg"
+  },
+  {
+   "id": "awkwafina",
+   "name": "Awkwafina",
+   "imagePath": "/celebs/held-out/awkwafina/001.jpg"
+  },
+  {
+   "id": "bad-bunny",
+   "name": "Bad Bunny",
+   "imagePath": "/celebs/held-out/bad-bunny/001.jpg"
+  },
+  {
+   "id": "bae-doona",
+   "name": "Bae Doona",
+   "imagePath": "/celebs/held-out/bae-doona/001.jpg"
+  },
+  {
+   "id": "bae-doona",
+   "name": "Bae Doona",
+   "imagePath": "/celebs/held-out/bae-doona/002.jpg"
+  },
+  {
+   "id": "barack-obama",
+   "name": "Barack Obama",
+   "imagePath": "/celebs/held-out/barack-obama/001.jpg"
+  },
+  {
+   "id": "bella-hadid",
+   "name": "Bella Hadid",
+   "imagePath": "/celebs/held-out/bella-hadid/001.jpg"
+  },
+  {
+   "id": "ben-affleck",
+   "name": "Ben Affleck",
+   "imagePath": "/celebs/held-out/ben-affleck/001.jpg"
+  },
+  {
+   "id": "ben-affleck",
+   "name": "Ben Affleck",
+   "imagePath": "/celebs/held-out/ben-affleck/002.jpg"
+  },
+  {
+   "id": "benedict-cumberbatch",
+   "name": "Benedict Cumberbatch",
+   "imagePath": "/celebs/held-out/benedict-cumberbatch/001.jpg"
+  },
+  {
+   "id": "beyonce",
+   "name": "Beyonce",
+   "imagePath": "/celebs/held-out/beyonce/001.jpg"
+  },
+  {
+   "id": "bill-gates",
+   "name": "Bill Gates",
+   "imagePath": "/celebs/held-out/bill-gates/001.jpg"
+  },
+  {
+   "id": "bill-gates",
+   "name": "Bill Gates",
+   "imagePath": "/celebs/held-out/bill-gates/002.jpg"
+  },
+  {
+   "id": "bill-skarsgard",
+   "name": "Bill Skarsgard",
+   "imagePath": "/celebs/held-out/bill-skarsgard/001.jpg"
+  },
+  {
+   "id": "bill-skarsgard",
+   "name": "Bill Skarsgard",
+   "imagePath": "/celebs/held-out/bill-skarsgard/002.jpg"
+  },
+  {
+   "id": "billie-eilish",
+   "name": "Billie Eilish",
+   "imagePath": "/celebs/held-out/billie-eilish/001.jpg"
+  },
+  {
+   "id": "blake-lively",
+   "name": "Blake Lively",
+   "imagePath": "/celebs/held-out/blake-lively/001.jpg"
+  },
+  {
+   "id": "blake-lively",
+   "name": "Blake Lively",
+   "imagePath": "/celebs/held-out/blake-lively/002.jpg"
+  },
+  {
+   "id": "brad-pitt",
+   "name": "Brad Pitt",
+   "imagePath": "/celebs/held-out/brad-pitt/001.jpg"
+  },
+  {
+   "id": "bradley-cooper",
+   "name": "Bradley Cooper",
+   "imagePath": "/celebs/held-out/bradley-cooper/001.jpg"
+  },
+  {
+   "id": "brie-larson",
+   "name": "Brie Larson",
+   "imagePath": "/celebs/held-out/brie-larson/001.jpg"
+  },
+  {
+   "id": "brie-larson",
+   "name": "Brie Larson",
+   "imagePath": "/celebs/held-out/brie-larson/002.jpg"
+  },
+  {
+   "id": "britney-spears",
+   "name": "Britney Spears",
+   "imagePath": "/celebs/held-out/britney-spears/001.jpg"
+  },
+  {
+   "id": "bruno-mars",
+   "name": "Bruno Mars",
+   "imagePath": "/celebs/held-out/bruno-mars/001.jpg"
+  },
+  {
+   "id": "bruno-mars",
+   "name": "Bruno Mars",
+   "imagePath": "/celebs/held-out/bruno-mars/002.jpg"
+  },
+  {
+   "id": "cailee-spaeny",
+   "name": "Cailee Spaeny",
+   "imagePath": "/celebs/held-out/cailee-spaeny/001.jpg"
+  },
+  {
+   "id": "cailee-spaeny",
+   "name": "Cailee Spaeny",
+   "imagePath": "/celebs/held-out/cailee-spaeny/002.jpg"
+  },
+  {
+   "id": "cara-delevingne",
+   "name": "Cara Delevingne",
+   "imagePath": "/celebs/held-out/cara-delevingne/001.jpg"
+  },
+  {
+   "id": "cara-delevingne",
+   "name": "Cara Delevingne",
+   "imagePath": "/celebs/held-out/cara-delevingne/002.jpg"
+  },
+  {
+   "id": "cardi-b",
+   "name": "Cardi B",
+   "imagePath": "/celebs/held-out/cardi-b/001.jpg"
+  },
+  {
+   "id": "cate-blanchett",
+   "name": "Cate Blanchett",
+   "imagePath": "/celebs/held-out/cate-blanchett/001.jpg"
+  },
+  {
+   "id": "chadwick-boseman",
+   "name": "Chadwick Boseman",
+   "imagePath": "/celebs/held-out/chadwick-boseman/001.jpg"
+  },
+  {
+   "id": "channing-tatum",
+   "name": "Channing Tatum",
+   "imagePath": "/celebs/held-out/channing-tatum/001.jpg"
+  },
+  {
+   "id": "charlize-theron",
+   "name": "Charlize Theron",
+   "imagePath": "/celebs/held-out/charlize-theron/001.jpg"
+  },
+  {
+   "id": "chloe-grace-moretz",
+   "name": "Chloe Grace Moretz",
+   "imagePath": "/celebs/held-out/chloe-grace-moretz/001.jpg"
+  },
+  {
+   "id": "chris-evans",
+   "name": "Chris Evans",
+   "imagePath": "/celebs/held-out/chris-evans/001.jpg"
+  },
+  {
+   "id": "chris-hemsworth",
+   "name": "Chris Hemsworth",
+   "imagePath": "/celebs/held-out/chris-hemsworth/001.jpg"
+  },
+  {
+   "id": "chris-pine",
+   "name": "Chris Pine",
+   "imagePath": "/celebs/held-out/chris-pine/001.jpg"
+  },
+  {
+   "id": "chris-pine",
+   "name": "Chris Pine",
+   "imagePath": "/celebs/held-out/chris-pine/002.jpg"
+  },
+  {
+   "id": "christian-bale",
+   "name": "Christian Bale",
+   "imagePath": "/celebs/held-out/christian-bale/001.jpg"
+  },
+  {
+   "id": "christian-bale",
+   "name": "Christian Bale",
+   "imagePath": "/celebs/held-out/christian-bale/002.jpg"
+  },
+  {
+   "id": "cillian-murphy",
+   "name": "Cillian Murphy",
+   "imagePath": "/celebs/held-out/cillian-murphy/001.jpg"
+  },
+  {
+   "id": "cole-sprouse",
+   "name": "Cole Sprouse",
+   "imagePath": "/celebs/held-out/cole-sprouse/001.jpg"
+  },
+  {
+   "id": "colin-firth",
+   "name": "Colin Firth",
+   "imagePath": "/celebs/held-out/colin-firth/001.jpg"
+  },
+  {
+   "id": "colin-firth",
+   "name": "Colin Firth",
+   "imagePath": "/celebs/held-out/colin-firth/002.jpg"
+  },
+  {
+   "id": "cristiano-ronaldo",
+   "name": "Cristiano Ronaldo",
+   "imagePath": "/celebs/held-out/cristiano-ronaldo/001.jpg"
+  },
+  {
+   "id": "daisy-edgar-jones",
+   "name": "Daisy Edgar Jones",
+   "imagePath": "/celebs/held-out/daisy-edgar-jones/001.jpg"
+  },
+  {
+   "id": "daisy-edgar-jones",
+   "name": "Daisy Edgar Jones",
+   "imagePath": "/celebs/held-out/daisy-edgar-jones/002.jpg"
+  },
+  {
+   "id": "dakota-johnson",
+   "name": "Dakota Johnson",
+   "imagePath": "/celebs/held-out/dakota-johnson/001.jpg"
+  },
+  {
+   "id": "dakota-johnson",
+   "name": "Dakota Johnson",
+   "imagePath": "/celebs/held-out/dakota-johnson/002.jpg"
+  },
+  {
+   "id": "daniel-craig",
+   "name": "Daniel Craig",
+   "imagePath": "/celebs/held-out/daniel-craig/001.jpg"
+  },
+  {
+   "id": "daniel-kaluuya",
+   "name": "Daniel Kaluuya",
+   "imagePath": "/celebs/held-out/daniel-kaluuya/001.jpg"
+  },
+  {
+   "id": "daniel-kaluuya",
+   "name": "Daniel Kaluuya",
+   "imagePath": "/celebs/held-out/daniel-kaluuya/002.jpg"
+  },
+  {
+   "id": "david-beckham",
+   "name": "David Beckham",
+   "imagePath": "/celebs/held-out/david-beckham/001.jpg"
+  },
+  {
+   "id": "david-beckham",
+   "name": "David Beckham",
+   "imagePath": "/celebs/held-out/david-beckham/002.jpg"
+  },
+  {
+   "id": "deepika-padukone",
+   "name": "Deepika Padukone",
+   "imagePath": "/celebs/held-out/deepika-padukone/001.jpg"
+  },
+  {
+   "id": "demi-moore",
+   "name": "Demi Moore",
+   "imagePath": "/celebs/held-out/demi-moore/001.jpg"
+  },
+  {
+   "id": "demi-moore",
+   "name": "Demi Moore",
+   "imagePath": "/celebs/held-out/demi-moore/002.jpg"
+  },
+  {
+   "id": "denzel-washington",
+   "name": "Denzel Washington",
+   "imagePath": "/celebs/held-out/denzel-washington/001.jpg"
+  },
+  {
+   "id": "dev-patel",
+   "name": "Dev Patel",
+   "imagePath": "/celebs/held-out/dev-patel/001.jpg"
+  },
+  {
+   "id": "diego-luna",
+   "name": "Diego Luna",
+   "imagePath": "/celebs/held-out/diego-luna/001.jpg"
+  },
+  {
+   "id": "diego-luna",
+   "name": "Diego Luna",
+   "imagePath": "/celebs/held-out/diego-luna/002.jpg"
+  },
+  {
+   "id": "doja-cat",
+   "name": "Doja Cat",
+   "imagePath": "/celebs/held-out/doja-cat/001.jpg"
+  },
+  {
+   "id": "don-cheadle",
+   "name": "Don Cheadle",
+   "imagePath": "/celebs/held-out/don-cheadle/001.jpg"
+  },
+  {
+   "id": "don-cheadle",
+   "name": "Don Cheadle",
+   "imagePath": "/celebs/held-out/don-cheadle/002.jpg"
+  },
+  {
+   "id": "donald-glover",
+   "name": "Donald Glover",
+   "imagePath": "/celebs/held-out/donald-glover/001.jpg"
+  },
+  {
+   "id": "donnie-yen",
+   "name": "Donnie Yen",
+   "imagePath": "/celebs/held-out/donnie-yen/001.jpg"
+  },
+  {
+   "id": "drake",
+   "name": "Drake",
+   "imagePath": "/celebs/held-out/drake/001.jpg"
+  },
+  {
+   "id": "drew-barrymore",
+   "name": "Drew Barrymore",
+   "imagePath": "/celebs/held-out/drew-barrymore/001.jpg"
+  },
+  {
+   "id": "drew-barrymore",
+   "name": "Drew Barrymore",
+   "imagePath": "/celebs/held-out/drew-barrymore/002.jpg"
+  },
+  {
+   "id": "dua-lipa",
+   "name": "Dua Lipa",
+   "imagePath": "/celebs/held-out/dua-lipa/001.jpg"
+  },
+  {
+   "id": "dwayne-johnson",
+   "name": "Dwayne Johnson",
+   "imagePath": "/celebs/held-out/dwayne-johnson/001.jpg"
+  },
+  {
+   "id": "ed-sheeran",
+   "name": "Ed Sheeran",
+   "imagePath": "/celebs/held-out/ed-sheeran/001.jpg"
+  },
+  {
+   "id": "eddie-redmayne",
+   "name": "Eddie Redmayne",
+   "imagePath": "/celebs/held-out/eddie-redmayne/001.jpg"
+  },
+  {
+   "id": "elijah-wood",
+   "name": "Elijah Wood",
+   "imagePath": "/celebs/held-out/elijah-wood/001.jpg"
+  },
+  {
+   "id": "elizabeth-olsen",
+   "name": "Elizabeth Olsen",
+   "imagePath": "/celebs/held-out/elizabeth-olsen/001.jpg"
+  },
+  {
+   "id": "elon-musk",
+   "name": "Elon Musk",
+   "imagePath": "/celebs/held-out/elon-musk/001.jpg"
+  },
+  {
+   "id": "emily-blunt",
+   "name": "Emily Blunt",
+   "imagePath": "/celebs/held-out/emily-blunt/001.jpg"
+  },
+  {
+   "id": "emma-stone",
+   "name": "Emma Stone",
+   "imagePath": "/celebs/held-out/emma-stone/001.jpg"
+  },
+  {
+   "id": "emma-watson",
+   "name": "Emma Watson",
+   "imagePath": "/celebs/held-out/emma-watson/001.jpg"
+  },
+  {
+   "id": "eva-longoria",
+   "name": "Eva Longoria",
+   "imagePath": "/celebs/held-out/eva-longoria/001.jpg"
+  },
+  {
+   "id": "fan-bingbing",
+   "name": "Fan Bingbing",
+   "imagePath": "/celebs/held-out/fan-bingbing/001.jpg"
+  },
+  {
+   "id": "fantasia-barrino",
+   "name": "Fantasia Barrino",
+   "imagePath": "/celebs/held-out/fantasia-barrino/001.jpg"
+  },
+  {
+   "id": "florence-pugh",
+   "name": "Florence Pugh",
+   "imagePath": "/celebs/held-out/florence-pugh/001.jpg"
+  },
+  {
+   "id": "gael-garcia-bernal",
+   "name": "Gael Garcia Bernal",
+   "imagePath": "/celebs/held-out/gael-garcia-bernal/001.jpg"
+  },
+  {
+   "id": "gael-garcia-bernal",
+   "name": "Gael Garcia Bernal",
+   "imagePath": "/celebs/held-out/gael-garcia-bernal/002.jpg"
+  },
+  {
+   "id": "gal-gadot",
+   "name": "Gal Gadot",
+   "imagePath": "/celebs/held-out/gal-gadot/001.jpg"
+  },
+  {
+   "id": "gary-oldman",
+   "name": "Gary Oldman",
+   "imagePath": "/celebs/held-out/gary-oldman/001.jpg"
+  },
+  {
+   "id": "gemma-chan",
+   "name": "Gemma Chan",
+   "imagePath": "/celebs/held-out/gemma-chan/001.jpg"
+  },
+  {
+   "id": "george-clooney",
+   "name": "George Clooney",
+   "imagePath": "/celebs/held-out/george-clooney/001.jpg"
+  },
+  {
+   "id": "gigi-hadid",
+   "name": "Gigi Hadid",
+   "imagePath": "/celebs/held-out/gigi-hadid/001.jpg"
+  },
+  {
+   "id": "glen-powell",
+   "name": "Glen Powell",
+   "imagePath": "/celebs/held-out/glen-powell/001.jpg"
+  },
+  {
+   "id": "gong-li",
+   "name": "Gong Li",
+   "imagePath": "/celebs/held-out/gong-li/001.jpg"
+  },
+  {
+   "id": "gong-li",
+   "name": "Gong Li",
+   "imagePath": "/celebs/held-out/gong-li/002.jpg"
+  },
+  {
+   "id": "gong-yoo",
+   "name": "Gong Yoo",
+   "imagePath": "/celebs/held-out/gong-yoo/001.jpg"
+  },
+  {
+   "id": "gong-yoo",
+   "name": "Gong Yoo",
+   "imagePath": "/celebs/held-out/gong-yoo/002.jpg"
+  },
+  {
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/held-out/greta-lee/001.jpg"
+  },
+  {
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/held-out/greta-lee/002.jpg"
+  },
+  {
+   "id": "gwenyth-paltrow",
+   "name": "Gwenyth Paltrow",
+   "imagePath": "/celebs/held-out/gwenyth-paltrow/001.jpg"
+  },
+  {
+   "id": "gwenyth-paltrow",
+   "name": "Gwenyth Paltrow",
+   "imagePath": "/celebs/held-out/gwenyth-paltrow/002.jpg"
+  },
+  {
+   "id": "gwyneth-paltrow",
+   "name": "Gwyneth Paltrow",
+   "imagePath": "/celebs/held-out/gwyneth-paltrow/001.jpg"
+  },
+  {
+   "id": "gwyneth-paltrow",
+   "name": "Gwyneth Paltrow",
+   "imagePath": "/celebs/held-out/gwyneth-paltrow/002.jpg"
+  },
+  {
+   "id": "hailee-steinfeld",
+   "name": "Hailee Steinfeld",
+   "imagePath": "/celebs/held-out/hailee-steinfeld/001.jpg"
+  },
+  {
+   "id": "halle-berry",
+   "name": "Halle Berry",
+   "imagePath": "/celebs/held-out/halle-berry/001.jpg"
+  },
+  {
+   "id": "harry-styles",
+   "name": "Harry Styles",
+   "imagePath": "/celebs/held-out/harry-styles/001.jpg"
+  },
+  {
+   "id": "heidi-klum",
+   "name": "Heidi Klum",
+   "imagePath": "/celebs/held-out/heidi-klum/001.jpg"
+  },
+  {
+   "id": "helen-mirren",
+   "name": "Helen Mirren",
+   "imagePath": "/celebs/held-out/helen-mirren/001.jpg"
+  },
+  {
+   "id": "helena-bonham-carter",
+   "name": "Helena Bonham Carter",
+   "imagePath": "/celebs/held-out/helena-bonham-carter/001.jpg"
+  },
+  {
+   "id": "henry-cavill",
+   "name": "Henry Cavill",
+   "imagePath": "/celebs/held-out/henry-cavill/001.jpg"
+  },
+  {
+   "id": "henry-golding",
+   "name": "Henry Golding",
+   "imagePath": "/celebs/held-out/henry-golding/001.jpg"
+  },
+  {
+   "id": "hrithik-roshan",
+   "name": "Hrithik Roshan",
+   "imagePath": "/celebs/held-out/hrithik-roshan/001.jpg"
+  },
+  {
+   "id": "hrithik-roshan",
+   "name": "Hrithik Roshan",
+   "imagePath": "/celebs/held-out/hrithik-roshan/002.jpg"
+  },
+  {
+   "id": "hugh-grant",
+   "name": "Hugh Grant",
+   "imagePath": "/celebs/held-out/hugh-grant/001.jpg"
+  },
+  {
+   "id": "hugh-grant",
+   "name": "Hugh Grant",
+   "imagePath": "/celebs/held-out/hugh-grant/002.jpg"
+  },
+  {
+   "id": "hugh-jackman",
+   "name": "Hugh Jackman",
+   "imagePath": "/celebs/held-out/hugh-jackman/001.jpg"
+  },
+  {
+   "id": "hunter-schafer",
+   "name": "Hunter Schafer",
+   "imagePath": "/celebs/held-out/hunter-schafer/001.jpg"
+  },
+  {
+   "id": "hyun-bin",
+   "name": "Hyun Bin",
+   "imagePath": "/celebs/held-out/hyun-bin/001.jpg"
+  },
+  {
+   "id": "hyun-bin",
+   "name": "Hyun Bin",
+   "imagePath": "/celebs/held-out/hyun-bin/002.jpg"
+  },
+  {
+   "id": "ian-somerhalder",
+   "name": "Ian Somerhalder",
+   "imagePath": "/celebs/held-out/ian-somerhalder/001.jpg"
+  },
+  {
+   "id": "ian-somerhalder",
+   "name": "Ian Somerhalder",
+   "imagePath": "/celebs/held-out/ian-somerhalder/002.jpg"
+  },
+  {
+   "id": "idris-elba",
+   "name": "Idris Elba",
+   "imagePath": "/celebs/held-out/idris-elba/001.jpg"
+  },
+  {
+   "id": "jackie-chan",
+   "name": "Jackie Chan",
+   "imagePath": "/celebs/held-out/jackie-chan/001.jpg"
+  },
+  {
+   "id": "jacob-elordi",
+   "name": "Jacob Elordi",
+   "imagePath": "/celebs/held-out/jacob-elordi/001.jpg"
+  },
+  {
+   "id": "jacob-elordi",
+   "name": "Jacob Elordi",
+   "imagePath": "/celebs/held-out/jacob-elordi/002.jpg"
+  },
+  {
+   "id": "jake-gyllenhaal",
+   "name": "Jake Gyllenhaal",
+   "imagePath": "/celebs/held-out/jake-gyllenhaal/001.jpg"
+  },
+  {
+   "id": "jamie-dornan",
+   "name": "Jamie Dornan",
+   "imagePath": "/celebs/held-out/jamie-dornan/001.jpg"
+  },
+  {
+   "id": "jason-momoa",
+   "name": "Jason Momoa",
+   "imagePath": "/celebs/held-out/jason-momoa/001.jpg"
+  },
+  {
+   "id": "javier-bardem",
+   "name": "Javier Bardem",
+   "imagePath": "/celebs/held-out/javier-bardem/001.jpg"
+  },
+  {
+   "id": "jeff-bezos",
+   "name": "Jeff Bezos",
+   "imagePath": "/celebs/held-out/jeff-bezos/001.jpg"
+  },
+  {
+   "id": "jeff-bezos",
+   "name": "Jeff Bezos",
+   "imagePath": "/celebs/held-out/jeff-bezos/002.jpg"
+  },
+  {
+   "id": "jenna-ortega",
+   "name": "Jenna Ortega",
+   "imagePath": "/celebs/held-out/jenna-ortega/001.jpg"
+  },
+  {
+   "id": "jenna-ortega",
+   "name": "Jenna Ortega",
+   "imagePath": "/celebs/held-out/jenna-ortega/002.jpg"
+  },
+  {
+   "id": "jennie-kim",
+   "name": "Jennie Kim",
+   "imagePath": "/celebs/held-out/jennie-kim/001.jpg"
+  },
+  {
+   "id": "jennifer-lawrence",
+   "name": "Jennifer Lawrence",
+   "imagePath": "/celebs/held-out/jennifer-lawrence/001.jpg"
+  },
+  {
+   "id": "jeremy-strong",
+   "name": "Jeremy Strong",
+   "imagePath": "/celebs/held-out/jeremy-strong/001.jpg"
+  },
+  {
+   "id": "jeremy-strong",
+   "name": "Jeremy Strong",
+   "imagePath": "/celebs/held-out/jeremy-strong/002.jpg"
+  },
+  {
+   "id": "jessica-alba",
+   "name": "Jessica Alba",
+   "imagePath": "/celebs/held-out/jessica-alba/001.jpg"
+  },
+  {
+   "id": "jessica-chastain",
+   "name": "Jessica Chastain",
+   "imagePath": "/celebs/held-out/jessica-chastain/001.jpg"
+  },
+  {
+   "id": "jet-li",
+   "name": "Jet Li",
+   "imagePath": "/celebs/held-out/jet-li/001.jpg"
+  },
+  {
+   "id": "jisoo",
+   "name": "Jisoo",
+   "imagePath": "/celebs/held-out/jisoo/001.jpg"
+  },
+  {
+   "id": "joaquin-phoenix",
+   "name": "Joaquin Phoenix",
+   "imagePath": "/celebs/held-out/joaquin-phoenix/001.jpg"
+  },
+  {
+   "id": "john-boyega",
+   "name": "John Boyega",
+   "imagePath": "/celebs/held-out/john-boyega/001.jpg"
+  },
+  {
+   "id": "john-cho",
+   "name": "John Cho",
+   "imagePath": "/celebs/held-out/john-cho/001.jpg"
+  },
+  {
+   "id": "john-krasinski",
+   "name": "John Krasinski",
+   "imagePath": "/celebs/held-out/john-krasinski/001.jpg"
+  },
+  {
+   "id": "jonah-hill",
+   "name": "Jonah Hill",
+   "imagePath": "/celebs/held-out/jonah-hill/001.jpg"
+  },
+  {
+   "id": "jonathan-bailey",
+   "name": "Jonathan Bailey",
+   "imagePath": "/celebs/held-out/jonathan-bailey/001.jpg"
+  },
+  {
+   "id": "joseph-gordon-levitt",
+   "name": "Joseph Gordon Levitt",
+   "imagePath": "/celebs/held-out/joseph-gordon-levitt/001.jpg"
+  },
+  {
+   "id": "josh-hutcherson",
+   "name": "Josh Hutcherson",
+   "imagePath": "/celebs/held-out/josh-hutcherson/001.jpg"
+  },
+  {
+   "id": "julia-roberts",
+   "name": "Julia Roberts",
+   "imagePath": "/celebs/held-out/julia-roberts/001.jpg"
+  },
+  {
+   "id": "jung-ho-yeon",
+   "name": "Jung Ho Yeon",
+   "imagePath": "/celebs/held-out/jung-ho-yeon/001.jpg"
+  },
+  {
+   "id": "jung-ho-yeon",
+   "name": "Jung Ho Yeon",
+   "imagePath": "/celebs/held-out/jung-ho-yeon/002.jpg"
+  },
+  {
+   "id": "karol-g",
+   "name": "Karol G",
+   "imagePath": "/celebs/held-out/karol-g/001.jpg"
+  },
+  {
+   "id": "kate-middleton",
+   "name": "Kate Middleton",
+   "imagePath": "/celebs/held-out/kate-middleton/001.jpg"
+  },
+  {
+   "id": "kate-winslet",
+   "name": "Kate Winslet",
+   "imagePath": "/celebs/held-out/kate-winslet/001.jpg"
+  },
+  {
+   "id": "keanu-reeves",
+   "name": "Keanu Reeves",
+   "imagePath": "/celebs/held-out/keanu-reeves/001.jpg"
+  },
+  {
+   "id": "keira-knightley",
+   "name": "Keira Knightley",
+   "imagePath": "/celebs/held-out/keira-knightley/001.jpg"
+  },
+  {
+   "id": "kendall-jenner",
+   "name": "Kendall Jenner",
+   "imagePath": "/celebs/held-out/kendall-jenner/001.jpg"
+  },
+  {
+   "id": "kendrick-lamar",
+   "name": "Kendrick Lamar",
+   "imagePath": "/celebs/held-out/kendrick-lamar/001.jpg"
+  },
+  {
+   "id": "kerry-washington",
+   "name": "Kerry Washington",
+   "imagePath": "/celebs/held-out/kerry-washington/001.jpg"
+  },
+  {
+   "id": "kevin-hart",
+   "name": "Kevin Hart",
+   "imagePath": "/celebs/held-out/kevin-hart/001.jpg"
+  },
+  {
+   "id": "kieran-culkin",
+   "name": "Kieran Culkin",
+   "imagePath": "/celebs/held-out/kieran-culkin/001.jpg"
+  },
+  {
+   "id": "kieran-culkin",
+   "name": "Kieran Culkin",
+   "imagePath": "/celebs/held-out/kieran-culkin/002.jpg"
+  },
+  {
+   "id": "kim-kardashian",
+   "name": "Kim Kardashian",
+   "imagePath": "/celebs/held-out/kim-kardashian/001.jpg"
+  },
+  {
+   "id": "kristen-stewart",
+   "name": "Kristen Stewart",
+   "imagePath": "/celebs/held-out/kristen-stewart/001.jpg"
+  },
+  {
+   "id": "kylian-mbappe",
+   "name": "Kylian Mbappe",
+   "imagePath": "/celebs/held-out/kylian-mbappe/001.jpg"
+  },
+  {
+   "id": "kylie-jenner",
+   "name": "Kylie Jenner",
+   "imagePath": "/celebs/held-out/kylie-jenner/001.jpg"
+  },
+  {
+   "id": "lakeith-stanfield",
+   "name": "Lakeith Stanfield",
+   "imagePath": "/celebs/held-out/lakeith-stanfield/001.jpg"
+  },
+  {
+   "id": "laurence-fishburne",
+   "name": "Laurence Fishburne",
+   "imagePath": "/celebs/held-out/laurence-fishburne/001.jpg"
+  },
+  {
+   "id": "lee-jung-jae",
+   "name": "Lee Jung Jae",
+   "imagePath": "/celebs/held-out/lee-jung-jae/001.jpg"
+  },
+  {
+   "id": "lee-min-ho",
+   "name": "Lee Min Ho",
+   "imagePath": "/celebs/held-out/lee-min-ho/001.jpg"
+  },
+  {
+   "id": "leonardo-dicaprio",
+   "name": "Leonardo Dicaprio",
+   "imagePath": "/celebs/held-out/leonardo-dicaprio/001.jpg"
+  },
+  {
+   "id": "letitia-wright",
+   "name": "Letitia Wright",
+   "imagePath": "/celebs/held-out/letitia-wright/001.jpg"
+  },
+  {
+   "id": "letitia-wright",
+   "name": "Letitia Wright",
+   "imagePath": "/celebs/held-out/letitia-wright/002.jpg"
+  },
+  {
+   "id": "liam-hemsworth",
+   "name": "Liam Hemsworth",
+   "imagePath": "/celebs/held-out/liam-hemsworth/001.jpg"
+  },
+  {
+   "id": "liam-neeson",
+   "name": "Liam Neeson",
+   "imagePath": "/celebs/held-out/liam-neeson/001.jpg"
+  },
+  {
+   "id": "lionel-messi",
+   "name": "Lionel Messi",
+   "imagePath": "/celebs/held-out/lionel-messi/001.jpg"
+  },
+  {
+   "id": "lisa-blackpink",
+   "name": "Lisa Blackpink",
+   "imagePath": "/celebs/held-out/lisa-blackpink/001.jpg"
+  },
+  {
+   "id": "liu-yifei",
+   "name": "Liu Yifei",
+   "imagePath": "/celebs/held-out/liu-yifei/001.jpg"
+  },
+  {
+   "id": "lizzo",
+   "name": "Lizzo",
+   "imagePath": "/celebs/held-out/lizzo/001.jpg"
+  },
+  {
+   "id": "logan-lerman",
+   "name": "Logan Lerman",
+   "imagePath": "/celebs/held-out/logan-lerman/001.jpg"
+  },
+  {
+   "id": "luke-hemsworth",
+   "name": "Luke Hemsworth",
+   "imagePath": "/celebs/held-out/luke-hemsworth/001.jpg"
+  },
+  {
+   "id": "lupita-nyongo",
+   "name": "Lupita Nyongo",
+   "imagePath": "/celebs/held-out/lupita-nyongo/001.jpg"
+  },
+  {
+   "id": "mads-mikkelsen",
+   "name": "Mads Mikkelsen",
+   "imagePath": "/celebs/held-out/mads-mikkelsen/001.jpg"
+  },
+  {
+   "id": "margot-robbie",
+   "name": "Margot Robbie",
+   "imagePath": "/celebs/held-out/margot-robbie/001.jpg"
+  },
+  {
+   "id": "mark-zuckerberg",
+   "name": "Mark Zuckerberg",
+   "imagePath": "/celebs/held-out/mark-zuckerberg/001.jpg"
+  },
+  {
+   "id": "martin-freeman",
+   "name": "Martin Freeman",
+   "imagePath": "/celebs/held-out/martin-freeman/001.jpg"
+  },
+  {
+   "id": "matt-bomer",
+   "name": "Matt Bomer",
+   "imagePath": "/celebs/held-out/matt-bomer/001.jpg"
+  },
+  {
+   "id": "matt-damon",
+   "name": "Matt Damon",
+   "imagePath": "/celebs/held-out/matt-damon/001.jpg"
+  },
+  {
+   "id": "meghan-markle",
+   "name": "Meghan Markle",
+   "imagePath": "/celebs/held-out/meghan-markle/001.jpg"
+  },
+  {
+   "id": "meryl-streep",
+   "name": "Meryl Streep",
+   "imagePath": "/celebs/held-out/meryl-streep/001.jpg"
+  },
+  {
+   "id": "michael-b-jordan",
+   "name": "Michael B Jordan",
+   "imagePath": "/celebs/held-out/michael-b-jordan/001.jpg"
+  },
+  {
+   "id": "michelle-obama",
+   "name": "Michelle Obama",
+   "imagePath": "/celebs/held-out/michelle-obama/001.jpg"
+  },
+  {
+   "id": "michelle-yeoh",
+   "name": "Michelle Yeoh",
+   "imagePath": "/celebs/held-out/michelle-yeoh/001.jpg"
+  },
+  {
+   "id": "mikey-madison",
+   "name": "Mikey Madison",
+   "imagePath": "/celebs/held-out/mikey-madison/001.jpg"
+  },
+  {
+   "id": "mikey-madison",
+   "name": "Mikey Madison",
+   "imagePath": "/celebs/held-out/mikey-madison/002.jpg"
+  },
+  {
+   "id": "miles-teller",
+   "name": "Miles Teller",
+   "imagePath": "/celebs/held-out/miles-teller/001.jpg"
+  },
+  {
+   "id": "millie-bobby-brown",
+   "name": "Millie Bobby Brown",
+   "imagePath": "/celebs/held-out/millie-bobby-brown/001.jpg"
+  },
+  {
+   "id": "morgan-freeman",
+   "name": "Morgan Freeman",
+   "imagePath": "/celebs/held-out/morgan-freeman/001.jpg"
+  },
+  {
+   "id": "naomi-campbell",
+   "name": "Naomi Campbell",
+   "imagePath": "/celebs/held-out/naomi-campbell/001.jpg"
+  },
+  {
+   "id": "naomi-osaka",
+   "name": "Naomi Osaka",
+   "imagePath": "/celebs/held-out/naomi-osaka/001.jpg"
+  },
+  {
+   "id": "natalie-portman",
+   "name": "Natalie Portman",
+   "imagePath": "/celebs/held-out/natalie-portman/001.jpg"
+  },
+  {
+   "id": "neymar",
+   "name": "Neymar",
+   "imagePath": "/celebs/held-out/neymar/001.jpg"
+  },
+  {
+   "id": "nicholas-hoult",
+   "name": "Nicholas Hoult",
+   "imagePath": "/celebs/held-out/nicholas-hoult/001.jpg"
+  },
+  {
+   "id": "nicki-minaj",
+   "name": "Nicki Minaj",
+   "imagePath": "/celebs/held-out/nicki-minaj/001.jpg"
+  },
+  {
+   "id": "nicole-kidman",
+   "name": "Nicole Kidman",
+   "imagePath": "/celebs/held-out/nicole-kidman/001.jpg"
+  },
+  {
+   "id": "olivia-colman",
+   "name": "Olivia Colman",
+   "imagePath": "/celebs/held-out/olivia-colman/001.jpg"
+  },
+  {
+   "id": "olivia-rodrigo",
+   "name": "Olivia Rodrigo",
+   "imagePath": "/celebs/held-out/olivia-rodrigo/001.jpg"
+  },
+  {
+   "id": "oprah-winfrey",
+   "name": "Oprah Winfrey",
+   "imagePath": "/celebs/held-out/oprah-winfrey/001.jpg"
+  },
+  {
+   "id": "orlando-bloom",
+   "name": "Orlando Bloom",
+   "imagePath": "/celebs/held-out/orlando-bloom/001.jpg"
+  },
+  {
+   "id": "oscar-isaac",
+   "name": "Oscar Isaac",
+   "imagePath": "/celebs/held-out/oscar-isaac/001.jpg"
+  },
+  {
+   "id": "park-seo-joon",
+   "name": "Park Seo Joon",
+   "imagePath": "/celebs/held-out/park-seo-joon/001.jpg"
+  },
+  {
+   "id": "paul-giamatti",
+   "name": "Paul Giamatti",
+   "imagePath": "/celebs/held-out/paul-giamatti/001.jpg"
+  },
+  {
+   "id": "paul-giamatti",
+   "name": "Paul Giamatti",
+   "imagePath": "/celebs/held-out/paul-giamatti/002.jpg"
+  },
+  {
+   "id": "paul-mescal",
+   "name": "Paul Mescal",
+   "imagePath": "/celebs/held-out/paul-mescal/001.jpg"
+  },
+  {
+   "id": "paul-rudd",
+   "name": "Paul Rudd",
+   "imagePath": "/celebs/held-out/paul-rudd/001.jpg"
+  },
+  {
+   "id": "pedro-pascal",
+   "name": "Pedro Pascal",
+   "imagePath": "/celebs/held-out/pedro-pascal/001.jpg"
+  },
+  {
+   "id": "penelope-cruz-m",
+   "name": "Penelope Cruz M",
+   "imagePath": "/celebs/held-out/penelope-cruz-m/001.jpg"
+  },
+  {
+   "id": "pierce-brosnan",
+   "name": "Pierce Brosnan",
+   "imagePath": "/celebs/held-out/pierce-brosnan/001.jpg"
+  },
+  {
+   "id": "prince-harry",
+   "name": "Prince Harry",
+   "imagePath": "/celebs/held-out/prince-harry/001.jpg"
+  },
+  {
+   "id": "priyanka-chopra",
+   "name": "Priyanka Chopra",
+   "imagePath": "/celebs/held-out/priyanka-chopra/001.jpg"
+  },
+  {
+   "id": "rachel-mcadams",
+   "name": "Rachel Mcadams",
+   "imagePath": "/celebs/held-out/rachel-mcadams/001.jpg"
+  },
+  {
+   "id": "ranbir-kapoor",
+   "name": "Ranbir Kapoor",
+   "imagePath": "/celebs/held-out/ranbir-kapoor/001.jpg"
+  },
+  {
+   "id": "ranveer-singh",
+   "name": "Ranveer Singh",
+   "imagePath": "/celebs/held-out/ranveer-singh/001.jpg"
+  },
+  {
+   "id": "rebecca-ferguson",
+   "name": "Rebecca Ferguson",
+   "imagePath": "/celebs/held-out/rebecca-ferguson/001.jpg"
+  },
+  {
+   "id": "reesewitherspoon",
+   "name": "Reesewitherspoon",
+   "imagePath": "/celebs/held-out/reesewitherspoon/001.jpg"
+  },
+  {
+   "id": "reg\u00e9-jean-page",
+   "name": "Reg\u00e9 Jean Page",
+   "imagePath": "/celebs/held-out/reg\u00e9-jean-page/001.jpg"
+  },
+  {
+   "id": "riz-ahmed",
+   "name": "Riz Ahmed",
+   "imagePath": "/celebs/held-out/riz-ahmed/001.jpg"
+  },
+  {
+   "id": "robert-downey-jr",
+   "name": "Robert Downey Jr",
+   "imagePath": "/celebs/held-out/robert-downey-jr/001.jpg"
+  },
+  {
+   "id": "robert-pattinson",
+   "name": "Robert Pattinson",
+   "imagePath": "/celebs/held-out/robert-pattinson/001.jpg"
+  },
+  {
+   "id": "ryan-gosling",
+   "name": "Ryan Gosling",
+   "imagePath": "/celebs/held-out/ryan-gosling/001.jpg"
+  },
+  {
+   "id": "salma-hayek",
+   "name": "Salma Hayek",
+   "imagePath": "/celebs/held-out/salma-hayek/001.jpg"
+  },
+  {
+   "id": "sam-claflin",
+   "name": "Sam Claflin",
+   "imagePath": "/celebs/held-out/sam-claflin/001.jpg"
+  },
+  {
+   "id": "sam-smith",
+   "name": "Sam Smith",
+   "imagePath": "/celebs/held-out/sam-smith/001.jpg"
+  },
+  {
+   "id": "sandra-bullock",
+   "name": "Sandra Bullock",
+   "imagePath": "/celebs/held-out/sandra-bullock/001.jpg"
+  },
+  {
+   "id": "saoirse-ronan",
+   "name": "Saoirse Ronan",
+   "imagePath": "/celebs/held-out/saoirse-ronan/001.jpg"
+  },
+  {
+   "id": "sarah-snook",
+   "name": "Sarah Snook",
+   "imagePath": "/celebs/held-out/sarah-snook/001.jpg"
+  },
+  {
+   "id": "sarah-snook",
+   "name": "Sarah Snook",
+   "imagePath": "/celebs/held-out/sarah-snook/002.jpg"
+  },
+  {
+   "id": "scarlett-johansson",
+   "name": "Scarlett Johansson",
+   "imagePath": "/celebs/held-out/scarlett-johansson/001.jpg"
+  },
+  {
+   "id": "sebastian-stan",
+   "name": "Sebastian Stan",
+   "imagePath": "/celebs/held-out/sebastian-stan/001.jpg"
+  },
+  {
+   "id": "selena-gomez",
+   "name": "Selena Gomez",
+   "imagePath": "/celebs/held-out/selena-gomez/001.jpg"
+  },
+  {
+   "id": "serena-williams",
+   "name": "Serena Williams",
+   "imagePath": "/celebs/held-out/serena-williams/001.jpg"
+  },
+  {
+   "id": "seth-rogen",
+   "name": "Seth Rogen",
+   "imagePath": "/celebs/held-out/seth-rogen/001.jpg"
+  },
+  {
+   "id": "shah-rukh-khan",
+   "name": "Shah Rukh Khan",
+   "imagePath": "/celebs/held-out/shah-rukh-khan/001.jpg"
+  },
+  {
+   "id": "shakira",
+   "name": "Shakira",
+   "imagePath": "/celebs/held-out/shakira/001.jpg"
+  },
+  {
+   "id": "simu-liu",
+   "name": "Simu Liu",
+   "imagePath": "/celebs/held-out/simu-liu/001.jpg"
+  },
+  {
+   "id": "son-ye-jin",
+   "name": "Son Ye Jin",
+   "imagePath": "/celebs/held-out/son-ye-jin/001.jpg"
+  },
+  {
+   "id": "son-ye-jin",
+   "name": "Son Ye Jin",
+   "imagePath": "/celebs/held-out/son-ye-jin/002.jpg"
+  },
+  {
+   "id": "song-kang",
+   "name": "Song Kang",
+   "imagePath": "/celebs/held-out/song-kang/001.jpg"
+  },
+  {
+   "id": "stephen-curry",
+   "name": "Stephen Curry",
+   "imagePath": "/celebs/held-out/stephen-curry/001.jpg"
+  },
+  {
+   "id": "sydney-sweeney",
+   "name": "Sydney Sweeney",
+   "imagePath": "/celebs/held-out/sydney-sweeney/001.jpg"
+  },
+  {
+   "id": "taylor-lautner",
+   "name": "Taylor Lautner",
+   "imagePath": "/celebs/held-out/taylor-lautner/001.jpg"
+  },
+  {
+   "id": "taylor-swift",
+   "name": "Taylor Swift",
+   "imagePath": "/celebs/held-out/taylor-swift/001.jpg"
+  },
+  {
+   "id": "teo-yoo",
+   "name": "Teo Yoo",
+   "imagePath": "/celebs/held-out/teo-yoo/001.jpg"
+  },
+  {
+   "id": "tiffany-haddish",
+   "name": "Tiffany Haddish",
+   "imagePath": "/celebs/held-out/tiffany-haddish/001.jpg"
+  },
+  {
+   "id": "tilda-swinton",
+   "name": "Tilda Swinton",
+   "imagePath": "/celebs/held-out/tilda-swinton/001.jpg"
+  },
+  {
+   "id": "tilda-swinton",
+   "name": "Tilda Swinton",
+   "imagePath": "/celebs/held-out/tilda-swinton/002.jpg"
+  },
+  {
+   "id": "timothee-chalamet",
+   "name": "Timothee Chalamet",
+   "imagePath": "/celebs/held-out/timothee-chalamet/001.jpg"
+  },
+  {
+   "id": "tom-hanks",
+   "name": "Tom Hanks",
+   "imagePath": "/celebs/held-out/tom-hanks/001.jpg"
+  },
+  {
+   "id": "tom-hardy",
+   "name": "Tom Hardy",
+   "imagePath": "/celebs/held-out/tom-hardy/001.jpg"
+  },
+  {
+   "id": "tom-holland",
+   "name": "Tom Holland",
+   "imagePath": "/celebs/held-out/tom-holland/001.jpg"
+  },
+  {
+   "id": "tony-leung",
+   "name": "Tony Leung",
+   "imagePath": "/celebs/held-out/tony-leung/001.jpg"
+  },
+  {
+   "id": "trevor-noah",
+   "name": "Trevor Noah",
+   "imagePath": "/celebs/held-out/trevor-noah/001.jpg"
+  },
+  {
+   "id": "uzo-aduba",
+   "name": "Uzo Aduba",
+   "imagePath": "/celebs/held-out/uzo-aduba/001.jpg"
+  },
+  {
+   "id": "vanessa-kirby",
+   "name": "Vanessa Kirby",
+   "imagePath": "/celebs/held-out/vanessa-kirby/001.jpg"
+  },
+  {
+   "id": "victoria-beckham",
+   "name": "Victoria Beckham",
+   "imagePath": "/celebs/held-out/victoria-beckham/001.jpg"
+  },
+  {
+   "id": "viola-davis",
+   "name": "Viola Davis",
+   "imagePath": "/celebs/held-out/viola-davis/001.jpg"
+  },
+  {
+   "id": "will-smith",
+   "name": "Will Smith",
+   "imagePath": "/celebs/held-out/will-smith/001.jpg"
+  },
+  {
+   "id": "willem-dafoe",
+   "name": "Willem Dafoe",
+   "imagePath": "/celebs/held-out/willem-dafoe/001.jpg"
+  },
+  {
+   "id": "willem-dafoe",
+   "name": "Willem Dafoe",
+   "imagePath": "/celebs/held-out/willem-dafoe/002.jpg"
+  },
+  {
+   "id": "zac-efron",
+   "name": "Zac Efron",
+   "imagePath": "/celebs/held-out/zac-efron/001.jpg"
+  },
+  {
+   "id": "zayn-malik",
+   "name": "Zayn Malik",
+   "imagePath": "/celebs/held-out/zayn-malik/001.jpg"
+  },
+  {
+   "id": "zendaya",
+   "name": "Zendaya",
+   "imagePath": "/celebs/held-out/zendaya/001.jpg"
+  },
+  {
+   "id": "zhang-ziyi",
+   "name": "Zhang Ziyi",
+   "imagePath": "/celebs/held-out/zhang-ziyi/001.jpg"
+  },
+  {
+   "id": "zoe-saldana",
+   "name": "Zoe Saldana",
+   "imagePath": "/celebs/held-out/zoe-saldana/001.jpg"
+  }
+ ]
+}

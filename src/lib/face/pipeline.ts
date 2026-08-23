@@ -37,7 +37,7 @@ export function prefetchModel(): void {
 }
 
 /** Paste a tight face crop onto a larger neutral canvas so SCRFD sees margin. */
-function padSourceForDetection(
+export function padSourceForDetection(
   source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
   marginRatio = 0.6,
 ): HTMLCanvasElement | null {
