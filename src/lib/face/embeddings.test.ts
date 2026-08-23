@@ -66,6 +66,11 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     // collisions); the invariants that matter are internal consistency.
     assert.ok(header.vectorCount >= 900 && header.vectorCount <= 1100, `implausible count ${header.vectorCount}`);
     assert.ok(header.globalScale > 0 && header.globalScale < 0.01);
+    // The checksum field is advisory: nothing in the load path validates it and
+    // surgery scripts (drop-gallery-slot, patch-gallery-slot) do not recompute it.
+    // Pin that contract so a future "validation" change cannot silently corrupt
+    // patched galleries.
+    assert.equal(header.checksum, 0, "checksum must stay 0 (advisory) or all writers must recompute it");
     assert.equal(
       fileBuf.byteLength,
       32 + header.vectorCount * 512,

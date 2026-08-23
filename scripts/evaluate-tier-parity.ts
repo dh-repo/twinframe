@@ -36,12 +36,17 @@ function main() {
   const jsonOut = arg("--json");
 
   const gallery = loadGallery();
+  const galleryIds = new Set(gallery.map((g) => g.id));
   const pack = JSON.parse(fs.readFileSync(descriptorsPath, "utf8")) as {
     model?: string;
     cases: Array<{ id: string; descriptor: number[]; ok?: boolean }>;
   };
 
-  const usable = pack.cases.filter((c) => c.ok !== false && c.descriptor?.length);
+  const usableAll = pack.cases.filter((c) => c.ok !== false && c.descriptor?.length);
+  // Parity is only defined for ids the gallery actually contains — unenrolled
+  // probes are structural noise, not pipeline drift (round-2 review finding).
+  const usable = usableAll.filter((c) => galleryIds.has(c.id));
+  const notEnrolled = usableAll.filter((c) => !galleryIds.has(c.id)).map((c) => c.id);
   const badDim = usable.filter((c) => c.descriptor.length !== gallery[0]!.descriptor.length);
   if (badDim.length) {
     throw new Error(
@@ -53,7 +58,8 @@ function main() {
   let rank1 = 0;
   let rank5 = 0;
   let mrr = 0;
-  const misses: Array<{ id: string; top1: string }> = [];
+  const wrongRanked: string[] = [];
+  const refused: string[] = [];
   for (const c of usable) {
     const matches = rankByDescriptor(
       { descriptor: Float32Array.from(c.descriptor), age: NaN, gender: "unknown", genderProbability: 0 },
@@ -64,7 +70,8 @@ function main() {
     if (rank === 1) rank1++;
     if (rank >= 1 && rank <= 5) rank5++;
     if (rank > 0) mrr += 1 / rank;
-    else misses.push({ id: c.id, top1: matches[0]?.celebrityId ?? "(refused)" });
+    else if (matches.length === 0) refused.push(c.id);
+    else wrongRanked.push(`${c.id}->${matches[0]?.celebrityId}`);
   }
   const n = usable.length;
   const top1Pct = n ? (rank1 / n) * 100 : 0;
@@ -74,10 +81,16 @@ function main() {
   console.log("=".repeat(72));
   console.log("  TWINFRAME TIER-PARITY — browser-encoded portraits vs shipped gallery");
   console.log("=".repeat(72));
-  console.log(`  encoder: ${pack.model ?? "unknown"} | probes: ${n} | gallery: ${gallery.length}`);
+  console.log(`  encoder: ${pack.model ?? "unknown"} | probes: ${n} enrolled (+${notEnrolled.length} unenrolled skipped) | gallery: ${gallery.length}`);
   console.log(`  Top-1: ${top1Pct.toFixed(1)}%  Top-5: ${top5Pct.toFixed(1)}%  MRR: ${mrrNorm.toFixed(3)}`);
-  if (misses.length) {
-    console.log("  misses:", misses.slice(0, 10).map((m) => `${m.id}->${m.top1}`).join(", "));
+  if (notEnrolled.length) {
+    console.log("  not enrolled (excluded from parity):", notEnrolled.join(", "));
+  }
+  if (refused.length) {
+    console.log("  floor-refused:", refused.join(", "));
+  }
+  if (wrongRanked.length) {
+    console.log("  wrong-ranked:", wrongRanked.slice(0, 10).join(", "));
   }
   const ok = n > 0 && top1Pct >= floor;
   console.log(`  floor check: ${ok ? "PASS" : "FAIL"} (${top1Pct.toFixed(1)}% vs >= ${floor}%)`);
@@ -86,7 +99,7 @@ function main() {
   if (jsonOut) {
     fs.writeFileSync(
       jsonOut,
-      JSON.stringify({ at: new Date().toISOString(), encoder: pack.model ?? "unknown", n, top1Pct, top5Pct, mrr: mrrNorm, misses }, null, 1),
+      JSON.stringify({ at: new Date().toISOString(), encoder: pack.model ?? "unknown", n, notEnrolled, top1Pct, top5Pct, mrr: mrrNorm, refused, wrongRanked }, null, 1),
     );
   }
 }

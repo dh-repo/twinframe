@@ -21,7 +21,7 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
  * Max adjusted cosine distance still treated as a presentable look-alike.
  * Beyond this, rankByDescriptor returns [] (no forced top-K).
  *
- * Evidence (held-out v2.1, n=272, full 512-d geometry, raw distance as the
+ * Evidence (held-out v2.1, n=270 clean probes, full 512-d geometry, raw distance as the
  * conservative proxy for adjusted): at 0.72 the floor refuses only 0.4% of
  * probes; at 0.65 it refuses 4.8% while losing ZERO rank-1 correct matches and
  * lifting precision-among-passed from 74.2% to 77.6%. Adjusted distances run up
@@ -30,7 +30,12 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
  */
 export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.65;
 
-/** Match percent below this is not shown as a look-alike top-K. */
+/**
+ * Match percent below this is not shown as a look-alike top-K.
+ * Defense-in-depth only: with the floor at 0.65 the Hill curve never drops
+ * below ~42% inside rankByDescriptor, so rankByDescriptor itself cannot hit
+ * this branch — it guards other callers that may pass raw percents.
+ */
 export const LOOKALIKE_MIN_PERCENT = 32;
 
 export interface PoseGateInput {

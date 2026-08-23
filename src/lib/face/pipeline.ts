@@ -12,7 +12,12 @@ import type { FaceDetectionResult } from "./faceapi-engine.ts";
 let faceApiEnginePromise: Promise<typeof import("./faceapi-engine.ts")> | null = null;
 function loadFaceApiEngine() {
   if (!faceApiEnginePromise) {
-    faceApiEnginePromise = import("./faceapi-engine.ts");
+    // A rejected import must not stay cached — one transient chunk-load failure
+    // would otherwise poison every later analysis until a full page reload.
+    faceApiEnginePromise = import("./faceapi-engine.ts").catch((err) => {
+      faceApiEnginePromise = null;
+      throw err;
+    });
   }
   return faceApiEnginePromise;
 }
@@ -46,7 +51,10 @@ export function prefetchModel(): void {
     else setTimeout(cb, 2000);
   };
   idle(() => {
-    loadFaceApiEngine().then((m) => m.prefetchFaceApi());
+    // Best-effort warmup; failures are fine here (the analysis path retries).
+    loadFaceApiEngine()
+      .then((m) => m.prefetchFaceApi())
+      .catch(() => {});
   });
 }
 

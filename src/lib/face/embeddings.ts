@@ -137,7 +137,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
 }
 
 /** Gallery cache-busting version — bump when the binary gallery is re-enrolled. */
-const GALLERY_VERSION = "5.0.0";
+// Bump on EVERY rewrite of the shipped gallery artifacts — this key gates the
+// IndexedDB short-circuit and the force-cache URL. Skipping it pins returning
+// visitors to the stale pre-surgery gallery indefinitely.
+const GALLERY_VERSION = "5.2.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
