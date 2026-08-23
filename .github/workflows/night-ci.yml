@@ -46,23 +46,20 @@ jobs:
       - name: Install Playwright browser for interactive gates
         run: npx playwright install --with-deps chromium
 
-      - name: Accessibility smoke (axe-core serious/critical gate)
-        run: |
-          npm run dev > /dev/null 2>&1 &
-          for i in $(seq 1 30); do
-            if curl -sf http://127.0.0.1:8080/ > /dev/null; then break; fi
-            sleep 2
-          done
-          node scripts/a11y-smoke.mjs http://127.0.0.1:8080
+      - name: Install Playwright browser for interactive gates
+        run: npx playwright install --with-deps chromium
 
-      - name: Throttled-CPU performance probe (mid-phone budget)
+      - name: Interactive gates (axe a11y smoke + throttled-CPU perf)
         run: |
-          npm run dev > /dev/null 2>&1 &
+          npx playwright install --with-deps chromium || true
+          npm run dev -- --strictPort > /dev/null 2>&1 &
           for i in $(seq 1 30); do
             if curl -sf http://127.0.0.1:8080/ > /dev/null; then break; fi
             sleep 2
           done
-          node scripts/perf-throttle.mjs http://127.0.0.1:8080 1,4
+          node scripts/a11y-smoke.mjs http://127.0.0.1:8080; A11Y=$?
+          node scripts/perf-throttle.mjs http://127.0.0.1:8080 1,4; PERF=$?
+          test "$A11Y" -eq 0 -a "$PERF" -eq 0
 
       - name: Production build
         run: npm run build
