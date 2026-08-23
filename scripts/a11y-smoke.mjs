@@ -111,6 +111,41 @@ try {
   } else {
     reachedStates.add("results");
   }
+
+  // ---- Error state: from a fresh page, let crop review work (it needs the
+  // crop-detector), then block model assets so the analysis pass fails. ----
+  await page.goto(new URL("/", url).href, { waitUntil: "networkidle", timeout: 45_000 });
+  const [errChooser] = await Promise.all([
+    page.waitForEvent("filechooser", { timeout: 15_000 }),
+    page.locator('button:has-text("Photo Library")').first().click(),
+  ]);
+  await errChooser.setFiles(UPLOAD_FIXTURE);
+  await page.waitForSelector("text=Choose a face", { timeout: 30_000 });
+  // Candidate detection must complete first (it needs the crop-detector);
+  // only then block model assets so the ANALYSIS pass fails.
+  const errApprove = page.getByRole("button", { name: "Approve & Match" }).first();
+  try {
+    await errApprove.waitFor({ state: "visible", timeout: 45_000 });
+    await page.waitForTimeout(500);
+  } catch {
+    throw new Error('"Approve & Match" never appeared for error-state flow');
+  }
+  await page.route("**/models/**", (route) => route.abort());
+  await errApprove.click();
+  let reachedError = false;
+  for (let i = 0; i < 16 && !reachedError; i++) {
+    await page.waitForTimeout(2500);
+    const txt = await page.locator("body").innerText();
+    reachedError = txt.includes("Couldn't analyze that photo");
+  }
+  if (!reachedError) {
+    failures++;
+    console.log("[a11y] FAIL: error state not reached when models are blocked");
+  } else {
+    reachedStates.add("error");
+    await axeRun(page, "error-state");
+  }
+  await page.unroute("**/models/**");
   if (reachedResults) {
     await page.waitForTimeout(1500);
     await axeRun(page, "results");
