@@ -135,10 +135,17 @@ describe("Feature 13: 1,000 Celebrity Catalog Re-Encoding & Gallery Migration", 
     const files192 = fs.readdirSync(thumbs192Dir).filter((f) => f.endsWith(".webp"));
     const hashes192 = new Set(files192.map((f) => crypto.createHash("sha256").update(fs.readFileSync(path.join(thumbs192Dir, f))).digest("hex")));
 
-    assert.equal(files96.length, 1000);
-    assert.equal(hashes96.size, 1000, "All 1,000 thumbs/96/ images must have distinct SHA-256 hashes");
-    assert.equal(files192.length, 1000);
-    assert.equal(hashes192.size, 1000, "All 1,000 thumbs/192/ images must have distinct SHA-256 hashes");
+    // Thumbs must track the catalog exactly — one per bucket id, no orphans,
+    // no duplicates (counts follow the catalog rather than a frozen number).
+    const bucketIds = new Set(
+      (JSON.parse(fs.readFileSync(path.resolve(process.cwd(), "public/celebs/gallery.buckets.json"), "utf8")) as Array<{ id: string }>).map((b) => b.id),
+    );
+    const ids96 = new Set(files96.map((f) => f.replace(/\.webp$/, "")));
+    const ids192 = new Set(files192.map((f) => f.replace(/\.webp$/, "")));
+    assert.deepEqual(ids96, bucketIds, "thumbs/96 must map 1:1 onto gallery buckets");
+    assert.deepEqual(ids192, bucketIds, "thumbs/192 must map 1:1 onto gallery buckets");
+    assert.equal(hashes96.size, files96.length, "All thumbs/96/ images must have distinct SHA-256 hashes");
+    assert.equal(hashes192.size, files192.length, "All thumbs/192/ images must have distinct SHA-256 hashes");
   });
 
   test("7. Demographic Ground-Truth Quality Audit", () => {

@@ -1,23 +1,23 @@
 {
- "at": "2026-08-23T13:35:18.856Z",
+ "at": "2026-08-23T14:35:22.464Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
- "gallerySize": 1551,
+ "gallerySize": 1577,
  "probesTotal": 305,
  "skipped": 0,
- "notEnrolled": 35,
+ "notEnrolled": 2,
  "leakedExcluded": 0,
  "clean": {
-  "n": 270,
-  "rank1Pct": 75.92592592592592,
-  "rank5Pct": 80.74074074074075,
-  "mrr": 0.7788271604938272
+  "n": 303,
+  "rank1Pct": 73.5973597359736,
+  "rank5Pct": 79.20792079207921,
+  "mrr": 0.76001100110011
  },
  "allEvaluated": {
-  "n": 270,
-  "rank1Pct": 75.92592592592592,
-  "rank5Pct": 80.74074074074075,
-  "mrr": 0.7788271604938272
+  "n": 303,
+  "rank1Pct": 73.5973597359736,
+  "rank5Pct": 79.20792079207921,
+  "mrr": 0.76001100110011
  },
  "records": [
   {
@@ -359,11 +359,35 @@
   {
    "id": "anya-taylor-joy",
    "rank": null,
-   "top1": "nicki-minaj",
+   "top1": "anya-taylor",
    "dTrue": 0.9370757396097412,
-   "dTop1": 0.5390319913930736,
+   "dTop1": 0.04800121800196133,
    "dMinSameId": 0.9370757396097412,
-   "dBestWrong": 0.5390319913930736,
+   "dBestWrong": 0.04800121800196133,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "anya-taylor",
+   "rank": null,
+   "top1": "anya-taylor-joy",
+   "dTrue": 1.0461706042920327,
+   "dTop1": 0.039364299725411334,
+   "dMinSameId": 1.0461706042920327,
+   "dBestWrong": 0.039364299725411334,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "anya-taylor",
+   "rank": null,
+   "top1": "anya-taylor-joy",
+   "dTrue": 0.942259513563548,
+   "dTop1": 0.0032483436053072356,
+   "dMinSameId": 0.942259513563548,
+   "dBestWrong": 0.0032483436053072356,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -377,6 +401,30 @@
    "dMinSameId": 0.6415580350760242,
    "dBestWrong": 0.6364082816610246,
    "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "aubrey-plaza",
+   "rank": 2,
+   "top1": "lisa-marie-digiacinto",
+   "dTrue": 0.5689548703240218,
+   "dTop1": 0.5537614640940631,
+   "dMinSameId": 0.5689548703240218,
+   "dBestWrong": 0.5537614640940631,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "aubrey-plaza",
+   "rank": null,
+   "top1": "",
+   "dTrue": 0.6779900061118335,
+   "dTop1": null,
+   "dMinSameId": 0.6779900061118335,
+   "dBestWrong": 0.689735208226236,
+   "margin": null,
    "priorFlipped": false,
    "leaked": false
   },
@@ -413,6 +461,30 @@
    "dMinSameId": 0.4229339404509923,
    "dBestWrong": 0.6664111072176582,
    "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "bae-doona",
+   "rank": null,
+   "top1": "",
+   "dTrue": 0.8006767814313605,
+   "dTop1": null,
+   "dMinSameId": 0.8006767814313605,
+   "dBestWrong": 0.6584365956716425,
+   "margin": null,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "bae-doona",
+   "rank": null,
+   "top1": "",
+   "dTrue": 0.7099261342216476,
+   "dTop1": null,
+   "dMinSameId": 0.7099261342216476,
+   "dBestWrong": 0.6426094202983389,
+   "margin": null,
    "priorFlipped": false,
    "leaked": false
   },
@@ -657,6 +729,30 @@
    "leaked": false
   },
   {
+   "id": "cailee-spaeny",
+   "rank": 1,
+   "top1": "cailee-spaeny",
+   "dTrue": 0.3611780238437773,
+   "dTop1": 0.3611780238437773,
+   "dMinSameId": 0.3611780238437773,
+   "dBestWrong": 0.6512256885378349,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "cailee-spaeny",
+   "rank": 1,
+   "top1": "cailee-spaeny",
+   "dTrue": 0.45186877875857445,
+   "dTop1": 0.45186877875857445,
+   "dMinSameId": 0.45186877875857445,
+   "dBestWrong": 0.5561457571730237,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "cara-delevingne",
    "rank": null,
    "top1": "dwayne-johnson",
@@ -885,6 +981,30 @@
    "leaked": false
   },
   {
+   "id": "daisy-edgar-jones",
+   "rank": null,
+   "top1": "reesewitherspoon",
+   "dTrue": 0.9183520684594925,
+   "dTop1": 0.41506787782114396,
+   "dMinSameId": 0.9183520684594925,
+   "dBestWrong": 0.4055527567182192,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "daisy-edgar-jones",
+   "rank": 1,
+   "top1": "daisy-edgar-jones",
+   "dTrue": 0.41401325757962915,
+   "dTop1": 0.41401325757962915,
+   "dMinSameId": 0.41401325757962915,
+   "dBestWrong": 0.6022050168699934,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "dakota-johnson",
    "rank": 1,
    "top1": "dakota-johnson",
@@ -969,6 +1089,30 @@
    "leaked": false
   },
   {
+   "id": "demi-moore",
+   "rank": 2,
+   "top1": "rebecca-rifai",
+   "dTrue": 0.5997842327885489,
+   "dTop1": 0.5882289300446881,
+   "dMinSameId": 0.5997842327885489,
+   "dBestWrong": 0.5882289300446881,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "demi-moore",
+   "rank": null,
+   "top1": "elizabeth-olsen",
+   "dTrue": 0.7176661116073025,
+   "dTop1": 0.497497318263054,
+   "dMinSameId": 0.7176661116073025,
+   "dBestWrong": 0.497497318263054,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "denzel-washington",
    "rank": 1,
    "top1": "denzel-washington",
@@ -1024,6 +1168,30 @@
    "dTop1": 0.3536917639048829,
    "dMinSameId": 0.6431951561555138,
    "dBestWrong": 0.3536917639048829,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "don-cheadle",
+   "rank": null,
+   "top1": "",
+   "dTrue": 0.8986900508524749,
+   "dTop1": null,
+   "dMinSameId": 0.8986900508524749,
+   "dBestWrong": 0.6246394347325703,
+   "margin": null,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "don-cheadle",
+   "rank": null,
+   "top1": "jon-eyez",
+   "dTrue": 1.0021855874820018,
+   "dTop1": 0.5667084055241057,
+   "dMinSameId": 1.0021855874820018,
+   "dBestWrong": 0.5667084055241057,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1203,7 +1371,7 @@
    "dTrue": 0.0029630874426934684,
    "dTop1": 0.0029630874426934684,
    "dMinSameId": 0.0029630874426934684,
-   "dBestWrong": 0.6450190650584005,
+   "dBestWrong": 0.6383454936444241,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1229,6 +1397,18 @@
    "dMinSameId": 0.8986506349109409,
    "dBestWrong": 0.4414327341128812,
    "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "fantasia-barrino",
+   "rank": null,
+   "top1": "",
+   "dTrue": 0.9075705883097036,
+   "dTop1": null,
+   "dMinSameId": 0.9075705883097036,
+   "dBestWrong": 0.6208855339028145,
+   "margin": null,
    "priorFlipped": false,
    "leaked": false
   },
@@ -1386,6 +1566,30 @@
    "dBestWrong": 0.35551656534780507,
    "margin": 0.0012417116577920773,
    "priorFlipped": true,
+   "leaked": false
+  },
+  {
+   "id": "greta-lee",
+   "rank": 1,
+   "top1": "greta-lee",
+   "dTrue": 0.4616512067445815,
+   "dTop1": 0.4616512067445815,
+   "dMinSameId": 0.4616512067445815,
+   "dBestWrong": 0.6695354971727817,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "greta-lee",
+   "rank": 1,
+   "top1": "greta-lee",
+   "dTrue": 0.4524524793017286,
+   "dTop1": 0.4524524793017286,
+   "dMinSameId": 0.4524524793017286,
+   "dBestWrong": 0.5735675099300932,
+   "margin": 0,
+   "priorFlipped": false,
    "leaked": false
   },
   {
@@ -1785,6 +1989,30 @@
    "leaked": false
   },
   {
+   "id": "jeremy-strong",
+   "rank": 1,
+   "top1": "jeremy-strong",
+   "dTrue": 0.4556602741399405,
+   "dTop1": 0.4556602741399405,
+   "dMinSameId": 0.4556602741399405,
+   "dBestWrong": 0.6216921731425079,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "jeremy-strong",
+   "rank": 1,
+   "top1": "jeremy-strong",
+   "dTrue": 0.49687876217755855,
+   "dTop1": 0.49687876217755855,
+   "dMinSameId": 0.49687876217755855,
+   "dBestWrong": 0.619388225771606,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "jessica-alba",
    "rank": 1,
    "top1": "jessica-alba",
@@ -1941,6 +2169,30 @@
    "leaked": false
   },
   {
+   "id": "jung-ho-yeon",
+   "rank": 2,
+   "top1": "heidi-tan",
+   "dTrue": 0.6228375155414347,
+   "dTop1": 0.5922566293564698,
+   "dMinSameId": 0.6228375155414347,
+   "dBestWrong": 0.5922566293564698,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "jung-ho-yeon",
+   "rank": 2,
+   "top1": "margot-robbie",
+   "dTrue": 0.6372916068048026,
+   "dTop1": 0.5905090646696625,
+   "dMinSameId": 0.6372916068048026,
+   "dBestWrong": 0.5905090646696625,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "karol-g",
    "rank": 1,
    "top1": "karol-g",
@@ -2049,6 +2301,30 @@
    "leaked": false
   },
   {
+   "id": "kieran-culkin",
+   "rank": 1,
+   "top1": "kieran-culkin",
+   "dTrue": 0.49134646300215723,
+   "dTop1": 0.49134646300215723,
+   "dMinSameId": 0.49134646300215723,
+   "dBestWrong": 0.6119744502365866,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "kieran-culkin",
+   "rank": 1,
+   "top1": "kieran-culkin",
+   "dTrue": 0.29865617376306686,
+   "dTop1": 0.29865617376306686,
+   "dMinSameId": 0.29865617376306686,
+   "dBestWrong": 0.587442351196171,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "kim-kardashian",
    "rank": null,
    "top1": "reesewitherspoon",
@@ -2097,6 +2373,18 @@
    "leaked": false
   },
   {
+   "id": "lakeith-stanfield",
+   "rank": null,
+   "top1": "emily-blunt",
+   "dTrue": 0.7794102226656686,
+   "dTop1": 0.5867554370163397,
+   "dMinSameId": 0.7794102226656686,
+   "dBestWrong": 0.5867554370163397,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "laurence-fishburne",
    "rank": 1,
    "top1": "laurence-fishburne",
@@ -2140,6 +2428,30 @@
    "dTop1": 0.5130159509947476,
    "dMinSameId": 0.6595415629857091,
    "dBestWrong": 0.5130159509947476,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "letitia-wright",
+   "rank": 1,
+   "top1": "letitia-wright",
+   "dTrue": 0.5177415285652879,
+   "dTop1": 0.5177415285652879,
+   "dMinSameId": 0.5177415285652879,
+   "dBestWrong": 0.6307109018180058,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "letitia-wright",
+   "rank": 1,
+   "top1": "letitia-wright",
+   "dTrue": 0.3974396062273655,
+   "dTop1": 0.3974396062273655,
+   "dMinSameId": 0.3974396062273655,
+   "dBestWrong": 0.6394593941747393,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2385,6 +2697,30 @@
    "leaked": false
   },
   {
+   "id": "mikey-madison",
+   "rank": 1,
+   "top1": "mikey-madison",
+   "dTrue": 0.5157760569074892,
+   "dTop1": 0.5157760569074892,
+   "dMinSameId": 0.5157760569074892,
+   "dBestWrong": 0.6489135455464266,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "mikey-madison",
+   "rank": 1,
+   "top1": "mikey-madison",
+   "dTrue": 0.4490615026509732,
+   "dTop1": 0.4490615026509732,
+   "dMinSameId": 0.4490615026509732,
+   "dBestWrong": 0.570441169507676,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "miles-teller",
    "rank": 1,
    "top1": "miles-teller",
@@ -2511,7 +2847,7 @@
    "dTrue": 0.4083469595356516,
    "dTop1": 0.4083469595356516,
    "dMinSameId": 0.4083469595356516,
-   "dBestWrong": 0.6747100410697224,
+   "dBestWrong": 0.6659642251227602,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2853,6 +3189,30 @@
    "leaked": false
   },
   {
+   "id": "sarah-snook",
+   "rank": 1,
+   "top1": "sarah-snook",
+   "dTrue": 0.39008513915569343,
+   "dTop1": 0.39008513915569343,
+   "dMinSameId": 0.39008513915569343,
+   "dBestWrong": 0.5915550482651629,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "sarah-snook",
+   "rank": 1,
+   "top1": "sarah-snook",
+   "dTrue": 0.42588548325764797,
+   "dTop1": 0.42588548325764797,
+   "dMinSameId": 0.42588548325764797,
+   "dBestWrong": 0.6197257411902382,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "scarlett-johansson",
    "rank": 1,
    "top1": "scarlett-johansson",
@@ -3033,6 +3393,18 @@
    "leaked": false
   },
   {
+   "id": "teo-yoo",
+   "rank": 1,
+   "top1": "teo-yoo",
+   "dTrue": 0.41436275377150145,
+   "dTop1": 0.41436275377150145,
+   "dMinSameId": 0.41436275377150145,
+   "dBestWrong": 0.5571991193205524,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
    "id": "tiffany-haddish",
    "rank": 1,
    "top1": "tiffany-haddish",
@@ -3171,7 +3543,7 @@
    "dTrue": 0.8999278912045809,
    "dTop1": null,
    "dMinSameId": 0.8999278912045809,
-   "dBestWrong": 0.7192742585536931,
+   "dBestWrong": 0.7035852499991446,
    "margin": null,
    "priorFlipped": false,
    "leaked": false
@@ -3196,6 +3568,30 @@
    "dTop1": 0.030349335852565384,
    "dMinSameId": 0.030349335852565384,
    "dBestWrong": 0.5463741003663036,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "willem-dafoe",
+   "rank": 1,
+   "top1": "willem-dafoe",
+   "dTrue": 0.42905948158100604,
+   "dTop1": 0.42905948158100604,
+   "dMinSameId": 0.42905948158100604,
+   "dBestWrong": 0.6702838762239167,
+   "margin": 0,
+   "priorFlipped": false,
+   "leaked": false
+  },
+  {
+   "id": "willem-dafoe",
+   "rank": 1,
+   "top1": "willem-dafoe",
+   "dTrue": 0.476589656339407,
+   "dTop1": 0.476589656339407,
+   "dMinSameId": 0.476589656339407,
+   "dBestWrong": 0.6003074040121882,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
