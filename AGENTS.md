@@ -9,12 +9,17 @@ honest match percent. No user photo ever leaves the device — that invariant **
 Run these exactly; do not report success without exit codes.
 
 ```bash
-npm test                            # unit + integration (node --test via --experimental-strip-types)
+npm test                            # unit + integration + hard cases (node --test via --experimental-strip-types)
 npm run test:match                  # face-matching subset only
 npm run typecheck                   # tsc --noEmit
-node scripts/evaluate-accuracy.mjs  # ground-truth benchmark (writes reports/*.json; ~30+ min CPU)
+npm run test:heldout                # leak-excluded held-out Rank-1 vs shipped gallery (read-only unless TWINFRAME_SAVE_BASELINE=1)
+npm run test:parity                 # full-catalog enroll/query parity from tracked descriptors
+node scripts/evaluate-accuracy.mjs  # legacy-geometry tier benchmark (writes reports/*.json; ~30+ min CPU)
 npm run build                       # ort asset copy + vite build + post-build patch + db:migrate
 ```
+
+CI additionally gates the interactive a11y smoke (`scripts/a11y-smoke.mjs`, needs a dev
+server) and the throttled-CPU performance probe (`scripts/perf-throttle.mjs`, 15s budget).
 
 - Expected steady state (2026-08, night branch): all of the above exit 0.
 - `evaluate-accuracy.mjs` regenerates tracked files under `reports/`. Restore them
