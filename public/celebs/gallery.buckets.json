@@ -10072,9 +10072,9 @@
   {
     "id": "don-cheadle",
     "name": "Don Cheadle",
-    "age": 34,
+    "age": 47,
     "gender": "male",
-    "genderProb": 0.6905499696731567,
+    "genderProb": 0.986,
     "path": "/celebs/thumbs/96/don-cheadle.webp",
     "path192": "/celebs/thumbs/192/don-cheadle.webp",
     "fallbackPath": "/celebs/don-cheadle.jpg"
@@ -10092,9 +10092,9 @@
   {
     "id": "greta-lee",
     "name": "Greta Lee",
-    "age": 28,
-    "gender": "male",
-    "genderProb": 0.6649912595748901,
+    "age": 30,
+    "gender": "female",
+    "genderProb": 0.947,
     "path": "/celebs/thumbs/96/greta-lee.webp",
     "path192": "/celebs/thumbs/192/greta-lee.webp",
     "fallbackPath": "/celebs/greta-lee.jpg"

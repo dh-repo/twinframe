@@ -1,134 +1,24 @@
 {
  "cases": [
   {
-   "id": "anya-chalotra",
-   "name": "Anya Chalotra",
-   "imagePath": "/celebs/anya-chalotra.jpg"
-  },
-  {
-   "id": "anya-taylor",
-   "name": "Anya Taylor",
-   "imagePath": "/celebs/anya-taylor.jpg"
-  },
-  {
-   "id": "aubrey-plaza",
-   "name": "Aubrey Plaza",
-   "imagePath": "/celebs/aubrey-plaza.jpg"
-  },
-  {
-   "id": "bae-doona",
-   "name": "Bae Doona",
-   "imagePath": "/celebs/bae-doona.jpg"
-  },
-  {
-   "id": "brian-tyree-henry",
-   "name": "Brian Tyree Henry",
-   "imagePath": "/celebs/brian-tyree-henry.jpg"
-  },
-  {
-   "id": "cailee-spaeny",
-   "name": "Cailee Spaeny",
-   "imagePath": "/celebs/cailee-spaeny.jpg"
-  },
-  {
-   "id": "daisy-edgar-jones",
-   "name": "Daisy Edgar Jones",
-   "imagePath": "/celebs/daisy-edgar-jones.jpg"
-  },
-  {
-   "id": "demi-moore",
-   "name": "Demi Moore",
-   "imagePath": "/celebs/demi-moore.jpg"
-  },
-  {
-   "id": "dominic-sessa",
-   "name": "Dominic Sessa",
-   "imagePath": "/celebs/dominic-sessa.jpg"
-  },
-  {
-   "id": "don-cheadle",
-   "name": "Don Cheadle",
-   "imagePath": "/celebs/don-cheadle.jpg"
-  },
-  {
-   "id": "fantasia-barrino",
-   "name": "Fantasia Barrino",
-   "imagePath": "/celebs/fantasia-barrino.jpg"
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/extra-photos/greta-lee/001.jpg"
   },
   {
    "id": "greta-lee",
    "name": "Greta Lee",
-   "imagePath": "/celebs/greta-lee.jpg"
+   "imagePath": "/celebs/extra-photos/greta-lee/002.jpg"
   },
   {
-   "id": "jeremy-strong",
-   "name": "Jeremy Strong",
-   "imagePath": "/celebs/jeremy-strong.jpg"
+   "id": "don-cheadle",
+   "name": "Don Cheadle",
+   "imagePath": "/celebs/extra-photos/don-cheadle/001.jpg"
   },
   {
-   "id": "jharrel-jerome",
-   "name": "Jharrel Jerome",
-   "imagePath": "/celebs/jharrel-jerome.jpg"
-  },
-  {
-   "id": "jun-ji-hyun",
-   "name": "Jun Ji Hyun",
-   "imagePath": "/celebs/jun-ji-hyun.jpg"
-  },
-  {
-   "id": "jung-ho-yeon",
-   "name": "Jung Ho Yeon",
-   "imagePath": "/celebs/jung-ho-yeon.jpg"
-  },
-  {
-   "id": "kieran-culkin",
-   "name": "Kieran Culkin",
-   "imagePath": "/celebs/kieran-culkin.jpg"
-  },
-  {
-   "id": "lakeith-stanfield",
-   "name": "Lakeith Stanfield",
-   "imagePath": "/celebs/lakeith-stanfield.jpg"
-  },
-  {
-   "id": "letitia-wright",
-   "name": "Letitia Wright",
-   "imagePath": "/celebs/letitia-wright.jpg"
-  },
-  {
-   "id": "mikey-madison",
-   "name": "Mikey Madison",
-   "imagePath": "/celebs/mikey-madison.jpg"
-  },
-  {
-   "id": "octavia-spencer",
-   "name": "Octavia Spencer",
-   "imagePath": "/celebs/octavia-spencer.jpg"
-  },
-  {
-   "id": "sarah-snook",
-   "name": "Sarah Snook",
-   "imagePath": "/celebs/sarah-snook.jpg"
-  },
-  {
-   "id": "song-kang-ho",
-   "name": "Song Kang Ho",
-   "imagePath": "/celebs/song-kang-ho.jpg"
-  },
-  {
-   "id": "stephan-james",
-   "name": "Stephan James",
-   "imagePath": "/celebs/stephan-james.jpg"
-  },
-  {
-   "id": "teo-yoo",
-   "name": "Teo Yoo",
-   "imagePath": "/celebs/teo-yoo.jpg"
-  },
-  {
-   "id": "willem-dafoe",
-   "name": "Willem Dafoe",
-   "imagePath": "/celebs/willem-dafoe.jpg"
+   "id": "don-cheadle",
+   "name": "Don Cheadle",
+   "imagePath": "/celebs/extra-photos/don-cheadle/002.jpg"
   }
  ]
 }
