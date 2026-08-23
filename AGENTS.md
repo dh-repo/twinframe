@@ -28,7 +28,7 @@ npm run build                       # ort asset copy + vite build + post-build p
 | Script | What it measures | Honest? |
 |---|---|---|
 | `scripts/evaluate-accuracy.mjs` | Tier-probe Top-1/Top-5/MRR/margins/latency vs v4 q8 gallery | Probes overlap enrollment portraits — treat as *pipeline sanity*, never as user-facing accuracy |
-| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d EdgeFace) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (73.6% Rank-1 / MRR 0.760, n=303, 2026-08, full 512-d geometry). Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity |
+| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d EdgeFace) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (74.8% Rank-1 / MRR 0.771, n=301, 2026-08, full 512-d geometry). Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity |
 | `scripts/rebuild-gallery-v5.mjs` | embed/fetch/assemble/eval/thumbnails phases for the multi-shot v5 gallery | Resumable, sha256-cached; excludes anything that fails detection/clustering |
 | `scripts/test-non-face-rejection.mjs` | Non-face input rejection end-to-end | Hard-case suite; port into CI |
 

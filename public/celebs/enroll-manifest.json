@@ -1,14 +1,44 @@
 {
  "cases": [
   {
-   "id": "greta-lee",
-   "name": "Greta Lee",
-   "imagePath": "/celebs/extra-photos/greta-lee/001.jpg"
+   "id": "aubrey-plaza",
+   "name": "Aubrey Plaza",
+   "imagePath": "/celebs/extra-photos/aubrey-plaza/001.jpg"
   },
   {
-   "id": "greta-lee",
-   "name": "Greta Lee",
-   "imagePath": "/celebs/extra-photos/greta-lee/002.jpg"
+   "id": "bae-doona",
+   "name": "Bae Doona",
+   "imagePath": "/celebs/extra-photos/bae-doona/001.jpg"
+  },
+  {
+   "id": "cailee-spaeny",
+   "name": "Cailee Spaeny",
+   "imagePath": "/celebs/extra-photos/cailee-spaeny/001.jpg"
+  },
+  {
+   "id": "cailee-spaeny",
+   "name": "Cailee Spaeny",
+   "imagePath": "/celebs/extra-photos/cailee-spaeny/002.jpg"
+  },
+  {
+   "id": "demi-moore",
+   "name": "Demi Moore",
+   "imagePath": "/celebs/extra-photos/demi-moore/001.jpg"
+  },
+  {
+   "id": "demi-moore",
+   "name": "Demi Moore",
+   "imagePath": "/celebs/extra-photos/demi-moore/002.jpg"
+  },
+  {
+   "id": "dominic-sessa",
+   "name": "Dominic Sessa",
+   "imagePath": "/celebs/extra-photos/dominic-sessa/001.jpg"
+  },
+  {
+   "id": "dominic-sessa",
+   "name": "Dominic Sessa",
+   "imagePath": "/celebs/extra-photos/dominic-sessa/002.jpg"
   },
   {
    "id": "don-cheadle",
@@ -19,6 +49,101 @@
    "id": "don-cheadle",
    "name": "Don Cheadle",
    "imagePath": "/celebs/extra-photos/don-cheadle/002.jpg"
+  },
+  {
+   "id": "don-cheadle",
+   "name": "Don Cheadle",
+   "imagePath": "/celebs/extra-photos/don-cheadle/003.jpg"
+  },
+  {
+   "id": "don-cheadle",
+   "name": "Don Cheadle",
+   "imagePath": "/celebs/extra-photos/don-cheadle/004.jpg"
+  },
+  {
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/extra-photos/greta-lee/001.jpg"
+  },
+  {
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/extra-photos/greta-lee/002.jpg"
+  },
+  {
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/extra-photos/greta-lee/003.jpg"
+  },
+  {
+   "id": "greta-lee",
+   "name": "Greta Lee",
+   "imagePath": "/celebs/extra-photos/greta-lee/004.jpg"
+  },
+  {
+   "id": "jeremy-strong",
+   "name": "Jeremy Strong",
+   "imagePath": "/celebs/extra-photos/jeremy-strong/001.jpg"
+  },
+  {
+   "id": "jeremy-strong",
+   "name": "Jeremy Strong",
+   "imagePath": "/celebs/extra-photos/jeremy-strong/002.jpg"
+  },
+  {
+   "id": "kieran-culkin",
+   "name": "Kieran Culkin",
+   "imagePath": "/celebs/extra-photos/kieran-culkin/001.jpg"
+  },
+  {
+   "id": "kieran-culkin",
+   "name": "Kieran Culkin",
+   "imagePath": "/celebs/extra-photos/kieran-culkin/002.jpg"
+  },
+  {
+   "id": "letitia-wright",
+   "name": "Letitia Wright",
+   "imagePath": "/celebs/extra-photos/letitia-wright/001.jpg"
+  },
+  {
+   "id": "letitia-wright",
+   "name": "Letitia Wright",
+   "imagePath": "/celebs/extra-photos/letitia-wright/002.jpg"
+  },
+  {
+   "id": "mikey-madison",
+   "name": "Mikey Madison",
+   "imagePath": "/celebs/extra-photos/mikey-madison/001.jpg"
+  },
+  {
+   "id": "octavia-spencer",
+   "name": "Octavia Spencer",
+   "imagePath": "/celebs/extra-photos/octavia-spencer/001.jpg"
+  },
+  {
+   "id": "octavia-spencer",
+   "name": "Octavia Spencer",
+   "imagePath": "/celebs/extra-photos/octavia-spencer/002.jpg"
+  },
+  {
+   "id": "sarah-snook",
+   "name": "Sarah Snook",
+   "imagePath": "/celebs/extra-photos/sarah-snook/002.jpg"
+  },
+  {
+   "id": "stephan-james",
+   "name": "Stephan James",
+   "imagePath": "/celebs/extra-photos/stephan-james/002.jpg"
+  },
+  {
+   "id": "willem-dafoe",
+   "name": "Willem Dafoe",
+   "imagePath": "/celebs/extra-photos/willem-dafoe/001.jpg"
+  },
+  {
+   "id": "willem-dafoe",
+   "name": "Willem Dafoe",
+   "imagePath": "/celebs/extra-photos/willem-dafoe/002.jpg"
   }
  ]
 }

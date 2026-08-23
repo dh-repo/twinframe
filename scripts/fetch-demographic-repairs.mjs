@@ -14,10 +14,19 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
 const UA = "TwinframeDemographicRepair/1.0 (local enrollment quality) Node.js";
 
-const TARGETS = [
+// Default targets kept for provenance; pass --ids a,b,c to fetch extra views.
+const DEFAULT_TARGETS = [
   { id: "greta-lee", query: "Greta Lee", wantGender: "female" },
   { id: "don-cheadle", query: "Don Cheadle", wantGender: "male" },
 ];
+const idsArg = process.argv.indexOf("--ids");
+const TARGETS = idsArg >= 0
+  ? process.argv[idsArg + 1].split(",").map((id) => ({
+      id,
+      query: id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+    }))
+  : DEFAULT_TARGETS;
+const MAX_NEW_PER_CELEB = Number(process.env.MAX_NEW_PER_CELEB || 2);
 
 async function commons(params) {
   const url = new URL("https://commons.wikimedia.org/w/api.php");
@@ -81,7 +90,7 @@ async function main() {
       const out = path.join(dir, `${String(saved).padStart(3, "0")}.jpg`);
       fs.writeFileSync(out, buf);
       console.log(`[${t.id}] saved ${out} (${buf.byteLength} bytes) <- ${p.title}`);
-      if (saved - existing >= 2) break;
+      if (saved - existing >= MAX_NEW_PER_CELEB) break;
     }
   }
 }

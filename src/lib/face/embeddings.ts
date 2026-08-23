@@ -324,7 +324,7 @@ async function mergeExtraTemplates(base: CelebrityEmbedding[]): Promise<Celebrit
     "./gallery-dedupe.ts"
   );
   try {
-    const res = await fetch("/celebs/extra-templates.json?v=2.0.0", { cache: "force-cache" });
+    const res = await fetch("/celebs/extra-templates.json?v=3.0.0", { cache: "force-cache" });
     if (!res.ok) return buildMultiShotCentroidGallery(base);
     const data = (await res.json()) as ExtraTemplateFile;
     if (!data.templates?.length) return buildMultiShotCentroidGallery(base);
