@@ -101,7 +101,16 @@ try {
   // Only real match-results headlines count as coverage — the quality-refusal
   // card is a different state (substring-matching it here once let a broken
   // results screen pass as covered).
-  const resultMarkers = ["DOPPELGÄNGER MATCH", "NEAREST GALLERY NEIGHBOR", "POSSIBLE LOOK-ALIKE"];
+  // Verdict-tier headlines (verdict.ts verdictLabel) plus legacy honesty bands.
+  const resultMarkers = [
+    "DEAD RINGER",
+    "STRONG RESEMBLANCE",
+    "SOFT MATCH",
+    "DISTANT TWIN",
+    "DOPPELGÄNGER MATCH",
+    "NEAREST GALLERY NEIGHBOR",
+    "POSSIBLE LOOK-ALIKE",
+  ];
   let reachedResults = false;
   for (let i = 0; i < 24 && !reachedResults; i++) {
     await page.waitForTimeout(5000);
