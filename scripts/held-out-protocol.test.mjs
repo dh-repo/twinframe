@@ -295,3 +295,21 @@ describe("v4 parser browser parity (P0 regression guard)", () => {
   });
 
 });
+
+describe("normalizeSource hardening", () => {
+  it("collapses case, URL-encoding, backslashes, and leading variants", async () => {
+    const { normalizeSource } = await import("./evaluate-held-out-v2.ts");
+    const expected = "held-out/brad-pitt/001.jpg";
+    for (const variant of [
+      "held-out/brad-pitt/001.jpg",
+      "/celebs/held-out/brad-pitt/001.jpg",
+      "celebs/held-out/brad-pitt/001.jpg",
+      "Held-Out/Brad-Pitt/001.JPG",
+      "held-out/brad-pitt/%3001.jpg",
+      "\\celebs\\held-out\\brad-pitt\\001.jpg",
+      "//celebs/held-out/brad-pitt/001.jpg",
+    ]) {
+      assert.equal(normalizeSource(variant), expected, `variant: ${variant}`);
+    }
+  });
+});

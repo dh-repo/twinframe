@@ -31,7 +31,17 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
 
 export function normalizeSource(source: string): string {
-  return source.replace(/^\/?celebs\//, "").replace(/^\//, "");
+  let s = String(source).trim();
+  try {
+    s = decodeURIComponent(s);
+  } catch {
+    /* malformed escapes compare literally */
+  }
+  return s
+    .replace(/\\/g, "/")
+    .replace(/\/{2,}/g, "/")
+    .toLowerCase()
+    .replace(/^\/?(celebs\/)?/, "");
 }
 
 interface GalleryEntry {

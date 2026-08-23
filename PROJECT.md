@@ -58,7 +58,7 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
 ## Interface Contracts
 
 ### Query Face Pipeline ↔ Matcher
-- **Input**: `UserFaceQuery` containing `descriptor: Float32Array` (length 128 or 256, L2-normalized $\|\text{desc}\|_2 = 1.0 \pm 10^{-4}$), `age?: number`, `gender?: 'male' | 'female' | 'unknown'`, `genderProbability?: number`.
+- **Input**: `UserFaceQuery` containing `descriptor` (L2-normalized; the live EdgeFace path and shipped gallery are both 512-d — trust the "AFv4" header for width), `age?: number`, `gender?: 'male' | 'female' | 'unknown'`, `genderProbability?: number`.
 - **Output**: `CelebrityMatch[]` sorted ascending by `adjusted` distance, containing `celeb: CelebrityProfile`, `distance: number`, `matchPercent: number`, `rank: number`, `confidence: number`, `traits: DescriptorTraits`.
 
 ### Gallery Loader ↔ Matcher
