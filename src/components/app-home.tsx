@@ -262,7 +262,7 @@ export function AppHome() {
               <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white shadow-inner">
                 <ScanFace className="h-5 w-5" strokeWidth={1.75} />
               </div>
-              <span className="text-base font-bold tracking-tight text-white">Twinframe</span>
+              <h1 className="text-base font-bold tracking-tight text-white">Twinframe</h1>
             </div>
             {(phase === "results" || phase === "quality-blocked" || phase === "review" || phase === "analyzing") ? (
               <button

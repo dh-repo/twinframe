@@ -61,10 +61,10 @@ export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
   return (
     <div className={cn("space-y-3.5", className)}>
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <h4 className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-fg-subtle">
+        <h3 className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-fg-subtle">
           <Sparkles className="h-3.5 w-3.5 shrink-0 text-match" />
           Feature breakdown
-        </h4>
+        </h3>
         <span className="text-[11px] font-mono font-medium text-match">
           512-d match
         </span>
