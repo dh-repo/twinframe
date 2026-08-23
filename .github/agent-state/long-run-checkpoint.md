@@ -152,3 +152,25 @@ each round also produced hardening that outlived its findings (parity taxonomy, 
 - Multi-shot v5 gallery awaits a real second-photo pool; held-out corpus must stay out of enrollment.
 - Age estimates for the 26 new slots come from detector reads of single photos (recorded honestly);
   ground-truth age tables would be a catalog-maintenance decision for the owner.
+
+### Continuation 2 (cycles 22–24, same day)
+- **Catalog demographics reconciled against Wikidata** (`scripts/reconcile-demographics.mjs`):
+  canonical-title + sitelink ambiguity guards, P569/P21 ground truth, report/apply modes.
+  20 age corrections applied across session-enrolled slots (drift up to 38y); zero unresolved.
+- **Full-catalog parity now gates every PR** (296 tracked browser-encoded descriptors,
+  floor 90); the face-api-node benchmark stays as an explicitly *labeled* legacy-geometry
+  latency/tooling check.
+- **Six identity-verified multi-shot templates** added for don-cheadle/greta-lee/
+  octavia-spencer/sarah-snook/willem-dafoe — admission required d<0.45 to own slot;
+  junk candidates (paintings, unrelated people) rejected by the same math. Honest readout:
+  like-for-like accuracy flat; headline recomposed to **74.8% Rank-1 / MRR 0.771, n=301**
+  after two dead probes left the pool.
+- **Calibration refit to exact deterministic values** (n=301) after the tolerance band
+  initially masked hand-pasted guesses — provenance chain is now mechanical end-to-end.
+- **CI repaired**: PyYAML round-tripping had serialized `on:` as boolean `true` in both
+  workflows, causing startup failures with zero jobs since cycle 22; triggers hand-written
+  and verified. Parity gate added to PR path; legacy benchmark step relabeled to state its
+  geometry.
+
+Final state at close: `night-ci` success on `be02610`; 370/370 tests; typecheck/build clean;
+held-out 74.8% / MRR 0.771 (n=301); parity 100%; axe near-zero across six states.
