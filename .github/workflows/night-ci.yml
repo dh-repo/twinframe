@@ -41,6 +41,7 @@ jobs:
 
       - name: Accessibility smoke (axe-core serious/critical gate)
         run: |
+          npx playwright install --with-deps chromium
           npm run dev > /dev/null 2>&1 &
           for i in $(seq 1 30); do
             if curl -sf http://127.0.0.1:8080/ > /dev/null; then break; fi
