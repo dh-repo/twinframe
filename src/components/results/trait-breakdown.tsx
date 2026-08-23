@@ -97,7 +97,7 @@ export function TraitBreakdown({ match, className }: TraitBreakdownProps) {
               </p>
 
               <div className="mt-2.5">
-                <Progress value={attr.score} className="h-1 bg-border/60" />
+                <Progress value={attr.score} className="h-1 bg-border/60" aria-label={`${attr.name}: ${Math.round(attr.score)}%`} />
               </div>
             </div>
           );

@@ -122,7 +122,7 @@ export function MatchRevealCard({
           </div>
 
           <div className="mt-4">
-            <Progress value={topMatch.matchPercent} className="h-1.5" />
+            <Progress value={topMatch.matchPercent} className="h-1.5" aria-label={`${topMatch.name} match similarity`} />
           </div>
 
           {typeof topMatch.probabilityCorrect === "number" && (
