@@ -1,0 +1,66 @@
+# Twinframe — Long-Run Agent Checkpoint
+
+## Mission
+Make Twinframe a **trustworthy on-device celebrity matcher** with a real eval and a real AGENTS.md.
+The 10x is calibrated honesty, not a higher vanity Top-1.
+
+Non-negotiables: no photo upload to servers; honest demo/educational framing for likeness data;
+leakage-aware eval claims; real verify commands with recorded exit codes.
+
+## Decisions locked with owner (cycle 0)
+- Push `night/twinframe` to origin after committing (main untouched).
+- Raw ~200MB held-out photo corpus stays local-only (.gitignore); tracked `held-out/descriptors.json`
+  is the CI-sized eval input. Full corpus feeds nightly-sized local runs.
+- Docs lead with held-out Rank-1 ≈ 86.5% (735 probes, `reports/held-out-v2-baseline.json`);
+  legacy 97.7% "overall" numbers get removed or explicitly marked as enrollment-overlapping.
+
+## Baseline snapshot (pre-work)
+- HEAD at cycle 0: `75d0b6d` on `main`; branch `night/twinframe` created from it.
+- Dirty tree inherited: 88 untracked files — interrupted "honest gallery v5 / held-out v2" session:
+  - `scripts/evaluate-held-out-v2.ts` (honest rank-1 protocol vs browser-loaded v4 q8 gallery)
+  - `scripts/rebuild-gallery-v5.mjs` (embed/fetch/assemble/eval/thumbnails phases, resumable)
+  - `reports/held-out-v2-baseline.json` (735 probes, Rank-1 86.53%, Top-5 88.71%, MRR 0.8736)
+  - `reports/v5-embed-cache.json`, `reports/v5-fetch-manifest.json`
+  - 12 new celeb thumbs (`public/celebs/*.jpg`), raw held-out photo dirs (~200MB)
+- No `.github/` directory existed → no CI, no prior agent state.
+- AGENTS.md = Grok-sandbox boilerplate (647 lines) + Cursor Cloud env section → replace in cycle 1.
+- README stale: says FaceNet-128 / 267 celebs / embeddings.json; actual primary path is EdgeFace-512
+  with ~1605-entry v4 q8 gallery (`public/celebs/embeddings.v4.q8.bin`, dim 256).
+- Known pre-existing reds (per committed env notes, to be re-verified below):
+  - 1 unit failure in `src/lib/face/m4-challenger-stress.test.ts` (rankByDescriptor returns 1 result)
+  - typecheck errors in `src/routes/re-encode.tsx`, `src/routes/held-out-encode.tsx`
+  - eslint: ~33 errors / ~114 warnings
+- Data smell to investigate: baseline report shows probes with rank=1 but negative margin
+  (`margin ≈ -0.01`) — dTrue appears computed against a different descriptor source than the
+  q8 gallery distance used by rankByDescriptor. Needs a methodology test (cycle 2).
+
+## Verify battery — cycle 0 results
+| Command | Exit | Result |
+|---|---|---|
+| `npm test` | **1** | 330 tests / 328 pass / **2 fail**: `m1-m2-empirical-challenger.test.ts` "640px pre-downscaled CLAHE contrast boost…" (assert `false !== true`, src/lib/face/m1-m2-empirical-challenger.test.ts:156) and `m4-challenger-stress.test.ts:294` "executes rankByDescriptor…" (`1 !== 2`). Logs: `logs/c0-npm-test.log` |
+| `npm run test:match` | **1** | 279 tests / 278 pass / 1 fail (the m4 one). Logs: `logs/c0-test-match.log` |
+| `npm run typecheck` | **2** | 3 × TS2322 in `src/routes/held-out-encode.tsx:115`, `src/routes/re-encode.tsx:199`, `src/routes/re-encode.tsx:247` (`"male"\|"female"\|"unknown"` vs `"male"\|"female"`). Logs: `logs/c0-typecheck.log` |
+| `npm run build` | **0** | Vite + SSR + Nitro clean; ort copy no-op; db:migrate skipped (no DATABASE_URL). Logs: `logs/c0-build.log` |
+| `node scripts/evaluate-accuracy.mjs` | (running) | Launched background PID 40618; 273 Tier-1 probes @ concurrency 2. Log streamed to `logs/c0-evaluate-accuracy.log`; final result recorded next update. |
+
+Note: env notes claimed only ONE failing test; baseline shows TWO. The CLAHE one is new information.
+
+## Commits (cycle 0)
+- `c172a96` Land honest held-out eval protocol and v5 gallery rebuild tooling (+ .gitignore for raw probe photos)
+- `92d14ad` Add 29 new celebrity portraits staged for the v5 gallery rebuild
+- agent-state scaffolding commit follows this checkpoint.
+- Local `main` restored to `origin/main` (`75d0b6d`) after external-tool interference (see escalations).
+
+## Open escalations
+1. **External git interference:** an outside process (likely Cursor-side automation) ran
+   `git pull --rebase origin main` + branch cleanup mid-session, deleting `night/twinframe`
+   and leaving my first commit on local `main`. Repaired same-cycle (commit moved to night
+   branch, main reset to origin/main — nothing pushed). Countermeasure: verify
+   `git branch --show-current` immediately before every commit from here on.
+
+## Quality ledger
+(per-file ledger appended each cycle; EVIDENCED only via test output or measurement)
+
+| File | Q1 Correctness | Q2 Robustness | Q3 Optimality | Adversarial | Performance | Coverage |
+|------|----------------|---------------|---------------|-------------|-------------|----------|
+| .gitignore | EVIDENCED (untracked corpus ignored, tracked files unaffected) | assertion only | n/a | n/a | n/a | n/a |
