@@ -1,8 +1,8 @@
 name: nightly-eval
-true:
+on:
   schedule:
   - cron: 0 4 * * *
-  workflow_dispatch: null
+  workflow_dispatch:
 jobs:
   full-eval:
     runs-on: ubuntu-latest
