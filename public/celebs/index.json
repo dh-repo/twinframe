@@ -1900,21 +1900,6 @@
     "baseAge": 18
   },
   {
-    "id": "gwenyth-paltrow",
-    "name": "Gwenyth Paltrow",
-    "path": "/celebs/thumbs/96/gwenyth-paltrow.webp",
-    "path192": "/celebs/thumbs/192/gwenyth-paltrow.webp",
-    "fallbackPath": "/celebs/gwenyth-paltrow.jpg",
-    "gender": "female",
-    "genderProb": 0.9417712613940239,
-    "ageBuckets": [
-      36,
-      48,
-      62
-    ],
-    "baseAge": 48
-  },
-  {
     "id": "gwyneth-paltrow",
     "name": "Gwyneth Paltrow",
     "path": "/celebs/thumbs/96/gwyneth-paltrow.webp",
@@ -4240,30 +4225,26 @@
     "name": "Paul Giamatti",
     "path": "/celebs/thumbs/96/paul-giamatti.webp",
     "path192": "/celebs/thumbs/192/paul-giamatti.webp",
-    "fallbackPath": "/celebs/thumbs/96/paul-giamatti.webp",
+    "fallbackPath": "/celebs/paul-giamatti.jpg",
     "gender": "male",
-    "genderProb": 0.98,
+    "genderProb": 0.991,
     "ageBuckets": [
-      45,
-      57,
-      71
+      47
     ],
-    "baseAge": 57
+    "baseAge": 47
   },
   {
     "id": "tilda-swinton",
     "name": "Tilda Swinton",
     "path": "/celebs/thumbs/96/tilda-swinton.webp",
     "path192": "/celebs/thumbs/192/tilda-swinton.webp",
-    "fallbackPath": "/celebs/thumbs/96/tilda-swinton.webp",
+    "fallbackPath": "/celebs/tilda-swinton.jpg",
     "gender": "female",
-    "genderProb": 0.98,
+    "genderProb": 0.921,
     "ageBuckets": [
-      51,
-      63,
-      75
+      39
     ],
-    "baseAge": 63
+    "baseAge": 39
   },
   {
     "id": "uma-thurman",
@@ -4660,15 +4641,13 @@
     "name": "Son Ye-jin",
     "path": "/celebs/thumbs/96/son-ye-jin.webp",
     "path192": "/celebs/thumbs/192/son-ye-jin.webp",
-    "fallbackPath": "/celebs/thumbs/96/son-ye-jin.webp",
+    "fallbackPath": "/celebs/son-ye-jin.jpg",
     "gender": "female",
-    "genderProb": 0.98,
+    "genderProb": 0.949,
     "ageBuckets": [
-      30,
-      42,
-      56
+      24
     ],
-    "baseAge": 42
+    "baseAge": 24
   },
   {
     "id": "iu",

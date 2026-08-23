@@ -45,7 +45,7 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
 > **Honesty note (2026-08, rev 3).** The tier-probe numbers above overlap the enrollment
 > imagery — they measure pipeline sanity and are an upper bound, not user-facing accuracy.
 > The honest headline comes from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded,
-> full 512-d geometry): **73.9% Rank-1 / MRR 0.762 over 272 clean probes**
+> full 512-d geometry): **75.9% Rank-1 / MRR 0.779 over 270 clean probes**
 > (`reports/held-out-v2-baseline.json`), using photos that match no gallery artifact by path
 > or content hash, encoded through the same SCRFD → align → EdgeFace-512d path the browser
 > runs. Two earlier internal claims were invalidated on the way here: ~86% "held-out"

@@ -11,6 +11,11 @@
    "imagePath": "/celebs/aishwarya-rai.jpg"
   },
   {
+   "id": "al-pacino",
+   "name": "Al Pacino",
+   "imagePath": "/celebs/al-pacino.jpg"
+  },
+  {
    "id": "anthony-hopkins",
    "name": "Anthony Hopkins",
    "imagePath": "/celebs/anthony-hopkins.jpg"
@@ -19,16 +24,6 @@
    "id": "anya-taylor-joy",
    "name": "Anya Taylor Joy",
    "imagePath": "/celebs/anya-taylor-joy.jpg"
-  },
-  {
-   "id": "bella-hadid",
-   "name": "Bella Hadid",
-   "imagePath": "/celebs/bella-hadid.jpg"
-  },
-  {
-   "id": "benedict-cumberbatch",
-   "name": "Benedict Cumberbatch",
-   "imagePath": "/celebs/benedict-cumberbatch.jpg"
   },
   {
    "id": "bill-skarsgard",
@@ -46,14 +41,24 @@
    "imagePath": "/celebs/cardi-b.jpg"
   },
   {
+   "id": "chris-hemsworth",
+   "name": "Chris Hemsworth",
+   "imagePath": "/celebs/chris-hemsworth.jpg"
+  },
+  {
+   "id": "daniel-kaluuya",
+   "name": "Daniel Kaluuya",
+   "imagePath": "/celebs/daniel-kaluuya.jpg"
+  },
+  {
    "id": "dominic-sessa",
    "name": "Dominic Sessa",
    "imagePath": "/celebs/dominic-sessa.jpg"
   },
   {
-   "id": "emily-blunt",
-   "name": "Emily Blunt",
-   "imagePath": "/celebs/emily-blunt.jpg"
+   "id": "eddie-redmayne",
+   "name": "Eddie Redmayne",
+   "imagePath": "/celebs/eddie-redmayne.jpg"
   },
   {
    "id": "eva-longoria",
@@ -61,34 +66,29 @@
    "imagePath": "/celebs/eva-longoria.jpg"
   },
   {
+   "id": "fantasia-barrino",
+   "name": "Fantasia Barrino",
+   "imagePath": "/celebs/fantasia-barrino.jpg"
+  },
+  {
+   "id": "gemma-chan",
+   "name": "Gemma Chan",
+   "imagePath": "/celebs/gemma-chan.jpg"
+  },
+  {
+   "id": "glen-powell",
+   "name": "Glen Powell",
+   "imagePath": "/celebs/glen-powell.jpg"
+  },
+  {
    "id": "gong-li",
    "name": "Gong Li",
    "imagePath": "/celebs/gong-li.jpg"
   },
   {
-   "id": "gwenyth-paltrow",
-   "name": "Gwenyth Paltrow",
-   "imagePath": "/celebs/gwenyth-paltrow.jpg"
-  },
-  {
-   "id": "halle-berry",
-   "name": "Halle Berry",
-   "imagePath": "/celebs/halle-berry.jpg"
-  },
-  {
-   "id": "harry-styles",
-   "name": "Harry Styles",
-   "imagePath": "/celebs/harry-styles.jpg"
-  },
-  {
-   "id": "hugh-jackman",
-   "name": "Hugh Jackman",
-   "imagePath": "/celebs/hugh-jackman.jpg"
-  },
-  {
-   "id": "jackie-chan",
-   "name": "Jackie Chan",
-   "imagePath": "/celebs/jackie-chan.jpg"
+   "id": "heidi-klum",
+   "name": "Heidi Klum",
+   "imagePath": "/celebs/heidi-klum.jpg"
   },
   {
    "id": "jamie-dornan",
@@ -96,34 +96,54 @@
    "imagePath": "/celebs/jamie-dornan.jpg"
   },
   {
+   "id": "jeremy-strong",
+   "name": "Jeremy Strong",
+   "imagePath": "/celebs/jeremy-strong.jpg"
+  },
+  {
    "id": "jessica-alba",
    "name": "Jessica Alba",
    "imagePath": "/celebs/jessica-alba.jpg"
   },
   {
-   "id": "jonathan-bailey",
-   "name": "Jonathan Bailey",
-   "imagePath": "/celebs/jonathan-bailey.jpg"
+   "id": "karol-g",
+   "name": "Karol G",
+   "imagePath": "/celebs/karol-g.jpg"
   },
   {
-   "id": "kendrick-lamar",
-   "name": "Kendrick Lamar",
-   "imagePath": "/celebs/kendrick-lamar.jpg"
+   "id": "lana-condor",
+   "name": "Lana Condor",
+   "imagePath": "/celebs/lana-condor.jpg"
   },
   {
-   "id": "kerry-washington",
-   "name": "Kerry Washington",
-   "imagePath": "/celebs/kerry-washington.jpg"
+   "id": "lebron-james",
+   "name": "Lebron James",
+   "imagePath": "/celebs/lebron-james.jpg"
   },
   {
-   "id": "lee-min-ho",
-   "name": "Lee Min Ho",
-   "imagePath": "/celebs/lee-min-ho.jpg"
+   "id": "leonardo-dicaprio",
+   "name": "Leonardo Dicaprio",
+   "imagePath": "/celebs/leonardo-dicaprio.jpg"
   },
   {
-   "id": "lizzo",
-   "name": "Lizzo",
-   "imagePath": "/celebs/lizzo.jpg"
+   "id": "lionel-messi",
+   "name": "Lionel Messi",
+   "imagePath": "/celebs/lionel-messi.jpg"
+  },
+  {
+   "id": "lisa-blackpink",
+   "name": "Lisa Blackpink",
+   "imagePath": "/celebs/lisa-blackpink.jpg"
+  },
+  {
+   "id": "luke-hemsworth",
+   "name": "Luke Hemsworth",
+   "imagePath": "/celebs/luke-hemsworth.jpg"
+  },
+  {
+   "id": "mark-zuckerberg",
+   "name": "Mark Zuckerberg",
+   "imagePath": "/celebs/mark-zuckerberg.jpg"
   },
   {
    "id": "martin-freeman",
@@ -131,39 +151,44 @@
    "imagePath": "/celebs/martin-freeman.jpg"
   },
   {
-   "id": "matt-damon",
-   "name": "Matt Damon",
-   "imagePath": "/celebs/matt-damon.jpg"
+   "id": "matt-bomer",
+   "name": "Matt Bomer",
+   "imagePath": "/celebs/matt-bomer.jpg"
   },
   {
-   "id": "natalie-portman",
-   "name": "Natalie Portman",
-   "imagePath": "/celebs/natalie-portman.jpg"
+   "id": "paul-mescal",
+   "name": "Paul Mescal",
+   "imagePath": "/celebs/paul-mescal.jpg"
   },
   {
-   "id": "neymar",
-   "name": "Neymar",
-   "imagePath": "/celebs/neymar.jpg"
+   "id": "pierce-brosnan",
+   "name": "Pierce Brosnan",
+   "imagePath": "/celebs/pierce-brosnan.jpg"
   },
   {
-   "id": "paul-wesley",
-   "name": "Paul Wesley",
-   "imagePath": "/celebs/paul-wesley.jpg"
+   "id": "priyanka-chopra",
+   "name": "Priyanka Chopra",
+   "imagePath": "/celebs/priyanka-chopra.jpg"
   },
   {
-   "id": "post-malone",
-   "name": "Post Malone",
-   "imagePath": "/celebs/post-malone.jpg"
+   "id": "ranbir-kapoor",
+   "name": "Ranbir Kapoor",
+   "imagePath": "/celebs/ranbir-kapoor.jpg"
   },
   {
-   "id": "prince-harry",
-   "name": "Prince Harry",
-   "imagePath": "/celebs/prince-harry.jpg"
+   "id": "reesewitherspoon",
+   "name": "Reesewitherspoon",
+   "imagePath": "/celebs/reesewitherspoon.jpg"
   },
   {
-   "id": "rebecca-ferguson",
-   "name": "Rebecca Ferguson",
-   "imagePath": "/celebs/rebecca-ferguson.jpg"
+   "id": "robert-de-niro",
+   "name": "Robert De Niro",
+   "imagePath": "/celebs/robert-de-niro.jpg"
+  },
+  {
+   "id": "robert-downey-jr",
+   "name": "Robert Downey Jr",
+   "imagePath": "/celebs/robert-downey-jr.jpg"
   },
   {
    "id": "robert-pattinson",
@@ -171,39 +196,19 @@
    "imagePath": "/celebs/robert-pattinson.jpg"
   },
   {
-   "id": "ryan-gosling",
-   "name": "Ryan Gosling",
-   "imagePath": "/celebs/ryan-gosling.jpg"
+   "id": "roger-federer",
+   "name": "Roger Federer",
+   "imagePath": "/celebs/roger-federer.jpg"
   },
   {
-   "id": "salma-hayek",
-   "name": "Salma Hayek",
-   "imagePath": "/celebs/salma-hayek.jpg"
+   "id": "ryan-reynolds",
+   "name": "Ryan Reynolds",
+   "imagePath": "/celebs/ryan-reynolds.jpg"
   },
   {
    "id": "sam-claflin",
    "name": "Sam Claflin",
    "imagePath": "/celebs/sam-claflin.jpg"
-  },
-  {
-   "id": "sandra-oh",
-   "name": "Sandra Oh",
-   "imagePath": "/celebs/sandra-oh.jpg"
-  },
-  {
-   "id": "saoirse-ronan",
-   "name": "Saoirse Ronan",
-   "imagePath": "/celebs/saoirse-ronan.jpg"
-  },
-  {
-   "id": "sarah-snook",
-   "name": "Sarah Snook",
-   "imagePath": "/celebs/sarah-snook.jpg"
-  },
-  {
-   "id": "scarlett-johansson",
-   "name": "Scarlett Johansson",
-   "imagePath": "/celebs/scarlett-johansson.jpg"
   },
   {
    "id": "son-ye-jin",
@@ -221,9 +226,9 @@
    "imagePath": "/celebs/tilda-swinton.jpg"
   },
   {
-   "id": "travis-scott",
-   "name": "Travis Scott",
-   "imagePath": "/celebs/travis-scott.jpg"
+   "id": "trevor-noah",
+   "name": "Trevor Noah",
+   "imagePath": "/celebs/trevor-noah.jpg"
   },
   {
    "id": "will-smith",
@@ -231,14 +236,9 @@
    "imagePath": "/celebs/will-smith.jpg"
   },
   {
-   "id": "zayn-malik",
-   "name": "Zayn Malik",
-   "imagePath": "/celebs/zayn-malik.jpg"
-  },
-  {
-   "id": "zhang-ziyi",
-   "name": "Zhang Ziyi",
-   "imagePath": "/celebs/zhang-ziyi.jpg"
+   "id": "zendaya",
+   "name": "Zendaya",
+   "imagePath": "/celebs/zendaya.jpg"
   }
  ]
 }
