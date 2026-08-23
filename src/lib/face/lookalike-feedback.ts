@@ -3,7 +3,16 @@
  * Client-only; no server round-trip in v1.
  */
 
-export type LookalikeFeedbackVerdict = "not_really" | "better_match";
+import type { VerdictTier } from "./verdict.ts";
+
+export type LookalikeFeedbackVerdict = "not_really" | "better_match" | "fair_nearest";
+
+export interface LookalikeFeedbackCopy {
+  prompt: string;
+  negativeLabel: string;
+  /** Distant Twin only — confirm the nearest face is at least plausible. */
+  fairNearestLabel: string | null;
+}
 
 export interface LookalikeFeedbackEvent {
   id: string;
@@ -66,4 +75,70 @@ export function hashProbeKey(input: string): string {
     h = Math.imul(h, 16777619);
   }
   return (h >>> 0).toString(16);
+}
+
+function feedbackTier(verdict?: VerdictTier): VerdictTier {
+  return verdict ?? "soft-match";
+}
+
+const FEEDBACK_COPY: Record<VerdictTier, LookalikeFeedbackCopy> = {
+  "distant-twin": {
+    prompt: "Was the nearest face at least plausible?",
+    negativeLabel: "Wrong nearest",
+    fairNearestLabel: "Fair nearest",
+  },
+  "dead-ringer": {
+    prompt: "Was this a good look-alike?",
+    negativeLabel: "Not really",
+    fairNearestLabel: null,
+  },
+  "strong-resemblance": {
+    prompt: "Was this a good look-alike?",
+    negativeLabel: "Not really",
+    fairNearestLabel: null,
+  },
+  "soft-match": {
+    prompt: "Was this a good look-alike?",
+    negativeLabel: "Not really",
+    fairNearestLabel: null,
+  },
+};
+
+/** Prompt + buttons. Distant Twin asks about nearest-neighbor honesty, not look-alikes.
+ * A Record over the tier union keeps this exhaustive without relying on
+ * switch-narrowing, which failed under the merged toolchain. */
+export function lookalikeFeedbackCopy(verdict?: VerdictTier): LookalikeFeedbackCopy {
+  return FEEDBACK_COPY[feedbackTier(verdict)];
+}
+
+export function lookalikeFeedbackThanks(
+  verdict: VerdictTier | undefined,
+  sent: LookalikeFeedbackVerdict,
+): string {
+  if (feedbackTier(verdict) === "distant-twin") {
+    switch (sent) {
+      case "fair_nearest":
+        return "Thanks — noted as a fair nearest neighbor.";
+      case "not_really":
+        return "Thanks — marked as the wrong nearest face.";
+      case "better_match":
+        return "Thanks — noted a closer nearest neighbor.";
+      default: {
+        const _exhaustive: never = sent;
+        return _exhaustive;
+      }
+    }
+  }
+  switch (sent) {
+    case "better_match":
+      return "Thanks — that helps tune future look-alikes (better match saved).";
+    case "not_really":
+      return "Thanks — that helps tune future look-alikes (hard negative saved).";
+    case "fair_nearest":
+      return "Thanks — that helps tune future look-alikes.";
+    default: {
+      const _exhaustive: never = sent;
+      return _exhaustive;
+    }
+  }
 }

@@ -9,8 +9,9 @@ on-device matches against a **1,000-celebrity gallery** (plus extra templates me
 - **On-device** face detection + 512-d EdgeFace embeddings via ONNX Runtime Web — no photo
   ever leaves your browser
 - Auto face crop for small faces / gym selfies, CLAHE contrast boost for hard lighting
-- Honest confidence scoring: distance → percent with margin-aware open-set gating; weak matches
-  are labeled "nearest neighbor", not sold as look-alikes
+- Honest confidence scoring: distance → percent with margin-aware open-set gating and named
+  verdict tiers; weak matches are labeled "nearest neighbor" or "Distant Twin", never sold as
+  look-alikes
 - Mobile-first UI
 
 ## Accuracy, honestly

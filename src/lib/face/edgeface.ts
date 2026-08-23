@@ -1,4 +1,5 @@
 import * as ort from "onnxruntime-web";
+import { computeCentroidEmbedding } from "./gallery-dedupe.ts";
 import { OnnxSessionManager, runInference } from "./onnx-engine.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
 
@@ -7,12 +8,51 @@ export interface EdgeFaceOptions {
   targetSize?: 112 | 160;
   mean?: [number, number, number];
   std?: [number, number, number];
+  /** Run query TTA even on wasm/cpu (tests / explicit override). */
+  forceTta?: boolean;
 }
 
 export interface EdgeFaceResult {
   embedding: Float32Array; // 256-d L2-normalized Float32 vector
   latencyMs: number;
   providerUsed: string;
+}
+
+export interface EdgeFaceTtaResult extends EdgeFaceResult {
+  ttaApplied: boolean;
+  ttaViews: number;
+}
+
+export type QueryTtaView =
+  | { kind: "identity" }
+  | { kind: "rotate"; degrees: number }
+  | { kind: "scale"; factor: number }
+  | { kind: "hflip" };
+
+/** Identity + ±4° + 0.95/1.05 scale + horizontal flip. */
+export const QUERY_TTA_VIEWS: readonly QueryTtaView[] = [
+  { kind: "identity" },
+  { kind: "rotate", degrees: 4 },
+  { kind: "rotate", degrees: -4 },
+  { kind: "scale", factor: 0.95 },
+  { kind: "scale", factor: 1.05 },
+  { kind: "hflip" },
+];
+
+/**
+ * Query-side TTA is GPU-only. WASM/CPU already spend ~21s on detection;
+ * extra EdgeFace views would stall the snap.
+ */
+export function shouldApplyQueryTta(opts: {
+  providerUsed?: string;
+  force?: boolean;
+} = {}): boolean {
+  if (opts.force === true) return true;
+  if (opts.force === false) return false;
+  const provider = (opts.providerUsed ?? "").toLowerCase();
+  if (!provider) return false;
+  if (provider.includes("wasm") || provider.includes("cpu")) return false;
+  return provider.includes("webgpu") || provider.includes("cuda") || provider.includes("dml");
 }
 
 /**
@@ -175,4 +215,161 @@ export async function extractEdgeFaceEmbedding(
     latencyMs: totalLatencyMs > 0 ? totalLatencyMs : Math.round(latencyMs),
     providerUsed,
   };
+}
+
+export function resolveEdgeFaceInputTensor(
+  source: Float32Array | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement | OffscreenCanvas,
+  landmarks?: Float32Array | number[][],
+  targetSize: 112 | 160 = 112,
+): Float32Array {
+  if (source instanceof Float32Array) return source;
+  if (landmarks) return align5PointSimilarityTensor(source, landmarks, targetSize);
+  return extractPlanarTensorFromCanvas(source, targetSize);
+}
+
+/** Horizontal flip of a planar NCHW [1,3,S,S] tensor. */
+export function hflipAlignedNchw(tensor: Float32Array, size = 112): Float32Array {
+  const out = new Float32Array(tensor.length);
+  const plane = size * size;
+  for (let c = 0; c < 3; c++) {
+    const base = c * plane;
+    for (let y = 0; y < size; y++) {
+      const row = base + y * size;
+      for (let x = 0; x < size; x++) {
+        out[row + (size - 1 - x)] = tensor[row + x] ?? 0;
+      }
+    }
+  }
+  return out;
+}
+
+export function rotateAlignedNchw(
+  tensor: Float32Array,
+  degrees: number,
+  size = 112,
+): Float32Array {
+  const rad = (degrees * Math.PI) / 180;
+  const cos = Math.cos(-rad);
+  const sin = Math.sin(-rad);
+  return warpAlignedNchw(tensor, size, (x, y) => {
+    const cx = (size - 1) / 2;
+    const cy = (size - 1) / 2;
+    const dx = x - cx;
+    const dy = y - cy;
+    return [cos * dx - sin * dy + cx, sin * dx + cos * dy + cy];
+  });
+}
+
+export function scaleAlignedNchw(
+  tensor: Float32Array,
+  factor: number,
+  size = 112,
+): Float32Array {
+  const safe = factor === 0 || !Number.isFinite(factor) ? 1 : factor;
+  return warpAlignedNchw(tensor, size, (x, y) => {
+    const cx = (size - 1) / 2;
+    const cy = (size - 1) / 2;
+    return [(x - cx) / safe + cx, (y - cy) / safe + cy];
+  });
+}
+
+export function applyQueryTtaView(
+  tensor: Float32Array,
+  view: QueryTtaView,
+  size = 112,
+): Float32Array {
+  switch (view.kind) {
+    case "identity":
+      return tensor;
+    case "rotate":
+      return rotateAlignedNchw(tensor, view.degrees, size);
+    case "scale":
+      return scaleAlignedNchw(tensor, view.factor, size);
+    case "hflip":
+      return hflipAlignedNchw(tensor, size);
+    default: {
+      const _never: never = view;
+      return _never;
+    }
+  }
+}
+
+/**
+ * EdgeFace embed with optional query TTA on the aligned 112 tensor.
+ * Identity runs first so the EP can be probed; wasm/cpu skip the extra views.
+ */
+export async function extractEdgeFaceEmbeddingWithTta(
+  source: Float32Array | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement | OffscreenCanvas,
+  landmarks?: Float32Array | number[][],
+  options: EdgeFaceOptions = {},
+): Promise<EdgeFaceTtaResult> {
+  const targetSize = options.targetSize ?? 112;
+  const tensor = resolveEdgeFaceInputTensor(source, landmarks, targetSize);
+  const identity = await extractEdgeFaceEmbedding(tensor, undefined, options);
+  if (!shouldApplyQueryTta({ providerUsed: identity.providerUsed, force: options.forceTta })) {
+    return { ...identity, ttaApplied: false, ttaViews: 1 };
+  }
+
+  const embeddings: Float32Array[] = [identity.embedding];
+  let latencyMs = identity.latencyMs;
+  let providerUsed = identity.providerUsed;
+
+  for (const view of QUERY_TTA_VIEWS) {
+    if (view.kind === "identity") continue;
+    const warped = applyQueryTtaView(tensor, view, targetSize);
+    const next = await extractEdgeFaceEmbedding(warped, undefined, options);
+    embeddings.push(next.embedding);
+    latencyMs += next.latencyMs;
+    providerUsed = next.providerUsed;
+  }
+
+  return {
+    embedding: computeCentroidEmbedding(embeddings),
+    latencyMs,
+    providerUsed,
+    ttaApplied: true,
+    ttaViews: embeddings.length,
+  };
+}
+
+function warpAlignedNchw(
+  tensor: Float32Array,
+  size: number,
+  sourceOf: (x: number, y: number) => [number, number],
+): Float32Array {
+  const out = new Float32Array(tensor.length);
+  const plane = size * size;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const [sx, sy] = sourceOf(x, y);
+      for (let c = 0; c < 3; c++) {
+        out[c * plane + y * size + x] = sampleNchwBilinear(tensor, c, sy, sx, size);
+      }
+    }
+  }
+  return out;
+}
+
+function sampleNchwBilinear(
+  tensor: Float32Array,
+  channel: number,
+  y: number,
+  x: number,
+  size: number,
+): number {
+  if (x < 0 || y < 0 || x > size - 1 || y > size - 1) return 0;
+  const x0 = Math.floor(x);
+  const y0 = Math.floor(y);
+  const x1 = Math.min(size - 1, x0 + 1);
+  const y1 = Math.min(size - 1, y0 + 1);
+  const fx = x - x0;
+  const fy = y - y0;
+  const plane = channel * size * size;
+  const v00 = tensor[plane + y0 * size + x0] ?? 0;
+  const v10 = tensor[plane + y0 * size + x1] ?? 0;
+  const v01 = tensor[plane + y1 * size + x0] ?? 0;
+  const v11 = tensor[plane + y1 * size + x1] ?? 0;
+  const v0 = v00 * (1 - fx) + v10 * fx;
+  const v1 = v01 * (1 - fx) + v11 * fx;
+  return v0 * (1 - fy) + v1 * fy;
 }

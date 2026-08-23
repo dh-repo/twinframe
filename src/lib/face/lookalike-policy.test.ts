@@ -4,6 +4,9 @@ import {
   distanceLookalikeGate,
   hardQualityRefuseGate,
   LOOKALIKE_MAX_ADJUSTED_DISTANCE,
+  OPEN_SET_MISS_GALLERY,
+  OPEN_SET_MISS_PACK,
+  openSetMissMessage,
   poseRefuseGate,
   softQualityBlockGate,
 } from "./lookalike-policy.ts";
@@ -56,14 +59,19 @@ describe("lookalike-policy gates", () => {
     );
   });
 
-  it("distanceLookalikeGate refuses far neighbors", () => {
-    assert.equal(distanceLookalikeGate(0.45, 76).pass, true);
+  it("distanceLookalikeGate refuses only genuinely far neighbors", () => {
+    assert.equal(distanceLookalikeGate(0.45).pass, true);
+    assert.equal(distanceLookalikeGate(0.7).pass, true);
     assert.equal(
-      distanceLookalikeGate(LOOKALIKE_MAX_ADJUSTED_DISTANCE + 0.01, 20).pass,
+      distanceLookalikeGate(LOOKALIKE_MAX_ADJUSTED_DISTANCE + 0.01).pass,
       false,
     );
-    // Percent floor refuses even when distance squeaks under the max
-    assert.equal(distanceLookalikeGate(0.7, 30).pass, false);
+    // Weak percents are Distant Twin cards, not an empty screen.
+    assert.equal(distanceLookalikeGate(0.65).pass, true);
+    assert.equal(distanceLookalikeGate(0.8).message, OPEN_SET_MISS_GALLERY);
+    assert.equal(distanceLookalikeGate(0.8, true).message, OPEN_SET_MISS_PACK);
+    assert.equal(openSetMissMessage(false), OPEN_SET_MISS_GALLERY);
+    assert.equal(openSetMissMessage(true), OPEN_SET_MISS_PACK);
   });
 });
 

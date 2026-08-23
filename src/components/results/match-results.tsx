@@ -18,6 +18,8 @@ interface MatchResultsProps {
 export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps) {
   const [selectedMatch, setSelectedMatch] = useState<CelebrityMatch | null>(null);
   const [genderFilter, setGenderFilter] = useState<"all" | "male" | "female">(() => {
+    // Distant twins are a nearest neighbor, not a gendered look-alike list.
+    if (result.matches[0]?.verdict === "distant-twin") return "all";
     const g = result.estimatedGender;
     return g === "male" || g === "female" ? g : "all";
   });
@@ -36,7 +38,11 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
   const rest = filteredMatches.filter((m) => m.celebrityId !== activeTop?.celebrityId);
   const showContenders =
     Boolean(activeTop) &&
-    shouldShowContenders(activeTop.matchPercent, activeTop.rankMargin);
+    shouldShowContenders(
+      activeTop.matchPercent,
+      activeTop.rankMargin,
+      activeTop.verdict,
+    );
   const listedRest = showContenders ? rest : [];
   const youUrl = result.facePreviewUrl || previewUrl;
 
@@ -139,6 +145,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         topMatch={activeTop}
         youUrl={youUrl}
         estimatedAge={result.estimatedAge}
+        userFeatures={result.features}
       />
 
       {/* Contenders: hide the crowded pack when the top is only a nearest neighbor */}
@@ -152,7 +159,12 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-[11px] font-mono font-semibold uppercase tracking-[0.14em] text-fg-subtle">
-              {restListHeading(activeTop.matchPercent, activeTop.rankMargin)} — tap to inspect
+              {restListHeading(
+                activeTop.matchPercent,
+                activeTop.rankMargin,
+                activeTop.verdict,
+              )}{" "}
+              — tap to inspect
             </h3>
             <span className="text-[10px] font-mono text-match">{listedRest.length} contenders</span>
           </div>

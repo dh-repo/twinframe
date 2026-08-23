@@ -1,10 +1,63 @@
-import { honestyBand, honestyShareLabel } from "./honesty";
+import { verdictLabel, type VerdictTier } from "../face/verdict.ts";
+import {
+  resolveShareVerdict,
+  shareCardBlurb,
+  sharePairGlyph,
+  sharePercentCaption,
+} from "./share-copy.ts";
+
+/** Square Instagram / meme card. Preview DOM is 1:1 to match. */
+export const SHARE_CARD_WIDTH = 1080;
+export const SHARE_CARD_HEIGHT = 1080;
 
 export interface ShareImageInput {
   youUrl: string | null;
   celebrityName: string;
   celebrityPhotoUrl?: string | null;
   matchPercent: number;
+  verdict?: VerdictTier;
+  blurb?: string;
+  adjustedDistance?: number;
+  rankMargin?: number;
+}
+
+export interface VerdictStampStyle {
+  fill: string;
+  wash: string;
+  glow: string;
+}
+
+export function verdictStampStyle(tier: VerdictTier): VerdictStampStyle {
+  switch (tier) {
+    case "dead-ringer":
+      return {
+        fill: "#f5c14a",
+        wash: "rgba(245, 193, 74, 0.16)",
+        glow: "rgba(245, 193, 74, 0.30)",
+      };
+    case "strong-resemblance":
+      return {
+        fill: "#7dd3a0",
+        wash: "rgba(125, 211, 160, 0.16)",
+        glow: "rgba(125, 211, 160, 0.28)",
+      };
+    case "soft-match":
+      return {
+        fill: "#818cf8",
+        wash: "rgba(129, 140, 248, 0.16)",
+        glow: "rgba(129, 140, 248, 0.24)",
+      };
+    case "distant-twin":
+      return {
+        fill: "#a1a1aa",
+        wash: "rgba(161, 161, 170, 0.14)",
+        glow: "rgba(161, 161, 170, 0.18)",
+      };
+    default: {
+      const _exhaustive: never = tier;
+      return _exhaustive;
+    }
+  }
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -35,6 +88,7 @@ function roundRect(
   ctx.closePath();
 }
 
+/** Object-fit: cover, object-position: top — faces sit in the upper half of portraits. */
 function drawCover(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
@@ -49,7 +103,7 @@ function drawCover(
   const dw = iw * scale;
   const dh = ih * scale;
   const dx = x + (w - dw) / 2;
-  const dy = y + (h - dh) / 2;
+  const dy = y;
   ctx.save();
   ctx.beginPath();
   roundRect(ctx, x, y, w, h, 36);
@@ -78,46 +132,98 @@ function drawPlaceholder(
   ctx.restore();
 }
 
-/** Compose a 1080×1350 story card. Photos stay in-memory — caller decides to share/download. */
+function fitOneLine(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+): string {
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  const ellipsis = "…";
+  let lo = 0;
+  let hi = text.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    const candidate = `${text.slice(0, mid)}${ellipsis}`;
+    if (ctx.measureText(candidate).width <= maxWidth) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo === 0 ? ellipsis : `${text.slice(0, lo)}${ellipsis}`;
+}
+
+function drawVerdictStamp(
+  ctx: CanvasRenderingContext2D,
+  label: string,
+  cx: number,
+  cy: number,
+  style: VerdictStampStyle,
+) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate((-7 * Math.PI) / 180);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const fontSize = label.length > 16 ? 52 : 64;
+  ctx.font = `900 ${fontSize}px system-ui, sans-serif`;
+  const metrics = ctx.measureText(label);
+  const padX = 36;
+  const padY = 20;
+  const w = metrics.width + padX * 2;
+  const h = fontSize + padY * 2;
+  ctx.shadowColor = style.glow;
+  ctx.shadowBlur = 24;
+  ctx.fillStyle = style.wash;
+  roundRect(ctx, -w / 2, -h / 2, w, h, 14);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = style.fill;
+  ctx.lineWidth = 6;
+  ctx.stroke();
+  ctx.fillStyle = style.fill;
+  ctx.fillText(label, 0, 2);
+  ctx.restore();
+}
+
+/** Compose a 1080×1080 meme card. Photos stay in-memory — caller decides to share/download. */
 export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
-  const width = 1080;
-  const height = 1350;
+  const width = SHARE_CARD_WIDTH;
+  const height = SHARE_CARD_HEIGHT;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas unavailable");
 
-  const band = honestyBand(input.matchPercent);
+  const verdict = resolveShareVerdict(input);
+  const style = verdictStampStyle(verdict);
+  const blurb = shareCardBlurb(input.blurb, verdict);
   const pct = Math.round(input.matchPercent);
 
-  ctx.fillStyle = "#090a0f";
+  const grad = ctx.createLinearGradient(0, 0, 0, height);
+  grad.addColorStop(0, "#0e1017");
+  grad.addColorStop(1, "#07080b");
+  ctx.fillStyle = grad;
   ctx.fillRect(0, 0, width, height);
-  const glow = ctx.createRadialGradient(width / 2, 280, 40, width / 2, 280, 520);
-  glow.addColorStop(0, "rgba(125, 211, 160, 0.16)");
-  glow.addColorStop(1, "rgba(9, 10, 15, 0)");
+
+  const glow = ctx.createRadialGradient(width / 2, 360, 40, width / 2, 360, 520);
+  glow.addColorStop(0, style.glow);
+  glow.addColorStop(1, "rgba(7, 8, 11, 0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, width, height);
 
   ctx.fillStyle = "#f4f4f5";
-  ctx.font = "700 36px system-ui, sans-serif";
+  ctx.font = "700 40px system-ui, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("Twinframe", width / 2, 88);
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText("TWINFRAME", width / 2, 78);
 
-  ctx.fillStyle = "#7dd3a0";
-  ctx.font = "600 22px ui-monospace, SF Mono, monospace";
-  ctx.fillText(honestyShareLabel(band).toUpperCase(), width / 2, 132);
-
-  const cardW = 380;
-  const cardH = 420;
+  const cardW = 400;
+  const cardH = 400;
   const gap = 48;
   const pairW = cardW * 2 + gap;
   const left = (width - pairW) / 2;
-  const top = 200;
+  const top = 130;
 
-  const you = input.youUrl
-    ? await loadImage(input.youUrl).catch(() => null)
-    : null;
+  const you = input.youUrl ? await loadImage(input.youUrl).catch(() => null) : null;
   const celeb = input.celebrityPhotoUrl
     ? await loadImage(input.celebrityPhotoUrl).catch(() => null)
     : null;
@@ -134,6 +240,7 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
   ctx.fillStyle = "#a1a1aa";
   ctx.font = "600 18px system-ui, sans-serif";
   ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
   ctx.fillText("YOU", left + 32, top + cardH - 30);
 
   ctx.fillStyle = "rgba(9,10,15,0.72)";
@@ -143,39 +250,49 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
   ctx.font = "600 18px system-ui, sans-serif";
   ctx.textAlign = "right";
   const short = input.celebrityName.split(" ")[0] ?? input.celebrityName;
-  ctx.fillText(short.toUpperCase(), left + cardW + gap + cardW - 24, top + cardH - 30);
+  ctx.fillText(
+    short.toUpperCase(),
+    left + cardW + gap + cardW - 24,
+    top + cardH - 30,
+  );
 
-  ctx.fillStyle = "#7dd3a0";
+  const glyph = sharePairGlyph(verdict);
   ctx.beginPath();
-  ctx.arc(width / 2, top + cardH / 2, 28, 0, Math.PI * 2);
-  ctx.fillStyle = "#121214";
+  ctx.arc(width / 2, top + cardH / 2, 40, 0, Math.PI * 2);
+  ctx.fillStyle = "#090a0f";
   ctx.fill();
-  ctx.strokeStyle = "rgba(125, 211, 160, 0.5)";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = style.fill;
+  ctx.lineWidth = 4;
   ctx.stroke();
-  ctx.fillStyle = "#7dd3a0";
-  ctx.font = "700 22px system-ui, sans-serif";
+  ctx.fillStyle = style.fill;
+  ctx.font = glyph.length > 1 ? "800 16px system-ui, sans-serif" : "700 32px system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("≈", width / 2, top + cardH / 2);
+  ctx.fillText(glyph, width / 2, top + cardH / 2);
 
   ctx.textBaseline = "alphabetic";
-  ctx.fillStyle = "#f4f4f5";
-  ctx.font = "700 56px system-ui, sans-serif";
+  ctx.fillStyle = style.fill;
+  ctx.font = "800 168px system-ui, sans-serif";
+  ctx.fillText(`${pct}%`, width / 2, 680);
+  ctx.font = "700 22px system-ui, sans-serif";
+  ctx.fillStyle = "rgba(244, 244, 245, 0.55)";
+  ctx.fillText(sharePercentCaption(verdict), width / 2, 718);
+
+  drawVerdictStamp(ctx, verdictLabel(verdict).toUpperCase(), width / 2, 770, style);
+
+  ctx.fillStyle = "rgba(244, 244, 245, 0.72)";
+  ctx.font = "500 26px system-ui, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(input.celebrityName, width / 2, 760);
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText(fitOneLine(ctx, blurb, width - 120), width / 2, 870);
 
-  ctx.fillStyle = "#7dd3a0";
-  ctx.font = "800 120px system-ui, sans-serif";
-  ctx.fillText(`${pct}%`, width / 2, 900);
+  ctx.fillStyle = "#f4f4f5";
+  ctx.font = "700 44px system-ui, sans-serif";
+  ctx.fillText(fitOneLine(ctx, input.celebrityName, width - 120), width / 2, 930);
 
-  ctx.fillStyle = "#71717a";
-  ctx.font = "600 22px ui-monospace, SF Mono, monospace";
-  ctx.fillText("FACE SIMILARITY", width / 2, 948);
-
-  ctx.fillStyle = "#52525b";
-  ctx.font = "500 22px system-ui, sans-serif";
-  ctx.fillText("On-device · Your photo never left this device", width / 2, 1260);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+  ctx.font = "500 20px ui-monospace, SF Mono, monospace";
+  ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS", width / 2, 1024);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

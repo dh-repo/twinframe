@@ -136,11 +136,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
   } catch {}
 }
 
-/** Gallery cache-busting version — bump when the binary gallery is re-enrolled. */
-// Bump on EVERY rewrite of the shipped gallery artifacts — this key gates the
-// IndexedDB short-circuit and the force-cache URL. Skipping it pins returning
-// visitors to the stale pre-surgery gallery indefinitely.
-const GALLERY_VERSION = "5.5.0";
+/** Gallery cache-busting version — bump when the binary gallery, its extra
+ * templates, or catalog metadata change. This key gates the IndexedDB
+ * short-circuit and the templates fetch URL below; skipping the bump pins
+ * returning visitors to stale artifacts indefinitely (cycle-22 review P1).
+ * 5.5.0: multi-shot repair + mislabeled-portrait fix + reconciled demographics.
+ */
+const GALLERY_VERSION = "5.6.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
@@ -324,7 +326,9 @@ async function mergeExtraTemplates(base: CelebrityEmbedding[]): Promise<Celebrit
     "./gallery-dedupe.ts"
   );
   try {
-    const res = await fetch("/celebs/extra-templates.json?v=3.1.0", { cache: "force-cache" });
+    const res = await fetch(`/celebs/extra-templates.json?v=${GALLERY_VERSION}`, {
+      cache: "force-cache",
+    });
     if (!res.ok) return buildMultiShotCentroidGallery(base);
     const data = (await res.json()) as ExtraTemplateFile;
     if (!data.templates?.length) return buildMultiShotCentroidGallery(base);

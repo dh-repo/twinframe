@@ -4,7 +4,7 @@
 
 1. **Detect** — SCRFD / MediaPipe crop path, FaceAPI fallback for age/gender
 2. **Align** — ExpNorm WGSL frontalization or 5-pt similarity
-3. **Describe** — EdgeFace-M 256-d embedding
+3. **Describe** — EdgeFace-S 512-d embedding
 4. **Gate** — quality / pose refuse + look-alike distance floor ([`lookalike-policy.ts`](./lookalike-policy.ts))
 5. **Rank** — cosine distance vs multi-shot prototypes (centroid + sparse extras)
 6. **Calibrate** — Hill map (`HILL_D0=0.6`, `HILL_N=4.1`) × open-set margin factor + honesty bands

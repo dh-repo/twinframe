@@ -1,0 +1,4600 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-08-18T05:39:45.386Z",
+  "engine": "EdgeFace-512 + SCRFD-2.5G (shipping AFv4 gallery + 724 extra templates)",
+  "legacyProtocol": false,
+  "signalsVersion": "1.1.0",
+  "hardProbeSignalsVersion": "1.1.0",
+  "gallerySize": 1980,
+  "galleryIdentities": 999,
+  "extraTemplatesMerged": 980,
+  "slots": "001 only",
+  "labelledImages": 742,
+  "labelledConditionCounts": {
+    "low-light": 73,
+    "glasses": 0,
+    "big-smile": 461,
+    "yaw-gt-25": 196,
+    "phone-closeup": 8
+  },
+  "conditionProvenance": {
+    "no-condition": "derived",
+    "low-light": "auto (SCRFD geometry)",
+    "glasses": "manual labels only",
+    "big-smile": "auto (low-confidence proxy)",
+    "yaw-gt-25": "auto (SCRFD geometry)",
+    "phone-closeup": "auto (SCRFD geometry)"
+  },
+  "strata": [
+    {
+      "stratum": "overall",
+      "n": 205,
+      "rank1": 169,
+      "rank5": 173,
+      "rank1Pct": 82.4,
+      "rank5Pct": 84.4,
+      "rank1Ci95": [
+        76.6,
+        87
+      ],
+      "rawRank1": 169,
+      "rawRank1Pct": 82.4,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 205,
+      "mrr": 0.8325
+    },
+    {
+      "stratum": "low-light",
+      "n": 18,
+      "rank1": 10,
+      "rank5": 11,
+      "rank1Pct": 55.6,
+      "rank5Pct": 61.1,
+      "rank1Ci95": [
+        33.7,
+        75.4
+      ],
+      "rawRank1": 10,
+      "rawRank1Pct": 55.6,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 18,
+      "mrr": 0.5741
+    },
+    {
+      "stratum": "glasses",
+      "n": 0,
+      "rank1": 0,
+      "rank5": 0,
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
+      "rawRank1": 0,
+      "rawRank1Pct": null,
+      "refused": 0,
+      "refusedPct": null,
+      "detected": 0,
+      "mrr": null
+    },
+    {
+      "stratum": "big-smile",
+      "n": 122,
+      "rank1": 111,
+      "rank5": 113,
+      "rank1Pct": 91,
+      "rank5Pct": 92.6,
+      "rank1Ci95": [
+        84.6,
+        94.9
+      ],
+      "rawRank1": 111,
+      "rawRank1Pct": 91,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 122,
+      "mrr": 0.9167
+    },
+    {
+      "stratum": "yaw-gt-25",
+      "n": 39,
+      "rank1": 29,
+      "rank5": 30,
+      "rank1Pct": 74.4,
+      "rank5Pct": 76.9,
+      "rank1Ci95": [
+        58.9,
+        85.4
+      ],
+      "rawRank1": 29,
+      "rawRank1Pct": 74.4,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 39,
+      "mrr": 0.7564
+    },
+    {
+      "stratum": "phone-closeup",
+      "n": 0,
+      "rank1": 0,
+      "rank5": 0,
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
+      "rawRank1": 0,
+      "rawRank1Pct": null,
+      "refused": 0,
+      "refusedPct": null,
+      "detected": 0,
+      "mrr": null
+    },
+    {
+      "stratum": "no-condition",
+      "n": 57,
+      "rank1": 42,
+      "rank5": 43,
+      "rank1Pct": 73.7,
+      "rank5Pct": 75.4,
+      "rank1Ci95": [
+        61,
+        83.4
+      ],
+      "rawRank1": 42,
+      "rawRank1Pct": 73.7,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 57,
+      "mrr": 0.7427
+    }
+  ],
+  "distances": {
+    "genuine (probe → own identity)": {
+      "n": 205,
+      "mean": 0.3314,
+      "p10": 0.0034,
+      "p50": 0.3209,
+      "p90": 0.8251
+    },
+    "impostor (probe → best other identity)": {
+      "n": 205,
+      "mean": 0.5852,
+      "p10": 0.5095,
+      "p50": 0.6031,
+      "p90": 0.6617
+    }
+  },
+  "hill": {
+    "current": {
+      "d0": 0.6,
+      "n": 4.1,
+      "logLoss": 0.6263
+    },
+    "fitted": {
+      "d0": 0.45,
+      "n": 2.9,
+      "logLoss": 0.5408
+    },
+    "grid": [
+      {
+        "d0": 0.55,
+        "n": 1.2,
+        "logLoss": 0.5866
+      },
+      {
+        "d0": 0.55,
+        "n": 1.4,
+        "logLoss": 0.5814
+      },
+      {
+        "d0": 0.55,
+        "n": 1.6,
+        "logLoss": 0.5773
+      },
+      {
+        "d0": 0.55,
+        "n": 2,
+        "logLoss": 0.5718
+      },
+      {
+        "d0": 0.55,
+        "n": 3,
+        "logLoss": 0.5697
+      },
+      {
+        "d0": 0.55,
+        "n": 4.1,
+        "logLoss": 0.5811
+      },
+      {
+        "d0": 0.6,
+        "n": 1.2,
+        "logLoss": 0.5972
+      },
+      {
+        "d0": 0.6,
+        "n": 1.4,
+        "logLoss": 0.5943
+      },
+      {
+        "d0": 0.6,
+        "n": 1.6,
+        "logLoss": 0.5925
+      },
+      {
+        "d0": 0.6,
+        "n": 2,
+        "logLoss": 0.5917
+      },
+      {
+        "d0": 0.6,
+        "n": 3,
+        "logLoss": 0.6018
+      },
+      {
+        "d0": 0.6,
+        "n": 4.1,
+        "logLoss": 0.6263
+      },
+      {
+        "d0": 0.65,
+        "n": 1.2,
+        "logLoss": 0.6089
+      },
+      {
+        "d0": 0.65,
+        "n": 1.4,
+        "logLoss": 0.6087
+      },
+      {
+        "d0": 0.65,
+        "n": 1.6,
+        "logLoss": 0.6098
+      },
+      {
+        "d0": 0.65,
+        "n": 2,
+        "logLoss": 0.615
+      },
+      {
+        "d0": 0.65,
+        "n": 3,
+        "logLoss": 0.6417
+      },
+      {
+        "d0": 0.65,
+        "n": 4.1,
+        "logLoss": 0.6858
+      }
+    ],
+    "reliability": {
+      "current": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 3,
+          "claimedPct": 37.2,
+          "observedPct": 0,
+          "gapPct": 37.2
+        },
+        {
+          "band": "40-60%",
+          "n": 27,
+          "claimedPct": 50.3,
+          "observedPct": 25.9,
+          "gapPct": 24.4
+        },
+        {
+          "band": "60-80%",
+          "n": 30,
+          "claimedPct": 71.8,
+          "observedPct": 76.7,
+          "gapPct": -4.9
+        },
+        {
+          "band": "80-95%",
+          "n": 50,
+          "claimedPct": 88.8,
+          "observedPct": 92,
+          "gapPct": -3.2
+        },
+        {
+          "band": "95-100%",
+          "n": 95,
+          "claimedPct": 99.3,
+          "observedPct": 97.9,
+          "gapPct": 1.4
+        }
+      ],
+      "fitted": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 36,
+          "claimedPct": 31.4,
+          "observedPct": 33.3,
+          "gapPct": -2
+        },
+        {
+          "band": "40-60%",
+          "n": 36,
+          "claimedPct": 50.6,
+          "observedPct": 83.3,
+          "gapPct": -32.8
+        },
+        {
+          "band": "60-80%",
+          "n": 41,
+          "claimedPct": 69.9,
+          "observedPct": 90.2,
+          "gapPct": -20.4
+        },
+        {
+          "band": "80-95%",
+          "n": 25,
+          "claimedPct": 87,
+          "observedPct": 96,
+          "gapPct": -9
+        },
+        {
+          "band": "95-100%",
+          "n": 67,
+          "claimedPct": 99.9,
+          "observedPct": 98.5,
+          "gapPct": 1.3
+        }
+      ]
+    },
+    "calibrationError": {
+      "current": 5.9,
+      "fitted": 11.71
+    },
+    "eer": {
+      "distance": 0.5536,
+      "errorRate": 19.51
+    },
+    "verdict": "keep-current (refit lowers log-loss only by hedging)"
+  },
+  "leakage": {
+    "maxDistance": 0.05,
+    "count": 61,
+    "pct": 29.8,
+    "note": "Probes whose distance to their own gallery vector is <= maxDistance are the enrolled photo again (same source file at another resolution). They score Rank-1 for free.",
+    "ids": [
+      "aaron-taylor-johnson",
+      "adam-driver",
+      "alicia-vikander",
+      "andrew-scott",
+      "angela-bassett",
+      "anna-sawai",
+      "barack-obama",
+      "billie-eilish",
+      "cate-blanchett",
+      "chadwick-boseman",
+      "chloe-grace-moretz",
+      "cillian-murphy",
+      "daniel-craig",
+      "dwayne-johnson",
+      "ed-sheeran",
+      "elijah-wood",
+      "emma-watson",
+      "henry-golding",
+      "hunter-schafer",
+      "jackie-chan",
+      "jake-gyllenhaal",
+      "jason-momoa",
+      "javier-bardem",
+      "jessica-alba",
+      "jessica-chastain",
+      "jet-li",
+      "john-boyega",
+      "john-cho",
+      "jonah-hill",
+      "kevin-hart",
+      "kylie-jenner",
+      "laurence-fishburne",
+      "liam-hemsworth",
+      "liam-neeson",
+      "luke-hemsworth",
+      "mads-mikkelsen",
+      "michelle-obama",
+      "millie-bobby-brown",
+      "nicholas-hoult",
+      "olivia-rodrigo",
+      "paul-mescal",
+      "paul-rudd",
+      "penelope-cruz-m",
+      "pierce-brosnan",
+      "rebecca-ferguson",
+      "reesewitherspoon",
+      "regé-jean-page",
+      "riz-ahmed",
+      "robert-downey-jr",
+      "robert-pattinson",
+      "ryan-gosling",
+      "salma-hayek",
+      "sam-claflin",
+      "sam-smith",
+      "shakira",
+      "tiffany-haddish",
+      "tom-hardy",
+      "trevor-noah",
+      "uzo-aduba",
+      "will-smith",
+      "zoe-kravitz"
+    ]
+  },
+  "strataExcludingNearDuplicates": [
+    {
+      "stratum": "overall",
+      "n": 144,
+      "rank1": 108,
+      "rank5": 112,
+      "rank1Pct": 75,
+      "rank5Pct": 77.8,
+      "rank1Ci95": [
+        67.3,
+        81.4
+      ],
+      "rawRank1": 108,
+      "rawRank1Pct": 75,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 144,
+      "mrr": 0.7616
+    },
+    {
+      "stratum": "low-light",
+      "n": 12,
+      "rank1": 4,
+      "rank5": 5,
+      "rank1Pct": 33.3,
+      "rank5Pct": 41.7,
+      "rank1Ci95": [
+        13.8,
+        60.9
+      ],
+      "rawRank1": 4,
+      "rawRank1Pct": 33.3,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 12,
+      "mrr": 0.3611
+    },
+    {
+      "stratum": "glasses",
+      "n": 0,
+      "rank1": 0,
+      "rank5": 0,
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
+      "rawRank1": 0,
+      "rawRank1Pct": null,
+      "refused": 0,
+      "refusedPct": null,
+      "detected": 0,
+      "mrr": null
+    },
+    {
+      "stratum": "big-smile",
+      "n": 77,
+      "rank1": 66,
+      "rank5": 68,
+      "rank1Pct": 85.7,
+      "rank5Pct": 88.3,
+      "rank1Ci95": [
+        76.2,
+        91.8
+      ],
+      "rawRank1": 66,
+      "rawRank1Pct": 85.7,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 77,
+      "mrr": 0.868
+    },
+    {
+      "stratum": "yaw-gt-25",
+      "n": 32,
+      "rank1": 22,
+      "rank5": 23,
+      "rank1Pct": 68.8,
+      "rank5Pct": 71.9,
+      "rank1Ci95": [
+        51.4,
+        82
+      ],
+      "rawRank1": 22,
+      "rawRank1Pct": 68.8,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 32,
+      "mrr": 0.7031
+    },
+    {
+      "stratum": "phone-closeup",
+      "n": 0,
+      "rank1": 0,
+      "rank5": 0,
+      "rank1Pct": null,
+      "rank5Pct": null,
+      "rank1Ci95": null,
+      "rawRank1": 0,
+      "rawRank1Pct": null,
+      "refused": 0,
+      "refusedPct": null,
+      "detected": 0,
+      "mrr": null
+    },
+    {
+      "stratum": "no-condition",
+      "n": 46,
+      "rank1": 31,
+      "rank5": 32,
+      "rank1Pct": 67.4,
+      "rank5Pct": 69.6,
+      "rank1Ci95": [
+        53,
+        79.1
+      ],
+      "rawRank1": 31,
+      "rawRank1Pct": 67.4,
+      "refused": 0,
+      "refusedPct": 0,
+      "detected": 46,
+      "mrr": 0.6812
+    }
+  ],
+  "distancesExcludingNearDuplicates": {
+    "genuine (probe → own identity)": {
+      "n": 144,
+      "mean": 0.4694,
+      "p10": 0.2278,
+      "p50": 0.4165,
+      "p90": 0.8858
+    },
+    "impostor (probe → best other identity)": {
+      "n": 144,
+      "mean": 0.581,
+      "p10": 0.5077,
+      "p50": 0.601,
+      "p90": 0.6617
+    }
+  },
+  "hillExcludingNearDuplicates": {
+    "current": {
+      "d0": 0.6,
+      "n": 4.1,
+      "logLoss": 0.729
+    },
+    "fitted": {
+      "d0": 0.5,
+      "n": 2.5,
+      "logLoss": 0.6722
+    },
+    "grid": [
+      {
+        "d0": 0.55,
+        "n": 1.2,
+        "logLoss": 0.6951
+      },
+      {
+        "d0": 0.55,
+        "n": 1.4,
+        "logLoss": 0.6893
+      },
+      {
+        "d0": 0.55,
+        "n": 1.6,
+        "logLoss": 0.6847
+      },
+      {
+        "d0": 0.55,
+        "n": 2,
+        "logLoss": 0.6789
+      },
+      {
+        "d0": 0.55,
+        "n": 3,
+        "logLoss": 0.6801
+      },
+      {
+        "d0": 0.55,
+        "n": 4.1,
+        "logLoss": 0.6999
+      },
+      {
+        "d0": 0.6,
+        "n": 1.2,
+        "logLoss": 0.6994
+      },
+      {
+        "d0": 0.6,
+        "n": 1.4,
+        "logLoss": 0.695
+      },
+      {
+        "d0": 0.6,
+        "n": 1.6,
+        "logLoss": 0.6919
+      },
+      {
+        "d0": 0.6,
+        "n": 2,
+        "logLoss": 0.6894
+      },
+      {
+        "d0": 0.6,
+        "n": 3,
+        "logLoss": 0.6995
+      },
+      {
+        "d0": 0.6,
+        "n": 4.1,
+        "logLoss": 0.729
+      },
+      {
+        "d0": 0.65,
+        "n": 1.2,
+        "logLoss": 0.7056
+      },
+      {
+        "d0": 0.65,
+        "n": 1.4,
+        "logLoss": 0.7032
+      },
+      {
+        "d0": 0.65,
+        "n": 1.6,
+        "logLoss": 0.7023
+      },
+      {
+        "d0": 0.65,
+        "n": 2,
+        "logLoss": 0.7048
+      },
+      {
+        "d0": 0.65,
+        "n": 3,
+        "logLoss": 0.729
+      },
+      {
+        "d0": 0.65,
+        "n": 4.1,
+        "logLoss": 0.7758
+      }
+    ],
+    "reliability": {
+      "current": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 3,
+          "claimedPct": 37.2,
+          "observedPct": 0,
+          "gapPct": 37.2
+        },
+        {
+          "band": "40-60%",
+          "n": 27,
+          "claimedPct": 50.3,
+          "observedPct": 25.9,
+          "gapPct": 24.4
+        },
+        {
+          "band": "60-80%",
+          "n": 30,
+          "claimedPct": 71.8,
+          "observedPct": 76.7,
+          "gapPct": -4.9
+        },
+        {
+          "band": "80-95%",
+          "n": 50,
+          "claimedPct": 88.8,
+          "observedPct": 92,
+          "gapPct": -3.2
+        },
+        {
+          "band": "95-100%",
+          "n": 34,
+          "claimedPct": 98,
+          "observedPct": 94.1,
+          "gapPct": 3.9
+        }
+      ],
+      "fitted": [
+        {
+          "band": "0-20%",
+          "n": 0,
+          "claimedPct": null,
+          "observedPct": null,
+          "gapPct": null
+        },
+        {
+          "band": "20-40%",
+          "n": 18,
+          "claimedPct": 35.5,
+          "observedPct": 11.1,
+          "gapPct": 24.4
+        },
+        {
+          "band": "40-60%",
+          "n": 43,
+          "claimedPct": 50.3,
+          "observedPct": 67.4,
+          "gapPct": -17.2
+        },
+        {
+          "band": "60-80%",
+          "n": 52,
+          "claimedPct": 70.6,
+          "observedPct": 92.3,
+          "gapPct": -21.8
+        },
+        {
+          "band": "80-95%",
+          "n": 26,
+          "claimedPct": 87.4,
+          "observedPct": 96.2,
+          "gapPct": -8.8
+        },
+        {
+          "band": "95-100%",
+          "n": 5,
+          "claimedPct": 98.6,
+          "observedPct": 80,
+          "gapPct": 18.6
+        }
+      ]
+    },
+    "calibrationError": {
+      "current": 8.4,
+      "fitted": 18.29
+    },
+    "eer": {
+      "distance": 0.5678,
+      "errorRate": 26.39
+    },
+    "verdict": "keep-current (refit lowers log-loss only by hedging)"
+  },
+  "misses": [
+    {
+      "id": "adele",
+      "slot": "001",
+      "conditions": [],
+      "topId": "katie-cassidy",
+      "refused": false,
+      "rawRank": 6,
+      "genuineDistance": 0.6912,
+      "impostorDistance": 0.6262
+    },
+    {
+      "id": "angelina-jolie",
+      "slot": "001",
+      "conditions": [],
+      "topId": "jason-momoa",
+      "refused": false,
+      "rawRank": 223,
+      "genuineDistance": 0.9071,
+      "impostorDistance": 0.653
+    },
+    {
+      "id": "anya-taylor-joy",
+      "slot": "001",
+      "conditions": [],
+      "topId": "kylian-mbappe",
+      "refused": false,
+      "rawRank": 295,
+      "genuineDistance": 0.9425,
+      "impostorDistance": 0.6009
+    },
+    {
+      "id": "doja-cat",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "topId": "travis-scott",
+      "refused": false,
+      "rawRank": 13,
+      "genuineDistance": 0.6355,
+      "impostorDistance": 0.3246
+    },
+    {
+      "id": "donald-glover",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "topId": "hugh-jackman",
+      "refused": false,
+      "rawRank": 53,
+      "genuineDistance": 0.7913,
+      "impostorDistance": 0.5142
+    },
+    {
+      "id": "donnie-yen",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "topId": "hugh-jackman",
+      "refused": false,
+      "rawRank": 44,
+      "genuineDistance": 0.7693,
+      "impostorDistance": 0.3573
+    },
+    {
+      "id": "fan-bingbing",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "topId": "jennie-kim",
+      "refused": false,
+      "rawRank": 124,
+      "genuineDistance": 0.8345,
+      "impostorDistance": 0.4425
+    },
+    {
+      "id": "gigi-hadid",
+      "slot": "001",
+      "conditions": [],
+      "topId": "andrea-frankle",
+      "refused": false,
+      "rawRank": 3,
+      "genuineDistance": 0.6454,
+      "impostorDistance": 0.5168
+    },
+    {
+      "id": "harry-styles",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "topId": "bruno-mars",
+      "refused": false,
+      "rawRank": 24,
+      "genuineDistance": 0.7204,
+      "impostorDistance": 0.5825
+    },
+    {
+      "id": "helena-bonham-carter",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "topId": "regina-king",
+      "refused": false,
+      "rawRank": 588,
+      "genuineDistance": 0.9729,
+      "impostorDistance": 0.6085
+    },
+    {
+      "id": "jennifer-lawrence",
+      "slot": "001",
+      "conditions": [],
+      "topId": "ritchie-montgomery",
+      "refused": false,
+      "rawRank": 185,
+      "genuineDistance": 0.8663,
+      "impostorDistance": 0.6778
+    },
+    {
+      "id": "julia-roberts",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "topId": "sarah-jane-redmond",
+      "refused": false,
+      "rawRank": 275,
+      "genuineDistance": 0.8743,
+      "impostorDistance": 0.5451
+    },
+    {
+      "id": "kate-middleton",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "topId": "jeffrey-nordling",
+      "refused": false,
+      "rawRank": 11,
+      "genuineDistance": 0.6955,
+      "impostorDistance": 0.6361
+    },
+    {
+      "id": "kendall-jenner",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "yaw-gt-25"
+      ],
+      "topId": "travis-scott",
+      "refused": false,
+      "rawRank": 382,
+      "genuineDistance": 0.911,
+      "impostorDistance": 0.3056
+    },
+    {
+      "id": "kendrick-lamar",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "topId": "chadwick-boseman",
+      "refused": false,
+      "rawRank": 2,
+      "genuineDistance": 0.5806,
+      "impostorDistance": 0.5765
+    },
+    {
+      "id": "kim-kardashian",
+      "slot": "001",
+      "conditions": [],
+      "topId": "luke-hemsworth",
+      "refused": false,
+      "rawRank": 108,
+      "genuineDistance": 0.8251,
+      "impostorDistance": 0.5077
+    },
+    {
+      "id": "kylian-mbappe",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "topId": "simon-chin",
+      "refused": false,
+      "rawRank": 69,
+      "genuineDistance": 0.7907,
+      "impostorDistance": 0.6342
+    },
+    {
+      "id": "leonardo-dicaprio",
+      "slot": "001",
+      "conditions": [],
+      "topId": "will-smith",
+      "refused": false,
+      "rawRank": 6,
+      "genuineDistance": 0.6655,
+      "impostorDistance": 0.5035
+    },
+    {
+      "id": "meghan-markle",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "topId": "jennie-kim",
+      "refused": false,
+      "rawRank": 65,
+      "genuineDistance": 0.7667,
+      "impostorDistance": 0.6058
+    },
+    {
+      "id": "meryl-streep",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "topId": "elizabeth-olsen",
+      "refused": false,
+      "rawRank": 311,
+      "genuineDistance": 0.9142,
+      "impostorDistance": 0.6683
+    },
+    {
+      "id": "naomi-campbell",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "topId": "billie-eilish",
+      "refused": false,
+      "rawRank": 302,
+      "genuineDistance": 0.8907,
+      "impostorDistance": 0.4693
+    },
+    {
+      "id": "natalie-portman",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "topId": "rey-lucas",
+      "refused": false,
+      "rawRank": 263,
+      "genuineDistance": 0.9005,
+      "impostorDistance": 0.6538
+    },
+    {
+      "id": "neymar",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "topId": "kylian-mbappe",
+      "refused": false,
+      "rawRank": 346,
+      "genuineDistance": 0.9122,
+      "impostorDistance": 0.348
+    },
+    {
+      "id": "oprah-winfrey",
+      "slot": "001",
+      "conditions": [],
+      "topId": "ian-butcher",
+      "refused": false,
+      "rawRank": 157,
+      "genuineDistance": 0.8378,
+      "impostorDistance": 0.5793
+    },
+    {
+      "id": "prince-harry",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "topId": "ana-de-armas",
+      "refused": false,
+      "rawRank": 2,
+      "genuineDistance": 0.6009,
+      "impostorDistance": 0.5869
+    },
+    {
+      "id": "priyanka-chopra",
+      "slot": "001",
+      "conditions": [],
+      "topId": "shah-rukh-khan",
+      "refused": false,
+      "rawRank": 314,
+      "genuineDistance": 0.9123,
+      "impostorDistance": 0
+    },
+    {
+      "id": "saoirse-ronan",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "topId": "danny-dworkis",
+      "refused": false,
+      "rawRank": 412,
+      "genuineDistance": 0.9477,
+      "impostorDistance": 0.5991
+    },
+    {
+      "id": "sebastian-stan",
+      "slot": "001",
+      "conditions": [],
+      "topId": "lana-condor",
+      "refused": false,
+      "rawRank": 286,
+      "genuineDistance": 0.9226,
+      "impostorDistance": 0.6488
+    },
+    {
+      "id": "serena-williams",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "topId": "sza",
+      "refused": false,
+      "rawRank": 9,
+      "genuineDistance": 0.6964,
+      "impostorDistance": 0.576
+    },
+    {
+      "id": "shah-rukh-khan",
+      "slot": "001",
+      "conditions": [],
+      "topId": "aishwarya-rai",
+      "refused": false,
+      "rawRank": 676,
+      "genuineDistance": 1.0193,
+      "impostorDistance": 0.6617
+    },
+    {
+      "id": "stephen-curry",
+      "slot": "001",
+      "conditions": [],
+      "topId": "travis-scott",
+      "refused": false,
+      "rawRank": 276,
+      "genuineDistance": 0.8895,
+      "impostorDistance": 0.2105
+    },
+    {
+      "id": "timothee-chalamet",
+      "slot": "001",
+      "conditions": [],
+      "topId": "doja-cat",
+      "refused": false,
+      "rawRank": 186,
+      "genuineDistance": 0.8696,
+      "impostorDistance": 0.6146
+    },
+    {
+      "id": "victoria-beckham",
+      "slot": "001",
+      "conditions": [],
+      "topId": "seth-rogen",
+      "refused": false,
+      "rawRank": 227,
+      "genuineDistance": 0.8913,
+      "impostorDistance": 0.7
+    },
+    {
+      "id": "viola-davis",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "topId": "remy-auberjonois",
+      "refused": false,
+      "rawRank": 6,
+      "genuineDistance": 0.7027,
+      "impostorDistance": 0.6396
+    },
+    {
+      "id": "zhang-ziyi",
+      "slot": "001",
+      "conditions": [],
+      "topId": "lee-jung-jae",
+      "refused": false,
+      "rawRank": 254,
+      "genuineDistance": 0.8858,
+      "impostorDistance": 0.5516
+    },
+    {
+      "id": "zoe-saldana",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "topId": "naomi-campbell",
+      "refused": false,
+      "rawRank": 3,
+      "genuineDistance": 0.5514,
+      "impostorDistance": 0.5189
+    }
+  ],
+  "skipped": [],
+  "commands": [
+    "node --experimental-strip-types scripts/label-hard-probes.mjs --concurrency 4",
+    "node --experimental-strip-types scripts/evaluate-held-out.ts --concurrency 4"
+  ],
+  "records": [
+    {
+      "imagePath": "/celebs/held-out/aaron-taylor-johnson/001.jpg",
+      "id": "aaron-taylor-johnson",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "aaron-taylor-johnson",
+      "genuineDistance": 0.0088,
+      "impostorDistance": 0.6079,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/adam-driver/001.jpg",
+      "id": "adam-driver",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "adam-driver",
+      "genuineDistance": 0.0037,
+      "impostorDistance": 0.5999,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/adele/001.jpg",
+      "id": "adele",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "katie-cassidy",
+      "genuineDistance": 0.6912,
+      "impostorDistance": 0.6262,
+      "rawRank": 6,
+      "matchPercent": 38.6
+    },
+    {
+      "imagePath": "/celebs/held-out/adriana-lima/001.jpg",
+      "id": "adriana-lima",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "adriana-lima",
+      "genuineDistance": 0.435,
+      "impostorDistance": 0.6669,
+      "rawRank": 1,
+      "matchPercent": 82.5
+    },
+    {
+      "imagePath": "/celebs/held-out/alexander-skarsgard/001.jpg",
+      "id": "alexander-skarsgard",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "alexander-skarsgard",
+      "genuineDistance": 0.2228,
+      "impostorDistance": 0.609,
+      "rawRank": 1,
+      "matchPercent": 98.9
+    },
+    {
+      "imagePath": "/celebs/held-out/alia-bhatt/001.jpg",
+      "id": "alia-bhatt",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "alia-bhatt",
+      "genuineDistance": 0.3899,
+      "impostorDistance": 0.5562,
+      "rawRank": 1,
+      "matchPercent": 85.8
+    },
+    {
+      "imagePath": "/celebs/held-out/alicia-vikander/001.jpg",
+      "id": "alicia-vikander",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "alicia-vikander",
+      "genuineDistance": 0.0103,
+      "impostorDistance": 0.5044,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/amy-adams/001.jpg",
+      "id": "amy-adams",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "amy-adams",
+      "genuineDistance": 0.4417,
+      "impostorDistance": 0.5696,
+      "rawRank": 1,
+      "matchPercent": 81.5
+    },
+    {
+      "imagePath": "/celebs/held-out/ana-de-armas/001.jpg",
+      "id": "ana-de-armas",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "ana-de-armas",
+      "genuineDistance": 0.5225,
+      "impostorDistance": 0.6359,
+      "rawRank": 1,
+      "matchPercent": 63.8
+    },
+    {
+      "imagePath": "/celebs/held-out/andrew-garfield/001.jpg",
+      "id": "andrew-garfield",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "andrew-garfield",
+      "genuineDistance": 0.3749,
+      "impostorDistance": 0.5622,
+      "rawRank": 1,
+      "matchPercent": 90
+    },
+    {
+      "imagePath": "/celebs/held-out/andrew-scott/001.jpg",
+      "id": "andrew-scott",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "andrew-scott",
+      "genuineDistance": 0.0056,
+      "impostorDistance": 0.6147,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/angela-bassett/001.jpg",
+      "id": "angela-bassett",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "angela-bassett",
+      "genuineDistance": 0.0042,
+      "impostorDistance": 0.5988,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/angelina-jolie/001.jpg",
+      "id": "angelina-jolie",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "jason-momoa",
+      "genuineDistance": 0.9071,
+      "impostorDistance": 0.653,
+      "rawRank": 223,
+      "matchPercent": 37.2
+    },
+    {
+      "imagePath": "/celebs/held-out/anna-sawai/001.jpg",
+      "id": "anna-sawai",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "anna-sawai",
+      "genuineDistance": 0.0025,
+      "impostorDistance": 0.6105,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/anthony-hopkins/001.jpg",
+      "id": "anthony-hopkins",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "anthony-hopkins",
+      "genuineDistance": 0.1703,
+      "impostorDistance": 0.6036,
+      "rawRank": 1,
+      "matchPercent": 99.7
+    },
+    {
+      "imagePath": "/celebs/held-out/antonio-banderas/001.jpg",
+      "id": "antonio-banderas",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "antonio-banderas",
+      "genuineDistance": 0.5547,
+      "impostorDistance": 0.5871,
+      "rawRank": 1,
+      "matchPercent": 45
+    },
+    {
+      "imagePath": "/celebs/held-out/anya-taylor-joy/001.jpg",
+      "id": "anya-taylor-joy",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "kylian-mbappe",
+      "genuineDistance": 0.9425,
+      "impostorDistance": 0.6009,
+      "rawRank": 295,
+      "matchPercent": 33.9
+    },
+    {
+      "imagePath": "/celebs/held-out/ariana-grande/001.jpg",
+      "id": "ariana-grande",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "ariana-grande",
+      "genuineDistance": 0.5933,
+      "impostorDistance": 0.6324,
+      "rawRank": 1,
+      "matchPercent": 40.9
+    },
+    {
+      "imagePath": "/celebs/held-out/austin-butler/001.jpg",
+      "id": "austin-butler",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "austin-butler",
+      "genuineDistance": 0.3312,
+      "impostorDistance": 0.5446,
+      "rawRank": 1,
+      "matchPercent": 92
+    },
+    {
+      "imagePath": "/celebs/held-out/awkwafina/001.jpg",
+      "id": "awkwafina",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "awkwafina",
+      "genuineDistance": 0.272,
+      "impostorDistance": 0.5536,
+      "rawRank": 1,
+      "matchPercent": 96.2
+    },
+    {
+      "imagePath": "/celebs/held-out/bad-bunny/001.jpg",
+      "id": "bad-bunny",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "bad-bunny",
+      "genuineDistance": 0.4311,
+      "impostorDistance": 0.6687,
+      "rawRank": 1,
+      "matchPercent": 79.5
+    },
+    {
+      "imagePath": "/celebs/held-out/barack-obama/001.jpg",
+      "id": "barack-obama",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "barack-obama",
+      "genuineDistance": 0.0062,
+      "impostorDistance": 0.6019,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/bella-hadid/001.jpg",
+      "id": "bella-hadid",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "bella-hadid",
+      "genuineDistance": 0.5239,
+      "impostorDistance": 0.5579,
+      "rawRank": 1,
+      "matchPercent": 49.2
+    },
+    {
+      "imagePath": "/celebs/held-out/benedict-cumberbatch/001.jpg",
+      "id": "benedict-cumberbatch",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "benedict-cumberbatch",
+      "genuineDistance": 0.2888,
+      "impostorDistance": 0.58,
+      "rawRank": 1,
+      "matchPercent": 95.2
+    },
+    {
+      "imagePath": "/celebs/held-out/beyonce/001.jpg",
+      "id": "beyonce",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "beyonce",
+      "genuineDistance": 0.3416,
+      "impostorDistance": 0.5095,
+      "rawRank": 1,
+      "matchPercent": 91
+    },
+    {
+      "imagePath": "/celebs/held-out/billie-eilish/001.jpg",
+      "id": "billie-eilish",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "billie-eilish",
+      "genuineDistance": 0.0273,
+      "impostorDistance": 0.6717,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/brad-pitt/001.jpg",
+      "id": "brad-pitt",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "brad-pitt",
+      "genuineDistance": 0.2278,
+      "impostorDistance": 0.5746,
+      "rawRank": 1,
+      "matchPercent": 98.8
+    },
+    {
+      "imagePath": "/celebs/held-out/bradley-cooper/001.jpg",
+      "id": "bradley-cooper",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "bradley-cooper",
+      "genuineDistance": 0.3271,
+      "impostorDistance": 0.611,
+      "rawRank": 1,
+      "matchPercent": 94.3
+    },
+    {
+      "imagePath": "/celebs/held-out/britney-spears/001.jpg",
+      "id": "britney-spears",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "britney-spears",
+      "genuineDistance": 0.4098,
+      "impostorDistance": 0.6493,
+      "rawRank": 1,
+      "matchPercent": 84.6
+    },
+    {
+      "imagePath": "/celebs/held-out/cardi-b/001.jpg",
+      "id": "cardi-b",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "cardi-b",
+      "genuineDistance": 0.4349,
+      "impostorDistance": 0.6038,
+      "rawRank": 1,
+      "matchPercent": 80.3
+    },
+    {
+      "imagePath": "/celebs/held-out/cate-blanchett/001.jpg",
+      "id": "cate-blanchett",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "cate-blanchett",
+      "genuineDistance": 0.0052,
+      "impostorDistance": 0.5662,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/chadwick-boseman/001.jpg",
+      "id": "chadwick-boseman",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "chadwick-boseman",
+      "genuineDistance": 0.0084,
+      "impostorDistance": 0.6089,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/channing-tatum/001.jpg",
+      "id": "channing-tatum",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "channing-tatum",
+      "genuineDistance": 0.3916,
+      "impostorDistance": 0.611,
+      "rawRank": 1,
+      "matchPercent": 88.2
+    },
+    {
+      "imagePath": "/celebs/held-out/charlize-theron/001.jpg",
+      "id": "charlize-theron",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "charlize-theron",
+      "genuineDistance": 0.4272,
+      "impostorDistance": 0.6349,
+      "rawRank": 1,
+      "matchPercent": 83.6
+    },
+    {
+      "imagePath": "/celebs/held-out/chloe-grace-moretz/001.jpg",
+      "id": "chloe-grace-moretz",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "chloe-grace-moretz",
+      "genuineDistance": 0.0055,
+      "impostorDistance": 0.6143,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/chris-evans/001.jpg",
+      "id": "chris-evans",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "chris-evans",
+      "genuineDistance": 0.3003,
+      "impostorDistance": 0.6174,
+      "rawRank": 1,
+      "matchPercent": 94.5
+    },
+    {
+      "imagePath": "/celebs/held-out/chris-hemsworth/001.jpg",
+      "id": "chris-hemsworth",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "chris-hemsworth",
+      "genuineDistance": 0.2622,
+      "impostorDistance": 0.6095,
+      "rawRank": 1,
+      "matchPercent": 97.8
+    },
+    {
+      "imagePath": "/celebs/held-out/cillian-murphy/001.jpg",
+      "id": "cillian-murphy",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "cillian-murphy",
+      "genuineDistance": 0.0022,
+      "impostorDistance": 0.6252,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/cole-sprouse/001.jpg",
+      "id": "cole-sprouse",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "cole-sprouse",
+      "genuineDistance": 0.4518,
+      "impostorDistance": 0.6136,
+      "rawRank": 1,
+      "matchPercent": 80
+    },
+    {
+      "imagePath": "/celebs/held-out/cristiano-ronaldo/001.jpg",
+      "id": "cristiano-ronaldo",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "cristiano-ronaldo",
+      "genuineDistance": 0.4665,
+      "impostorDistance": 0.6266,
+      "rawRank": 1,
+      "matchPercent": 73.7
+    },
+    {
+      "imagePath": "/celebs/held-out/daniel-craig/001.jpg",
+      "id": "daniel-craig",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "daniel-craig",
+      "genuineDistance": 0.0034,
+      "impostorDistance": 0.6483,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/deepika-padukone/001.jpg",
+      "id": "deepika-padukone",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "deepika-padukone",
+      "genuineDistance": 0.2478,
+      "impostorDistance": 0.6062,
+      "rawRank": 1,
+      "matchPercent": 97.6
+    },
+    {
+      "imagePath": "/celebs/held-out/denzel-washington/001.jpg",
+      "id": "denzel-washington",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "denzel-washington",
+      "genuineDistance": 0.154,
+      "impostorDistance": 0.5752,
+      "rawRank": 1,
+      "matchPercent": 99.7
+    },
+    {
+      "imagePath": "/celebs/held-out/dev-patel/001.jpg",
+      "id": "dev-patel",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "dev-patel",
+      "genuineDistance": 0.3466,
+      "impostorDistance": 0.6673,
+      "rawRank": 1,
+      "matchPercent": 92.7
+    },
+    {
+      "imagePath": "/celebs/held-out/doja-cat/001.jpg",
+      "id": "doja-cat",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "travis-scott",
+      "genuineDistance": 0.6355,
+      "impostorDistance": 0.3246,
+      "rawRank": 13,
+      "matchPercent": 92.5
+    },
+    {
+      "imagePath": "/celebs/held-out/donald-glover/001.jpg",
+      "id": "donald-glover",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "hugh-jackman",
+      "genuineDistance": 0.7913,
+      "impostorDistance": 0.5142,
+      "rawRank": 53,
+      "matchPercent": 57.9
+    },
+    {
+      "imagePath": "/celebs/held-out/donnie-yen/001.jpg",
+      "id": "donnie-yen",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "hugh-jackman",
+      "genuineDistance": 0.7693,
+      "impostorDistance": 0.3573,
+      "rawRank": 44,
+      "matchPercent": 89.3
+    },
+    {
+      "imagePath": "/celebs/held-out/drake/001.jpg",
+      "id": "drake",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "drake",
+      "genuineDistance": 0.3983,
+      "impostorDistance": 0.5819,
+      "rawRank": 1,
+      "matchPercent": 84.3
+    },
+    {
+      "imagePath": "/celebs/held-out/dua-lipa/001.jpg",
+      "id": "dua-lipa",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "dua-lipa",
+      "genuineDistance": 0.4609,
+      "impostorDistance": 0.6139,
+      "rawRank": 1,
+      "matchPercent": 76.1
+    },
+    {
+      "imagePath": "/celebs/held-out/dwayne-johnson/001.jpg",
+      "id": "dwayne-johnson",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "dwayne-johnson",
+      "genuineDistance": 0.0082,
+      "impostorDistance": 0.5913,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/ed-sheeran/001.jpg",
+      "id": "ed-sheeran",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "ed-sheeran",
+      "genuineDistance": 0.0014,
+      "impostorDistance": 0.6368,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/eddie-redmayne/001.jpg",
+      "id": "eddie-redmayne",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "eddie-redmayne",
+      "genuineDistance": 0.2427,
+      "impostorDistance": 0.6014,
+      "rawRank": 1,
+      "matchPercent": 98.2
+    },
+    {
+      "imagePath": "/celebs/held-out/elijah-wood/001.jpg",
+      "id": "elijah-wood",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "elijah-wood",
+      "genuineDistance": 0.0032,
+      "impostorDistance": 0.6605,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/elizabeth-olsen/001.jpg",
+      "id": "elizabeth-olsen",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "elizabeth-olsen",
+      "genuineDistance": 0.4828,
+      "impostorDistance": 0.6357,
+      "rawRank": 1,
+      "matchPercent": 71.9
+    },
+    {
+      "imagePath": "/celebs/held-out/elon-musk/001.jpg",
+      "id": "elon-musk",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "elon-musk",
+      "genuineDistance": 0.053,
+      "impostorDistance": 0.667,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/emily-blunt/001.jpg",
+      "id": "emily-blunt",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "emily-blunt",
+      "genuineDistance": 0.3839,
+      "impostorDistance": 0.5898,
+      "rawRank": 1,
+      "matchPercent": 86.3
+    },
+    {
+      "imagePath": "/celebs/held-out/emma-stone/001.jpg",
+      "id": "emma-stone",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "emma-stone",
+      "genuineDistance": 0.3468,
+      "impostorDistance": 0.5461,
+      "rawRank": 1,
+      "matchPercent": 92.6
+    },
+    {
+      "imagePath": "/celebs/held-out/emma-watson/001.jpg",
+      "id": "emma-watson",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "emma-watson",
+      "genuineDistance": 0.0015,
+      "impostorDistance": 0.6385,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/eva-longoria/001.jpg",
+      "id": "eva-longoria",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "eva-longoria",
+      "genuineDistance": 0.4852,
+      "impostorDistance": 0.6198,
+      "rawRank": 1,
+      "matchPercent": 71.3
+    },
+    {
+      "imagePath": "/celebs/held-out/fan-bingbing/001.jpg",
+      "id": "fan-bingbing",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "jennie-kim",
+      "genuineDistance": 0.8345,
+      "impostorDistance": 0.4425,
+      "rawRank": 124,
+      "matchPercent": 79.8
+    },
+    {
+      "imagePath": "/celebs/held-out/florence-pugh/001.jpg",
+      "id": "florence-pugh",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "florence-pugh",
+      "genuineDistance": 0.4788,
+      "impostorDistance": 0.5997,
+      "rawRank": 1,
+      "matchPercent": 75.6
+    },
+    {
+      "imagePath": "/celebs/held-out/gal-gadot/001.jpg",
+      "id": "gal-gadot",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "gal-gadot",
+      "genuineDistance": 0.2562,
+      "impostorDistance": 0.6082,
+      "rawRank": 1,
+      "matchPercent": 98
+    },
+    {
+      "imagePath": "/celebs/held-out/gary-oldman/001.jpg",
+      "id": "gary-oldman",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "gary-oldman",
+      "genuineDistance": 0.3559,
+      "impostorDistance": 0.6631,
+      "rawRank": 1,
+      "matchPercent": 91
+    },
+    {
+      "imagePath": "/celebs/held-out/gemma-chan/001.jpg",
+      "id": "gemma-chan",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "gemma-chan",
+      "genuineDistance": 0.5319,
+      "impostorDistance": 0.6183,
+      "rawRank": 1,
+      "matchPercent": 63
+    },
+    {
+      "imagePath": "/celebs/held-out/george-clooney/001.jpg",
+      "id": "george-clooney",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "george-clooney",
+      "genuineDistance": 0.2129,
+      "impostorDistance": 0.2726,
+      "rawRank": 1,
+      "matchPercent": 99
+    },
+    {
+      "imagePath": "/celebs/held-out/gigi-hadid/001.jpg",
+      "id": "gigi-hadid",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 3,
+      "topId": "andrea-frankle",
+      "genuineDistance": 0.6454,
+      "impostorDistance": 0.5168,
+      "rawRank": 3,
+      "matchPercent": 64.8
+    },
+    {
+      "imagePath": "/celebs/held-out/glen-powell/001.jpg",
+      "id": "glen-powell",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "glen-powell",
+      "genuineDistance": 0.311,
+      "impostorDistance": 0.601,
+      "rawRank": 1,
+      "matchPercent": 95.1
+    },
+    {
+      "imagePath": "/celebs/held-out/hailee-steinfeld/001.jpg",
+      "id": "hailee-steinfeld",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "hailee-steinfeld",
+      "genuineDistance": 0.6189,
+      "impostorDistance": 0.6615,
+      "rawRank": 1,
+      "matchPercent": 38.2
+    },
+    {
+      "imagePath": "/celebs/held-out/halle-berry/001.jpg",
+      "id": "halle-berry",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "halle-berry",
+      "genuineDistance": 0.2081,
+      "impostorDistance": 0.546,
+      "rawRank": 1,
+      "matchPercent": 99.2
+    },
+    {
+      "imagePath": "/celebs/held-out/harry-styles/001.jpg",
+      "id": "harry-styles",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "bruno-mars",
+      "genuineDistance": 0.7204,
+      "impostorDistance": 0.5825,
+      "rawRank": 24,
+      "matchPercent": 38.7
+    },
+    {
+      "imagePath": "/celebs/held-out/heidi-klum/001.jpg",
+      "id": "heidi-klum",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "heidi-klum",
+      "genuineDistance": 0.3428,
+      "impostorDistance": 0.5999,
+      "rawRank": 1,
+      "matchPercent": 93
+    },
+    {
+      "imagePath": "/celebs/held-out/helen-mirren/001.jpg",
+      "id": "helen-mirren",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "helen-mirren",
+      "genuineDistance": 0.2459,
+      "impostorDistance": 0.6613,
+      "rawRank": 1,
+      "matchPercent": 98.3
+    },
+    {
+      "imagePath": "/celebs/held-out/helena-bonham-carter/001.jpg",
+      "id": "helena-bonham-carter",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "regina-king",
+      "genuineDistance": 0.9729,
+      "impostorDistance": 0.6085,
+      "rawRank": 588,
+      "matchPercent": 43.3
+    },
+    {
+      "imagePath": "/celebs/held-out/henry-cavill/001.jpg",
+      "id": "henry-cavill",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "henry-cavill",
+      "genuineDistance": 0.2079,
+      "impostorDistance": 0.6287,
+      "rawRank": 1,
+      "matchPercent": 98.8
+    },
+    {
+      "imagePath": "/celebs/held-out/henry-golding/001.jpg",
+      "id": "henry-golding",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "henry-golding",
+      "genuineDistance": 0.0017,
+      "impostorDistance": 0.6175,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/hugh-jackman/001.jpg",
+      "id": "hugh-jackman",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "hugh-jackman",
+      "genuineDistance": 0.3561,
+      "impostorDistance": 0.4965,
+      "rawRank": 1,
+      "matchPercent": 91.9
+    },
+    {
+      "imagePath": "/celebs/held-out/hunter-schafer/001.jpg",
+      "id": "hunter-schafer",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "hunter-schafer",
+      "genuineDistance": 0.0088,
+      "impostorDistance": 0.6486,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/idris-elba/001.jpg",
+      "id": "idris-elba",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "idris-elba",
+      "genuineDistance": 0.3064,
+      "impostorDistance": 0.6258,
+      "rawRank": 1,
+      "matchPercent": 95.6
+    },
+    {
+      "imagePath": "/celebs/held-out/jackie-chan/001.jpg",
+      "id": "jackie-chan",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jackie-chan",
+      "genuineDistance": 0.0175,
+      "impostorDistance": 0.6655,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jake-gyllenhaal/001.jpg",
+      "id": "jake-gyllenhaal",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jake-gyllenhaal",
+      "genuineDistance": 0.0045,
+      "impostorDistance": 0.539,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jamie-dornan/001.jpg",
+      "id": "jamie-dornan",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "jamie-dornan",
+      "genuineDistance": 0.0794,
+      "impostorDistance": 0.5843,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jason-momoa/001.jpg",
+      "id": "jason-momoa",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jason-momoa",
+      "genuineDistance": 0.0038,
+      "impostorDistance": 0.6261,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/javier-bardem/001.jpg",
+      "id": "javier-bardem",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "javier-bardem",
+      "genuineDistance": 0.0035,
+      "impostorDistance": 0.5653,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jennie-kim/001.jpg",
+      "id": "jennie-kim",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "jennie-kim",
+      "genuineDistance": 0.4395,
+      "impostorDistance": 0.5772,
+      "rawRank": 1,
+      "matchPercent": 79
+    },
+    {
+      "imagePath": "/celebs/held-out/jennifer-lawrence/001.jpg",
+      "id": "jennifer-lawrence",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "ritchie-montgomery",
+      "genuineDistance": 0.8663,
+      "impostorDistance": 0.6778,
+      "rawRank": 185,
+      "matchPercent": 25.7
+    },
+    {
+      "imagePath": "/celebs/held-out/jessica-alba/001.jpg",
+      "id": "jessica-alba",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jessica-alba",
+      "genuineDistance": 0.0179,
+      "impostorDistance": 0.5071,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jessica-chastain/001.jpg",
+      "id": "jessica-chastain",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jessica-chastain",
+      "genuineDistance": 0.0057,
+      "impostorDistance": 0.5965,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jet-li/001.jpg",
+      "id": "jet-li",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jet-li",
+      "genuineDistance": 0.0028,
+      "impostorDistance": 0.6844,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jisoo/001.jpg",
+      "id": "jisoo",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "jisoo",
+      "genuineDistance": 0.4211,
+      "impostorDistance": 0.5373,
+      "rawRank": 1,
+      "matchPercent": 83.7
+    },
+    {
+      "imagePath": "/celebs/held-out/joaquin-phoenix/001.jpg",
+      "id": "joaquin-phoenix",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "joaquin-phoenix",
+      "genuineDistance": 0.5493,
+      "impostorDistance": 0.5605,
+      "rawRank": 1,
+      "matchPercent": 43
+    },
+    {
+      "imagePath": "/celebs/held-out/john-boyega/001.jpg",
+      "id": "john-boyega",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "john-boyega",
+      "genuineDistance": 0.0041,
+      "impostorDistance": 0.6843,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/john-cho/001.jpg",
+      "id": "john-cho",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "john-cho",
+      "genuineDistance": 0.0023,
+      "impostorDistance": 0.6334,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/john-krasinski/001.jpg",
+      "id": "john-krasinski",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "john-krasinski",
+      "genuineDistance": 0.2097,
+      "impostorDistance": 0.3337,
+      "rawRank": 1,
+      "matchPercent": 99.2
+    },
+    {
+      "imagePath": "/celebs/held-out/jonah-hill/001.jpg",
+      "id": "jonah-hill",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "jonah-hill",
+      "genuineDistance": 0.0049,
+      "impostorDistance": 0.6634,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/jonathan-bailey/001.jpg",
+      "id": "jonathan-bailey",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "jonathan-bailey",
+      "genuineDistance": 0.4541,
+      "impostorDistance": 0.6316,
+      "rawRank": 1,
+      "matchPercent": 79.7
+    },
+    {
+      "imagePath": "/celebs/held-out/joseph-gordon-levitt/001.jpg",
+      "id": "joseph-gordon-levitt",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "joseph-gordon-levitt",
+      "genuineDistance": 0.2429,
+      "impostorDistance": 0.6095,
+      "rawRank": 1,
+      "matchPercent": 98.4
+    },
+    {
+      "imagePath": "/celebs/held-out/josh-hutcherson/001.jpg",
+      "id": "josh-hutcherson",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "josh-hutcherson",
+      "genuineDistance": 0.3109,
+      "impostorDistance": 0.6018,
+      "rawRank": 1,
+      "matchPercent": 95.4
+    },
+    {
+      "imagePath": "/celebs/held-out/julia-roberts/001.jpg",
+      "id": "julia-roberts",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "sarah-jane-redmond",
+      "genuineDistance": 0.8743,
+      "impostorDistance": 0.5451,
+      "rawRank": 275,
+      "matchPercent": 58.6
+    },
+    {
+      "imagePath": "/celebs/held-out/karol-g/001.jpg",
+      "id": "karol-g",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "karol-g",
+      "genuineDistance": 0.356,
+      "impostorDistance": 0.5362,
+      "rawRank": 1,
+      "matchPercent": 91.9
+    },
+    {
+      "imagePath": "/celebs/held-out/kate-middleton/001.jpg",
+      "id": "kate-middleton",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "jeffrey-nordling",
+      "genuineDistance": 0.6955,
+      "impostorDistance": 0.6361,
+      "rawRank": 11,
+      "matchPercent": 36
+    },
+    {
+      "imagePath": "/celebs/held-out/kate-winslet/001.jpg",
+      "id": "kate-winslet",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "kate-winslet",
+      "genuineDistance": 0.388,
+      "impostorDistance": 0.5994,
+      "rawRank": 1,
+      "matchPercent": 87
+    },
+    {
+      "imagePath": "/celebs/held-out/keanu-reeves/001.jpg",
+      "id": "keanu-reeves",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "keanu-reeves",
+      "genuineDistance": 0.1922,
+      "impostorDistance": 0.6912,
+      "rawRank": 1,
+      "matchPercent": 99.1
+    },
+    {
+      "imagePath": "/celebs/held-out/keira-knightley/001.jpg",
+      "id": "keira-knightley",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "keira-knightley",
+      "genuineDistance": 0.3429,
+      "impostorDistance": 0.5844,
+      "rawRank": 1,
+      "matchPercent": 92.3
+    },
+    {
+      "imagePath": "/celebs/held-out/kendall-jenner/001.jpg",
+      "id": "kendall-jenner",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "travis-scott",
+      "genuineDistance": 0.911,
+      "impostorDistance": 0.3056,
+      "rawRank": 382,
+      "matchPercent": 94.1
+    },
+    {
+      "imagePath": "/celebs/held-out/kendrick-lamar/001.jpg",
+      "id": "kendrick-lamar",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 2,
+      "topId": "chadwick-boseman",
+      "genuineDistance": 0.5806,
+      "impostorDistance": 0.5765,
+      "rawRank": 2,
+      "matchPercent": 36.8
+    },
+    {
+      "imagePath": "/celebs/held-out/kerry-washington/001.jpg",
+      "id": "kerry-washington",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "kerry-washington",
+      "genuineDistance": 0.3489,
+      "impostorDistance": 0.5576,
+      "rawRank": 1,
+      "matchPercent": 90.2
+    },
+    {
+      "imagePath": "/celebs/held-out/kevin-hart/001.jpg",
+      "id": "kevin-hart",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "kevin-hart",
+      "genuineDistance": 0.0055,
+      "impostorDistance": 0.6013,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/kim-kardashian/001.jpg",
+      "id": "kim-kardashian",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "luke-hemsworth",
+      "genuineDistance": 0.8251,
+      "impostorDistance": 0.5077,
+      "rawRank": 108,
+      "matchPercent": 66.5
+    },
+    {
+      "imagePath": "/celebs/held-out/kristen-stewart/001.jpg",
+      "id": "kristen-stewart",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "kristen-stewart",
+      "genuineDistance": 0.3496,
+      "impostorDistance": 0.57,
+      "rawRank": 1,
+      "matchPercent": 91.1
+    },
+    {
+      "imagePath": "/celebs/held-out/kylian-mbappe/001.jpg",
+      "id": "kylian-mbappe",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "simon-chin",
+      "genuineDistance": 0.7907,
+      "impostorDistance": 0.6342,
+      "rawRank": 69,
+      "matchPercent": 33.6
+    },
+    {
+      "imagePath": "/celebs/held-out/kylie-jenner/001.jpg",
+      "id": "kylie-jenner",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "kylie-jenner",
+      "genuineDistance": 0.001,
+      "impostorDistance": 0.607,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/laurence-fishburne/001.jpg",
+      "id": "laurence-fishburne",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "laurence-fishburne",
+      "genuineDistance": 0.0121,
+      "impostorDistance": 0.664,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/lee-jung-jae/001.jpg",
+      "id": "lee-jung-jae",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "lee-jung-jae",
+      "genuineDistance": 0.5178,
+      "impostorDistance": 0.6116,
+      "rawRank": 1,
+      "matchPercent": 65.3
+    },
+    {
+      "imagePath": "/celebs/held-out/lee-min-ho/001.jpg",
+      "id": "lee-min-ho",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "lee-min-ho",
+      "genuineDistance": 0.358,
+      "impostorDistance": 0.6137,
+      "rawRank": 1,
+      "matchPercent": 89.3
+    },
+    {
+      "imagePath": "/celebs/held-out/leonardo-dicaprio/001.jpg",
+      "id": "leonardo-dicaprio",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "will-smith",
+      "genuineDistance": 0.6655,
+      "impostorDistance": 0.5035,
+      "rawRank": 6,
+      "matchPercent": 50.4
+    },
+    {
+      "imagePath": "/celebs/held-out/liam-hemsworth/001.jpg",
+      "id": "liam-hemsworth",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "liam-hemsworth",
+      "genuineDistance": 0.0034,
+      "impostorDistance": 0.5533,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/liam-neeson/001.jpg",
+      "id": "liam-neeson",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "liam-neeson",
+      "genuineDistance": 0.0035,
+      "impostorDistance": 0.6043,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/lionel-messi/001.jpg",
+      "id": "lionel-messi",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "lionel-messi",
+      "genuineDistance": 0.535,
+      "impostorDistance": 0.5813,
+      "rawRank": 1,
+      "matchPercent": 51.3
+    },
+    {
+      "imagePath": "/celebs/held-out/lisa-blackpink/001.jpg",
+      "id": "lisa-blackpink",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "lisa-blackpink",
+      "genuineDistance": 0.4474,
+      "impostorDistance": 0.5058,
+      "rawRank": 1,
+      "matchPercent": 71.4
+    },
+    {
+      "imagePath": "/celebs/held-out/liu-yifei/001.jpg",
+      "id": "liu-yifei",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "liu-yifei",
+      "genuineDistance": 0.2446,
+      "impostorDistance": 0.6265,
+      "rawRank": 1,
+      "matchPercent": 97.5
+    },
+    {
+      "imagePath": "/celebs/held-out/lizzo/001.jpg",
+      "id": "lizzo",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "lizzo",
+      "genuineDistance": 0.4884,
+      "impostorDistance": 0.5923,
+      "rawRank": 1,
+      "matchPercent": 72.8
+    },
+    {
+      "imagePath": "/celebs/held-out/logan-lerman/001.jpg",
+      "id": "logan-lerman",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "logan-lerman",
+      "genuineDistance": 0.2873,
+      "impostorDistance": 0.6396,
+      "rawRank": 1,
+      "matchPercent": 96.1
+    },
+    {
+      "imagePath": "/celebs/held-out/luke-hemsworth/001.jpg",
+      "id": "luke-hemsworth",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "luke-hemsworth",
+      "genuineDistance": 0.0022,
+      "impostorDistance": 0.5548,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/lupita-nyongo/001.jpg",
+      "id": "lupita-nyongo",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "lupita-nyongo",
+      "genuineDistance": 0.4189,
+      "impostorDistance": 0.5889,
+      "rawRank": 1,
+      "matchPercent": 84.4
+    },
+    {
+      "imagePath": "/celebs/held-out/mads-mikkelsen/001.jpg",
+      "id": "mads-mikkelsen",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "mads-mikkelsen",
+      "genuineDistance": 0.0031,
+      "impostorDistance": 0.603,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/mahershala-ali/001.jpg",
+      "id": "mahershala-ali",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "mahershala-ali",
+      "genuineDistance": 0.5464,
+      "impostorDistance": 0.5514,
+      "rawRank": 1,
+      "matchPercent": 41.1
+    },
+    {
+      "imagePath": "/celebs/held-out/margot-robbie/001.jpg",
+      "id": "margot-robbie",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "margot-robbie",
+      "genuineDistance": 0.3695,
+      "impostorDistance": 0.6102,
+      "rawRank": 1,
+      "matchPercent": 90.6
+    },
+    {
+      "imagePath": "/celebs/held-out/mark-zuckerberg/001.jpg",
+      "id": "mark-zuckerberg",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "mark-zuckerberg",
+      "genuineDistance": 0.3209,
+      "impostorDistance": 0.6483,
+      "rawRank": 1,
+      "matchPercent": 94.7
+    },
+    {
+      "imagePath": "/celebs/held-out/martin-freeman/001.jpg",
+      "id": "martin-freeman",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "martin-freeman",
+      "genuineDistance": 0.3182,
+      "impostorDistance": 0.6343,
+      "rawRank": 1,
+      "matchPercent": 93.1
+    },
+    {
+      "imagePath": "/celebs/held-out/matt-bomer/001.jpg",
+      "id": "matt-bomer",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "matt-bomer",
+      "genuineDistance": 0.2659,
+      "impostorDistance": 0.5831,
+      "rawRank": 1,
+      "matchPercent": 97.5
+    },
+    {
+      "imagePath": "/celebs/held-out/matt-damon/001.jpg",
+      "id": "matt-damon",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "matt-damon",
+      "genuineDistance": 0.1961,
+      "impostorDistance": 0.6512,
+      "rawRank": 1,
+      "matchPercent": 99.2
+    },
+    {
+      "imagePath": "/celebs/held-out/meghan-markle/001.jpg",
+      "id": "meghan-markle",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "jennie-kim",
+      "genuineDistance": 0.7667,
+      "impostorDistance": 0.6058,
+      "rawRank": 65,
+      "matchPercent": 35.8
+    },
+    {
+      "imagePath": "/celebs/held-out/meryl-streep/001.jpg",
+      "id": "meryl-streep",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "elizabeth-olsen",
+      "genuineDistance": 0.9142,
+      "impostorDistance": 0.6683,
+      "rawRank": 311,
+      "matchPercent": 29.1
+    },
+    {
+      "imagePath": "/celebs/held-out/michael-b-jordan/001.jpg",
+      "id": "michael-b-jordan",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "michael-b-jordan",
+      "genuineDistance": 0.1723,
+      "impostorDistance": 0.5593,
+      "rawRank": 1,
+      "matchPercent": 99.7
+    },
+    {
+      "imagePath": "/celebs/held-out/michelle-obama/001.jpg",
+      "id": "michelle-obama",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "michelle-obama",
+      "genuineDistance": 0.005,
+      "impostorDistance": 0.6331,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/michelle-yeoh/001.jpg",
+      "id": "michelle-yeoh",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "michelle-yeoh",
+      "genuineDistance": 0.334,
+      "impostorDistance": 0.6908,
+      "rawRank": 1,
+      "matchPercent": 93.7
+    },
+    {
+      "imagePath": "/celebs/held-out/miles-teller/001.jpg",
+      "id": "miles-teller",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "miles-teller",
+      "genuineDistance": 0.3011,
+      "impostorDistance": 0.5885,
+      "rawRank": 1,
+      "matchPercent": 94.8
+    },
+    {
+      "imagePath": "/celebs/held-out/millie-bobby-brown/001.jpg",
+      "id": "millie-bobby-brown",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "millie-bobby-brown",
+      "genuineDistance": 0.002,
+      "impostorDistance": 0.5644,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/morgan-freeman/001.jpg",
+      "id": "morgan-freeman",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "morgan-freeman",
+      "genuineDistance": 0.2928,
+      "impostorDistance": 0.6236,
+      "rawRank": 1,
+      "matchPercent": 95
+    },
+    {
+      "imagePath": "/celebs/held-out/naomi-campbell/001.jpg",
+      "id": "naomi-campbell",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "billie-eilish",
+      "genuineDistance": 0.8907,
+      "impostorDistance": 0.4693,
+      "rawRank": 302,
+      "matchPercent": 60.4
+    },
+    {
+      "imagePath": "/celebs/held-out/naomi-osaka/001.jpg",
+      "id": "naomi-osaka",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "naomi-osaka",
+      "genuineDistance": 0.3569,
+      "impostorDistance": 0.6621,
+      "rawRank": 1,
+      "matchPercent": 91.3
+    },
+    {
+      "imagePath": "/celebs/held-out/natalie-portman/001.jpg",
+      "id": "natalie-portman",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "rey-lucas",
+      "genuineDistance": 0.9005,
+      "impostorDistance": 0.6538,
+      "rawRank": 263,
+      "matchPercent": 31.4
+    },
+    {
+      "imagePath": "/celebs/held-out/neymar/001.jpg",
+      "id": "neymar",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "kylian-mbappe",
+      "genuineDistance": 0.9122,
+      "impostorDistance": 0.348,
+      "rawRank": 346,
+      "matchPercent": 92.3
+    },
+    {
+      "imagePath": "/celebs/held-out/nicholas-hoult/001.jpg",
+      "id": "nicholas-hoult",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "nicholas-hoult",
+      "genuineDistance": 0.005,
+      "impostorDistance": 0.5626,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/nicki-minaj/001.jpg",
+      "id": "nicki-minaj",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "nicki-minaj",
+      "genuineDistance": 0.4599,
+      "impostorDistance": 0.5678,
+      "rawRank": 1,
+      "matchPercent": 74.8
+    },
+    {
+      "imagePath": "/celebs/held-out/nicole-kidman/001.jpg",
+      "id": "nicole-kidman",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "nicole-kidman",
+      "genuineDistance": 0.4342,
+      "impostorDistance": 0.6056,
+      "rawRank": 1,
+      "matchPercent": 80.6
+    },
+    {
+      "imagePath": "/celebs/held-out/olivia-colman/001.jpg",
+      "id": "olivia-colman",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "olivia-colman",
+      "genuineDistance": 0.2995,
+      "impostorDistance": 0.6727,
+      "rawRank": 1,
+      "matchPercent": 95.6
+    },
+    {
+      "imagePath": "/celebs/held-out/olivia-rodrigo/001.jpg",
+      "id": "olivia-rodrigo",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "olivia-rodrigo",
+      "genuineDistance": 0.0096,
+      "impostorDistance": 0.5119,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/oprah-winfrey/001.jpg",
+      "id": "oprah-winfrey",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "ian-butcher",
+      "genuineDistance": 0.8378,
+      "impostorDistance": 0.5793,
+      "rawRank": 157,
+      "matchPercent": 47.5
+    },
+    {
+      "imagePath": "/celebs/held-out/orlando-bloom/001.jpg",
+      "id": "orlando-bloom",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "orlando-bloom",
+      "genuineDistance": 0.4163,
+      "impostorDistance": 0.5644,
+      "rawRank": 1,
+      "matchPercent": 83.1
+    },
+    {
+      "imagePath": "/celebs/held-out/oscar-isaac/001.jpg",
+      "id": "oscar-isaac",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "oscar-isaac",
+      "genuineDistance": 0.2611,
+      "impostorDistance": 0.6389,
+      "rawRank": 1,
+      "matchPercent": 97.8
+    },
+    {
+      "imagePath": "/celebs/held-out/park-seo-joon/001.jpg",
+      "id": "park-seo-joon",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "park-seo-joon",
+      "genuineDistance": 0.3522,
+      "impostorDistance": 0.6149,
+      "rawRank": 1,
+      "matchPercent": 91.4
+    },
+    {
+      "imagePath": "/celebs/held-out/paul-mescal/001.jpg",
+      "id": "paul-mescal",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "paul-mescal",
+      "genuineDistance": 0.0038,
+      "impostorDistance": 0.5377,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/paul-rudd/001.jpg",
+      "id": "paul-rudd",
+      "slot": "001",
+      "conditions": [
+        "big-smile",
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "paul-rudd",
+      "genuineDistance": 0.0025,
+      "impostorDistance": 0.5897,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/pedro-pascal/001.jpg",
+      "id": "pedro-pascal",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "pedro-pascal",
+      "genuineDistance": 0.2743,
+      "impostorDistance": 0.625,
+      "rawRank": 1,
+      "matchPercent": 97.3
+    },
+    {
+      "imagePath": "/celebs/held-out/penelope-cruz-m/001.jpg",
+      "id": "penelope-cruz-m",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "penelope-cruz-m",
+      "genuineDistance": 0.0053,
+      "impostorDistance": 0.6281,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/pierce-brosnan/001.jpg",
+      "id": "pierce-brosnan",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "pierce-brosnan",
+      "genuineDistance": 0.002,
+      "impostorDistance": 0.6045,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/prince-harry/001.jpg",
+      "id": "prince-harry",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 2,
+      "topId": "ana-de-armas",
+      "genuineDistance": 0.6009,
+      "impostorDistance": 0.5869,
+      "rawRank": 2,
+      "matchPercent": 38.4
+    },
+    {
+      "imagePath": "/celebs/held-out/priyanka-chopra/001.jpg",
+      "id": "priyanka-chopra",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "shah-rukh-khan",
+      "genuineDistance": 0.9123,
+      "impostorDistance": 0,
+      "rawRank": 314,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/rachel-mcadams/001.jpg",
+      "id": "rachel-mcadams",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "rachel-mcadams",
+      "genuineDistance": 0.4424,
+      "impostorDistance": 0.5772,
+      "rawRank": 1,
+      "matchPercent": 81.4
+    },
+    {
+      "imagePath": "/celebs/held-out/ranbir-kapoor/001.jpg",
+      "id": "ranbir-kapoor",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "ranbir-kapoor",
+      "genuineDistance": 0.1349,
+      "impostorDistance": 0.6159,
+      "rawRank": 1,
+      "matchPercent": 99.8
+    },
+    {
+      "imagePath": "/celebs/held-out/ranveer-singh/001.jpg",
+      "id": "ranveer-singh",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "ranveer-singh",
+      "genuineDistance": 0.1044,
+      "impostorDistance": 0.5968,
+      "rawRank": 1,
+      "matchPercent": 99.9
+    },
+    {
+      "imagePath": "/celebs/held-out/rebecca-ferguson/001.jpg",
+      "id": "rebecca-ferguson",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "rebecca-ferguson",
+      "genuineDistance": 0.0037,
+      "impostorDistance": 0.5765,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/reesewitherspoon/001.jpg",
+      "id": "reesewitherspoon",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "reesewitherspoon",
+      "genuineDistance": 0.0041,
+      "impostorDistance": 0.6061,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/regé-jean-page/001.jpg",
+      "id": "regé-jean-page",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "regé-jean-page",
+      "genuineDistance": 0.0029,
+      "impostorDistance": 0.6024,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/riz-ahmed/001.jpg",
+      "id": "riz-ahmed",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "riz-ahmed",
+      "genuineDistance": 0.0023,
+      "impostorDistance": 0.574,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/robert-downey-jr/001.jpg",
+      "id": "robert-downey-jr",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "robert-downey-jr",
+      "genuineDistance": 0.0036,
+      "impostorDistance": 0.6212,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/robert-pattinson/001.jpg",
+      "id": "robert-pattinson",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "robert-pattinson",
+      "genuineDistance": 0.0054,
+      "impostorDistance": 0.6139,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/ryan-gosling/001.jpg",
+      "id": "ryan-gosling",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "ryan-gosling",
+      "genuineDistance": 0.0008,
+      "impostorDistance": 0.5729,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/salma-hayek/001.jpg",
+      "id": "salma-hayek",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "salma-hayek",
+      "genuineDistance": 0.0044,
+      "impostorDistance": 0.5083,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/sam-claflin/001.jpg",
+      "id": "sam-claflin",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "sam-claflin",
+      "genuineDistance": 0.0047,
+      "impostorDistance": 0.6161,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/sam-smith/001.jpg",
+      "id": "sam-smith",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "sam-smith",
+      "genuineDistance": 0.0062,
+      "impostorDistance": 0.6445,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/sandra-bullock/001.jpg",
+      "id": "sandra-bullock",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "sandra-bullock",
+      "genuineDistance": 0.4165,
+      "impostorDistance": 0.616,
+      "rawRank": 1,
+      "matchPercent": 82.4
+    },
+    {
+      "imagePath": "/celebs/held-out/saoirse-ronan/001.jpg",
+      "id": "saoirse-ronan",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "danny-dworkis",
+      "genuineDistance": 0.9477,
+      "impostorDistance": 0.5991,
+      "rawRank": 412,
+      "matchPercent": 39.8
+    },
+    {
+      "imagePath": "/celebs/held-out/scarlett-johansson/001.jpg",
+      "id": "scarlett-johansson",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "scarlett-johansson",
+      "genuineDistance": 0.2878,
+      "impostorDistance": 0.5044,
+      "rawRank": 1,
+      "matchPercent": 96.3
+    },
+    {
+      "imagePath": "/celebs/held-out/sebastian-stan/001.jpg",
+      "id": "sebastian-stan",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "lana-condor",
+      "genuineDistance": 0.9226,
+      "impostorDistance": 0.6488,
+      "rawRank": 286,
+      "matchPercent": 29.1
+    },
+    {
+      "imagePath": "/celebs/held-out/selena-gomez/001.jpg",
+      "id": "selena-gomez",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "selena-gomez",
+      "genuineDistance": 0.4055,
+      "impostorDistance": 0.5815,
+      "rawRank": 1,
+      "matchPercent": 84.9
+    },
+    {
+      "imagePath": "/celebs/held-out/serena-williams/001.jpg",
+      "id": "serena-williams",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "sza",
+      "genuineDistance": 0.6964,
+      "impostorDistance": 0.576,
+      "rawRank": 9,
+      "matchPercent": 57.1
+    },
+    {
+      "imagePath": "/celebs/held-out/seth-rogen/001.jpg",
+      "id": "seth-rogen",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "seth-rogen",
+      "genuineDistance": 0.265,
+      "impostorDistance": 0.6354,
+      "rawRank": 1,
+      "matchPercent": 97.7
+    },
+    {
+      "imagePath": "/celebs/held-out/shah-rukh-khan/001.jpg",
+      "id": "shah-rukh-khan",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "aishwarya-rai",
+      "genuineDistance": 1.0193,
+      "impostorDistance": 0.6617,
+      "rawRank": 676,
+      "matchPercent": 27.3
+    },
+    {
+      "imagePath": "/celebs/held-out/shakira/001.jpg",
+      "id": "shakira",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "shakira",
+      "genuineDistance": 0.0039,
+      "impostorDistance": 0.532,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/simu-liu/001.jpg",
+      "id": "simu-liu",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "simu-liu",
+      "genuineDistance": 0.4225,
+      "impostorDistance": 0.6233,
+      "rawRank": 1,
+      "matchPercent": 82
+    },
+    {
+      "imagePath": "/celebs/held-out/song-kang/001.jpg",
+      "id": "song-kang",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "song-kang",
+      "genuineDistance": 0.5628,
+      "impostorDistance": 0.6726,
+      "rawRank": 1,
+      "matchPercent": 56.5
+    },
+    {
+      "imagePath": "/celebs/held-out/stephen-curry/001.jpg",
+      "id": "stephen-curry",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "travis-scott",
+      "genuineDistance": 0.8895,
+      "impostorDistance": 0.2105,
+      "rawRank": 276,
+      "matchPercent": 98.8
+    },
+    {
+      "imagePath": "/celebs/held-out/sydney-sweeney/001.jpg",
+      "id": "sydney-sweeney",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "sydney-sweeney",
+      "genuineDistance": 0.4185,
+      "impostorDistance": 0.5982,
+      "rawRank": 1,
+      "matchPercent": 84.8
+    },
+    {
+      "imagePath": "/celebs/held-out/taylor-lautner/001.jpg",
+      "id": "taylor-lautner",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "taylor-lautner",
+      "genuineDistance": 0.2471,
+      "impostorDistance": 0.5881,
+      "rawRank": 1,
+      "matchPercent": 98
+    },
+    {
+      "imagePath": "/celebs/held-out/taylor-swift/001.jpg",
+      "id": "taylor-swift",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "taylor-swift",
+      "genuineDistance": 0.4149,
+      "impostorDistance": 0.5365,
+      "rawRank": 1,
+      "matchPercent": 81.9
+    },
+    {
+      "imagePath": "/celebs/held-out/tiffany-haddish/001.jpg",
+      "id": "tiffany-haddish",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "tiffany-haddish",
+      "genuineDistance": 0.0072,
+      "impostorDistance": 0.6137,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/timothee-chalamet/001.jpg",
+      "id": "timothee-chalamet",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "doja-cat",
+      "genuineDistance": 0.8696,
+      "impostorDistance": 0.6146,
+      "rawRank": 186,
+      "matchPercent": 39
+    },
+    {
+      "imagePath": "/celebs/held-out/tom-hanks/001.jpg",
+      "id": "tom-hanks",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "tom-hanks",
+      "genuineDistance": 0.2345,
+      "impostorDistance": 0.6708,
+      "rawRank": 1,
+      "matchPercent": 98.5
+    },
+    {
+      "imagePath": "/celebs/held-out/tom-hardy/001.jpg",
+      "id": "tom-hardy",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "tom-hardy",
+      "genuineDistance": 0.0256,
+      "impostorDistance": 0.6047,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/tom-holland/001.jpg",
+      "id": "tom-holland",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "tom-holland",
+      "genuineDistance": 0.346,
+      "impostorDistance": 0.5338,
+      "rawRank": 1,
+      "matchPercent": 92.8
+    },
+    {
+      "imagePath": "/celebs/held-out/tony-leung/001.jpg",
+      "id": "tony-leung",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "tony-leung",
+      "genuineDistance": 0.3106,
+      "impostorDistance": 0.5787,
+      "rawRank": 1,
+      "matchPercent": 93.7
+    },
+    {
+      "imagePath": "/celebs/held-out/trevor-noah/001.jpg",
+      "id": "trevor-noah",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "trevor-noah",
+      "genuineDistance": 0.0025,
+      "impostorDistance": 0.6031,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/uzo-aduba/001.jpg",
+      "id": "uzo-aduba",
+      "slot": "001",
+      "conditions": [
+        "low-light"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "uzo-aduba",
+      "genuineDistance": 0.0074,
+      "impostorDistance": 0.659,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/vanessa-kirby/001.jpg",
+      "id": "vanessa-kirby",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "vanessa-kirby",
+      "genuineDistance": 0.467,
+      "impostorDistance": 0.6199,
+      "rawRank": 1,
+      "matchPercent": 75.7
+    },
+    {
+      "imagePath": "/celebs/held-out/victoria-beckham/001.jpg",
+      "id": "victoria-beckham",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "seth-rogen",
+      "genuineDistance": 0.8913,
+      "impostorDistance": 0.7,
+      "rawRank": 227,
+      "matchPercent": 23.6
+    },
+    {
+      "imagePath": "/celebs/held-out/viola-davis/001.jpg",
+      "id": "viola-davis",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "remy-auberjonois",
+      "genuineDistance": 0.7027,
+      "impostorDistance": 0.6396,
+      "rawRank": 6,
+      "matchPercent": 33.2
+    },
+    {
+      "imagePath": "/celebs/held-out/will-smith/001.jpg",
+      "id": "will-smith",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "will-smith",
+      "genuineDistance": 0.0058,
+      "impostorDistance": 0.5003,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/zac-efron/001.jpg",
+      "id": "zac-efron",
+      "slot": "001",
+      "conditions": [
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "zac-efron",
+      "genuineDistance": 0.39,
+      "impostorDistance": 0.6089,
+      "rawRank": 1,
+      "matchPercent": 86.9
+    },
+    {
+      "imagePath": "/celebs/held-out/zayn-malik/001.jpg",
+      "id": "zayn-malik",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "zayn-malik",
+      "genuineDistance": 0.5733,
+      "impostorDistance": 0.5837,
+      "rawRank": 1,
+      "matchPercent": 37.2
+    },
+    {
+      "imagePath": "/celebs/held-out/zendaya/001.jpg",
+      "id": "zendaya",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 1,
+      "topId": "zendaya",
+      "genuineDistance": 0.3334,
+      "impostorDistance": 0.5695,
+      "rawRank": 1,
+      "matchPercent": 92
+    },
+    {
+      "imagePath": "/celebs/held-out/zhang-ziyi/001.jpg",
+      "id": "zhang-ziyi",
+      "slot": "001",
+      "conditions": [],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": -1,
+      "topId": "lee-jung-jae",
+      "genuineDistance": 0.8858,
+      "impostorDistance": 0.5516,
+      "rawRank": 254,
+      "matchPercent": 42.9
+    },
+    {
+      "imagePath": "/celebs/held-out/zoe-kravitz/001.jpg",
+      "id": "zoe-kravitz",
+      "slot": "001",
+      "conditions": [
+        "yaw-gt-25"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": true,
+      "rank": 1,
+      "topId": "zoe-kravitz",
+      "genuineDistance": 0.0026,
+      "impostorDistance": 0.2026,
+      "rawRank": 1,
+      "matchPercent": 100
+    },
+    {
+      "imagePath": "/celebs/held-out/zoe-saldana/001.jpg",
+      "id": "zoe-saldana",
+      "slot": "001",
+      "conditions": [
+        "low-light",
+        "big-smile"
+      ],
+      "detected": true,
+      "refused": false,
+      "nearDuplicate": false,
+      "rank": 3,
+      "topId": "naomi-campbell",
+      "genuineDistance": 0.5514,
+      "impostorDistance": 0.5189,
+      "rawRank": 3,
+      "matchPercent": 46.8
+    }
+  ]
+}

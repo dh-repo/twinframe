@@ -11,11 +11,20 @@ import {
   type CameraFacing,
 } from "@/lib/ux/open-camera";
 import { isLikelyPhotoFile, normalizeImageFile } from "@/lib/image/heic";
+import {
+  BURST_CAPTURE_COUNT,
+  BURST_DURATION_MS,
+  canvasToJpegBlob,
+  captureVideoBurst,
+  rankBurstCanvases,
+} from "@/lib/face/query-burst";
 
 interface WebcamCaptureProps {
   open: boolean;
   onClose: () => void;
   onCapture: (blob: Blob) => void;
+  /** Optional sharpest-K JPEGs from the live burst; crop-review still uses onCapture. */
+  onBurst?: (blobs: Blob[]) => void;
   /** Stream acquired in the tap that opened the sheet (iOS gesture-safe). */
   presetStream?: MediaStream | null;
 }
@@ -26,6 +35,7 @@ export function WebcamCapture({
   open,
   onClose,
   onCapture,
+  onBurst,
   presetStream = null,
 }: WebcamCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -97,29 +107,30 @@ export function WebcamCapture({
       const w = video.videoWidth;
       const h = video.videoHeight;
       if (w < 2 || h < 2) throw new Error("Camera frame not ready");
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas unavailable");
-      if (facingMode === "user") {
-        ctx.translate(w, 0);
-        ctx.scale(-1, 1);
-      }
       playShutterSound();
-      ctx.drawImage(video, 0, 0, w, h);
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/jpeg", 0.92),
-      );
-      if (!blob) throw new Error("Capture failed");
-      onCapture(blob);
+      const frames = await captureVideoBurst(video, {
+        count: BURST_CAPTURE_COUNT,
+        durationMs: BURST_DURATION_MS,
+        mirror: facingMode === "user",
+      });
+      if (frames.length === 0) throw new Error("Capture failed");
+      const ranked = rankBurstCanvases(frames);
+      const bestCanvas = (ranked[0]?.canvas ?? frames[0]) as HTMLCanvasElement;
+      const bestBlob = await canvasToJpegBlob(bestCanvas);
+      if (onBurst) {
+        const burstBlobs = await Promise.all(
+          ranked.map((row) => canvasToJpegBlob(row.canvas as HTMLCanvasElement)),
+        );
+        onBurst(burstBlobs);
+      }
+      onCapture(bestBlob);
       onClose();
     } catch {
       setError("Capture failed. Try again or pick a photo.");
     } finally {
       setCapturing(false);
     }
-  }, [ready, capturing, facingMode, onCapture, onClose]);
+  }, [ready, capturing, facingMode, onCapture, onBurst, onClose]);
 
   const onNativeFile = useCallback(
     async (file: File | undefined) => {
@@ -219,7 +230,7 @@ export function WebcamCapture({
             className="max-w-[14rem] flex-1"
           >
             <Camera className="h-5 w-5" />
-            {capturing ? "Capturing…" : "Snap"}
+            {capturing ? "Scan" : "Snap"}
           </Button>
           <Button
             type="button"

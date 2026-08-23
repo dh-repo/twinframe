@@ -18,17 +18,17 @@ export const HARD_DET_CONFIDENCE_MIN = 0.35;
 export const HARD_FACE_COVERAGE_MIN = 0.02;
 
 /**
- * Max adjusted cosine distance still treated as a presentable look-alike.
- * Beyond this, rankByDescriptor returns [] (no forced top-K).
+ * Max adjusted cosine distance treated as presentable at all. Beyond this,
+ * rankByDescriptor returns [] — the probe is orthogonal/garbage and even a
+ * labeled Distant Twin card would be fiction.
  *
- * Evidence (held-out v2.1, n=270 clean probes, full 512-d geometry, raw distance as the
- * conservative proxy for adjusted): at 0.72 the floor refuses only 0.4% of
- * probes; at 0.65 it refuses 4.8% while losing ZERO rank-1 correct matches and
- * lifting precision-among-passed from 74.2% to 77.6%. Adjusted distances run up
- * to ~16% above raw via demographic denominators, so the operating point errs
- * toward refusing junk. Sweep lives in .github/agent-state/long-run-checkpoint.md.
+ * Evidence (held-out v2.1 sweep over 270 clean probes, full 512-d geometry):
+ * both 0.65 and 0.72 lose ZERO rank-1 correct matches. Under the Distant Twin
+ * UX the band between them shows an honestly labeled nearest-neighbor card
+ * instead of an empty screen, so the higher floor keeps the product alive
+ * without making any false look-alike claim. EdgeFace-512 impostor p90 ~0.67.
  */
-export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.65;
+export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.72;
 
 /**
  * Match percent below this is not shown as a look-alike top-K.
@@ -37,7 +37,6 @@ export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.65;
  * this branch — it guards other callers that may pass raw percents.
  */
 export const LOOKALIKE_MIN_PERCENT = 32;
-
 export interface PoseGateInput {
   yaw?: number | null;
   pitch?: number | null;
@@ -131,9 +130,19 @@ export function softQualityBlockGate(q: QualityGateInput): LookalikeGateResult {
   return { pass: true };
 }
 
+export const OPEN_SET_MISS_GALLERY =
+  "No close look-alike in the gallery — try another photo or angle.";
+
+export const OPEN_SET_MISS_PACK =
+  "No close look-alike in this pack — try Everyone or another gallery.";
+
+export function openSetMissMessage(scopedPack: boolean): string {
+  return scopedPack ? OPEN_SET_MISS_PACK : OPEN_SET_MISS_GALLERY;
+}
+
 export function distanceLookalikeGate(
   bestAdjustedDistance: number,
-  topMatchPercent?: number,
+  scopedPack = false,
 ): LookalikeGateResult {
   if (
     !Number.isFinite(bestAdjustedDistance) ||
@@ -142,18 +151,7 @@ export function distanceLookalikeGate(
     return {
       pass: false,
       reason: "distance",
-      message: "No close look-alike in the gallery — try another photo or angle.",
-    };
-  }
-  if (
-    typeof topMatchPercent === "number" &&
-    Number.isFinite(topMatchPercent) &&
-    topMatchPercent < LOOKALIKE_MIN_PERCENT
-  ) {
-    return {
-      pass: false,
-      reason: "distance",
-      message: "No close look-alike in the gallery — try another photo or angle.",
+      message: openSetMissMessage(scopedPack),
     };
   }
   return { pass: true };
