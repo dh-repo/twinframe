@@ -206,3 +206,92 @@ describe("held-out protocol metrics on synthetic galleries", () => {
     assert.equal(records[0].leaked, false);
   });
 });
+
+describe("v4 parser browser parity (P0 regression guard)", () => {
+  it("reads full-width vectors at header-dim stride, matching the browser loader math", async () => {
+    const { loadGallery } = await import("./evaluate-held-out-v2.ts");
+    const bin = fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin"));
+    assert.equal(bin.subarray(0, 4).toString("latin1"), "AFv4");
+    const view = new DataView(bin.buffer, bin.byteOffset, bin.byteLength);
+    const count = view.getUint32(8, true);
+    const dim = view.getUint16(12, true);
+    const scale = view.getFloat32(16, true);
+    assert.equal(dim >= 256 && dim <= 1024, true, `implausible header dim ${dim}`);
+
+    // Independent reference: dequantize + L2-normalize exactly as
+    // src/lib/face/embeddings.ts loadCelebrityEmbeddings does.
+    const ref = (i) => {
+      const raw = new Float32Array(dim);
+      for (let j = 0; j < dim; j++) raw[j] = (bin[32 + i * dim + j] - 128) * scale;
+      let n = 0;
+      for (let j = 0; j < dim; j++) n += raw[j] * raw[j];
+      n = Math.sqrt(n) || 1;
+      return Float32Array.from(raw, (v) => v / n);
+    };
+
+    const gallery = loadGallery();
+    assert.equal(gallery.length, count);
+    for (const i of [0, 7, Math.floor(count / 2), count - 1]) {
+      const got = gallery[i].descriptor;
+      assert.equal(got.length, dim, `bucket ${i} must carry all ${dim} dims`);
+      const want = ref(i);
+      let maxErr = 0;
+      for (let j = 0; j < dim; j++) maxErr = Math.max(maxErr, Math.abs(got[j] - want[j]));
+      assert.ok(maxErr < 1e-6, `bucket ${i} deviates from browser-parity parse by ${maxErr}`);
+    }
+  });
+
+  it("local-only content check: no PROBE file byte-equals any gallery-referenced or enrolled portrait file", async () => {
+    const crypto = await import("node:crypto");
+    const sha = (fp) => crypto.createHash("sha256").update(fs.readFileSync(fp)).digest("hex");
+
+    const usedPaths = new Set();
+    const addRel = (s) => {
+      if (!s) return;
+      usedPaths.add(String(s).replace(/^\/celebs\//, "").replace(/^\//, ""));
+    };
+    for (const t of JSON.parse(fs.readFileSync(path.join(CELEBS, "extra-templates.json"), "utf8")).templates ?? []) {
+      addRel(t.source);
+    }
+    for (const f of ["gallery.buckets.json", "index.json"]) {
+      for (const e of JSON.parse(fs.readFileSync(path.join(CELEBS, f), "utf8"))) {
+        for (const k of ["path", "path192", "fallbackPath"]) addRel(e[k]);
+      }
+    }
+    const usedHashes = new Set();
+    for (const rel of usedPaths) {
+      const fp = path.join(CELEBS, rel);
+      if (fs.existsSync(fp)) usedHashes.add(sha(fp));
+    }
+    for (const e of fs.readdirSync(CELEBS)) {
+      if (e.endsWith(".jpg")) {
+        const fp = path.join(CELEBS, e);
+        if (fs.existsSync(fp)) usedHashes.add(sha(fp));
+      }
+    }
+    if (usedHashes.size === 0) {
+      console.log("  content check skipped: no gallery-referenced files present on disk");
+      return;
+    }
+
+    // Scope: files actually used as probes — the tracked pack and the clean manifest.
+    const probeSources = new Set();
+    const pack = JSON.parse(fs.readFileSync(path.join(CELEBS, "held-out/descriptors.json"), "utf8"));
+    for (const c of pack.cases ?? []) if (c.source) probeSources.add(c.source);
+    const manifest = JSON.parse(fs.readFileSync(path.join(CELEBS, "held-out/manifest-clean.json"), "utf8"));
+    for (const c of manifest.cases ?? []) if (c.imagePath) probeSources.add(c.imagePath);
+
+    const offenders = [];
+    for (const src of probeSources) {
+      const fp = path.join(CELEBS, String(src).replace(/^\/celebs\//, "").replace(/^\//, ""));
+      if (!fs.existsSync(fp)) continue;
+      if (usedHashes.has(sha(fp))) offenders.push(src);
+    }
+    assert.deepEqual(
+      offenders,
+      [],
+      `probe files byte-identical to gallery/enrollment images (${offenders.join(", ")}) — regenerate the probe pack`,
+    );
+  });
+
+});

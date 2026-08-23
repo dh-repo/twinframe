@@ -6,7 +6,7 @@ on-device matches against a **1,000-celebrity gallery** (plus extra templates me
 ## Features
 
 - **Upload** or **webcam / phone camera** capture
-- **On-device** face detection + 256-d EdgeFace-M embeddings via ONNX Runtime Web — no photo
+- **On-device** face detection + 512-d EdgeFace embeddings via ONNX Runtime Web — no photo
   ever leaves your browser
 - Auto face crop for small faces / gym selfies, CLAHE contrast boost for hard lighting
 - Honest confidence scoring: distance → percent with margin-aware open-set gating; weak matches
@@ -20,16 +20,17 @@ Three different numbers exist and they mean different things:
 | Protocol | Probes | Result | What it proves |
 |---|---|---|---|
 | `scripts/evaluate-accuracy.mjs` tier probes | 313 | 95.6% Top-1 (Tier 1) | Pipeline sanity. Probe portraits overlap enrollment imagery — an upper bound, never user-facing accuracy |
-| `scripts/evaluate-held-out-v2.ts` **v2.1 leak-excluded** | 274 clean | **46.0% Rank-1**, 61.3% Rank-5, MRR 0.535 | Probes from photos that contribute to **no** gallery artifact, encoded through the same SCRFD → align → EdgeFace-512d path the browser runs |
-| Historical "held-out" reports (≤ 2026-08-18) | 735 | ~~86.5%~~ | **Invalid**: probes were 128-d FaceNet vectors scored against a 512-d gallery (cross-space), and 531/735 probe files also served as gallery extra-template sources |
+| `scripts/evaluate-held-out-v2.ts` **v2.1 leak-excluded, full 512-d geometry** | 272 clean | **73.9% Rank-1**, 80.1% Rank-5, MRR 0.762 | Probes from photos that contribute to **no** gallery artifact (by path and by content hash), encoded through the same SCRFD → align → EdgeFace-512d path the browser runs |
+| Historical "held-out" reports (≤ 2026-08-23) | 735 / 274 | ~~86.5%~~ / ~~46.0%~~ | Both invalid: the first scored 128-d probes against a 512-d gallery with 531/735 leaked probe files; the second parsed the 512-d binary at a 256 stride, i.e. half-vectors |
 
-Treat **46.0% held-out Rank-1** as the honest headline. Protocol details: 308 clean photos
-encoded (307 detected), 33 ids not enrolled in the shipped gallery excluded and reported,
-12 gate refusals counted as misses, age/gender priors taken from the recorded detector
-output exactly as the live pipeline would see them. Methodology lives in code and tests
+Treat **73.9% held-out Rank-1** as the honest headline. Protocol details: probes re-encoded
+through the live ONNX pipeline in headless Chromium; 33 ids not enrolled in the shipped
+gallery excluded and reported; gate refusals counted as misses; two byte-level duplicate
+probes removed; age/gender priors come from recorded detector output exactly as the live
+pipeline would see them. Methodology lives in code and tests
 (`scripts/evaluate-held-out-v2.ts`, `scripts/held-out-protocol.test.mjs`) — not in blog
-prose. The distance→percent mapping shown in the UI is not yet calibrated against
-held-out reliability data.
+prose. The UI additionally shows a measured P(match is correct) calibrated on this held-out
+set (ECE ≈ 0.03); the similarity percent remains a similarity percent.
 
 ## Stack
 
@@ -65,7 +66,7 @@ node scripts/evaluate-held-out-v2.ts                    # honest held-out rank-1
 
 1. Detect face + landmarks (SCRFD)
 2. Align to the 112×112 ArcFace canonical frame (5-point Umeyama similarity transform)
-3. Extract a 256-d EdgeFace-M descriptor, L2-normalized
+3. Extract a 512-d EdgeFace descriptor, L2-normalized
 4. Cosine distance against every gallery bucket; soft age/gender priors never override geometry
 5. Margin-aware percent mapping + presentable-rank policy (#1 any gender; #2+ match the probe's
    confident gender)

@@ -57,7 +57,7 @@ export interface HeldOutCase {
 
 let GALLERY_DIM = 512;
 
-function parseV4AndLoad(): GalleryEntry[] {
+export function loadGallery(): GalleryEntry[] {
   const buckets = JSON.parse(
     fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
   ) as Array<{
@@ -85,9 +85,12 @@ function parseV4AndLoad(): GalleryEntry[] {
   GALLERY_DIM = dimension;
   const out: GalleryEntry[] = new Array(buckets.length);
   for (let i = 0; i < buckets.length; i++) {
-    const off = 32 + i * 256;
-    const raw = new Float32Array(256);
-    for (let j = 0; j < 256; j++) raw[j] = (bin[off + j]! - 128) * scale;
+    // Stride and width MUST come from the header — the browser loader reads full
+    // records (embeddings.ts off = i * dim), and a hardcoded stride silently scores
+    // half-vectors in the wrong geometry (P0 found by the cycle-6 reviewer).
+    const off = 32 + i * dimension;
+    const raw = new Float32Array(dimension);
+    for (let j = 0; j < dimension; j++) raw[j] = (bin[off + j]! - 128) * scale;
     const b = buckets[i]!;
     out[i] = {
       id: b.id,
@@ -163,7 +166,7 @@ export interface HeldOutMetrics {
   mrr: number;
 }
 
-function metricsFor(records: readonly EvaluatedRecord[], pred: (r: EvaluatedRecord) => boolean): HeldOutMetrics {
+export function metricsFor(records: readonly EvaluatedRecord[], pred: (r: EvaluatedRecord) => boolean): HeldOutMetrics {
   const rs = records.filter(pred);
   const n = rs.length;
   if (n === 0) return { n: 0, rank1Pct: 0, rank5Pct: 0, mrr: 0 };
@@ -276,7 +279,7 @@ function main() {
   const floorArg = process.argv.indexOf("--floor");
   const rankFloor = floorArg >= 0 ? Number(process.argv[floorArg + 1]) : null;
 
-  const gallery = mergeExtraTemplates(parseV4AndLoad());
+  const gallery = mergeExtraTemplates(loadGallery());
 
   const packPath = path.join(CELEBS, "held-out/descriptors.json");
   const pack = JSON.parse(fs.readFileSync(packPath, "utf8")) as { cases: HeldOutCase[] };
@@ -336,31 +339,36 @@ function main() {
     }
   }
 
-  const jsonArg = process.argv.indexOf("--json");
-  const outPath = jsonArg >= 0 ? process.argv[jsonArg + 1] : path.join(ROOT, "reports/held-out-v2-baseline.json");
-  fs.mkdirSync(path.dirname(outPath!), { recursive: true });
-  fs.writeFileSync(
-    outPath!,
-    JSON.stringify(
-      {
-        at: new Date().toISOString(),
-        protocol: "held-out-v2.1-leak-excluded",
-        includeLeaked,
-        gallerySize: gallery.length,
-        probesTotal: pack.cases.length,
-        skipped,
-        notEnrolled,
-        leakedExcluded,
-        clean,
-        allEvaluated: all,
-        records,
-      },
-      null,
-      1,
-    ),
+  const payload = JSON.stringify(
+    {
+      at: new Date().toISOString(),
+      protocol: "held-out-v2.1-leak-excluded",
+      includeLeaked,
+      gallerySize: gallery.length,
+      probesTotal: pack.cases.length,
+      skipped,
+      notEnrolled,
+      leakedExcluded,
+      clean,
+      allEvaluated: all,
+      records,
+    },
+    null,
+    1,
   );
-  console.log("");
-  console.log(`  report: ${path.relative(ROOT, outPath!)}`);
+  const jsonArg = process.argv.indexOf("--json");
+  if (jsonArg >= 0) {
+    const outPath = process.argv[jsonArg + 1]!;
+    fs.mkdirSync(path.dirname(outPath), { recursive: true });
+    fs.writeFileSync(outPath, payload);
+    console.log("");
+    console.log(`  report: ${path.relative(ROOT, outPath)}`);
+  } else if (process.env.TWINFRAME_SAVE_BASELINE === "1") {
+    const outPath = path.join(ROOT, "reports/held-out-v2-baseline.json");
+    fs.writeFileSync(outPath, payload);
+    console.log("");
+    console.log(`  report: ${path.relative(ROOT, outPath)} (baseline overwritten)`);
+  }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

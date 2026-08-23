@@ -96,8 +96,11 @@ export function rankByDescriptor(
     user.faceCoverage ?? 0.25,
     userGenderProb,
   );
+  // Gap must be measured against EVERY enrolled identity (the `deduped` best-per-id
+  // set), not just the presentable top-K — the gender policy can hide the nearest
+  // impostor from what we display, and hiding it must not inflate confidence.
   const probabilityCorrect = calibratedRank1Probability(
-    top.map((t) => ({ celebrityId: t.celeb.id, distance: t.dist })),
+    deduped.map((t) => ({ celebrityId: t.celeb.id, distance: t.dist })),
   );
 
   return top.map((t, i) => {

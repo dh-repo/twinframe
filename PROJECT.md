@@ -42,15 +42,16 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
   - `scripts/test-challenger-m3-2.mjs`: **14 / 14 PASSED**.
   - `scripts/m4-challenger-empirical.mjs`: **35 / 35 PASSED**.
 
-> **Honesty note (2026-08, rev 2).** The tier-probe numbers above overlap the enrollment
+> **Honesty note (2026-08, rev 3).** The tier-probe numbers above overlap the enrollment
 > imagery — they measure pipeline sanity and are an upper bound, not user-facing accuracy.
-> The honest headline comes from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded):
-> **46.0% Rank-1 / MRR 0.535 over 274 clean probes** (`reports/held-out-v2-baseline.json`),
-> using photos that contribute to no gallery artifact, encoded through the same
-> SCRFD → align → EdgeFace-512d path the browser runs. Earlier internal reports claiming
-> ~86% "held-out" were invalid: those probes were 128-d FaceNet vectors compared against a
-> 512-d gallery (cross-space cosine), and most probe files also served as gallery templates.
-> Any new accuracy claim must state which protocol produced it; see AGENTS.md "Eval scripts".
+> The honest headline comes from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded,
+> full 512-d geometry): **73.9% Rank-1 / MRR 0.762 over 272 clean probes**
+> (`reports/held-out-v2-baseline.json`), using photos that match no gallery artifact by path
+> or content hash, encoded through the same SCRFD → align → EdgeFace-512d path the browser
+> runs. Two earlier internal claims were invalidated on the way here: ~86% "held-out"
+> (128-d probes vs a 512-d gallery, with most probe files doubling as gallery templates) and
+> a 46.0% intermediate figure produced by parsing the binary at half stride. Any new accuracy
+> claim must state which protocol produced it; see AGENTS.md "Eval scripts".
 
 
 

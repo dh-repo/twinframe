@@ -753,11 +753,6 @@
   {
    "id": "hyun-bin",
    "name": "Hyun Bin",
-   "imagePath": "/celebs/held-out/hyun-bin/001.jpg"
-  },
-  {
-   "id": "hyun-bin",
-   "name": "Hyun Bin",
    "imagePath": "/celebs/held-out/hyun-bin/002.jpg"
   },
   {
@@ -1264,11 +1259,6 @@
    "id": "prince-harry",
    "name": "Prince Harry",
    "imagePath": "/celebs/held-out/prince-harry/001.jpg"
-  },
-  {
-   "id": "priyanka-chopra",
-   "name": "Priyanka Chopra",
-   "imagePath": "/celebs/held-out/priyanka-chopra/001.jpg"
   },
   {
    "id": "rachel-mcadams",

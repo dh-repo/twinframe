@@ -30,7 +30,7 @@ type Row = {
   id: string;
   name: string;
   descriptor: number[];
-  age: number;
+  age: number | null;
   gender: "male" | "female" | "unknown";
   genderProb: number;
   ok: boolean;
@@ -164,7 +164,7 @@ function HeldOutEncodePage() {
             id: c.id,
             name: c.name,
             descriptor: [],
-            age: 35,
+            age: null,
             gender: "unknown",
             genderProb: 0,
             ok: false,
@@ -179,7 +179,7 @@ function HeldOutEncodePage() {
                   id: c.id,
                   name: c.name,
                   descriptor: res.descriptor,
-                  age: Number.isFinite(res.age) ? res.age : 35,
+                  age: Number.isFinite(res.age) ? res.age : null,
                   gender: res.gender,
                   genderProb: res.genderProb,
                   ok: true,

@@ -19,6 +19,8 @@ npm run build                       # ort asset copy + vite build + post-build p
 - Expected steady state (2026-08, night branch): all of the above exit 0.
 - `evaluate-accuracy.mjs` regenerates tracked files under `reports/`. Restore them
   (`git checkout -- reports/`) unless the run is the deliberate new baseline you are committing.
+  `test:heldout` only writes a report when given `--json <path>` (CI) or
+  `TWINFRAME_SAVE_BASELINE=1`; bare runs are read-only.
 - Lint (`npm run lint`) is advisory today; do not treat its current findings as green.
 
 ## Eval scripts (what proves accuracy claims)
@@ -26,7 +28,7 @@ npm run build                       # ort asset copy + vite build + post-build p
 | Script | What it measures | Honest? |
 |---|---|---|
 | `scripts/evaluate-accuracy.mjs` | Tier-probe Top-1/Top-5/MRR/margins/latency vs v4 q8 gallery | Probes overlap enrollment portraits — treat as *pipeline sanity*, never as user-facing accuracy |
-| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d EdgeFace) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (46.0% Rank-1 / MRR 0.535, n=274, 2026-08). Enforces probe dim == gallery header dim and excludes any probe whose source file contributed to a gallery artifact; `scripts/held-out-protocol.test.mjs` pins both rules |
+| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d EdgeFace) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (73.9% Rank-1 / MRR 0.762, n=272, 2026-08, full 512-d geometry). Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity |
 | `scripts/rebuild-gallery-v5.mjs` | embed/fetch/assemble/eval/thumbnails phases for the multi-shot v5 gallery | Resumable, sha256-cached; excludes anything that fails detection/clustering |
 | `scripts/test-non-face-rejection.mjs` | Non-face input rejection end-to-end | Hard-case suite; port into CI |
 
@@ -93,9 +95,11 @@ reports/                           # generated eval artifacts (tracked; restore 
 migrations/0001_auth.sql           # better-auth schema (do not edit)
 ```
 
-Dimension discipline: the live EdgeFace-M path and the shipped v4 q8 gallery are both 256-d;
-legacy face-api tooling also emits 128-d descriptors. `rankByDescriptor` normalizes whatever
-arrives — when adding an engine, extend the distance plumbing rather than assuming 256.
+Dimension discipline: the live EdgeFace path and the shipped v4 q8 gallery are BOTH 512-d
+(the "AFv4" header carries the truth — trust it for stride and width; a hardcoded stride once
+halved every vector silently). Legacy face-api tooling also emits 128-d descriptors.
+`rankByDescriptor` normalizes whatever arrives — when adding an engine, extend the distance
+plumbing rather than assuming any fixed dimension.
 
 ## Conventions
 
