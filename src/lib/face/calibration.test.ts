@@ -11,6 +11,7 @@ import {
 } from "./calibration.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const REPO_ROOT = path.resolve(ROOT, "..", "..");
 
 describe("calibrated rank-1 probability", () => {
   it("is monotonically decreasing in candidate distance (gap fixed)", () => {
@@ -115,5 +116,19 @@ describe("calibrated rank-1 probability", () => {
     }
     assert.ok(ece < 0.05, `calibration ECE regressed to ${ece.toFixed(4)} (must stay < 0.05)`);
     void CALIBRATION_VERSION;
+  });
+});
+
+describe("calibration provenance", () => {
+  it("shipped coefficients match the deterministic refit on tracked eval data", async () => {
+    const { execFileSync } = await import("node:child_process");
+    // The refit script is deterministic (fixed iterations/lr) and exits 1 when
+    // CALIBRATION_COEFFS drift beyond tolerance from the tracked report — the
+    // guard against changing data or constants without re-fitting.
+    execFileSync(
+      process.execPath,
+      ["--experimental-strip-types", "scripts/refit-calibration.ts"],
+      { cwd: REPO_ROOT, timeout: 60_000, stdio: "pipe" },
+    );
   });
 });

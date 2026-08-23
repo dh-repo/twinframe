@@ -1,23 +1,23 @@
 /**
  * Measured calibration of P(rank-1 is the true identity | geometry), fitted by
  * scripts/calibrate-edgeface.mjs successor logic against the leak-excluded
- * held-out protocol v2.1 in full 512-d geometry (n=274, 2026-08): ECE 0.029, AUC 0.996.
+ * held-out protocol v2.1 in full 512-d geometry (n=303, 2026-08): refit via scripts/refit-calibration.ts, deterministic.
  *
  * Features are raw EdgeFace cosine distances:
  *   f1 = dTrue        (distance of the candidate shown to the user)
  *   f2 = gap          (dBestWrong - dTrue: separability from the nearest other identity)
  * Standardized with the recorded mu/sd, then logistic(w . z).
  */
-export const CALIBRATION_VERSION = "heldout-v2.1-logistic-512d-2026-08";
+export const CALIBRATION_VERSION = "heldout-v2.1-logistic-512d-n303-2026-08";
 
 export const CALIBRATION_COEFFS = {
-  intercept: 4.5063,
-  wDtrue: -1.5719,
-  wGap: 6.6977,
-  muDtrue: 0.4028,
-  muGap: 0.1578,
-  sdDtrue: 0.3044,
-  sdGap: 0.3217,
+  intercept: 4.3639,
+  wDtrue: -1.9435,
+  wGap: 6.5781,
+  muDtrue: 0.4146,
+  muGap: 0.1493,
+  sdDtrue: 0.2961,
+  sdGap: 0.3233,
 } as const;
 
 const clampProb = (p: number) => Math.max(0.001, Math.min(0.999, p));

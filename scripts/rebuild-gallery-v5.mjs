@@ -123,7 +123,7 @@ function discoverShots() {
     shots.get(id).push({ role, path: p });
   };
   for (const f of fs.readdirSync(CELEBS)) {
-    if (f.endsWith(".jpg") && f !== "sample_user.jpg") {
+    if (f.endsWith(".jpg")) {
       add(f.replace(/\.jpg$/, ""), "portrait", path.join(CELEBS, f));
     }
   }
@@ -295,7 +295,7 @@ async function candidateFileTitles(title, celebName) {
 
 function growthList() {
   const realIds = new Set(
-    fs.readdirSync(CELEBS).filter((f) => f.endsWith(".jpg") && f !== "sample_user.jpg").map((f) => f.replace(/\.jpg$/, "")),
+    fs.readdirSync(CELEBS).filter((f) => f.endsWith(".jpg")).map((f) => f.replace(/\.jpg$/, "")),
   );
   const names = [
     "Margot Robbie", "Timothee Chalamet", "Cillian Murphy", "Anya Taylor-Joy", "Florence Pugh",
