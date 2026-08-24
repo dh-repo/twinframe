@@ -224,3 +224,25 @@ remains in backlog.
 
 Final shipped state: honest headline **76.7% held-out Rank-1 / MRR 0.788**, calibrated
 confidence in the UI, every gate green on main.
+
+### Continuation 5 (cycles 29–31, "10x push")
+- **Phase A**: `scripts/analyze-failures.ts` + committed `reports/failure-analysis.json`.
+  Miss taxonomy on merged main: 0 refusals / 21 crowd-outs / 49 far-misses.
+- **Phase B (negative result)**: appearance-family tie-breaker and geometry-rescue
+  implemented, swept across thresholds up to unlimited — never fired. Demographic
+  filtering costs zero measurable correctness; hypothesis rejected with receipts.
+- **Phase C round-2**: 962 candidates fetched+encoded; identity gate admitted 7 views
+  (657 wrong-identity rejections); templates → 782. Like-for-like held-out stable at
+  76.7% — coverage work protects long-tail celebs rather than moving this probe set.
+- **Phase D**: `model-arena.mjs` + `onnxruntime-node` (audited: MIT, version-matched).
+  Baseline validated end-to-end; third-party registry corrected after upstream 404s
+  (GhostFaceNet moved; AdaFace needs pth→onnx conversion) — no dead URLs shipped.
+- **Phase E (the catch)**: verdict-tier evidence floors caught **"Soft Match" at 42%
+  correctness** — a shipped honesty violation. SOFT_MATCH_MIN_MARGIN=0.02 demotes
+  crowded neighborhoods to Distant Twin; soft-match precision now ~100%. One legacy
+  expectation updated deliberately (unknowable margin ⇒ distant-twin).
+- **Merged to main twice** (`9df4aec`, then PR #24 → `9df4aec+`): all checks green
+  including a11y over six states and the throttled perf probe.
+
+Shipped headline unchanged at **76.7% held-out Rank-1 / MRR 0.788** but the *labels*
+are now honest at every tier, and the failure taxonomy directs all future accuracy work.
