@@ -276,3 +276,15 @@ immediately once load dropped to ~21.)
   (garavv/arcface-onnx on HF) carries NO license and descends from research-only
   training data — excluded per AGENTS.md legal rules, determination recorded in
   the arena registry. Arena stands ready for any owner-provided ONNX.
+
+### Continuation 6 addendum 2: GhostFaceNet converted, arena head-to-head run
+- **Conversion succeeded** where architecture-guessing failed: the v1.2 h5 carries its own
+  Functional config (CSP-style variant, 298 layers) — `keras.models.load_model` loads it
+  directly. tf2onnx opset-13 export verified TF↔ONNX cosine 0.99997.
+- **Arena v2**: NHWC planar-fill bug fixed (was silently corrupting channel-last models).
+- **Head-to-head on identical unaligned inputs**: GhostFaceNetV1 W1.3 S1 (MS1MV3, MIT)
+  26.1% Top-1 / MRR 0.288 vs EdgeFace-M 24.7% / 0.269 over 510 probes × 1,024 portraits.
+- **Interpretation guardrail**: the arena deliberately skips alignment, so it ranks
+  embedding quality on hard crops; it does NOT predict shipped accuracy. The decisive
+  experiment is wiring a candidate into the live pipeline and re-running
+  `test:heldout` — recorded as next-step for any model-swap decision.
