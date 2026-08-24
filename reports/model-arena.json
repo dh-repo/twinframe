@@ -1,6 +1,17 @@
 {
- "at": "2026-08-24T00:52:49.516Z",
+ "at": "2026-08-24T02:52:38.220Z",
  "results": [
+  {
+   "id": "ghostfacenet_g600",
+   "name": "GhostFaceNetV1 W1.3 S1 ArcFace (MS1MV3)",
+   "license": "MIT (verify against the relocated repository)",
+   "enrolled": 296,
+   "probes": 510,
+   "top1Pct": 26.078431372549023,
+   "top5Pct": 30,
+   "mrr": 0.28764650169452904,
+   "evalMs": 27660
+  },
   {
    "id": "edgeface_m",
    "name": "EdgeFace-M (shipped baseline)",
@@ -10,7 +21,7 @@
    "top1Pct": 24.705882352941178,
    "top5Pct": 26.666666666666668,
    "mrr": 0.2686445324235658,
-   "evalMs": 16439
+   "evalMs": 20816
   }
  ]
 }
