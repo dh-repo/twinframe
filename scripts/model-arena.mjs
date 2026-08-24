@@ -36,6 +36,11 @@ const REGISTRY = {
     license: "in-repo (Apache-2.0 model card)",
     sourceUrl: "https://github.com/otroshi/edgeface",
   },
+  // NOTE: both third-party entries require manual preparation today —
+  // ghostfacenet_g600: upstream repo moved (404); original weights were Keras,
+  //   so an ONNX export must be produced or relocated before evaluation.
+  // adaface_r50: upstream ships PyTorch .pth only; an ONNX conversion is
+  //   required. Drop a converted model at the registered path to evaluate.
   ghostfacenet_g600: {
     name: "GhostFaceNet-S G600",
     file: path.join(ARENA_DIR, "ghostfacenet_g600.onnx"),
@@ -45,10 +50,9 @@ const REGISTRY = {
     mean: 0,
     std: 1,
     normalizeFrom0to255: true,
-    license: "MIT",
-    sourceUrl: "https://github.com/otroshi/ghostfacenet",
-    download:
-      "https://github.com/otroshi/ghostfacenet/releases/download/v2.0.0/GhostFaceNet_S_G600_112.onnx",
+    license: "MIT (verify against the relocated repository)",
+    sourceUrl: "https://github.com/otroshi/ghostfacenet (moved — relocate before trusting)",
+    download: null,
   },
   adaface_r50: {
     name: "AdaFace ResNet-50 (WebFace4M)",
