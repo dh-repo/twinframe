@@ -1,8 +1,8 @@
 {
- "at": "2026-08-23T23:32:31.339Z",
+ "at": "2026-08-24T00:47:35.964Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
- "gallerySize": 1799,
+ "gallerySize": 1806,
  "probesTotal": 305,
  "skipped": 0,
  "notEnrolled": 4,
@@ -3555,7 +3555,7 @@
    "dTrue": 0.04102286398314847,
    "dTop1": 0.04102286398314847,
    "dMinSameId": 0.04102286398314847,
-   "dBestWrong": 0.6402461254106843,
+   "dBestWrong": 0.6269673097506977,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false

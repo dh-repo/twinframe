@@ -128,6 +128,12 @@ export default defineConfig(({ command }) => ({
     host: process.env.HOST || "0.0.0.0",
     port: Number(process.env.PORT || 8080),
     strictPort: true,
+    // Dev-parity for cross-origin isolation (production sets it via nitro
+    // routeRules below) so ORT multi-threaded WASM behaves identically.
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "credentialless",
+    },
   },
 
   resolve: {
@@ -159,6 +165,18 @@ export default defineConfig(({ command }) => ({
           nitro({
             preset: "vercel",
             serverDir: "./server",
+            routeRules: {
+              "/**": {
+                headers: {
+                  // Cross-origin isolation unlocks ORT multi-threaded WASM
+                  // (onnx-engine.ts picks numThreads 4 when isolated).
+                  // credentialless keeps third-party embeds working without
+                  // CORP headers on every subresource.
+                  "Cross-Origin-Opener-Policy": "same-origin",
+                  "Cross-Origin-Embedder-Policy": "credentialless",
+                },
+              },
+            },
           }),
         ]
       : []),

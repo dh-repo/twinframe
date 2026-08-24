@@ -32,12 +32,15 @@ describe("onnx-engine: Environment Initialization", () => {
     (globalThis as any).crossOriginIsolated = origIsolated;
   });
 
-  it("uses 4 threads when crossOriginIsolated is true", () => {
+  it("stays single-threaded even when crossOriginIsolated is true", () => {
+    // Pinned after a throttled A/B measured multi-threaded WASM slower; the
+    // pin holds regardless of isolation until quiet-hardware or real-device
+    // benchmarks justify re-enabling threads (see onnx-engine.ts comment).
     const origIsolated = (globalThis as any).crossOriginIsolated;
     (globalThis as any).crossOriginIsolated = true;
     resetOnnxEngineState();
     initOnnxEngine();
-    assert.equal(ort.env.wasm.numThreads, 4);
+    assert.equal(ort.env.wasm.numThreads, 1);
     (globalThis as any).crossOriginIsolated = origIsolated;
   });
 
