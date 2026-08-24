@@ -135,7 +135,7 @@ async function main() {
       }
       ok96++;
     } catch (e) {
-      try { fs.copyFileSync(src, dst96.replace(".webp",".jpg")); } catch {}
+      try { fs.copyFileSync(src, dst96.replace(".webp",".jpg")); } catch { /* best-effort */ }
       fail++;
     }
     try {

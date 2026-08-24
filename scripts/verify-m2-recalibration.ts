@@ -17,11 +17,11 @@ function evaluateCustomEnsemble(
     const q = fullGallery[idx]!;
     const searchSpace = fullGallery.filter((b) => b !== q);
 
-    let isCorrectRank1 = false;
-    let minDiffDist = Infinity;
-    let topMatchId = "";
+    const isCorrectRank1 = false;
+    const minDiffDist = Infinity;
+    const topMatchId = "";
 
-    let sameCelebMatches = searchSpace.filter((b) => b.id === q.id);
+    const sameCelebMatches = searchSpace.filter((b) => b.id === q.id);
     let posDist = 0;
     if (sameCelebMatches.length > 0) {
       let minD = Infinity;
@@ -32,7 +32,7 @@ function evaluateCustomEnsemble(
       posDist = minD;
     }
 
-    let diffCelebMatches = searchSpace.filter((b) => b.id !== q.id);
+    const diffCelebMatches = searchSpace.filter((b) => b.id !== q.id);
     let negDist = 1.0;
     if (diffCelebMatches.length > 0) {
       let minD = Infinity;

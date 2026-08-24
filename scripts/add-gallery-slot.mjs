@@ -120,7 +120,7 @@ index.push({
   gender,
   genderProb,
 });
-fs.writeFileSync(indexPath, JSON.stringify(index, null, 2));
+fs.writeFileSync(path.join(CELEBS, "index.json"), JSON.stringify(index, null, 2));
 
 const metaPath = path.join(CELEBS, "embeddings.v4.meta.json");
 if (fs.existsSync(metaPath)) {

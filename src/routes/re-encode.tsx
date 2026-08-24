@@ -204,7 +204,7 @@ function ReEncodePage() {
                 if (i % 40 === 0) {
                   try {
                     setPreview((r as unknown as { faceCanvas: HTMLCanvasElement }).faceCanvas?.toDataURL("image/jpeg", 0.5).slice(0, 120) + "...");
-                  } catch {}
+                  } catch { /* best-effort */ }
                 }
                 appendLog(`OK ${r.label} age=${r.age} conf=${r.confidence.toFixed(2)} via ${r.source}`);
               } else {
@@ -252,7 +252,7 @@ function ReEncodePage() {
               if (i % 40 === 0) {
                 try {
                   setPreview((r as unknown as { faceCanvas: HTMLCanvasElement }).faceCanvas?.toDataURL("image/jpeg", 0.5).slice(0, 120) + "...");
-                } catch {}
+                } catch { /* best-effort */ }
               }
               appendLog(`OK ${r.label} age=${r.age} conf=${r.confidence.toFixed(2)} via ${r.source}`);
             } else {

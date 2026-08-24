@@ -210,8 +210,8 @@ export function crossValidate(data: Array<{ f1: number; f2: number; y: number }>
     return total;
   }
 
-  let logPairs: Array<[number, number]> = [];
-  let isoPairs: Array<[number, number]> = [];
+  const logPairs: Array<[number, number]> = [];
+  const isoPairs: Array<[number, number]> = [];
   for (let i = 0; i < 5; i++) {
     const train = folds.filter((_, j) => j !== i).flat();
     const test = folds[i]!;

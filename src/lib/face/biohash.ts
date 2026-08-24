@@ -120,7 +120,7 @@ export function getProjectionMatrix(
   const total = dimOut * dimIn;
   while (i < total) {
     let u1 = rng();
-    let u2 = rng();
+    const u2 = rng();
     while (u1 <= 1e-15) u1 = rng(); // Avoid log(0)
     const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
     const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);

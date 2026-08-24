@@ -133,7 +133,7 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
       tx.oncomplete = () => res();
       tx.onerror = () => res();
     });
-  } catch {}
+  } catch { /* best-effort */ }
 }
 
 /** Gallery cache-busting version — bump when the binary gallery, its extra
@@ -290,9 +290,9 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
             void idbSet(meta.version, out);
             return galleryCache;
           }
-        } catch {}
+        } catch { /* best-effort */ }
       }
-    } catch {}
+    } catch { /* best-effort */ }
 
     // Legacy fallback: JSON gallery (v2)
     const res = await fetch("/celebs/embeddings.json?v=2.1.0", { cache: "force-cache" });

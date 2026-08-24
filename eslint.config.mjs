@@ -23,7 +23,7 @@ export default tseslint.config(
     files: ["**/*.{ts,tsx,js,jsx,mjs,cjs}"],
     languageOptions: {
       ecmaVersion: 2022,
-      globals: { ...globals.browser, ...globals.node },
+      globals: { ...globals.browser, ...globals.node, faceapi: "readonly" },
     },
     plugins: {
       "react-hooks": reactHooks,
@@ -40,6 +40,7 @@ export default tseslint.config(
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/no-explicit-any": "off",
+      "no-empty": ["error", { allowEmptyCatch: true }],
     },
   },
   // Disable rules that conflict with Prettier formatting.
