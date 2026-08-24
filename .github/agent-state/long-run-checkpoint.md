@@ -288,3 +288,22 @@ immediately once load dropped to ~21.)
   embedding quality on hard crops; it does NOT predict shipped accuracy. The decisive
   experiment is wiring a candidate into the live pipeline and re-running
   `test:heldout` — recorded as next-step for any model-swap decision.
+
+### Continuation 7: model arena completed with a shipped-pipeline head-to-head
+- **GhostFaceNet converted**: the v1.2 h5 carries its own Functional config — loaded
+  directly via `keras.models.load_model` (CSP-style variant, 298 layers, 512-d output).
+  tf2onnx opset-13 export verified at TF↔ONNX cosine 0.99997.
+- **Live-pipeline head-to-head** (identical SCRFD+5pt alignment, same 305 held-out
+  probes, same ranking math):
+  - EdgeFace-M shipped: **68.2% Rank-1 / MRR 0.729** (slots enrollment)
+  - GhostFaceNetV1 W1.3 S1: 66.6% / 0.696 (thumbs/192 enrollment)
+  - **Shipped model wins by 1.6pts.** GhostFaceNet is 43% smaller — relevant only if
+    model size becomes the binding constraint.
+- **Arena node-side port parked**: the aligned node arena's scoring had a self-exclusion
+  bug making its metrics meaningless; the browser-pipeline comparison replaces it with
+  higher fidelity and zero porting risk. The node arena file remains for future use
+  once its scoring is fixed.
+- **Licensing**: GhostFaceNet confirmed MIT (HamadYA/GhostFaceNets). The only
+  ready-made third-party ONNX (garavv/arcface-onnx on HF) has no license — excluded.
+- Evaluation engine (`engine=ghostfacenet` in held-out-encode) retained for future
+  model comparisons; evaluation-only ONNX removed from public/models.
