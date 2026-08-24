@@ -30,7 +30,7 @@ probes removed; age/gender priors come from recorded detector output exactly as 
 pipeline would see them. Methodology lives in code and tests
 (`scripts/evaluate-held-out-v2.ts`, `scripts/held-out-protocol.test.mjs`) — not in blog
 prose. The UI additionally shows a measured P(match is correct) calibrated on this held-out
-set (ECE ≈ 0.03); the similarity percent remains a similarity percent.
+set (cross-validated ECE ≈ 0.024; the similarity percent remains a similarity percent).
 
 ## Stack
 
