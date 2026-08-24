@@ -258,3 +258,10 @@ are now honest at every tier, and the failure taxonomy directs all future accura
 
 Open items requiring owner input: model arena candidates need manually prepared
 ONNX files (upstream repos moved / ship PyTorch only). Everything else executed.
+
+### Live verification (post-merge)
+Full user flow executed headlessly against `npm run dev` on merged main:
+upload → crop review → approve → result in **13s**, verdict **DEAD RINGER**,
+calibrated ≈100% P(match) on a reference portrait. Honesty labels render
+end-to-end. (Local dev-server boot had stalled under desktop load 60+; passed
+immediately once load dropped to ~21.)
