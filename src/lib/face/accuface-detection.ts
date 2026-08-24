@@ -114,8 +114,8 @@ function paddedSquareCrop(
   const padY = box.height * padFrac * 1.1;
   let x = Math.max(0, box.x - padX);
   let y = Math.max(0, box.y - padY);
-  let w = Math.min(srcW - x, box.width + padX * 2);
-  let h = Math.min(srcH - y, box.height + padY * 2.2);
+  const w = Math.min(srcW - x, box.width + padX * 2);
+  const h = Math.min(srcH - y, box.height + padY * 2.2);
   const side = Math.max(w, h, 1);
   x = Math.max(0, Math.min(srcW - side, x + (w - side) / 2));
   y = Math.max(0, Math.min(srcH - side, y + (h - side) / 2));

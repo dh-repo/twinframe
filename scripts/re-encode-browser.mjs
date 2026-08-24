@@ -284,7 +284,7 @@ async function handleResults(results) {
     const gzQ8 = execSync(`gzip -c "${BIN_Q8}" | wc -c`).toString().trim();
     const gzF32 = execSync(`gzip -c "${BIN_F32}" | wc -c`).toString().trim();
     log(`gzipped q8 ${gzQ8} f32 ${gzF32}`);
-  } catch {}
+  } catch { /* best-effort */ }
 
   // Acceptance check: require >90% real for "best product"
   if (successes / allCelebs.length < 0.9) {

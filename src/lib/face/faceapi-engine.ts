@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { PHONE_CLOSEUP_HINT, PHONE_CLOSEUP_MIN_COVERAGE } from "./hard-probes.ts";
 import type { FaceStageLatencies, FaceTelemetry } from "./types";
 
@@ -26,8 +26,8 @@ function cropBoxToCanvas(
   const padY = box.height * padFrac;
   let x = Math.max(0, box.x - padX);
   let y = Math.max(0, box.y - padY);
-  let w = Math.min(srcW - x, box.width + padX * 2);
-  let h = Math.min(srcH - y, box.height + padY * 2);
+  const w = Math.min(srcW - x, box.width + padX * 2);
+  const h = Math.min(srcH - y, box.height + padY * 2);
   const side = Math.max(w, h, 1);
   x = Math.max(0, Math.min(srcW - side, x + (w - side) / 2));
   y = Math.max(0, Math.min(srcH - side, y + (h - side) / 2));
@@ -1177,8 +1177,8 @@ export async function detectAndDescribe(
   const padY = origBox.height * pad * 1.1;
   let cropX = Math.max(0, origBox.x - padX);
   let cropY = Math.max(0, origBox.y - padY);
-  let cropW = Math.min(w - cropX, origBox.width + padX * 2);
-  let cropH = Math.min(h - cropY, origBox.height + padY * 2.2);
+  const cropW = Math.min(w - cropX, origBox.width + padX * 2);
+  const cropH = Math.min(h - cropY, origBox.height + padY * 2.2);
   const side = Math.max(cropW, cropH);
   cropX = Math.max(0, Math.min(w - side, cropX + (cropW - side) / 2));
   cropY = Math.max(0, Math.min(h - side, cropY + (cropH - side) / 2));
@@ -1213,8 +1213,8 @@ export async function detectAndDescribe(
   }
 
   // Landmarks on the face crop (best effort — never fail the whole detect)
-  let normalizedLandmarks: { x: number; y: number }[] = [];
-  let croppedLandmarks: { x: number; y: number }[] = [];
+  const normalizedLandmarks: { x: number; y: number }[] = [];
+  const croppedLandmarks: { x: number; y: number }[] = [];
   let landmarks: unknown;
   try {
     const withLm = await api

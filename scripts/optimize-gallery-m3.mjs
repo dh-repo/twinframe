@@ -462,7 +462,7 @@ async function main() {
           desc128 = l2Normalize(det.descriptor);
           extractedFromJpg++;
         }
-      } catch {}
+      } catch { /* best-effort */ }
     }
 
     if (!desc128) {

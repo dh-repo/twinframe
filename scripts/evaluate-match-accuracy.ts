@@ -260,7 +260,7 @@ export function loadGalleryDataNode(rootDir = process.cwd()): CelebrityEmbedding
   if (fs.existsSync(featuresPath)) {
     try {
       featuresMap = JSON.parse(fs.readFileSync(featuresPath, "utf-8"));
-    } catch {}
+    } catch { /* best-effort */ }
   }
 
   const meta: GalleryMeta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
@@ -369,7 +369,7 @@ export function loadGalleryDataNode(rootDir = process.cwd()): CelebrityEmbedding
         }>;
       };
       cachedGalleryData = mergeExtraReferences(cachedGalleryData, extra.references ?? []);
-    } catch {}
+    } catch { /* best-effort */ }
   }
 
   return cachedGalleryData;
@@ -759,7 +759,7 @@ export async function evaluateMatchAccuracy(options?: EvaluationOptions): Promis
         passSeparationGap,
         overallPass,
       };
-    } catch {}
+    } catch { /* best-effort */ }
   }
 
   const targetRank1Threshold = options?.targetRank1Pct ?? 98.0;
