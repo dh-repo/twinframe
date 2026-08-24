@@ -36,6 +36,13 @@ const REGISTRY = {
     license: "in-repo (Apache-2.0 model card)",
     sourceUrl: "https://github.com/otroshi/edgeface",
   },
+  // LICENSING REVIEW 2026-08-24: the only readily downloadable third-party
+  // ONNX candidate found (huggingface.co/garavv/arcface-onnx) carries NO
+  // license (no tag, no file) and descends from the insightface/ArcFace
+  // lineage whose training data is research-only. Excluded from evaluation
+  // per the biometrics/legal rules in AGENTS.md. Any future candidate must
+  // ship a commercial-ok license before entering this registry.
+  //
   // NOTE: both third-party entries require manual preparation today —
   // ghostfacenet_g600: upstream repo moved (404); original weights were Keras,
   //   so an ONNX export must be produced or relocated before evaluation.
