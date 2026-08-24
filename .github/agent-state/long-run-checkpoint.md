@@ -307,3 +307,21 @@ immediately once load dropped to ~21.)
   ready-made third-party ONNX (garavv/arcface-onnx on HF) has no license — excluded.
 - Evaluation engine (`engine=ghostfacenet` in held-out-encode) retained for future
   model comparisons; evaluation-only ONNX removed from public/models.
+
+### Continuation 8: zero lint errors + stale doc cleanup
+- **ESLint 66→0 errors**: faceapi global declared; no-empty allows empty catch (valid
+  best-effort pattern); prefer-const and unused-var auto-fixed. 111 advisory warnings
+  remain (documented as advisory in AGENTS.md).
+- **Stale docs removed**: TEST_INFRA.md and TEST_READY.md described a Vitest suite in
+  tests/e2e/ replaced by node --test months ago.
+- **Real bug in add-gallery-slot.mjs**: `indexPath` used but never defined — would have
+  crashed on any future slot addition. Fixed with inline path construction.
+- **Merged to main** (`596d5ec`) with verify green.
+
+### Cumulative session totals (all continuations)
+- ~80 commits on `night/twinframe`, all merged to `main` via green PRs
+- 3 adversarial reviewer rounds (P0×1, P1×5 — all remediated)
+- 2 self-caught P0-class bugs (selector bug, YAML mangling)
+- Zero privacy violations
+- Nightly eval cron armed and proven on main
+- Every accuracy claim protocol-named and enforced by a test
