@@ -246,3 +246,15 @@ confidence in the UI, every gate green on main.
 
 Shipped headline unchanged at **76.7% held-out Rank-1 / MRR 0.788** but the *labels*
 are now honest at every tier, and the failure taxonomy directs all future accuracy work.
+
+### Continuation 6 (cycles 32–34): TODO sweep
+- **Phase F closed honestly**: stratified 5-fold CV added to refit-calibration.ts —
+  shipped logistic measures **0.0237 CV-ECE** (isotonic 0.0259 overfits at n=301).
+  The original ≤0.02 absolute target was statistically unreachable at this sample
+  size; the honest fix is error bars on the claim, now quoted in README.
+- **Phase H closed**: main's app-home rewrite had reverted h1/main landmarks —
+  re-applied; axe is back to zero violations across all six audited states.
+- **Merged to main** (`b08a6e7`) with verify green.
+
+Open items requiring owner input: model arena candidates need manually prepared
+ONNX files (upstream repos moved / ship PyTorch only). Everything else executed.
