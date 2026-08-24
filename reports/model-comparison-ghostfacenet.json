@@ -1,0 +1,26 @@
+{
+  "at": "2026-08-24T00:30:00Z",
+  "task": "Held-out probes ranked against full enrollment; identical SCRFD + 5-point alignment via live pipeline for both models",
+  "probes": 305,
+  "edgeface_m_shipped": {
+    "enrollment": "shipped AFv4 slots (1024, mixed sources)",
+    "rank1Pct": 68.2,
+    "rank5Pct": 77.7,
+    "mrr": 0.729,
+    "note": "includes 2 guaranteed misses from dropped duplicate-slot ids (anya-taylor, gwenyth-paltrow) still present as probe ids"
+  },
+  "ghostfacenet_v1_w13_s1": {
+    "enrollment": "thumbs/192 encodes (1023/1024, uniform source)",
+    "rank1Pct": 66.6,
+    "rank5Pct": 73.4,
+    "mrr": 0.696,
+    "modelSizeMB": 8.4,
+    "license": "MIT (HamadYA/GhostFaceNets)"
+  },
+  "edgeface_m_shipped_modelSizeMB": 14.8,
+  "conclusion": "EdgeFace-M beats GhostFaceNetV1 by 1.6pts Rank-1 on the shipped task. GhostFaceNet is 43% smaller but does not justify a model swap on accuracy. Both models share the same duplicate-id probe artifacts.",
+  "caveats": [
+    "EdgeFace enrollment is mixed-source (original enrollment); GhostFaceNet enrollment is uniform thumbs/192. Direction of bias unknown but both are plausible enrollment sources.",
+    "GhostFaceNet conversion is a full saved-model load (CSP-style variant, 298 config layers) — architecture differs from backbones/ghost_model.py's builder."
+  ]
+}
