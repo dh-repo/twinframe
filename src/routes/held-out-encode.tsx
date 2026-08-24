@@ -55,7 +55,8 @@ function HeldOutEncodePage() {
     (async () => {
       try {
         const params = new URLSearchParams(window.location.search);
-        const engine = params.get("engine") === "faceapi" ? "faceapi" : "edgeface";
+        const engineParam = params.get("engine");
+        const engine = engineParam === "faceapi" ? "faceapi" : engineParam === "ghostfacenet" ? "ghostfacenet" : "edgeface";
 
         setStatus("loading");
 
@@ -96,6 +97,71 @@ function HeldOutEncodePage() {
             );
             return {
               descriptor: Array.from(ef.embedding),
+              age: Math.round(det?.age ?? NaN),
+              gender: det?.gender ?? "unknown",
+              genderProb: det?.genderProbability ?? 0,
+            };
+          };
+        }
+
+        // GhostFaceNet evaluation engine: identical SCRFD + 5-point alignment as
+        // edgeface, different embedding model (NHWC, (v-127.5)/128, 512-d).
+        // Evaluation-only; never shipped to public/models on main.
+        if (engine === "ghostfacenet") {
+          appendLog("loading scrfd + ghostfacenet + face-api demographics…");
+          const [{ detectSCRFD }, { padSourceForDetection }, { align5PointSimilarityCanvas }, { loadFaceApi, detectAndDescribe }] =
+            await Promise.all([
+              import("@/lib/face/scrfd"),
+              import("@/lib/face/pipeline"),
+              import("@/lib/face/similarity-transform"),
+              import("@/lib/face/faceapi-engine"),
+            ]);
+          const ort = await import("onnxruntime-web");
+          await loadFaceApi();
+          const ghostPath = params.get("ghostModel") || "/models/ghostfacenet_w13_s1.onnx";
+          const ghostSession = (await ort.InferenceSession.create(ghostPath, {
+            executionProviders: ["wasm"],
+          })) as unknown as {
+            inputNames: string[];
+            // ort-web Tensor is structurally compatible; narrowed for the eval path
+            run: (feeds: Record<string, never>) => Promise<Record<string, { data: Float32Array }>>;
+          };
+          appendLog(`ghost session ready: ${ghostSession.inputNames[0]}`);
+
+          describeWithEdgeFace = async (img) => {
+            let scrfd = await detectSCRFD(img).catch(() => null);
+            if (scrfd && !scrfd.primary) {
+              const padded = padSourceForDetection(img);
+              if (padded) {
+                const retry = await detectSCRFD(padded).catch(() => null);
+                if (retry?.primary) scrfd = retry;
+              }
+            }
+            const primary = scrfd?.primary;
+            if (!primary) return null;
+            const canvas = align5PointSimilarityCanvas(img, primary.landmarks, 112);
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return null;
+            const imgData = ctx.getImageData(0, 0, 112, 112);
+            const nhwc = new Float32Array(112 * 112 * 3);
+            for (let i = 0; i < 112 * 112; i++) {
+              nhwc[i * 3] = (imgData.data[i * 4] - 127.5) / 128;
+              nhwc[i * 3 + 1] = (imgData.data[i * 4 + 1] - 127.5) / 128;
+              nhwc[i * 3 + 2] = (imgData.data[i * 4 + 2] - 127.5) / 128;
+            }
+            const inputName = (ghostSession as unknown as { inputNames: string[] }).inputNames[0];
+            const out = await ghostSession.run({ [inputName]: new ort.Tensor("float32", nhwc, [1, 112, 112, 3]) as never });
+            const t = out[Object.keys(out)[0]];
+            const vec = Array.from(t.data as Float32Array);
+            let n = 0;
+            for (const v of vec) n += v * v;
+            n = Math.sqrt(n) || 1;
+            const descriptor = vec.map((v) => v / n);
+            const det = await detectAndDescribe(img, { skipDescriptor: true, maxSide: 512 }).catch(
+              () => null,
+            );
+            return {
+              descriptor,
               age: Math.round(det?.age ?? NaN),
               gender: det?.gender ?? "unknown",
               genderProb: det?.genderProbability ?? 0,
