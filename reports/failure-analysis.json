@@ -1,0 +1,715 @@
+{
+ "at": "2026-08-23T23:33:32.562Z",
+ "probes": 301,
+ "hits": 231,
+ "summary": {
+  "refusal": 0,
+  "crowd-out": 21,
+  "mid-miss": 0,
+  "far-miss": 49
+ },
+ "crowdOutFamilyTieBreakApplicable": 8,
+ "crowdOutFamiliesMatch": 6,
+ "misses": [
+  {
+   "id": "adam-sandler",
+   "category": "far-miss",
+   "winner": "ansel-elgort",
+   "dTrue": 0.7657952071892336,
+   "margin": -0.14325081597597866,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "adele",
+   "category": "far-miss",
+   "winner": "katie-cassidy",
+   "dTrue": 0.749385506081436,
+   "margin": -0.10192634883727225,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "aishwarya-rai",
+   "category": "far-miss",
+   "winner": "travis-scott",
+   "dTrue": 0.9300510325403853,
+   "margin": -0.6440846660574819,
+   "familyFixable": false,
+   "probeFamily": "south_asian",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "al-pacino",
+   "category": "far-miss",
+   "winner": "adam-sandler",
+   "dTrue": 0.8018704545010616,
+   "margin": -0.12403946327649906,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "al-pacino",
+   "category": "crowd-out",
+   "winner": "frank-duffy",
+   "dTrue": 0.6116395308552224,
+   "margin": -0.00006443197643790644,
+   "familyFixable": true,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "angelina-jolie",
+   "category": "far-miss",
+   "winner": "jason-momoa",
+   "dTrue": 0.9105517552800562,
+   "margin": -0.2624856474275452,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "pacific"
+  },
+  {
+   "id": "ansel-elgort",
+   "category": "far-miss",
+   "winner": "kevin-dunn",
+   "dTrue": 0.833486319909435,
+   "margin": -0.24538840502832826,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "ansel-elgort",
+   "category": "far-miss",
+   "winner": "gong-yoo",
+   "dTrue": 0.8276887033335887,
+   "margin": -0.20258007370190834,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "anya-taylor-joy",
+   "category": "far-miss",
+   "winner": "nicki-minaj",
+   "dTrue": 0.9370757396097412,
+   "margin": -0.39804374821666766,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "aubrey-plaza",
+   "category": "crowd-out",
+   "winner": "lisa-marie-digiacinto",
+   "dTrue": 0.5689548703240218,
+   "margin": -0.015193406229958684,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": null
+  },
+  {
+   "id": "bae-doona",
+   "category": "far-miss",
+   "winner": "jisoo",
+   "dTrue": 0.8006767814313605,
+   "margin": -0.14549796962571837,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "bae-doona",
+   "category": "crowd-out",
+   "winner": "riz-ahmed",
+   "dTrue": 0.7099261342216476,
+   "margin": -0.06731671392330874,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "south_asian"
+  },
+  {
+   "id": "ben-affleck",
+   "category": "far-miss",
+   "winner": "colin-donnell",
+   "dTrue": 0.9956248575853367,
+   "margin": -0.3773104297226987,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "bill-gates",
+   "category": "far-miss",
+   "winner": "millie-bobby-brown",
+   "dTrue": 0.7581444200835803,
+   "margin": -0.1658356231974738,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "blake-lively",
+   "category": "crowd-out",
+   "winner": "elizabeth-weinstein",
+   "dTrue": 0.6067437709326077,
+   "margin": -0.010777095198490683,
+   "familyFixable": true,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "bruno-mars",
+   "category": "far-miss",
+   "winner": "travis-scott",
+   "dTrue": 0.8043847530797978,
+   "margin": -0.26273151333898626,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "black"
+  },
+  {
+   "id": "cara-delevingne",
+   "category": "far-miss",
+   "winner": "dwayne-johnson",
+   "dTrue": 0.8411642738435134,
+   "margin": -0.5030151716193162,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "pacific"
+  },
+  {
+   "id": "christian-bale",
+   "category": "far-miss",
+   "winner": "natalie-portman",
+   "dTrue": 0.9095741990872881,
+   "margin": -0.4715850943318153,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "colin-firth",
+   "category": "far-miss",
+   "winner": "matt-bomer",
+   "dTrue": 0.9716243343606374,
+   "margin": -0.37561325986149807,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "daisy-edgar-jones",
+   "category": "far-miss",
+   "winner": "reesewitherspoon",
+   "dTrue": 0.9183520684594925,
+   "margin": -0.5127993117412732,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "white"
+  },
+  {
+   "id": "daniel-kaluuya",
+   "category": "crowd-out",
+   "winner": "greta-gerwig",
+   "dTrue": 0.3014665724585369,
+   "margin": -0.008004959557572189,
+   "familyFixable": true,
+   "probeFamily": "black",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "david-beckham",
+   "category": "crowd-out",
+   "winner": "billie-eilish",
+   "dTrue": 0.7103934353463874,
+   "margin": -0.05779453729918638,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "demi-moore",
+   "category": "crowd-out",
+   "winner": "salma-hayek",
+   "dTrue": 0.5997842327885489,
+   "margin": -0.01908900644915712,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "latine"
+  },
+  {
+   "id": "demi-moore",
+   "category": "crowd-out",
+   "winner": "elizabeth-olsen",
+   "dTrue": 0.7176661116073025,
+   "margin": -0.22016879334424855,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "white"
+  },
+  {
+   "id": "doja-cat",
+   "category": "crowd-out",
+   "winner": "travis-scott",
+   "dTrue": 0.6431951561555138,
+   "margin": -0.28950339225063093,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "donald-glover",
+   "category": "far-miss",
+   "winner": "hugh-jackman",
+   "dTrue": 0.8243486294832014,
+   "margin": -0.16685435566816986,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "donnie-yen",
+   "category": "far-miss",
+   "winner": "will-smith",
+   "dTrue": 0.7592732375661733,
+   "margin": -0.38556819075690063,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "drew-barrymore",
+   "category": "crowd-out",
+   "winner": "aaron-taylor-johnson",
+   "dTrue": 0.6308194465297835,
+   "margin": -0.08591676638677337,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "drew-barrymore",
+   "category": "far-miss",
+   "winner": "kathleen-gati",
+   "dTrue": 0.8656204333988379,
+   "margin": -0.19564521058999895,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "fan-bingbing",
+   "category": "far-miss",
+   "winner": "jennie-kim",
+   "dTrue": 0.8986506349109409,
+   "margin": -0.4572179007980597,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "fantasia-barrino",
+   "category": "far-miss",
+   "winner": "ryan-reynolds",
+   "dTrue": 0.9075705883097036,
+   "margin": -0.32299649426914545,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "white"
+  },
+  {
+   "id": "gael-garcia-bernal",
+   "category": "crowd-out",
+   "winner": "kareena-kapoor",
+   "dTrue": 0.35525089922683817,
+   "margin": -0.03056115812881044,
+   "familyFixable": true,
+   "probeFamily": "latine",
+   "winnerFamily": "south_asian"
+  },
+  {
+   "id": "george-clooney",
+   "category": "crowd-out",
+   "winner": "colman-domingo",
+   "dTrue": 0.2886225987109028,
+   "margin": -0.02192360708462404,
+   "familyFixable": true,
+   "probeFamily": "white",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "gigi-hadid",
+   "category": "crowd-out",
+   "winner": "andrea-frankle",
+   "dTrue": 0.6412085707556829,
+   "margin": -0.1273442260191484,
+   "familyFixable": true,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "gong-li",
+   "category": "far-miss",
+   "winner": "anna-sawai",
+   "dTrue": 0.945365706083465,
+   "margin": -0.3859426313839682,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "gong-li",
+   "category": "far-miss",
+   "winner": "jason-faulkner",
+   "dTrue": 0.8629420135457364,
+   "margin": -0.2620438154129644,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": null
+  },
+  {
+   "id": "gong-yoo",
+   "category": "crowd-out",
+   "winner": "jungkook",
+   "dTrue": 0.354274853690013,
+   "margin": 0.0012417116577920773,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "harry-styles",
+   "category": "crowd-out",
+   "winner": "cole-sprouse",
+   "dTrue": 0.7142138985661958,
+   "margin": -0.13506987276884852,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "helena-bonham-carter",
+   "category": "far-miss",
+   "winner": "regina-king",
+   "dTrue": 0.9726468406122831,
+   "margin": -0.34633671843714586,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "hrithik-roshan",
+   "category": "far-miss",
+   "winner": "uma-thurman",
+   "dTrue": 0.8011599075630101,
+   "margin": -0.14263537622783617,
+   "familyFixable": false,
+   "probeFamily": "south_asian",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "jeff-bezos",
+   "category": "far-miss",
+   "winner": "dwayne-johnson",
+   "dTrue": 0.7547207499287305,
+   "margin": -0.2821598430876848,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "pacific"
+  },
+  {
+   "id": "jennifer-lawrence",
+   "category": "far-miss",
+   "winner": "jung-ho-yeon",
+   "dTrue": 0.874263892898901,
+   "margin": -0.20096199633532175,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "julia-roberts",
+   "category": "far-miss",
+   "winner": "sarah-jane-redmond",
+   "dTrue": 0.8438740133510265,
+   "margin": -0.25674147421443383,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "jung-ho-yeon",
+   "category": "crowd-out",
+   "winner": "heidi-tan",
+   "dTrue": 0.6228375155414347,
+   "margin": -0.030580886184964906,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "jung-ho-yeon",
+   "category": "crowd-out",
+   "winner": "margot-robbie",
+   "dTrue": 0.6372916068048026,
+   "margin": -0.046782542135140104,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "white"
+  },
+  {
+   "id": "kate-middleton",
+   "category": "far-miss",
+   "winner": "jeffrey-nordling",
+   "dTrue": 0.7550690040829925,
+   "margin": -0.1349347908258337,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "kendall-jenner",
+   "category": "far-miss",
+   "winner": "travis-scott",
+   "dTrue": 0.8780695452885523,
+   "margin": -0.6046979802350454,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "kim-kardashian",
+   "category": "far-miss",
+   "winner": "reesewitherspoon",
+   "dTrue": 0.8317372225635427,
+   "margin": -0.3258673341180174,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "kylian-mbappe",
+   "category": "far-miss",
+   "winner": "will-smith",
+   "dTrue": 0.7601453351322829,
+   "margin": -0.1258207643732675,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "lakeith-stanfield",
+   "category": "far-miss",
+   "winner": "emily-blunt",
+   "dTrue": 0.7794102226656686,
+   "margin": -0.19265478564932892,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "white"
+  },
+  {
+   "id": "leonardo-dicaprio",
+   "category": "crowd-out",
+   "winner": "will-smith",
+   "dTrue": 0.6595415629857091,
+   "margin": -0.14652561199096148,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "black"
+  },
+  {
+   "id": "meghan-markle",
+   "category": "far-miss",
+   "winner": "jennie-kim",
+   "dTrue": 0.761478143636328,
+   "margin": -0.15861390094401295,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "meryl-streep",
+   "category": "far-miss",
+   "winner": "jackie-chan",
+   "dTrue": 0.8823459676846623,
+   "margin": -0.21409954892110683,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "naomi-campbell",
+   "category": "far-miss",
+   "winner": "reesewitherspoon",
+   "dTrue": 0.8951958573387239,
+   "margin": -0.447150602578515,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "natalie-portman",
+   "category": "far-miss",
+   "winner": "rey-lucas",
+   "dTrue": 0.8980023232501874,
+   "margin": -0.2464133788739441,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "neymar",
+   "category": "far-miss",
+   "winner": "kylian-mbappe",
+   "dTrue": 0.8825226020391045,
+   "margin": -0.5409562667654978,
+   "familyFixable": false,
+   "probeFamily": null,
+   "winnerFamily": "black"
+  },
+  {
+   "id": "oprah-winfrey",
+   "category": "far-miss",
+   "winner": "ian-butcher",
+   "dTrue": 0.8394004119187443,
+   "margin": -0.2506507717556633,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": null
+  },
+  {
+   "id": "prince-harry",
+   "category": "crowd-out",
+   "winner": "meghan-markle",
+   "dTrue": 0.5997549020358623,
+   "margin": -0.04682264271413217,
+   "familyFixable": true,
+   "probeFamily": "white",
+   "winnerFamily": null
+  },
+  {
+   "id": "saoirse-ronan",
+   "category": "far-miss",
+   "winner": "angela-bassett",
+   "dTrue": 0.9568717182730118,
+   "margin": -0.34474937806936734,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "sebastian-stan",
+   "category": "far-miss",
+   "winner": "amy-adams",
+   "dTrue": 0.9280384274387634,
+   "margin": -0.29807482204352176,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "serena-williams",
+   "category": "crowd-out",
+   "winner": "sza",
+   "dTrue": 0.7055290199535256,
+   "margin": -0.07558898878512765,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "shah-rukh-khan",
+   "category": "far-miss",
+   "winner": "will-smith",
+   "dTrue": 1.022666505063595,
+   "margin": -0.3483074532772579,
+   "familyFixable": false,
+   "probeFamily": "south_asian",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "son-ye-jin",
+   "category": "far-miss",
+   "winner": "reesewitherspoon",
+   "dTrue": 1.0033725690103579,
+   "margin": -0.6133576374844595,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "son-ye-jin",
+   "category": "far-miss",
+   "winner": "jisoo",
+   "dTrue": 0.8143681431558918,
+   "margin": -0.23140388688682045,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "stephen-curry",
+   "category": "far-miss",
+   "winner": "travis-scott",
+   "dTrue": 0.8944225558934867,
+   "margin": -0.7120305369489582,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "timothee-chalamet",
+   "category": "far-miss",
+   "winner": "nicki-minaj",
+   "dTrue": 0.8630800229044324,
+   "margin": -0.26385747809342597,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "black"
+  },
+  {
+   "id": "victoria-beckham",
+   "category": "far-miss",
+   "winner": "jacob-elordi",
+   "dTrue": 0.8999278912045809,
+   "margin": -0.21878457958029807,
+   "familyFixable": false,
+   "probeFamily": "white",
+   "winnerFamily": "white"
+  },
+  {
+   "id": "viola-davis",
+   "category": "far-miss",
+   "winner": "remy-auberjonois",
+   "dTrue": 0.7241239415952543,
+   "margin": -0.08316693690784827,
+   "familyFixable": false,
+   "probeFamily": "black",
+   "winnerFamily": null
+  },
+  {
+   "id": "zhang-ziyi",
+   "category": "far-miss",
+   "winner": "lee-jung-jae",
+   "dTrue": 0.876753319170047,
+   "margin": -0.32565888226225215,
+   "familyFixable": false,
+   "probeFamily": "east_asian",
+   "winnerFamily": "east_asian"
+  },
+  {
+   "id": "zoe-saldana",
+   "category": "crowd-out",
+   "winner": "naomi-campbell",
+   "dTrue": 0.5589971003283926,
+   "margin": -0.033807021047453145,
+   "familyFixable": true,
+   "probeFamily": "latine",
+   "winnerFamily": "black"
+  }
+ ]
+}

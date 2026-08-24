@@ -44,3 +44,6 @@ public/celebs/held-out/*/
 .vscode/
 *.swp
 .vercel
+
+# model arena downloads (evaluated, not shipped)
+models-arena/

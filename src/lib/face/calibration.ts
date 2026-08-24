@@ -8,16 +8,16 @@
  *   f2 = gap          (dBestWrong - dTrue: separability from the nearest other identity)
  * Standardized with the recorded mu/sd, then logistic(w . z).
  */
-export const CALIBRATION_VERSION = "heldout-v2.1-logistic-512d-n301-multishot-2026-08";
+export const CALIBRATION_VERSION = "heldout-v2.1-logistic-512d-r2-multishot-2026-08";
 
 export const CALIBRATION_COEFFS = {
-  intercept: 4.8911,
-  wDtrue: -1.5812,
-  wGap: 6.5355,
-  muDtrue: 0.4019,
-  muGap: 0.1669,
-  sdDtrue: 0.2908,
-  sdGap: 0.3046,
+  intercept: 4.9427,
+  wDtrue: -0.9486,
+  wGap: 6.6201,
+  muDtrue: 0.3831,
+  muGap: 0.1828,
+  sdDtrue: 0.2905,
+  sdGap: 0.3044,
 } as const;
 
 const clampProb = (p: number) => Math.max(0.001, Math.min(0.999, p));
