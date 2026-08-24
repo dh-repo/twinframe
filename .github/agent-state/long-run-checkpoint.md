@@ -265,3 +265,14 @@ upload → crop review → approve → result in **13s**, verdict **DEAD RINGER*
 calibrated ≈100% P(match) on a reference portrait. Honesty labels render
 end-to-end. (Local dev-server boot had stalled under desktop load 60+; passed
 immediately once load dropped to ~21.)
+
+### Continuation 6 addendum: live verification + model sourcing
+- **Live end-to-end proof on merged main**: upload → result in **13s**, verdict
+  DEAD RINGER, calibrated ≈100% P(match) on a reference portrait.
+  (Local dev boot had stalled under desktop load 60+; passed at load ~21.)
+- **Phase D third-party search closed**: relocated GhostFaceNet found
+  (HamadYA/GhostFaceNets, MIT) but ships Keras .h5 only — ONNX conversion needs a
+  python/tf2onnx toolchain not present. The sole ready-made ONNX candidate
+  (garavv/arcface-onnx on HF) carries NO license and descends from research-only
+  training data — excluded per AGENTS.md legal rules, determination recorded in
+  the arena registry. Arena stands ready for any owner-provided ONNX.
