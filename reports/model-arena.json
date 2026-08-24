@@ -1,0 +1,16 @@
+{
+ "at": "2026-08-24T00:52:49.516Z",
+ "results": [
+  {
+   "id": "edgeface_m",
+   "name": "EdgeFace-M (shipped baseline)",
+   "license": "in-repo (Apache-2.0 model card)",
+   "enrolled": 296,
+   "probes": 510,
+   "top1Pct": 24.705882352941178,
+   "top5Pct": 26.666666666666668,
+   "mrr": 0.2686445324235658,
+   "evalMs": 16439
+  }
+ ]
+}

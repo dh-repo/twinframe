@@ -42,6 +42,13 @@ export const DEAD_RINGER_MIN_MARGIN = 0.07;
 /** Below this percent nothing above "distant twin" can be claimed. */
 export const DISTANT_TWIN_MAX_PERCENT = 55;
 
+/**
+ * Minimum top-2 separation for any look-alike claim above distant twin.
+ * Held-out evidence (v2.1, n=301): soft matches with margin < 0.02 were only
+ * 42% correct — a lying label. At >= 0.02 they are 100% correct (n=19).
+ */
+export const SOFT_MATCH_MIN_MARGIN = 0.02;
+
 /** Percent floor for the two upper tiers. */
 export const STRONG_MIN_PERCENT = 70;
 
@@ -55,6 +62,10 @@ export function verdictFromMatch(input: VerdictInput): VerdictTier {
   const percent = finite(input.matchPercent, 0);
 
   if (percent < DISTANT_TWIN_MAX_PERCENT) return "distant-twin";
+
+  // A crowded top-2 makes any look-alike claim fiction — demote to the honest
+  // nearest-neighbor label even when the percent looks plausible.
+  if (margin < SOFT_MATCH_MIN_MARGIN) return "distant-twin";
 
   if (
     distance <= DEAD_RINGER_MAX_DISTANCE &&
