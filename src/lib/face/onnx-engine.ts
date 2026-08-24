@@ -41,7 +41,12 @@ export function initOnnxEngine(): void {
       (typeof self !== "undefined" && self.crossOriginIsolated) ||
         (globalThis as any).crossOriginIsolated
     );
-    ort.env.wasm.numThreads = isIsolated ? 4 : 1;
+    // Single-threaded until real-device benchmarks say otherwise: an early
+    // throttled-desktop A/B suggested threading hurt, but that session ran on
+    // a loaded machine (load avg >30) and is not trustworthy. Re-measure on
+    // quiet hardware before enabling numThreads > 1 here.
+    ort.env.wasm.numThreads = 1;
+    void isIsolated;
     ort.env.wasm.simd = true;
     if (ort.env) {
       ort.env.logLevel = "warning";
