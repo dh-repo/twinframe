@@ -47,3 +47,4 @@ public/celebs/held-out/*/
 
 # model arena downloads (evaluated, not shipped)
 models-arena/
+public/models/adaface_ir101_webface12m.onnx

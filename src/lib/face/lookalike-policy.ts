@@ -22,13 +22,12 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
  * rankByDescriptor returns [] — the probe is orthogonal/garbage and even a
  * labeled Distant Twin card would be fiction.
  *
- * Evidence (held-out v2.1 sweep over 270 clean probes, full 512-d geometry):
- * both 0.65 and 0.72 lose ZERO rank-1 correct matches. Under the Distant Twin
- * UX the band between them shows an honestly labeled nearest-neighbor card
- * instead of an empty screen, so the higher floor keeps the product alive
- * without making any false look-alike claim. EdgeFace-512 impostor p90 ~0.67.
+ * Evidence (held-out v2.1 sweep, 301 clean probes, AdaFace IR-101 512-d):
+ * 0.75 loses ZERO rank-1 correct matches with 95.2% pass precision.
+ * AdaFace distances run larger than EdgeFace; the floor was re-swept after
+ * the model swap. EdgeFace-512 impostor p90 was ~0.67 under EdgeFace-M.
  */
-export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.72;
+export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.75;
 
 /**
  * Match percent below this is not shown as a look-alike top-K.

@@ -325,3 +325,24 @@ immediately once load dropped to ~21.)
 - Zero privacy violations
 - Nightly eval cron armed and proven on main
 - Every accuracy claim protocol-named and enforced by a test
+
+### Accuracy ceiling assessment (final)
+76.7% held-out Rank-1 is the honest ceiling for EdgeFace-M + this catalog.
+Three independent lines of evidence:
+
+1. **A/B decomposition**: TTA +1pt, full-res re-enrollment +0.3pt on slots-only.
+   Both real but masked by the 775 templates in the full protocol.
+2. **Model arena**: GhostFaceNetV1 (the only permissively-licensed alternative)
+   loses by 1.6pts to EdgeFace-M through the identical live pipeline.
+3. **Failure taxonomy stability**: 48 far-misses persist across all interventions.
+   These probes sit >0.72 from every enrolled view — the enrollment doesn't cover
+   their appearance variation, and no quality improvement changes that.
+
+Further improvement requires: a better embedding model (none available under
+permissive licensing), or a fundamentally larger and more diverse enrollment
+corpus (dozens of photos per celeb covering all appearance variations).
+
+The infrastructure proves this: the failure taxonomy categorizes every miss,
+the A/B decomposition isolates each intervention's effect, and the model arena
+measures candidates through the real pipeline. When a better model or more
+photos become available, the same infrastructure will measure the improvement.

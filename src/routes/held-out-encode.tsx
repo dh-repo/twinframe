@@ -56,7 +56,7 @@ function HeldOutEncodePage() {
       try {
         const params = new URLSearchParams(window.location.search);
         const engineParam = params.get("engine");
-        const engine = engineParam === "faceapi" ? "faceapi" : engineParam === "ghostfacenet" ? "ghostfacenet" : "edgeface";
+        const engine = engineParam === "faceapi" ? "faceapi" : engineParam === "ghostfacenet" ? "ghostfacenet" : engineParam === "adaface" ? "adaface" : "edgeface";
 
         setStatus("loading");
 
@@ -161,6 +161,67 @@ function HeldOutEncodePage() {
             const det = await detectAndDescribe(img, { skipDescriptor: true, maxSide: 512 }).catch(
               () => null,
             );
+            return {
+              descriptor,
+              age: Math.round(det?.age ?? NaN),
+              gender: det?.gender ?? "unknown",
+              genderProb: det?.genderProbability ?? 0,
+            };
+          };
+        }
+
+        // AdaFace IR-101 evaluation engine (WebFace12M, ResNet-101, BGR NCHW 512-d)
+        if (engine === "adaface") {
+          appendLog("loading scrfd + adaface ir101 + face-api demographics…");
+          const [{ detectSCRFD }, { padSourceForDetection }, { align5PointSimilarityCanvas }, { loadFaceApi, detectAndDescribe }] =
+            await Promise.all([
+              import("@/lib/face/scrfd"),
+              import("@/lib/face/pipeline"),
+              import("@/lib/face/similarity-transform"),
+              import("@/lib/face/faceapi-engine"),
+            ]);
+          const ort = await import("onnxruntime-web");
+          await loadFaceApi();
+          const adaPath = params.get("adaModel") || "/models/adaface_ir101_webface12m.onnx";
+          appendLog("creating adaface session (260MB, may take a while)…");
+          const adaSession = await ort.InferenceSession.create(adaPath, {
+            executionProviders: ["wasm"],
+          });
+          const adaInputName = (adaSession as unknown as { inputNames: string[] }).inputNames[0];
+          appendLog(`adaface session ready: ${adaInputName}`);
+
+          describeWithEdgeFace = async (img) => {
+            let scrfd = await detectSCRFD(img).catch(() => null);
+            if (scrfd && !scrfd.primary) {
+              const padded = padSourceForDetection(img);
+              if (padded) {
+                const retry = await detectSCRFD(padded).catch(() => null);
+                if (retry?.primary) scrfd = retry;
+              }
+            }
+            const primary = scrfd?.primary;
+            if (!primary) return null;
+            const canvas = align5PointSimilarityCanvas(img, primary.landmarks, 112);
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return null;
+            const imgData = ctx.getImageData(0, 0, 112, 112);
+            // AdaFace expects BGR NCHW (v - 127.5) / 128
+            const nchw = new Float32Array(3 * 112 * 112);
+            const ps = 112 * 112;
+            for (let i = 0; i < ps; i++) {
+              nchw[i] = (imgData.data[i * 4 + 2] - 127.5) / 128; // B
+              nchw[ps + i] = (imgData.data[i * 4 + 1] - 127.5) / 128; // G
+              nchw[2 * ps + i] = (imgData.data[i * 4] - 127.5) / 128; // R
+            }
+            const out = await adaSession.run({ [adaInputName]: new ort.Tensor("float32", nchw, [1, 3, 112, 112]) });
+            const outputKey = Object.keys(out)[0];
+            const raw = out[outputKey].data as Float32Array;
+            const vec = Array.from(raw);
+            let n = 0;
+            for (const v of vec) n += v * v;
+            n = Math.sqrt(n) || 1;
+            const descriptor = vec.map((v) => v / n);
+            const det = await detectAndDescribe(img, { skipDescriptor: true, maxSide: 512 }).catch(() => null);
             return {
               descriptor,
               age: Math.round(det?.age ?? NaN),

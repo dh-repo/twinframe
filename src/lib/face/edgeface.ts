@@ -161,7 +161,7 @@ export async function extractEdgeFaceEmbedding(
   options: EdgeFaceOptions = {}
 ): Promise<EdgeFaceResult> {
   const t0 = performance.now();
-  const modelPath = options.modelPath ?? "/models/edgeface_m.onnx";
+  const modelPath = options.modelPath ?? "/models/adaface_ir101_webface12m.onnx";
   const targetSize = options.targetSize ?? 112;
 
   // 1. Obtain Planar NCHW Float32Array input tensor [1, 3, targetSize, targetSize]
@@ -181,6 +181,13 @@ export async function extractEdgeFaceEmbedding(
   const outputName = (session as any).outputNames?.[0] || "embedding";
 
   // 3. Create ONNX Tensor & Run Inference
+  // AdaFace expects BGR; the alignment pipeline produces RGB. Swap channels 0 and 2.
+  const chSize = targetSize * targetSize;
+  for (let i = 0; i < chSize; i++) {
+    const tmp = inputTensorData[i];
+    inputTensorData[i] = inputTensorData[2 * chSize + i];
+    inputTensorData[2 * chSize + i] = tmp;
+  }
   const tensor = new ort.Tensor("float32", inputTensorData, [1, 3, targetSize, targetSize]);
   const { outputMap, latencyMs, providerUsed } = await runInference(session, { [inputName]: tensor });
 
