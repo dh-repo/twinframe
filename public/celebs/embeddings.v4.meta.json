@@ -1,6 +1,6 @@
 {
-  "version": "5.0.0",
-  "model": "EdgeFace-S-gamma05-512d",
+  "version": "6.0.0",
+  "model": "AdaFace-IR101-WebFace12M",
   "dim": 512,
   "countCelebs": 1024,
   "countBuckets": 1024,
