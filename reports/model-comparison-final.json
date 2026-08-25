@@ -1,0 +1,41 @@
+{
+  "at": "2026-08-24T23:45:00Z",
+  "task": "Held-out probes ranked against portrait gallery; identical SCRFD + 5-point alignment via live pipeline for all models",
+  "probes": 305,
+  "results": {
+    "adaface_ir101_webface12m": {
+      "rank1Pct": 81.3,
+      "rank5Pct": 82.3,
+      "mrr": 0.819,
+      "modelSizeMB": 260,
+      "architecture": "ResNet-101 + AdaFace loss",
+      "trainingData": "WebFace12M (12M images, 600K identities)",
+      "license": "UNVERIFIED — evaluation only, must review before shipping",
+      "preprocessing": "BGR NCHW (v-127.5)/128, 112x112"
+    },
+    "edgeface_m_shipped": {
+      "rank1Pct": 68.9,
+      "rank5Pct": 78.7,
+      "mrr": 0.733,
+      "modelSizeMB": 14.8,
+      "architecture": "EdgeFace-M gamma 0.6",
+      "trainingData": "MS1MV3-ish (smaller)",
+      "license": "Apache-2.0",
+      "preprocessing": "RGB NCHW (v-127.5)/128, 112x112"
+    },
+    "ghostfacenet_v1_w13_s1": {
+      "rank1Pct": 66.6,
+      "rank5Pct": 73.4,
+      "mrr": 0.696,
+      "modelSizeMB": 8.4,
+      "architecture": "GhostNetV1 CSP variant",
+      "trainingData": "MS1MV3",
+      "license": "MIT"
+    }
+  },
+  "conclusion": "AdaFace IR-101 WebFace12M beats EdgeFace-M by +12.4pts Rank-1 and +3.6pts Rank-5 on identical aligned inputs. The 260MB model size requires a deployment decision (server-side, INT8 quantization, or accept the download cost).",
+  "shared_misses": [
+    "anya-taylor → anya-taylor-joy (duplicate id, dropped from catalog)",
+    "gwenyth-paltrow → gwyneth-paltrow (duplicate id, dropped from catalog)"
+  ]
+}
