@@ -69,7 +69,7 @@ function HeldOutEncodePage() {
 
         if (engine === "edgeface") {
           appendLog("loading scrfd + edgeface + face-api demographics…");
-          const [{ detectSCRFD }, { padSourceForDetection }, { align5PointSimilarityTensor }, { extractEdgeFaceEmbedding }, { loadFaceApi, detectAndDescribe }] =
+          const [{ detectSCRFD }, { padSourceForDetection }, { align5PointSimilarityTensor }, { extractEdgeFaceEmbeddingWithTta }, { loadFaceApi, detectAndDescribe }] =
             await Promise.all([
               import("@/lib/face/scrfd"),
               import("@/lib/face/pipeline"),
@@ -91,7 +91,8 @@ function HeldOutEncodePage() {
             const primary = scrfd?.primary;
             if (!primary) return null;
             const tensor = align5PointSimilarityTensor(img, primary.landmarks, 112);
-            const ef = await extractEdgeFaceEmbedding(tensor);
+            const efRes = await extractEdgeFaceEmbeddingWithTta(tensor, undefined, { forceTta: true });
+            const ef = { embedding: efRes.embedding };
             const det = await detectAndDescribe(img, { skipDescriptor: true, maxSide: 512 }).catch(
               () => null,
             );
