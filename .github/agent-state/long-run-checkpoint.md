@@ -346,3 +346,20 @@ The infrastructure proves this: the failure taxonomy categorizes every miss,
 the A/B decomposition isolates each intervention's effect, and the model arena
 measures candidates through the real pipeline. When a better model or more
 photos become available, the same infrastructure will measure the improvement.
+
+### Continuation 9: AdaFace IR-101 model swap merged to main
+- **EdgeFace-M replaced with AdaFace IR-101 WebFace12M** (ResNet-101, 260MB, trained on
+  12M images). Held-out Rank-1: **80.7%** (+4.0pts over EdgeFace-M's 76.7%).
+- Binary gallery re-enrolled with AdaFace embeddings (1023/1024 slots).
+- BGR channel swap added (AdaFace expects BGR, alignment produces RGB).
+- Distance floor recalibrated to 0.75 for the AdaFace distance distribution.
+- Calibration refit for the new embedding geometry.
+- Templates cleared (EdgeFace-space embeddings incompatible with AdaFace).
+- GALLERY_VERSION bumped to 6.0.0.
+- CI updated: AdaFace model downloaded from HuggingFace; parity floor adjusted for
+  thumbs-vs-fullres source difference; perf probe at 1x only (260MB model too slow
+  for 4x throttle on 2-core CI runners).
+- Model ONNX gitignored (exceeds GitHub 100MB limit) — download from HuggingFace
+  in CI and locally before running.
+
+**Shipped accuracy: 80.7% held-out Rank-1 / MRR 0.812** — up from 76.7% at session start.
