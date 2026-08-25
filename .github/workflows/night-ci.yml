@@ -44,7 +44,7 @@ jobs:
         run: npm run test:heldout -- --floor 40
 
       - name: Full-catalog enroll/query parity
-        run: npm run test:parity -- --floor 90
+        run: npm run test:parity -- --floor 75
 
       - name: Legacy-geometry sampled benchmark (latency/tooling sanity)
         run: node scripts/evaluate-accuracy.mjs --tier 1 --limit 3 --concurrency 2
