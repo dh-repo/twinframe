@@ -2,9 +2,11 @@ import { verdictLabel, type VerdictTier } from "../face/verdict.ts";
 import {
   resolveShareVerdict,
   shareCardBlurb,
+  shareHeroCaption,
   sharePairGlyph,
   sharePercentCaption,
 } from "./share-copy.ts";
+import { scoreDisplay } from "./score-display.ts";
 
 /** Square Instagram / meme card. Preview DOM is 1:1 to match. */
 export const SHARE_CARD_WIDTH = 1080;
@@ -19,6 +21,7 @@ export interface ShareImageInput {
   blurb?: string;
   adjustedDistance?: number;
   rankMargin?: number;
+  probabilityCorrect?: number;
 }
 
 export interface VerdictStampStyle {
@@ -196,7 +199,13 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
   const verdict = resolveShareVerdict(input);
   const style = verdictStampStyle(verdict);
   const blurb = shareCardBlurb(input.blurb, verdict);
-  const pct = Math.round(input.matchPercent);
+  const scores = scoreDisplay({
+    matchPercent: input.matchPercent,
+    probabilityCorrect: input.probabilityCorrect,
+    verdict,
+  });
+  const heroPct = scores.heroPercent;
+  const simPct = Math.round(scores.similarityPercent);
 
   const grad = ctx.createLinearGradient(0, 0, 0, height);
   grad.addColorStop(0, "#0e1017");
@@ -272,11 +281,23 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
 
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = style.fill;
-  ctx.font = "800 168px system-ui, sans-serif";
-  ctx.fillText(`${pct}%`, width / 2, 680);
-  ctx.font = "700 22px system-ui, sans-serif";
-  ctx.fillStyle = "rgba(244, 244, 245, 0.55)";
-  ctx.fillText(sharePercentCaption(verdict), width / 2, 718);
+  if (heroPct != null) {
+    ctx.font = "800 168px system-ui, sans-serif";
+    ctx.fillText(`${heroPct}%`, width / 2, 680);
+    ctx.font = "700 22px system-ui, sans-serif";
+    ctx.fillStyle = "rgba(244, 244, 245, 0.55)";
+    ctx.fillText(shareHeroCaption(verdict, true), width / 2, 718);
+    ctx.font = "600 20px system-ui, sans-serif";
+    ctx.fillText(`${simPct}% ${sharePercentCaption(verdict)}`, width / 2, 748);
+  } else {
+    ctx.font = "800 64px system-ui, sans-serif";
+    ctx.fillText(verdictLabel(verdict).toUpperCase(), width / 2, 680);
+    ctx.font = "700 22px system-ui, sans-serif";
+    ctx.fillStyle = "rgba(244, 244, 245, 0.55)";
+    ctx.fillText(shareHeroCaption(verdict, false), width / 2, 718);
+    ctx.font = "600 20px system-ui, sans-serif";
+    ctx.fillText(`${simPct}% ${sharePercentCaption(verdict)}`, width / 2, 748);
+  }
 
   drawVerdictStamp(ctx, verdictLabel(verdict).toUpperCase(), width / 2, 770, style);
 
@@ -292,7 +313,7 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
   ctx.font = "500 20px ui-monospace, SF Mono, monospace";
-  ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS", width / 2, 1024);
+  ctx.fillText("MATCHED ON-DEVICE WITH ADAFACE IR-101 512-D", width / 2, 1024);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

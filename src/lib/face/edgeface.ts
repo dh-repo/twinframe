@@ -13,7 +13,7 @@ export interface EdgeFaceOptions {
 }
 
 export interface EdgeFaceResult {
-  embedding: Float32Array; // 256-d L2-normalized Float32 vector
+  embedding: Float32Array; // 512-d L2-normalized Float32 vector (AdaFace IR-101)
   latencyMs: number;
   providerUsed: string;
 }
@@ -68,7 +68,7 @@ export function computeL2Norm(v: ArrayLike<number>): number {
 }
 
 /**
- * Normalizes 256-d embedding vector using L2 normalization v_hat = v / ||v||_2.
+ * Normalizes an embedding vector using L2 normalization v_hat = v / ||v||_2.
  * Safely handles near-zero, zero, or non-finite vectors to prevent NaN/Infinity poisoning.
  */
 export function normalizeL2(embedding: ArrayLike<number>): Float32Array {
@@ -152,7 +152,7 @@ export function extractPlanarTensorFromCanvas(
 }
 
 /**
- * Extracts EdgeFace-M 256-d Float16/Float32 embedding vector from aligned face tensor or image source.
+ * Extracts AdaFace IR-101 512-d Float16/Float32 embedding from an aligned face tensor or image source.
  * Output is strictly L2-normalized (||v_hat||_2 = 1.0).
  */
 export async function extractEdgeFaceEmbedding(
@@ -197,7 +197,7 @@ export async function extractEdgeFaceEmbedding(
   }
 
   // 4. Extract raw Float32/Float16 data at the model's native dimension
-  // (EdgeFace-S gamma05 emits 512-d; gallery is enrolled at the same dim).
+  // AdaFace IR-101 emits 512-d; the shipped gallery is enrolled at the same dim.
   const rawData = rawOutput.data as Float32Array | Uint16Array;
   const outLen = Math.max(1, rawData.length);
   const rawArray = new Float32Array(outLen);

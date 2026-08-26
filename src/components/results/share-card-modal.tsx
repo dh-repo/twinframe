@@ -8,12 +8,14 @@ import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
 import {
   shareCardBlurb,
   shareCardFilename,
+  shareHeroCaption,
   shareModalTitle,
   sharePairGlyph,
   sharePercentCaption,
   shareTextFromMatch,
   resolveShareVerdict,
 } from "@/lib/ux/share-copy";
+import { scoreDisplay } from "@/lib/ux/score-display";
 import {
   composeShareImage,
   copyShareText,
@@ -40,6 +42,7 @@ export function ShareCardModal({
 
   const verdict = resolveShareVerdict(topMatch);
   const stamp = verdictStampStyle(verdict);
+  const scores = scoreDisplay({ ...topMatch, verdict });
   const blurb = shareCardBlurb(topMatch.blurb, verdict);
   const text = shareTextFromMatch(topMatch);
   const celebSrc =
@@ -62,6 +65,7 @@ export function ShareCardModal({
         blurb: topMatch.blurb,
         adjustedDistance: topMatch.adjustedDistance,
         rankMargin: topMatch.rankMargin,
+        probabilityCorrect: topMatch.probabilityCorrect,
       });
       const filename = shareCardFilename(topMatch.name);
       await shareOrDownload({
@@ -183,14 +187,25 @@ export function ShareCardModal({
               </div>
             </div>
 
-            <p
-              className="mt-3 text-5xl font-extrabold tabular-nums leading-none"
-              style={{ color: stamp.fill }}
-            >
-              {Math.round(topMatch.matchPercent)}%
-            </p>
-            <p className="mt-1 text-[10px] font-mono font-semibold uppercase tracking-[0.18em] text-white/45">
-              {sharePercentCaption(verdict)}
+            {scores.heroPercent != null ? (
+              <>
+                <p
+                  className="mt-3 text-5xl font-extrabold tabular-nums leading-none"
+                  style={{ color: stamp.fill }}
+                >
+                  {scores.heroPercent}%
+                </p>
+                <p className="mt-1 text-[10px] font-mono font-semibold uppercase tracking-[0.18em] text-white/45">
+                  {shareHeroCaption(verdict, true)}
+                </p>
+              </>
+            ) : (
+              <p className="mt-3 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-white/55">
+                {shareHeroCaption(verdict, false)}
+              </p>
+            )}
+            <p className="mt-1 text-[10px] font-mono tabular-nums text-white/45">
+              {Math.round(scores.similarityPercent)}% {sharePercentCaption(verdict)}
             </p>
 
             <div
@@ -207,7 +222,7 @@ export function ShareCardModal({
             <p className="mt-3 line-clamp-1 text-[11px] leading-snug text-white/70">{blurb}</p>
             <p className="mt-1 truncate text-sm font-bold text-white">{topMatch.name}</p>
             <p className="mt-2 font-mono text-[8px] tracking-wider text-white/45">
-              MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS
+              MATCHED ON-DEVICE WITH ADAFACE IR-101 512-D
             </p>
           </div>
         </div>

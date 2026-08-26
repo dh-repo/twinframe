@@ -49,7 +49,7 @@ export interface RankOptions {
 }
 
 /**
- * Rank celebrities by EdgeFace cosine distance (primary), with soft age/gender priors.
+ * Rank celebrities by AdaFace cosine distance (primary), with soft age/gender priors.
  * Gallery may contain multiple prototypes per celeb id.
  * We score every prototype, then keep only the best per celeb id
  * (lowest adjusted distance), so results are diverse and age-aware.

@@ -3,7 +3,7 @@
  * scripts/calibrate-edgeface.mjs successor logic against the leak-excluded
  * held-out protocol v2.1 in full 512-d geometry (n=303, 2026-08): refit via scripts/refit-calibration.ts, deterministic.
  *
- * Features are raw EdgeFace cosine distances:
+ * Features are raw AdaFace cosine distances:
  *   f1 = dTrue        (distance of the candidate shown to the user)
  *   f2 = gap          (dBestWrong - dTrue: separability from the nearest other identity)
  * Standardized with the recorded mu/sd, then logistic(w . z).

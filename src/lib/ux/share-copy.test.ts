@@ -4,6 +4,7 @@ import {
   resolveShareVerdict,
   shareCardBlurb,
   shareCardFilename,
+  shareHeroCaption,
   shareModalTitle,
   sharePairGlyph,
   sharePercentCaption,
@@ -59,22 +60,28 @@ describe("shareCardBlurb", () => {
 });
 
 describe("shareText", () => {
-  it("includes stamp, percent, and name for every verdict", () => {
+  it("includes stamp, name, and Twinframe for every verdict", () => {
     for (const verdict of TIERS) {
-      const text = shareText("Zendaya", 81.4, verdict);
+      const text = shareText("Zendaya", 81.4, verdict, 0.77);
       assert.match(text, new RegExp(verdictLabel(verdict)));
-      assert.match(text, /81%/);
       assert.match(text, /Zendaya/);
       assert.match(text, /Twinframe/);
     }
   });
 
-  it("keeps distant twins shareable and honest", () => {
-    const text = shareText("Keanu Reeves", 42, "distant-twin");
+  it("labels Hill percent as similarity, not a twin claim", () => {
+    const text = shareText("Zendaya", 81.4, "dead-ringer", 0.77);
+    assert.match(text, /81% similarity/);
+    assert.match(text, /gallery-ID chance ~77%/);
+  });
+
+  it("keeps distant twins shareable without a fake look-alike percent", () => {
+    const text = shareText("Keanu Reeves", 62, "distant-twin", 0.19);
     assert.match(text, /Distant Twin/);
-    assert.match(text, /42%/);
     assert.match(text, /Keanu Reeves/);
     assert.match(text, /nearest gallery neighbor/i);
+    assert.match(text, /not a look-alike claim/);
+    assert.doesNotMatch(text, /62%/);
   });
 });
 
@@ -86,7 +93,7 @@ describe("shareTextFromMatch", () => {
       verdict: "strong-resemblance",
     });
     assert.match(text, /Strong Resemblance/);
-    assert.match(text, /88%/);
+    assert.match(text, /88% similarity/);
     assert.match(text, /Florence Pugh/);
   });
 });
@@ -96,6 +103,8 @@ describe("share modal honesty", () => {
     assert.equal(shareModalTitle("distant-twin"), "Share nearest neighbor");
     assert.equal(sharePairGlyph("distant-twin"), "NEAR");
     assert.equal(sharePercentCaption("distant-twin"), "NEAREST");
+    assert.equal(shareHeroCaption("distant-twin", true), "NOT A TWIN CLAIM");
+    assert.equal(shareHeroCaption("dead-ringer", true), "GALLERY ID CHANCE");
     assert.equal(sharePairGlyph("dead-ringer"), "≈");
     assert.match(shareModalTitle("dead-ringer"), /Dead Ringer/);
     assert.match(shareModalTitle("strong-resemblance"), /Doppelgänger/);

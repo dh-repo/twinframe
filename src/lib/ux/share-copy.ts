@@ -12,6 +12,7 @@ export interface ShareCopyInput {
   adjustedDistance?: number;
   rankMargin?: number;
   blurb?: string;
+  probabilityCorrect?: number;
 }
 
 /** Use the match's verdict when present; otherwise derive it from ranking signals. */
@@ -47,26 +48,33 @@ export function shareCardFilename(name: string): string {
   return `twinframe-${slug || "match"}.png`;
 }
 
+function galleryChanceClause(probabilityCorrect?: number): string {
+  if (typeof probabilityCorrect !== "number" || !Number.isFinite(probabilityCorrect)) return "";
+  return ` Calibrated gallery-ID chance ~${Math.round(probabilityCorrect * 100)}%.`;
+}
+
 /**
- * Share / clipboard copy: verdict stamp + percent + name.
- * Distant twins stay shareable — honest, not hidden.
+ * Share / clipboard copy: verdict stamp + name. Distant twins stay shareable
+ * without a Hill percent that reads as “you are 62% X.”
  */
 export function shareText(
   name: string,
   matchPercent: number,
   verdict: VerdictTier,
+  probabilityCorrect?: number,
 ): string {
   const pct = Math.round(matchPercent);
   const stamp = verdictLabel(verdict);
+  const chance = galleryChanceClause(probabilityCorrect);
   switch (verdict) {
     case "dead-ringer":
-      return `${stamp}: I matched ${name} at ${pct}% on Twinframe.`;
+      return `${stamp}: I matched ${name} on Twinframe.${chance} (${pct}% similarity.)`;
     case "strong-resemblance":
-      return `${stamp}: ${name} at ${pct}% on Twinframe.`;
+      return `${stamp}: ${name} on Twinframe.${chance} (${pct}% similarity.)`;
     case "soft-match":
-      return `${stamp}: ${name} at ${pct}% similarity on Twinframe.`;
+      return `${stamp}: ${name} at ${pct}% similarity on Twinframe.${chance}`;
     case "distant-twin":
-      return `${stamp}: nearest gallery neighbor is ${name} at ${pct}% on Twinframe.`;
+      return `${stamp}: nearest gallery neighbor is ${name} on Twinframe — not a look-alike claim.`;
     default: {
       const _exhaustive: never = verdict;
       return _exhaustive;
@@ -75,7 +83,12 @@ export function shareText(
 }
 
 export function shareTextFromMatch(input: ShareCopyInput): string {
-  return shareText(input.name, input.matchPercent, resolveShareVerdict(input));
+  return shareText(
+    input.name,
+    input.matchPercent,
+    resolveShareVerdict(input),
+    input.probabilityCorrect,
+  );
 }
 
 export function shareModalTitle(verdict: VerdictTier): string {
@@ -124,4 +137,9 @@ export function sharePercentCaption(verdict: VerdictTier): string {
       return _exhaustive;
     }
   }
+}
+
+export function shareHeroCaption(verdict: VerdictTier, hasCalibratedProb: boolean): string {
+  if (verdict === "distant-twin") return "NOT A TWIN CLAIM";
+  return hasCalibratedProb ? "GALLERY ID CHANCE" : sharePercentCaption(verdict);
 }
