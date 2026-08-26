@@ -26,6 +26,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
 import { l2Normalize, cosineDistance } from "../src/lib/face/embeddings.ts";
+import {
+  applyReviewedDemotions,
+  parseGalleryDemotions,
+  EMPTY_GALLERY_DEMOTIONS,
+} from "../src/lib/face/gallery-demotions.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -113,6 +118,17 @@ export function loadGallery(): GalleryEntry[] {
     };
   }
   return out;
+}
+
+function loadShippedDemotions() {
+  const specPath = path.join(CELEBS, "gallery-demotions.json");
+  if (!fs.existsSync(specPath)) return EMPTY_GALLERY_DEMOTIONS;
+  return parseGalleryDemotions(JSON.parse(fs.readFileSync(specPath, "utf8")));
+}
+
+/** Browser load path: extras, then reviewed approved drops. */
+export function loadProductGallery(): GalleryEntry[] {
+  return applyReviewedDemotions(mergeExtraTemplates(loadGallery()), loadShippedDemotions());
 }
 
 function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
@@ -289,7 +305,7 @@ function main() {
   const floorArg = process.argv.indexOf("--floor");
   const rankFloor = floorArg >= 0 ? Number(process.argv[floorArg + 1]) : null;
 
-  const gallery = mergeExtraTemplates(loadGallery());
+  const gallery = loadProductGallery();
 
   const packPath = path.join(CELEBS, "held-out/descriptors.json");
   const pack = JSON.parse(fs.readFileSync(packPath, "utf8")) as { cases: HeldOutCase[] };

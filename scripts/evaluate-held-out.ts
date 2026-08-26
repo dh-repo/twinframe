@@ -58,6 +58,7 @@ import {
   buildMultiShotCentroidGallery,
   isPaddedFaceNetDescriptor,
 } from "../src/lib/face/gallery-dedupe.ts";
+import { CELEB_ID_ALIASES as SHIPPED_CELEB_ID_ALIASES } from "../src/lib/face/gallery-demotions.ts";
 import { loadV4Gallery } from "./lib/v4-gallery.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
 import { SIGNALS_VERSION } from "./lib/probe-signals.mjs";
@@ -73,13 +74,10 @@ const DEFAULT_JSON = path.join(ROOT, "reports/held-out-accuracy.json");
 
 export const REPORT_VERSION = "1.0.0";
 /**
- * One catalog id is spelled two ways across the gallery files. Mirrors
- * CANONICAL_CELEB_MAP in scripts/evaluate-match-accuracy.ts, which cannot be
- * imported here because that module has a broken import of its own.
+ * One catalog id is spelled two ways across the gallery files. Same map as
+ * gallery-demotions.ts — the reviewed drop keeps gwyneth-paltrow.
  */
-export const CELEB_ID_ALIASES: Record<string, string> = {
-  "gwenyth-paltrow": "gwyneth-paltrow",
-};
+export const CELEB_ID_ALIASES: Record<string, string> = { ...SHIPPED_CELEB_ID_ALIASES };
 
 export function canonicalCelebId(id: string): string {
   return CELEB_ID_ALIASES[id] ?? id;

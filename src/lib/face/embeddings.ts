@@ -1,5 +1,11 @@
 import { catalogFor } from "../celebrities/catalog.ts";
 import type { CelebrityProfile } from "../celebrities/types.ts";
+import {
+  EMPTY_GALLERY_DEMOTIONS,
+  applyReviewedDemotions,
+  parseGalleryDemotions,
+  type GalleryDemotionSpec,
+} from "./gallery-demotions.ts";
 
 export interface CelebrityEmbedding {
   id: string;
@@ -141,10 +147,35 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * short-circuit and the templates fetch URL below; skipping the bump pins
  * returning visitors to stale artifacts indefinitely (cycle-22 review P1).
  * 5.5.0: multi-shot repair + mislabeled-portrait fix + reconciled demographics.
+ * 6.1.0: reviewed demotion filter (gallery-demotions.json approved ids).
  */
-const GALLERY_VERSION = "6.0.0";
+const GALLERY_VERSION = "6.1.0";
 
-/** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
+let demotionSpecPromise: Promise<GalleryDemotionSpec> | null = null;
+
+async function loadDemotionSpec(): Promise<GalleryDemotionSpec> {
+  if (!demotionSpecPromise) {
+    demotionSpecPromise = (async () => {
+      try {
+        const res = await fetch(`/celebs/gallery-demotions.json?v=${GALLERY_VERSION}`, {
+          cache: "force-cache",
+        });
+        if (!res.ok) return EMPTY_GALLERY_DEMOTIONS;
+        return parseGalleryDemotions(await res.json());
+      } catch {
+        return EMPTY_GALLERY_DEMOTIONS;
+      }
+    })();
+  }
+  return demotionSpecPromise;
+}
+
+async function finalizeLoadedGallery(rows: CelebrityEmbedding[]): Promise<CelebrityEmbedding[]> {
+  const spec = await loadDemotionSpec();
+  return applyReviewedDemotions(rows, spec);
+}
+
+/** Load precomputed AdaFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
   if (galleryCache) return galleryCache;
   if (galleryPromise) return galleryPromise;
@@ -154,7 +185,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
     try {
       const cachedV4 = await idbGet(GALLERY_VERSION);
       if (cachedV4 && cachedV4.length > 0 && (cachedV4[0]?.descriptor.length ?? 0) >= 256) {
-        galleryCache = await mergeExtraTemplates(cachedV4);
+        galleryCache = await finalizeLoadedGallery(await mergeExtraTemplates(cachedV4));
         return galleryCache;
       }
 
@@ -201,7 +232,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
               genderProb: b.genderProb,
             };
           }
-          galleryCache = await mergeExtraTemplates(out);
+          galleryCache = await finalizeLoadedGallery(await mergeExtraTemplates(out));
           void idbSet(GALLERY_VERSION, out);
           return galleryCache;
         }
@@ -218,7 +249,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
         // check IDB cache
         const cached = await idbGet(meta.version);
         if (cached) {
-          galleryCache = cached;
+          galleryCache = await finalizeLoadedGallery(cached);
           return galleryCache;
         }
 
@@ -255,7 +286,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
                 genderProb: b.genderProb,
               };
             }
-            galleryCache = out;
+            galleryCache = await finalizeLoadedGallery(out);
             void idbSet(meta.version, out);
             return galleryCache;
           }
@@ -286,7 +317,7 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
                 genderProb: b.genderProb,
               };
             }
-            galleryCache = out;
+            galleryCache = await finalizeLoadedGallery(out);
             void idbSet(meta.version, out);
             return galleryCache;
           }
@@ -299,10 +330,12 @@ export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
     if (!res.ok) throw new Error("Could not load celebrity face gallery.");
     const data = (await res.json()) as EmbeddingsGallery;
     // Normalize legacy descriptors for high accuracy
-    galleryCache = data.celebrities.map((c) => ({
-      ...c,
-      descriptor: Array.from(l2Normalize(c.descriptor)),
-    }));
+    galleryCache = await finalizeLoadedGallery(
+      data.celebrities.map((c) => ({
+        ...c,
+        descriptor: Array.from(l2Normalize(c.descriptor)),
+      })),
+    );
     return galleryCache;
   })().catch((err) => {
     galleryPromise = null;

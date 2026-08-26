@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "note": "Reviewed gallery drops applied at load time. Audit output is proposed-only and never rewrites embeddings.v4.q8.bin. Do not dump identity-range collision ids into approved.",
+  "approved": [
+    {
+      "id": "gwenyth-paltrow",
+      "reason": "exact-clone",
+      "keep": "gwyneth-paltrow",
+      "evidence": "Exact clone of gwyneth-paltrow (public/celebs/gallery-audit-v4.json clonePairs[0], distance 0, same Wikipedia page). Misspelling is already absent from the live AFv4 buckets and extra-templates; keep a reviewed drop so a future merge cannot reintroduce it.",
+      "reviewedAt": "2026-08-26"
+    }
+  ],
+  "proposed": []
+}
