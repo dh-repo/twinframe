@@ -30,6 +30,8 @@ export function evaluateGoldSet(set, gallery, opts = {}) {
   let refuseOk = 0;
   let civilianN = 0;
   let civilianTop1 = 0;
+  let civilianRefuseN = 0;
+  let civilianRefuseOk = 0;
   const lines = [];
 
   for (const c of set.cases ?? []) {
@@ -85,6 +87,18 @@ export function evaluateGoldSet(set, gallery, opts = {}) {
       skipped++;
       continue;
     }
+    if (c.expectRefuse || accept.size === 0) {
+      civilianRefuseN++;
+      if (matches.length === 0) {
+        civilianRefuseOk++;
+        lines.push(`PASS civilian-refuse ${c.id}`);
+      } else {
+        lines.push(
+          `FAIL civilian-refuse ${c.id} — got ${matches[0]?.celebrityId} @ ${matches[0]?.matchPercent}%`,
+        );
+      }
+      continue;
+    }
     civilianN++;
     if (hit1) civilianTop1++;
     lines.push(
@@ -99,6 +113,8 @@ export function evaluateGoldSet(set, gallery, opts = {}) {
     refuseOk,
     civilianN,
     civilianTop1,
+    civilianRefuseN,
+    civilianRefuseOk,
     civilianReady,
     skipped,
   };

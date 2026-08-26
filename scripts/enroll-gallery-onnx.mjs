@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Re-enroll the celebrity gallery with the REAL AccuFace pipeline:
- * SCRFD-2.5G detect (letterbox 640) → 5-pt Umeyama align (112) → EdgeFace embed.
+ * Re-enroll the celebrity gallery with the live AccuFace pipeline:
+ * SCRFD-2.5G detect (letterbox 640) → 5-pt Umeyama align (112) → AdaFace IR-101.
  *
  * Mirrors the browser preprocessing exactly (same normalization, anchors,
  * decode, alignment matrix) so probe and gallery embeddings are comparable.
@@ -47,7 +47,18 @@ const ONLY_IDS = new Set(
   idsIdx >= 0 ? String(process.argv[idsIdx + 1] ?? "").split(",").map((s) => s.trim()).filter(Boolean) : [],
 );
 
-/** @type {Promise<{ ort: typeof import("onnxruntime-web"), scrfdSession: any, edgeSession: any }> | null} */
+const ADAFACE_PATH = path.join(ROOT, "public/models/adaface_ir101_webface12m.onnx");
+const ADAFACE_MIN_BYTES = 50 * 1024 * 1024;
+
+export function adafaceModelReady() {
+  try {
+    return fs.statSync(ADAFACE_PATH).size >= ADAFACE_MIN_BYTES;
+  } catch {
+    return false;
+  }
+}
+
+/** @type {Promise<{ ort: typeof import("onnxruntime-web"), scrfdSession: any, embedSession: any, embedKind: "adaface" | "edgeface" }> | null} */
 let sessionsPromise = null;
 
 export function ensureSessions() {
@@ -63,11 +74,12 @@ async function loadSessions() {
     new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/scrfd_2.5g.onnx"))),
     { executionProviders: ["wasm"] },
   );
-  const edgeSession = await ort.InferenceSession.create(
-    new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/edgeface_m.onnx"))),
-    { executionProviders: ["wasm"] },
-  );
-  return { ort, scrfdSession, edgeSession };
+  const useAda = adafaceModelReady();
+  const embedPath = useAda ? ADAFACE_PATH : path.join(ROOT, "public/models/edgeface_m.onnx");
+  const embedSession = await ort.InferenceSession.create(new Uint8Array(fs.readFileSync(embedPath)), {
+    executionProviders: ["wasm"],
+  });
+  return { ort, scrfdSession, embedSession, embedKind: useAda ? "adaface" : "edgeface" };
 }
 
 const anchorsByStride = generateAnchors(640, 640);
@@ -181,14 +193,27 @@ function l2(v) {
   return Array.from(v, (x) => x / n);
 }
 
+function swapRgbToBgr(tensorData, size = 112) {
+  const out = new Float32Array(tensorData);
+  const ch = size * size;
+  for (let i = 0; i < ch; i++) {
+    const tmp = out[i];
+    out[i] = out[2 * ch + i];
+    out[2 * ch + i] = tmp;
+  }
+  return out;
+}
+
 async function embed(tensorData) {
-  const { ort, edgeSession } = await ensureSessions();
-  const tensor = new ort.Tensor("float32", tensorData, [1, 3, 112, 112]);
-  const out = await edgeSession.run({ [edgeSession.inputNames[0]]: tensor });
-  const raw = out[edgeSession.outputNames[0]].data;
+  const { ort, embedSession, embedKind } = await ensureSessions();
+  const data = embedKind === "adaface" ? swapRgbToBgr(tensorData) : tensorData;
+  const tensor = new ort.Tensor("float32", data, [1, 3, 112, 112]);
+  const out = await embedSession.run({ [embedSession.inputNames[0]]: tensor });
+  const raw = out[embedSession.outputNames[0]].data;
   return {
     d256: l2(Array.from(raw.slice(0, 256))),
     d512: l2(Array.from(raw)),
+    embedKind,
   };
 }
 

@@ -40,20 +40,23 @@ describe("lookalike gold classification", () => {
 describe("shipped gold set stays honest", () => {
   const set = JSON.parse(fs.readFileSync(GOLD, "utf8"));
 
-  it("has identity + refuse-smoke only — no invented civilian rows", () => {
+  it("civilian rows have real fixture files and no invented look-alike names", () => {
     const kinds = (set.cases ?? []).map((c) => classifyGoldCase(c));
     assert.ok(kinds.includes("identity-regression"), "expected identity seeds");
     assert.ok(kinds.includes("refuse-smoke"), "expected synthetic refuse seeds");
-    assert.deepEqual(
-      kinds.filter((k) => k === "civilian"),
-      [],
-      "civilian rows require real fixtures/gold photos — do not invent descriptors",
-    );
+    const civilians = (set.cases ?? []).filter((c) => classifyGoldCase(c) === "civilian");
+    assert.ok(civilians.length >= 12, "expected royalty-free civilian fixtures");
+    for (const c of civilians) {
+      assert.ok(c.imagePath && fs.existsSync(path.join(ROOT, c.imagePath)), `${c.id} missing fixture`);
+      assert.equal(c.expectRefuse, true, `${c.id} must not invent an accept list`);
+      assert.deepEqual(c.acceptableTopIds, [], `${c.id} invented look-alike names`);
+      assert.equal(c.queryDescriptor?.length, 512, `${c.id} must be AdaFace-512`);
+    }
   });
 
-  it("reports civilian acceptable@1 as N/A until real photos exist", () => {
-    assert.deepEqual(listCivilianGoldPhotos(FIXTURES), []);
-    assert.equal(civilianGoldReady(FIXTURES), false);
+  it("reports civilian acceptable@1 as N/A until humans name look-alikes", () => {
+    assert.ok(listCivilianGoldPhotos(FIXTURES).length >= 12);
+    assert.equal(civilianGoldReady(FIXTURES), true);
     const lines = formatGoldSummary({
       identityN: 8,
       identityTop1: 8,
@@ -61,12 +64,15 @@ describe("shipped gold set stays honest", () => {
       refuseOk: 8,
       civilianN: 0,
       civilianTop1: 0,
-      civilianReady: false,
+      civilianRefuseN: 16,
+      civilianRefuseOk: 16,
+      civilianReady: true,
     });
     assert.ok(lines.some((l) => l.includes("closed-set identity regression")));
     assert.ok(lines.some((l) => l.includes("refuse-smoke")));
     assert.ok(lines.some((l) => /civilian acceptable@1=N\/A/.test(l)));
     assert.ok(!lines.some((l) => /civilian acceptable@1=\d/.test(l)));
+    assert.ok(lines.some((l) => /civilian refuse_ok=100\.0%/.test(l)));
   });
 
   it("keeps identity seeds as AdaFace-512 enrolled self-vectors", () => {
@@ -110,7 +116,9 @@ describe("shipped identity seeds retrieve themselves", () => {
     assert.equal(stats.refuseN, 8);
     assert.equal(stats.refuseOk, 8);
     assert.equal(stats.civilianN, 0);
+    assert.equal(stats.civilianRefuseN, 16);
     assert.ok(summary.some((l) => /identity regression @1=100\.0%/.test(l)));
     assert.ok(summary.some((l) => /civilian acceptable@1=N\/A/.test(l)));
+    assert.ok(summary.some((l) => /civilian refuse_ok=/.test(l)));
   });
 });
