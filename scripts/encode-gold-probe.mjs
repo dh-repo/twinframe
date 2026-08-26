@@ -73,9 +73,9 @@ async function main() {
   const set = fs.existsSync(outPath)
     ? JSON.parse(fs.readFileSync(outPath, "utf8"))
     : {
-        version: "2.0.0-edgeface512",
+        version: "2.0.0-adaface512",
         description:
-          "Open-set look-alike gold on EdgeFace-512. Identity seeds guard regression; civilian rows need human labels.",
+          "Open-set look-alike gold on AdaFace-512. Identity seeds guard regression; civilian rows need human labels.",
         cases: [],
       };
 
