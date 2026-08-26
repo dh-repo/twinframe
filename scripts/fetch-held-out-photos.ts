@@ -37,7 +37,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const INDEX = path.join(ROOT, "public/celebs/index.json");
 const OUT_DIR = path.join(ROOT, "public/celebs/held-out");
 const MANIFEST = path.join(OUT_DIR, "manifest.json");
-const UA = "TwinframeHeldOut/1.0 (local accuracy eval; github.com/twinframe) Node.js";
+export const UA = "TwinframeHeldOut/1.0 (local accuracy eval; github.com/twinframe) Node.js";
 
 const DELAY_MS = Number(process.env.HELD_OUT_DELAY_MS || 280);
 const IMAGE_RE = /\.(jpe?g|png|webp)$/i;
@@ -210,7 +210,7 @@ function writeManifest(manifest: Manifest): void {
   fs.writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
-async function wiki(params: Record<string, string>): Promise<any> {
+export async function wiki(params: Record<string, string>): Promise<any> {
   const url = new URL("https://en.wikipedia.org/w/api.php");
   url.searchParams.set("format", "json");
   url.searchParams.set("origin", "*");
@@ -232,7 +232,7 @@ function enrollPath(entry: IndexEntry): string | null {
   return fs.existsSync(abs) ? abs : null;
 }
 
-async function resolveTitle(name: string): Promise<string | null> {
+export async function resolveTitle(name: string): Promise<string | null> {
   const j = await wiki({
     action: "query",
     list: "search",
@@ -244,7 +244,7 @@ async function resolveTitle(name: string): Promise<string | null> {
   return hit?.title ?? null;
 }
 
-async function pageImageTitle(title: string): Promise<string | null> {
+export async function pageImageTitle(title: string): Promise<string | null> {
   const j = await wiki({
     action: "query",
     titles: title,
@@ -256,7 +256,7 @@ async function pageImageTitle(title: string): Promise<string | null> {
   return page?.pageimage ? `File:${page.pageimage}` : null;
 }
 
-async function pageImages(
+export async function pageImages(
   title: string,
 ): Promise<Array<{ url: string; title: string; width: number; height: number }>> {
   const j = await wiki({
@@ -284,7 +284,7 @@ async function pageImages(
   return out;
 }
 
-async function download(url: string): Promise<{ buffer: Buffer } | { reject: string } | null> {
+export async function download(url: string): Promise<{ buffer: Buffer } | { reject: string } | null> {
   const res = await fetch(url, { headers: { "User-Agent": UA } });
   if (!res.ok) return null;
   const buffer = Buffer.from(await res.arrayBuffer());
