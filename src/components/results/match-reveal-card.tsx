@@ -17,6 +17,7 @@ import {
 } from "@/lib/ux/honesty";
 import { composeMatchBlurb } from "@/lib/ux/match-blurb";
 import { sharePairGlyph } from "@/lib/ux/share-copy";
+import { scoreDisplay } from "@/lib/ux/score-display";
 import { verdictLabel, verdictSubtitle } from "@/lib/face/verdict";
 import { getCelebrityById } from "@/lib/celebrities/database";
 import { galleryFeaturesFor } from "@/lib/celebrities/gallery-features";
@@ -48,11 +49,13 @@ export function MatchRevealCard({
     galleryFeaturesFor(topMatch.celebrityId) ??
     getCelebrityById(topMatch.celebrityId)?.features ??
     null;
+  const scores = scoreDisplay(topMatch);
   const band = topMatch.verdict
     ? honestyBandFromVerdict(topMatch.verdict)
     : honestyBand(topMatch.matchPercent, topMatch.rankMargin);
   const confidenceScore =
-    topMatch.confidenceScore ?? Math.round(topMatch.matchPercent * 0.95);
+    topMatch.confidenceScore ??
+    (scores.heroPercent != null ? scores.heroPercent : Math.round(topMatch.matchPercent * 0.95));
   const confidenceRating = honestyRating(band, confidenceScore);
   const headline = topMatch.verdict
     ? verdictLabel(topMatch.verdict)
@@ -94,20 +97,22 @@ export function MatchRevealCard({
           className,
         )}
       >
-        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-          <div
-            className="absolute top-4 left-1/4 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-70"
-            style={{ animationDelay: "0ms" }}
-          />
-          <div
-            className="absolute top-8 right-1/4 h-1.5 w-1.5 rounded-full bg-match text-match animate-sparkle-float opacity-80"
-            style={{ animationDelay: "600ms" }}
-          />
-          <div
-            className="absolute bottom-12 left-1/3 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-60"
-            style={{ animationDelay: "1200ms" }}
-          />
-        </div>
+        {scores.showSparkles ? (
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+            <div
+              className="absolute top-4 left-1/4 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-70"
+              style={{ animationDelay: "0ms" }}
+            />
+            <div
+              className="absolute top-8 right-1/4 h-1.5 w-1.5 rounded-full bg-match text-match animate-sparkle-float opacity-80"
+              style={{ animationDelay: "600ms" }}
+            />
+            <div
+              className="absolute bottom-12 left-1/3 h-2 w-2 rounded-full bg-match text-match animate-sparkle-float opacity-60"
+              style={{ animationDelay: "1200ms" }}
+            />
+          </div>
+        ) : null}
 
         <div className="relative z-10 border-b border-border bg-gradient-to-b from-bg-subtle/80 to-bg-elevated px-5 py-5 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -159,20 +164,36 @@ export function MatchRevealCard({
 
             <div
               className="shrink-0 text-right"
-              data-match-percent={Math.round(topMatch.matchPercent)}
+              data-match-percent={Math.round(scores.similarityPercent)}
+              data-hero-percent={scores.heroPercent ?? ""}
+              data-score-muted={scores.muteHeroPercent ? "1" : "0"}
               data-verdict={topMatch.verdict ?? ""}
             >
-              <div className="flex items-baseline justify-end gap-0.5 text-match">
-                <NumberCounter
-                  value={topMatch.matchPercent}
-                  duration={1400}
-                  decimals={0}
-                  className="text-[2.25rem] sm:text-[2.75rem] font-extrabold tabular-nums leading-none tracking-tight"
-                />
-                <span className="text-xl font-bold">%</span>
-              </div>
-              <p className="mt-0.5 text-[10px] uppercase font-mono tracking-widest text-fg-subtle">
-                {band === "weak" ? "NEAREST" : "SIMILARITY"}
+              {scores.heroPercent != null ? (
+                <>
+                  <div className="flex items-baseline justify-end gap-0.5 text-match">
+                    <NumberCounter
+                      value={scores.heroPercent}
+                      duration={1400}
+                      decimals={0}
+                      className="text-[2.25rem] sm:text-[2.75rem] font-extrabold tabular-nums leading-none tracking-tight"
+                    />
+                    <span className="text-xl font-bold">%</span>
+                  </div>
+                  <p className="mt-0.5 text-[10px] uppercase font-mono tracking-widest text-fg-subtle">
+                    {scores.heroCaption}
+                  </p>
+                </>
+              ) : (
+                <p className="max-w-[9rem] text-right text-[10px] font-mono uppercase tracking-widest text-fg-subtle">
+                  {scores.heroCaption}
+                </p>
+              )}
+              <p className="mt-2 text-xs tabular-nums text-fg-muted">
+                {Math.round(scores.similarityPercent)}%{" "}
+                <span className="uppercase font-mono tracking-widest text-[10px] text-fg-subtle">
+                  {scores.similarityLabel}
+                </span>
               </p>
             </div>
           </div>
@@ -181,11 +202,16 @@ export function MatchRevealCard({
             <Progress value={topMatch.matchPercent} className="h-1.5" aria-label={`${topMatch.name} match similarity`} />
           </div>
 
-          {typeof topMatch.probabilityCorrect === "number" && (
+          {typeof topMatch.probabilityCorrect === "number" && !scores.muteHeroPercent && (
             <p className="mt-2 text-[10px] font-mono leading-relaxed tracking-wide text-fg-subtle">
-              ≈{Math.round(topMatch.probabilityCorrect * 100)}% chance this is your single
-              closest identity in the gallery — calibrated on held-out photos, not a
-              similarity score.
+              ≈{Math.round(topMatch.probabilityCorrect * 100)}% chance this is the closest
+              identity in this 1k gallery — calibrated on held-out photos, not a twin score.
+            </p>
+          )}
+          {topMatch.verdict === "distant-twin" && (
+            <p className="mt-2 text-[10px] font-mono leading-relaxed tracking-wide text-fg-subtle">
+              Similarity is an uncalibrated Hill distance. Distant twins are a nearest
+              neighbor, not a look-alike claim.
             </p>
           )}
         </div>

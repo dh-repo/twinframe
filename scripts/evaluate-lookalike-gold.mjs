@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Open-set look-alike gold evaluation on the AccuFace v4 EdgeFace-512 gallery.
+ * Open-set look-alike gold evaluation on the shipped AdaFace-512 gallery.
  *
- * Metrics:
- *  - acceptable@1 / acceptable@5 when acceptableTopIds is non-empty
- *  - refuse_ok when expectRefuse / empty acceptableTopIds (expect [])
- *  - calibration: fraction of >=70% tops that are human-acceptable
+ * Identity seeds = closed-set self-retrieval regression (not the product metric).
+ * Synthetic refuses = distance-floor smoke.
+ * Civilian acceptable@1 is the product metric and stays N/A until real
+ * fixtures/gold photos exist — do not invent descriptors.
  *
  * Usage:
  *   node --experimental-strip-types scripts/evaluate-lookalike-gold.mjs
@@ -15,9 +15,95 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
 import { loadV4Gallery } from "./lib/v4-gallery.mjs";
+import { classifyGoldCase, civilianGoldReady, formatGoldSummary } from "./lib/lookalike-gold.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
+const FIXTURES_GOLD = path.join(ROOT, "fixtures/gold");
+
+export function evaluateGoldSet(set, gallery, opts = {}) {
+  const civilianReady = opts.civilianReady ?? civilianGoldReady(FIXTURES_GOLD);
+  let skipped = 0;
+  let identityN = 0;
+  let identityTop1 = 0;
+  let refuseN = 0;
+  let refuseOk = 0;
+  let civilianN = 0;
+  let civilianTop1 = 0;
+  const lines = [];
+
+  for (const c of set.cases ?? []) {
+    const kind = classifyGoldCase(c);
+    const k = c.acceptableTopK ?? 5;
+    if (
+      !c.queryDescriptor ||
+      (c.queryDescriptor.length !== 256 && c.queryDescriptor.length !== 512)
+    ) {
+      lines.push(`SKIP ${c.id} — needs queryDescriptor[256|512]`);
+      skipped++;
+      continue;
+    }
+
+    const matches = rankByDescriptor(
+      {
+        descriptor: Float32Array.from(c.queryDescriptor),
+        age: c.queryAge ?? 35,
+        gender: c.queryGender ?? "unknown",
+        genderProbability: c.queryGenderProb ?? 0.9,
+      },
+      gallery,
+      k,
+    );
+
+    if (kind === "refuse-smoke") {
+      refuseN++;
+      if (matches.length === 0) {
+        refuseOk++;
+        lines.push(`PASS refuse-smoke ${c.id}`);
+      } else {
+        lines.push(
+          `FAIL refuse-smoke ${c.id} — got ${matches[0]?.celebrityId} @ ${matches[0]?.matchPercent}%`,
+        );
+      }
+      continue;
+    }
+
+    const accept = new Set(c.acceptableTopIds ?? []);
+    const ids = matches.map((m) => m.celebrityId);
+    const hit1 = ids[0] != null && accept.has(ids[0]);
+    if (kind === "identity-regression") {
+      identityN++;
+      if (hit1) identityTop1++;
+      lines.push(
+        `${hit1 ? "PASS" : "FAIL"} identity-regression ${c.id} top=${ids[0] ?? "—"}`,
+      );
+      continue;
+    }
+
+    if (!civilianReady) {
+      lines.push(`SKIP civilian ${c.id} — no fixtures/gold photos`);
+      skipped++;
+      continue;
+    }
+    civilianN++;
+    if (hit1) civilianTop1++;
+    lines.push(
+      `${hit1 ? "PASS" : "FAIL"} civilian ${c.id} top=${ids[0] ?? "—"} pct=${matches[0]?.matchPercent ?? 0}`,
+    );
+  }
+
+  const stats = {
+    identityN,
+    identityTop1,
+    refuseN,
+    refuseOk,
+    civilianN,
+    civilianTop1,
+    civilianReady,
+    skipped,
+  };
+  return { stats, lines, summary: formatGoldSummary(stats) };
+}
 
 function main() {
   const setIdx = process.argv.indexOf("--set");
@@ -33,91 +119,18 @@ function main() {
 
   const set = JSON.parse(fs.readFileSync(setPath, "utf8"));
   const { gallery } = loadV4Gallery(ROOT);
-
-  let scored = 0;
-  let top1 = 0;
-  let top5 = 0;
-  let refuseOk = 0;
-  let refuseN = 0;
-  let calNum = 0;
-  let calDen = 0;
-  let skipped = 0;
-  let acceptN = 0;
+  const { stats, lines, summary } = evaluateGoldSet(set, gallery);
 
   console.log("================================================================================");
-  console.log("     TWINFRAME OPEN-SET LOOK-ALIKE GOLD (EdgeFace-512 AccuFace v4)              ");
+  console.log("     TWINFRAME OPEN-SET LOOK-ALIKE GOLD (AdaFace-512)                           ");
   console.log("================================================================================");
   console.log(`Set: ${setPath}`);
-  console.log(`cases=${set.cases.length}  gallery=${gallery.length}`);
-
-  for (const c of set.cases) {
-    const k = c.acceptableTopK ?? 5;
-    const expectRefuse = Boolean(c.expectRefuse) || c.acceptableTopIds.length === 0;
-    if (
-      !c.queryDescriptor ||
-      (c.queryDescriptor.length !== 256 && c.queryDescriptor.length !== 512)
-    ) {
-      console.log(`SKIP ${c.id} — needs queryDescriptor[256|512]`);
-      skipped++;
-      continue;
-    }
-
-    const matches = rankByDescriptor(
-      {
-        descriptor: Float32Array.from(c.queryDescriptor),
-        age: c.queryAge ?? 35,
-        gender: c.queryGender ?? "unknown",
-        genderProbability: c.queryGenderProb ?? 0.9,
-      },
-      gallery,
-      k,
-    );
-    scored++;
-
-    if (expectRefuse) {
-      refuseN++;
-      if (matches.length === 0) {
-        refuseOk++;
-        console.log(`PASS refuse ${c.id}`);
-      } else {
-        console.log(
-          `FAIL refuse ${c.id} — got ${matches[0]?.celebrityId} @ ${matches[0]?.matchPercent}%`,
-        );
-      }
-      continue;
-    }
-
-    acceptN++;
-    const accept = new Set(c.acceptableTopIds);
-    const ids = matches.map((m) => m.celebrityId);
-    const hit1 = ids[0] != null && accept.has(ids[0]);
-    const hit5 = ids.some((id) => accept.has(id));
-    if (hit1) top1++;
-    if (hit5) top5++;
-    if (matches[0] && matches[0].matchPercent >= 70) {
-      calDen++;
-      if (hit1) calNum++;
-    }
-    console.log(
-      `${hit1 ? "PASS" : hit5 ? "SOFT" : "FAIL"} ${c.id} top=${ids[0] ?? "—"} pct=${matches[0]?.matchPercent ?? 0} hill=${matches[0]?.hillPercent ?? 0} margin=${(matches[0]?.rankMargin ?? 0).toFixed(3)}`,
-    );
-  }
-
+  console.log(`cases=${(set.cases ?? []).length}  gallery=${gallery.length}`);
+  for (const line of lines) console.log(line);
   console.log("--------------------------------------------------------------------------------");
-  console.log(`scored=${scored} skipped=${skipped}`);
-  if (acceptN > 0) {
-    console.log(
-      `acceptable@1=${((top1 / acceptN) * 100).toFixed(1)}%  acceptable@5=${((top5 / acceptN) * 100).toFixed(1)}%`,
-    );
-  }
-  if (refuseN > 0) {
-    console.log(`refuse_ok=${((refuseOk / refuseN) * 100).toFixed(1)}% (${refuseOk}/${refuseN})`);
-  }
-  if (calDen > 0) {
-    console.log(
-      `calibration(>=70% endorsed)=${((calNum / calDen) * 100).toFixed(1)}% (${calNum}/${calDen})`,
-    );
-  }
+  console.log(`skipped=${stats.skipped}`);
+  for (const line of summary) console.log(line);
 }
 
-main();
+const invoked = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invoked) main();

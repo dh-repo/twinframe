@@ -214,7 +214,7 @@ async function runDetectAlignEmbed(
     pipelineLog("frontalize:done", { ms: frontalizationMs, method: frontalizationMethod });
   }
 
-  // 3. Execute EdgeFace-M feature extraction (TTA when the EP is GPU)
+  // 3. Execute AdaFace IR-101 feature extraction (TTA when the EP is GPU)
   const tEmbStart = performance.now();
   let edgeFaceEmbedding: Float32Array | null = null;
   let embeddingPassMs = 0;

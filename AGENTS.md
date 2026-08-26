@@ -33,7 +33,7 @@ server) and the throttled-CPU performance probe (`scripts/perf-throttle.mjs`, 15
 | Script | What it measures | Honest? |
 |---|---|---|
 | `scripts/evaluate-accuracy.mjs` | Tier-probe Top-1/Top-5/MRR/margins/latency vs v4 q8 gallery | Probes overlap enrollment portraits — treat as *pipeline sanity*, never as user-facing accuracy |
-| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d EdgeFace) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (74.8% Rank-1 / MRR 0.771, n=301, 2026-08, full 512-d geometry). Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity |
+| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d AdaFace IR-101) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (79.7% Rank-1 / MRR 0.801, n=301, 2026-08, full 512-d geometry; `reports/held-out-v2-baseline.json`). CI floor 75%. Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity; `scripts/held-out-headline.test.mjs` pins the advertised number to that JSON |
 | `scripts/rebuild-gallery-v5.mjs` | embed/fetch/assemble/eval/thumbnails phases for the multi-shot v5 gallery | Resumable, sha256-cached; excludes anything that fails detection/clustering |
 | `scripts/test-non-face-rejection.mjs` | Non-face input rejection end-to-end | Hard-case suite; port into CI |
 
@@ -82,7 +82,7 @@ Rules for any new accuracy claim:
 src/lib/face/
   scrfd.ts, accuface-detection.ts   # detection (+ crop-face-detector worker path)
   similarity-transform.ts           # 5-pt ArcFace canonical Umeyama alignment (112×112 ref)
-  edgeface.ts, onnx-engine.ts       # EdgeFace-M 256-d embedder on onnxruntime-web (primary)
+  edgeface.ts, onnx-engine.ts       # AdaFace IR-101 512-d embedder on onnxruntime-web (primary; file still named edgeface)
   faceapi-engine.ts                 # legacy FaceNet-128/tfjs engine (re-encode tooling still uses it)
   embeddings.ts                     # v4 q8 binary parse ("AFv4", int8 biased+globalScale), cosine,
                                     #   Hill curve P(d)=100/(1+(d/d0)^n), demographic affinities
@@ -95,12 +95,12 @@ src/lib/face/
 public/celebs/
   embeddings.v4.q8.bin + gallery.buckets.json + index.json   # shipped gallery (1000 enrolled)
   extra-templates.json                                       # +552 templates merged at runtime
-  held-out/descriptors.json                                  # tracked eval probes (browser-encoded, EdgeFace-512d)
+  held-out/descriptors.json                                  # tracked eval probes (browser-encoded, AdaFace-512d)
 reports/                           # generated eval artifacts (tracked; restore after local runs)
 migrations/0001_auth.sql           # better-auth schema (do not edit)
 ```
 
-Dimension discipline: the live EdgeFace path and the shipped v4 q8 gallery are BOTH 512-d
+Dimension discipline: the live AdaFace IR-101 path and the shipped v4 q8 gallery are BOTH 512-d
 (the "AFv4" header carries the truth — trust it for stride and width; a hardcoded stride once
 halved every vector silently). Legacy face-api tooling also emits 128-d descriptors.
 `rankByDescriptor` normalizes whatever arrives — when adding an engine, extend the distance

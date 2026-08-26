@@ -41,7 +41,7 @@ jobs:
         run: npm test
 
       - name: Held-out eval gate (leak-excluded, rank-1 floor)
-        run: npm run test:heldout -- --floor 40
+        run: npm run test:heldout -- --floor 75
 
       - name: Full-catalog enroll/query parity
         run: npm run test:parity -- --floor 75

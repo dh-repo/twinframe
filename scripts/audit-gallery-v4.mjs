@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Live EdgeFace-512 gallery audit. Does not rewrite embeddings.v4.q8.bin.
+ * Live AdaFace-512 gallery audit. Does not rewrite embeddings.v4.q8.bin.
  *
  * Reports exact clones, identity-range donor-clone candidates, look-alike
  * crowding, LOO strong-band hits, suspect vectors, and a demotion review list.
@@ -46,7 +46,7 @@ function main() {
   const demote = demotionIds(pairs, suspects);
 
   const report = {
-    version: "1.0.0-edgeface512",
+    version: "1.0.0-adaface512",
     generatedAt: new Date().toISOString(),
     note: "Generated audit — not a ranking source of truth. Demotion list is for human review only.",
     gallery: {

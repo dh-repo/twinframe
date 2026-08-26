@@ -145,9 +145,9 @@ export interface FaceStageLatencies {
   scrfdPassMs?: number;
   /** Time spent on ExpNorm 3D UV WGSL frontalization pass (or 5-point similarity fallback) */
   frontalizationMs?: number;
-  /** Time spent on EdgeFace-M 256-d Float16 descriptor embedding extraction */
+  /** Time spent on AdaFace IR-101 512-d descriptor embedding extraction */
   embeddingMs: number;
-  /** Explicit latency for EdgeFace-M embedding extraction pass */
+  /** Explicit latency for AdaFace embedding extraction pass */
   embeddingPassMs?: number;
   /** Time spent on 512-bit binary Biohashing projection & candidate screening */
   biohashMs?: number;

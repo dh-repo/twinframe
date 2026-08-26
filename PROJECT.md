@@ -42,13 +42,13 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
   - `scripts/test-challenger-m3-2.mjs`: **14 / 14 PASSED**.
   - `scripts/m4-challenger-empirical.mjs`: **35 / 35 PASSED**.
 
-> **Honesty note (2026-08, rev 3).** The tier-probe numbers above overlap the enrollment
-> imagery — they measure pipeline sanity and are an upper bound, not user-facing accuracy.
-> The honest headline comes from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded,
-> full 512-d geometry): **74.8% Rank-1 / MRR 0.771 over 301 clean probes**
-> (`reports/held-out-v2-baseline.json`), using photos that match no gallery artifact by path
-> or content hash, encoded through the same SCRFD → align → EdgeFace-512d path the browser
-> runs. Two earlier internal claims were invalidated on the way here: ~86% "held-out"
+> **Honesty note (2026-08, rev 4).** Milestone 5's 97.4% Top-1 is **pipeline sanity** —
+> tier probes overlap enrollment imagery and are not product accuracy. The honest headline
+> and CI regression gate come from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded,
+> full 512-d AdaFace IR-101 geometry): **79.7% Rank-1 / MRR 0.801 over 301 clean probes**
+> (`reports/held-out-v2-baseline.json`). Hill percent is uncalibrated similarity;
+> `probabilityCorrect` is the calibrated P(rank-1 is the true identity in this gallery).
+> Two earlier internal claims were invalidated on the way here: ~86% "held-out"
 > (128-d probes vs a 512-d gallery, with most probe files doubling as gallery templates) and
 > a 46.0% intermediate figure produced by parsing the binary at half stride. Any new accuracy
 > claim must state which protocol produced it; see AGENTS.md "Eval scripts".
@@ -58,7 +58,7 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
 ## Interface Contracts
 
 ### Query Face Pipeline ↔ Matcher
-- **Input**: `UserFaceQuery` containing `descriptor` (L2-normalized; the live EdgeFace path and shipped gallery are both 512-d — trust the "AFv4" header for width), `age?: number`, `gender?: 'male' | 'female' | 'unknown'`, `genderProbability?: number`.
+- **Input**: `UserFaceQuery` containing `descriptor` (L2-normalized; the live AdaFace IR-101 path and shipped gallery are both 512-d — trust the "AFv4" header for width), `age?: number`, `gender?: 'male' | 'female' | 'unknown'`, `genderProbability?: number`.
 - **Output**: `CelebrityMatch[]` sorted ascending by `adjusted` distance, containing `celeb: CelebrityProfile`, `distance: number`, `matchPercent: number`, `rank: number`, `confidence: number`, `traits: DescriptorTraits`.
 
 ### Gallery Loader ↔ Matcher
