@@ -30,8 +30,7 @@ jobs:
 
       - name: Download AdaFace model (exceeds GitHub 100MB limit)
         run: |
-          mkdir -p public/models
-          curl -sL "https://huggingface.co/Evn9172/cvlface_adaface_ir101_webface12m_onnx/resolve/main/adaface_ir101.onnx" -o public/models/adaface_ir101_webface12m.onnx
+          npm run model:ensure
           ls -la public/models/adaface_ir101_webface12m.onnx
 
       - name: Typecheck

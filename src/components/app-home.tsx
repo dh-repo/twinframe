@@ -7,7 +7,6 @@ import { MatchResults } from "@/components/results/match-results";
 import { FriendCompare } from "@/components/results/friend-compare";
 import { AnalyzingState } from "@/components/analyzing-state";
 import { StarGalleryModal } from "@/components/gallery/star-gallery-modal";
-import { PackPicker } from "@/components/pack-picker";
 import { Button } from "@/components/ui/button";
 import {
   analyzeFaceSource,
@@ -17,12 +16,8 @@ import {
 import type { FaceQuality, FaceTelemetry, MatchResult } from "@/lib/face/types";
 import { loadCelebrityEmbeddings } from "@/lib/face/embeddings";
 import { playMatchChime } from "@/lib/utils/feedback";
-import { DEFAULT_PACK, packDefinition, type PackId } from "@/lib/celebrities/packs";
-import {
-  loadCuratedPacks,
-  readStoredPack,
-  writeStoredPack,
-} from "@/lib/celebrities/load-packs";
+import { DEFAULT_PACK, type PackId } from "@/lib/celebrities/packs";
+import { loadCuratedPacks, readStoredPack } from "@/lib/celebrities/load-packs";
 import { loadGalleryFeatures } from "@/lib/celebrities/load-gallery-features";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
@@ -74,21 +69,6 @@ function captureSubcopy(mode: PlayMode, slot: FriendSlot): string {
           return _exhaustive;
         }
       }
-    default: {
-      const _exhaustive: never = mode;
-      return _exhaustive;
-    }
-  }
-}
-
-function rematchHint(mode: PlayMode, hasPair: boolean): string {
-  switch (mode) {
-    case "solo":
-      return "Switch packs to rematch this photo — no new selfie needed.";
-    case "friend":
-      return hasPair
-        ? "Switch packs to rematch both photos — same gallery for each of you."
-        : "Switch packs to rematch this photo — your friend will use the same pack.";
     default: {
       const _exhaustive: never = mode;
       return _exhaustive;
@@ -195,11 +175,6 @@ export function AppHome() {
     candidateBoxes?: Array<{ x: number; y: number; width: number; height: number; isPrimary: boolean }>;
     telemetry?: FaceTelemetry;
   } | null>(null);
-
-  const persistPack = useCallback((next: PackId) => {
-    setPack(next);
-    writeStoredPack(next);
-  }, []);
 
   const runAnalysis = useCallback(
     async (
@@ -342,28 +317,6 @@ export function AppHome() {
     [setPreview, pack, replacePerson],
   );
 
-  const rematchBoth = useCallback(
-    async (packOverride: PackId) => {
-      const a = personARef.current;
-      const b = personBRef.current;
-      if (!a || !b) return;
-      const token = ++analyzeGenRef.current;
-      const aOk = await runAnalysis(a.blob, a.selectedBox, {
-        packOverride,
-        slot: "a",
-        holdPhase: true,
-        token,
-      });
-      if (!aOk || analyzeGenRef.current !== token) return;
-      await runAnalysis(b.blob, b.selectedBox, {
-        packOverride,
-        slot: "b",
-        token,
-      });
-    },
-    [runAnalysis],
-  );
-
   const onFile = useCallback(
     (file: File) => {
       const url = URL.createObjectURL(file);
@@ -392,30 +345,6 @@ export function AppHome() {
       void runAnalysis(croppedBlob, selectedBox, { slot: friendSlotRef.current });
     },
     [clearReview, runAnalysis],
-  );
-
-  const onPackChange = useCallback(
-    (next: PackId) => {
-      persistPack(next);
-      if (phase !== "results" && phase !== "quality-blocked") return;
-
-      if (playModeRef.current === "friend" && personARef.current && personBRef.current) {
-        void rematchBoth(next);
-        return;
-      }
-
-      const stored =
-        playModeRef.current === "friend" && friendSlotRef.current === "b"
-          ? personBRef.current
-          : personARef.current;
-      const blob = stored?.blob ?? lastApprovedBlobRef.current;
-      if (!blob) return;
-      void runAnalysis(blob, stored?.selectedBox ?? lastSelectedBoxRef.current, {
-        packOverride: next,
-        slot: friendSlotRef.current,
-      });
-    },
-    [persistPack, phase, rematchBoth, runAnalysis],
   );
 
   const onRetake = useCallback(() => {
@@ -555,21 +484,6 @@ export function AppHome() {
 
         {phase === "capture" && (
           <div className="animate-fade-up space-y-8">
-            <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
-              <div className="text-center space-y-1">
-                <h2 className="text-sm font-semibold text-white">
-                  {capturingFriendB ? "Same pack as you" : "Match me with"}
-                </h2>
-                <p className="text-xs text-white/55">
-                  {packDefinition(pack)?.label ?? "Everyone"}
-                  {capturingFriendB
-                    ? " — locked for a fair closer-twin compare."
-                    : " — pick a gallery, then take a photo."}
-                </p>
-              </div>
-              <PackPicker value={pack} onChange={onPackChange} disabled={capturingFriendB} />
-            </section>
-
             {capturingFriendB && personA ? (
               <div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
                 <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/20 bg-black/40">
@@ -667,21 +581,6 @@ export function AppHome() {
 
         {phase === "results" && result && (
           <div className="space-y-5">
-            <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
-              <div className="text-center space-y-1">
-                <p className="text-[11px] font-mono uppercase tracking-[0.14em] text-white/45">
-                  Active pack
-                </p>
-                <h2 className="text-sm font-semibold text-white">
-                  {packDefinition(pack)?.label ?? "Everyone"}
-                </h2>
-                <p className="text-xs text-white/55">{packDefinition(pack)?.blurb}</p>
-              </div>
-              <PackPicker value={pack} onChange={onPackChange} compact />
-              <p className="text-center text-[11px] text-white/45">
-                {rematchHint(playMode, hasPair)}
-              </p>
-            </section>
             {showCompare && youCompare && friendCompare ? (
               <FriendCompare you={youCompare} friend={friendCompare} onStartOver={reset} />
             ) : (
@@ -781,12 +680,6 @@ export function AppHome() {
                   ))}
                 </ul>
               )}
-              <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3">
-                <p className="text-center text-[11px] text-white/50">
-                  Try a different pack with the same photo
-                </p>
-                <PackPicker value={pack} onChange={onPackChange} compact />
-              </div>
               <div className="flex flex-col gap-2 pt-1 sm:flex-row">
                 <Button variant="secondary" size="md" onClick={retryCapture} className="w-full sm:flex-1">
                   {capturingFriendB ? "Retake friend’s photo" : "Retake photo"}
