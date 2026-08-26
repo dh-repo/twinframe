@@ -555,21 +555,6 @@ export function AppHome() {
 
         {phase === "capture" && (
           <div className="animate-fade-up space-y-8">
-            <section className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5">
-              <div className="text-center space-y-1">
-                <h2 className="text-sm font-semibold text-white">
-                  {capturingFriendB ? "Same pack as you" : "Match me with"}
-                </h2>
-                <p className="text-xs text-white/55">
-                  {packDefinition(pack)?.label ?? "Everyone"}
-                  {capturingFriendB
-                    ? " — locked for a fair closer-twin compare."
-                    : " — pick a gallery, then take a photo."}
-                </p>
-              </div>
-              <PackPicker value={pack} onChange={onPackChange} disabled={capturingFriendB} />
-            </section>
-
             {capturingFriendB && personA ? (
               <div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
                 <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/20 bg-black/40">
