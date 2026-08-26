@@ -61,11 +61,15 @@ async function main() {
     process.exit(1);
   }
 
-  const { embedImageFile } = await import("./enroll-gallery-onnx.mjs");
+  const { adafaceModelReady, embedImageFile } = await import("./enroll-gallery-onnx.mjs");
+  if (!adafaceModelReady()) {
+    console.error("AdaFace IR-101 is required to encode gold probes (public/models/adaface_ir101_webface12m.onnx)");
+    process.exit(1);
+  }
   const emb = await embedImageFile(imagePath);
   const descriptor = emb.d512 ?? emb.d256;
-  if (!descriptor || (descriptor.length !== 256 && descriptor.length !== 512)) {
-    console.error("embedImageFile did not return a 256/512-d descriptor");
+  if (!descriptor || descriptor.length !== 512 || emb.embedKind !== "adaface") {
+    console.error("embedImageFile did not return an AdaFace-512 descriptor");
     process.exit(1);
   }
 
@@ -73,9 +77,9 @@ async function main() {
   const set = fs.existsSync(outPath)
     ? JSON.parse(fs.readFileSync(outPath, "utf8"))
     : {
-        version: "2.0.0-edgeface512",
+        version: "2.0.0-adaface512",
         description:
-          "Open-set look-alike gold on EdgeFace-512. Identity seeds guard regression; civilian rows need human labels.",
+          "Open-set look-alike gold on AdaFace-512. Identity seeds guard regression; civilian rows need human labels.",
         cases: [],
       };
 

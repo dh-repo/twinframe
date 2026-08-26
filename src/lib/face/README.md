@@ -36,7 +36,7 @@ node --experimental-strip-types scripts/enroll-gallery-onnx.mjs --limit 8 --conc
 1. Use a non-celebrity, front-facing photo (one clear face, even light).
 2. Have 3+ people name acceptable celebrity look-alikes, or mark “no doppelgänger”.
 3. Put the JPEG in `fixtures/gold/` and encode with `encode-gold-probe.mjs` (`--accept id,id` or `--refuse`).
-4. Do not invent civilian faces or labels. A first set of ~12 frontals plus ~4 refuses is enough to score `acceptable@1` and `calibration(>=70% endorsed)`.
+4. Do not invent civilian faces or labels. `fixtures/gold/` now has 16 Unsplash frontals (see ATTRIBUTION.md) encoded as **refuse-only** — `acceptable@1` stays N/A until humans name look-alikes.
 
 ## Accuracy upgrade path (open-set look-alike)
 

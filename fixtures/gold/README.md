@@ -1,17 +1,19 @@
 # Civilian gold photos
 
-Drop labeled non-celebrity frontals here, then encode:
+Royalty-free Unsplash frontals used as **open-set probes**. See [ATTRIBUTION.md](./ATTRIBUTION.md).
+
+These people are not in the celebrity gallery. Do not invent look-alike names.
 
 ```bash
 node --experimental-strip-types scripts/encode-gold-probe.mjs \
   --image fixtures/gold/civilian-01.jpg \
   --id civilian-01 \
-  --accept ana-de-armas,margot-robbie
+  --refuse
 
 node --experimental-strip-types scripts/encode-gold-probe.mjs \
-  --image fixtures/gold/no-match-01.jpg \
-  --id civilian-refuse-01 \
-  --refuse
+  --image fixtures/gold/civilian-01.jpg \
+  --id civilian-01 \
+  --accept ana-de-armas,margot-robbie
 ```
 
-Do not invent faces or look-alike labels. A useful first set is ~12 frontals (mix of gender/age) plus ~4 human “no doppelgänger” refuses.
+`--accept` needs a human-ranked celebrity list. The shipped first set is refuse-only (single-rater visual). A useful next pass is 3+ people naming acceptable celebs, or confirming refuse.
