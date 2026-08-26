@@ -225,13 +225,20 @@ describe("R3. Granular Multi-Trait Biometric Breakdown UI (E2E)", () => {
   // FEATURE F9: Granular Biometric Breakdown UI Component (MatchRevealCard)
   // =========================================================================
   describe("Feature F9: Granular Biometric Breakdown UI Component (MatchRevealCard)", () => {
-    it("[F9-T1-01] renders MatchRevealCard with topMatch name and hero percentage", () => {
-      const topMatch = createMockCelebrityMatch();
+    it("[F9-T1-01] renders MatchRevealCard with name, verdict, and calibrated hero P(correct)", () => {
+      const topMatch = createMockCelebrityMatch({
+        matchPercent: 88.4,
+        probabilityCorrect: 0.821,
+        verdict: "dead-ringer",
+      });
       const html = ReactDOMServer.renderToStaticMarkup(
         React.createElement(MatchRevealCard, { topMatch, youUrl: null }),
       );
       assert.ok(html.includes("Billie Eilish"), "Must render celebrity name");
-      assert.ok(html.includes("78") || html.includes("79"), "Must render hero match percentage");
+      assert.ok(html.includes("Dead Ringer"), "Must lead with the named verdict");
+      assert.ok(html.includes("data-hero-percent=\"82\""), "Hero must be calibrated P(correct), not Hill");
+      assert.ok(html.includes("GALLERY ID CHANCE"), "Hero caption must label gallery-ID chance");
+      assert.ok(html.includes("SIMILARITY"), "Hill percent stays labeled similarity");
     });
 
     it("[F9-T1-02] renders all 4 anatomical trait labels in the ComparisonView section", () => {
@@ -259,18 +266,41 @@ describe("R3. Granular Multi-Trait Biometric Breakdown UI (E2E)", () => {
         React.createElement(MatchRevealCard, { topMatch: weakMatch, youUrl: null }),
       );
       assert.ok(
-        html.includes("nearest embedding") || html.includes("No strong doppelgänger") || html.includes("LOW SIMILARITY"),
+        html.includes("NEAREST GALLERY NEIGHBOR") || html.includes("NEAREST") || html.includes("not a look-alike"),
         "Must render honest weak match disclaimer",
       );
     });
 
-    it("[F9-T1-05] renders NumberCounter percentage chip on hero score", () => {
-      const topMatch = createMockCelebrityMatch({ matchPercent: 65 });
+    it("[F9-T1-05] renders calibrated hero percent plus labeled Hill similarity", () => {
+      const topMatch = createMockCelebrityMatch({
+        matchPercent: 65,
+        probabilityCorrect: 0.58,
+        verdict: "soft-match",
+      });
       const html = ReactDOMServer.renderToStaticMarkup(
         React.createElement(MatchRevealCard, { topMatch, youUrl: null }),
       );
+      assert.ok(html.includes("data-hero-percent=\"58\""), "Hero must be P(correct)");
       assert.ok(html.includes("%"), "Must render percentage symbol");
       assert.ok(html.includes("SIMILARITY"), "Must render SIMILARITY uppercase label");
+    });
+
+    it("[F9-T1-06] Distant Twin never heros a Hill percent as a twin score", () => {
+      const distant = createMockCelebrityMatch({
+        matchPercent: 62,
+        probabilityCorrect: 0.19,
+        verdict: "distant-twin",
+      });
+      const html = ReactDOMServer.renderToStaticMarkup(
+        React.createElement(MatchRevealCard, { topMatch: distant, youUrl: null }),
+      );
+      assert.ok(html.includes("Distant Twin"), "Must name the verdict");
+      assert.ok(html.includes("NOT A TWIN CLAIM"), "Must refuse a twin-score reading");
+      assert.ok(html.includes("data-score-muted=\"1\""), "Hero percent must be muted");
+      assert.ok(html.includes("data-hero-percent=\"\""), "Must not emit a hero percent");
+      assert.ok(html.includes("NEAREST"), "Hill stays a nearest-neighbor similarity");
+      assert.ok(!html.includes("animate-sparkle-float"), "Must suppress sparkles");
+      assert.ok(!html.includes("GALLERY ID CHANCE"), "Must not sell P(correct) as a twin claim");
     });
 
     // --- Tier 2: Boundary & Corner Cases ---

@@ -239,7 +239,7 @@ async function runDetectAlignEmbed(
       provider: efRes.providerUsed,
     });
   } catch (err) {
-    console.warn("[Pipeline] EdgeFace-M extraction failed; falling back:", err);
+    console.warn("[Pipeline] AdaFace embedding failed; falling back:", err);
     embeddingPassMs = Math.round(performance.now() - tEmbStart);
     pipelineLog("edgeface:fail", { ms: embeddingPassMs });
   }

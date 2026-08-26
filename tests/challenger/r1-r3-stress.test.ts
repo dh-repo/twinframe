@@ -582,7 +582,12 @@ describe("Empirical Challenger 2: Gallery Curation (R1) & Biometric Breakdown UI
       );
 
       assert.ok(html.includes("Billie Eilish"), "Must render celebrity name");
-      assert.ok(html.includes("No strong doppelgänger") || html.includes("nearest embedding"), "Must render weak match disclaimer");
+      assert.ok(
+        html.includes("NEAREST GALLERY NEIGHBOR") ||
+          html.includes("NEAREST") ||
+          html.includes("not a look-alike"),
+        "Must render weak match disclaimer",
+      );
       assert.ok(!html.includes("animate-sparkle-float"), "Must suppress sparkles on weak matches");
       assert.ok(html.includes("role=\"progressbar\""), "Must contain progress bar");
     });
