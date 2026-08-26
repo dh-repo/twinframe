@@ -37,6 +37,16 @@ import {
   poseRefuseGate,
 } from "./lookalike-policy.ts";
 import { averageQueryEmbeddings, burstKeepCount, rankBurstDrawables } from "./query-burst.ts";
+import { withTimeout } from "./timeout.ts";
+
+/**
+ * Per-stage deadlines, each well inside the outer 45s/60s analysis timeout
+ * (app-home.tsx). A stuck model fetch or a hung CPU-bound fallback should
+ * fail fast and specifically instead of freezing the progress UI until the
+ * outer timeout finally fires.
+ */
+const EDGEFACE_EMBED_TIMEOUT_MS = 12000;
+const LEGACY_FALLBACK_TIMEOUT_MS = 20000;
 
 export type PipelineStatus =
   | "idle"
@@ -223,9 +233,10 @@ async function runDetectAlignEmbed(
 
   try {
     pipelineLog("edgeface:start", { hasAlignedTensor: Boolean(alignedTensor) });
-    const efRes = await extractEdgeFaceEmbeddingWithTta(
-      alignedTensor ?? source,
-      scrfdResult?.primary?.landmarks
+    const efRes = await withTimeout(
+      extractEdgeFaceEmbeddingWithTta(alignedTensor ?? source, scrfdResult?.primary?.landmarks),
+      EDGEFACE_EMBED_TIMEOUT_MS,
+      "EdgeFace embedding extraction",
     );
     edgeFaceEmbedding = efRes.embedding;
     embeddingPassMs = efRes.latencyMs;
@@ -426,8 +437,16 @@ async function completeQueryAnalysis(
     });
     const engine = await loadFaceApiEngine();
     det = edgeFaceEmbedding
-      ? await engine.detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 })
-      : await engine.detectAndDescribeWithTTA(source, options);
+      ? await withTimeout(
+          engine.detectAndDescribe(source, { ...options, skipDescriptor: true, maxSide: 512 }),
+          LEGACY_FALLBACK_TIMEOUT_MS,
+          "Legacy face detection fallback",
+        )
+      : await withTimeout(
+          engine.detectAndDescribeWithTTA(source, options),
+          LEGACY_FALLBACK_TIMEOUT_MS,
+          "Legacy face detection fallback (TTA)",
+        );
     pipelineLog("faceapi:fallback-done");
   }
 
