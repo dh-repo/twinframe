@@ -26,12 +26,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compute5PointSimilarityMatrix } from "../src/lib/face/similarity-transform.ts";
-import { generateAnchors, nmsFaceBoxes } from "../src/lib/face/scrfd.ts";
+import { generateAnchors, nmsFaceBoxes, selectPrimaryFace } from "../src/lib/face/scrfd.ts";
 import { estimateSmileMetrics } from "../src/lib/face/types.ts";
 import { collectEnrollJobs, resolveExtraViewCap } from "./lib/enroll-jobs.mjs";
 import { gateExtraCandidates } from "./lib/extra-gate.mjs";
 import { decodeV4Gallery } from "./lib/gallery-binary.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
+
+export { selectPrimaryFace };
 
 const ROOT = process.cwd();
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -242,16 +244,18 @@ function padImage(img, marginRatio = 0.6) {
 export async function productCropImageFile(filePath, outPath) {
   const img = await loadImage(filePath);
   let faces = await detectFaces(img);
-  let box = faces[0]?.bbox;
+  let primary = selectPrimaryFace(faces);
+  let box = primary?.bbox;
   if (!box) {
     const padded = padImage(img);
     faces = await detectFaces(padded.canvas);
-    if (faces[0]) {
+    primary = selectPrimaryFace(faces);
+    if (primary) {
       box = {
-        x: faces[0].bbox.x - padded.margin,
-        y: faces[0].bbox.y - padded.margin,
-        width: faces[0].bbox.width,
-        height: faces[0].bbox.height,
+        x: primary.bbox.x - padded.margin,
+        y: primary.bbox.y - padded.margin,
+        width: primary.bbox.width,
+        height: primary.bbox.height,
       };
     }
   }
@@ -278,7 +282,7 @@ export async function productCropImageFile(filePath, outPath) {
     path: dest,
     cropped: true,
     faceCount: faces.length,
-    score: faces[0]?.score ?? 0,
+    score: primary?.score ?? 0,
     box,
   };
 }
@@ -297,9 +301,10 @@ export async function embedImageFile(filePath) {
     offset = margin;
   }
 
-  const usedDetection = faces.length > 0;
+  const primary = selectPrimaryFace(faces);
+  const usedDetection = Boolean(primary);
   const tensor = usedDetection
-    ? alignTensor(alignSource, faces[0].landmarks)
+    ? alignTensor(alignSource, primary.landmarks)
     : wholeCropTensor(img);
   const emb = await embed(tensor);
   return {
@@ -307,7 +312,7 @@ export async function embedImageFile(filePath) {
     usedDetection,
     padded: offset > 0 && usedDetection,
     faceCount: faces.length,
-    score: faces[0]?.score ?? 0,
+    score: primary?.score ?? 0,
   };
 }
 

@@ -8,9 +8,11 @@ import {
   MANIFEST_VERSION,
   PHOTO_MIN_BYTES_PER_PIXEL,
   PHOTO_MIN_DIMENSION,
+  heldOutFileNameRejectReason,
   listHeldOutSlots,
   photoRejectReason,
   rebuildManifestFromDisk,
+  resolveFetchIds,
   resolveLimit,
 } from "./fetch-held-out-photos.ts";
 
@@ -59,6 +61,22 @@ describe("resolveLimit", () => {
   });
 });
 
+describe("resolveFetchIds", () => {
+  const catalog = [{ id: "adele" }, { id: "brad-pitt" }, { id: "zendaya" }];
+
+  it("returns null when --ids is absent so the catalog slice still applies", () => {
+    assert.equal(resolveFetchIds(catalog, []), null);
+    assert.equal(resolveFetchIds(catalog, ["--limit", "12"]), null);
+  });
+
+  it("keeps the requested catalog order and rejects unknown ids", () => {
+    assert.deepEqual(resolveFetchIds(catalog, ["--ids", "zendaya,adele"]), ["zendaya", "adele"]);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids", "adele,not-a-celeb"]), /Unknown catalog ids/);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids"]), /Missing --ids value/);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids", "--limit"]), /Missing --ids value/);
+  });
+});
+
 describe("photoRejectReason", () => {
   it("accepts a normal Commons portrait", () => {
     assert.equal(photoRejectReason({ bytes: 132_300, width: 960, height: 838 }), null);
@@ -86,6 +104,29 @@ describe("photoRejectReason", () => {
   it("passes rather than guesses when the size is unknown", () => {
     assert.equal(photoRejectReason({ bytes: 7_162 }), null);
     assert.equal(photoRejectReason({ bytes: 7_162, width: 0, height: 0 }), null);
+  });
+});
+
+describe("heldOutFileNameRejectReason", () => {
+  it("keeps a solo portrait filename", () => {
+    assert.equal(heldOutFileNameRejectReason("File:Adam Sandler 2018.jpg"), null);
+    assert.equal(heldOutFileNameRejectReason("File:Al_Pacino_Cannes_2019.jpg"), null);
+  });
+
+  it("rejects the pair shots that landed as missing-001 restores", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:Abhishek and Aishwarya in Bengal.jpg"),
+      "pair",
+    );
+    assert.equal(heldOutFileNameRejectReason("File:AdamSandlerwithdaughtersFeb11.jpg"), "pair");
+  });
+
+  it("rejects murals and crowd files that are not a face probe", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:112 Mural al passeig de Circumval·lació (Barcelona), Al Pacino.jpg"),
+      "non-photo",
+    );
+    assert.equal(heldOutFileNameRejectReason("File:Cast of Toy Story 2019.jpg"), "non-photo");
   });
 });
 

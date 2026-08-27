@@ -5,6 +5,7 @@ import {
   estimateHeadPose,
   computeIoU,
   nmsFaceBoxes,
+  selectPrimaryFace,
 } from "./scrfd.ts";
 import { estimateSmileMetrics } from "./types.ts";
 import type { SCRFDDetectionResult } from "./types.ts";
@@ -119,6 +120,41 @@ describe("SCRFD-2.5G Face Detection Unit Suite", () => {
     assert.equal(filtered.length, 2);
     assert.equal(filtered[0].score, 0.95);
     assert.equal(filtered[1].score, 0.90);
+    assert.equal(selectPrimaryFace(filtered), candidate1);
+  });
+
+  it("picks the largest remaining box as primary, not the highest score", () => {
+    const smallHighScore: SCRFDDetectionResult = {
+      bbox: { x: 10, y: 10, width: 40, height: 40 },
+      normalizedBox: { x: 0.02, y: 0.02, width: 0.08, height: 0.08 },
+      score: 0.95,
+      confidence: 0.95,
+      landmarks: new Float32Array(10),
+      normalizedLandmarks: [],
+      pose: { yaw: 0, pitch: 0, roll: 0 },
+    };
+    const largeLowScore: SCRFDDetectionResult = {
+      bbox: { x: 100, y: 80, width: 200, height: 240 },
+      normalizedBox: { x: 0.2, y: 0.16, width: 0.4, height: 0.48 },
+      score: 0.7,
+      confidence: 0.7,
+      landmarks: new Float32Array(10),
+      normalizedLandmarks: [],
+      pose: { yaw: 0, pitch: 0, roll: 0 },
+    };
+    const mid: SCRFDDetectionResult = {
+      bbox: { x: 20, y: 20, width: 50, height: 50 },
+      normalizedBox: { x: 0.04, y: 0.04, width: 0.1, height: 0.1 },
+      score: 0.8,
+      confidence: 0.8,
+      landmarks: new Float32Array(10),
+      normalizedLandmarks: [],
+      pose: { yaw: 0, pitch: 0, roll: 0 },
+    };
+
+    assert.equal(selectPrimaryFace([smallHighScore, largeLowScore, mid]), largeLowScore);
+    assert.equal(selectPrimaryFace([smallHighScore]), smallHighScore);
+    assert.equal(selectPrimaryFace([]), null);
   });
 
   it("estimates smile metrics accurately for smiling vs neutral facial landmarks", () => {

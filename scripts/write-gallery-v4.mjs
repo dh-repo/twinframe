@@ -61,7 +61,7 @@ const incomingTemplates = extras.map((e) => ({
 if (EXTRAS_ONLY) {
   const existing = fs.existsSync(templatePath)
     ? JSON.parse(fs.readFileSync(templatePath, "utf8"))
-    : { version: "2.0.0", model: "EdgeFace-S-gamma05-512d", dim: DIM, templates: [] };
+    : { version: "2.1.0-adaface512", model: "AdaFace-IR101-WebFace12M", dim: DIM, templates: [] };
   const merged = mergeExtraTemplates(existing, incomingTemplates);
   let templates = merged.templates;
 
@@ -86,7 +86,10 @@ if (EXTRAS_ONLY) {
   }
 
   const idCount = new Set(templates.map((t) => t.id)).size;
-  fs.writeFileSync(templatePath, JSON.stringify({ ...existing, dim: DIM, templates }));
+  fs.writeFileSync(
+    templatePath,
+    JSON.stringify({ ...existing, version: "2.1.0-adaface512", model: "AdaFace-IR101-WebFace12M", dim: DIM, templates }),
+  );
   console.log(
     `extras-only: templates ${templates.length} (added ${merged.added}, replaced ${merged.replaced}) ` +
       `covering ${idCount} ids — embeddings.v4.q8.bin untouched`,
