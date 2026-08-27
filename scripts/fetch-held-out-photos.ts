@@ -144,6 +144,22 @@ export function filenameLooksLikeNamedSubject(title: string): boolean {
 }
 
 /**
+ * Catalog names strip apostrophes ("Emma DArcy"), which Wikipedia search
+ * then misses. Override the query string for those ids.
+ */
+export const WIKI_SEARCH_NAME: Record<string, string> = {
+  "emma-darcy": "Emma D'Arcy",
+  "j-j-abrams": "J. J. Abrams",
+  "carlos-vald-s": "Carlos Valdés (actor)",
+  "cynthia-addai-robinson": "Cynthia Addai-Robinson",
+  "lee-jung-mi": "Lee Jung-mi",
+};
+
+export function wikiSearchName(entry: { id: string; name: string }): string {
+  return WIKI_SEARCH_NAME[entry.id] ?? entry.name;
+}
+
+/**
  * Reject a named file that does not mention the celebrity. Opaque dumps
  * (DoD hashes, "171027-F-DC888008") are allowed through so infobox photos
  * still land; "Elizabeth Hurley08.jpg" for Hugh Grant is not.
@@ -600,7 +616,8 @@ async function main() {
     }
 
     try {
-      const title = await resolveTitle(entry.name);
+      const searchName = wikiSearchName(entry);
+      const title = await resolveTitle(searchName);
       if (!title) {
         console.log(`- no wiki title  ${entry.id}`);
         fail++;
@@ -624,8 +641,8 @@ async function main() {
       let saved = false;
       for (const cand of ordered) {
         const identityReject =
-          heldOutIdentityRejectReason(cand.title, entry.name) ||
-          heldOutSecondPersonRejectReason(cand.title, entry.name);
+          heldOutIdentityRejectReason(cand.title, searchName) ||
+          heldOutSecondPersonRejectReason(cand.title, searchName);
         if (identityReject) {
           console.log(`  skip ${cand.title}: ${identityReject}`);
           continue;

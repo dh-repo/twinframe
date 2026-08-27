@@ -22,6 +22,7 @@ import {
   rebuildManifestFromDisk,
   resolveFetchIds,
   resolveLimit,
+  wikiSearchName,
 } from "./fetch-held-out-photos.ts";
 
 function tempHeldOut() {
@@ -66,6 +67,13 @@ describe("resolveLimit", () => {
   it("rejects nonsense limits instead of silently fetching everything", () => {
     assert.throws(() => resolveLimit(1000, { HELD_OUT_LIMIT: "zero" }, []), /Invalid held-out limit/);
     assert.throws(() => resolveLimit(1000, {}, ["--limit", "0"]), /Invalid held-out limit/);
+  });
+});
+
+describe("wikiSearchName", () => {
+  it("restores apostrophes Wikipedia search needs", () => {
+    assert.equal(wikiSearchName({ id: "emma-darcy", name: "Emma DArcy" }), "Emma D'Arcy");
+    assert.equal(wikiSearchName({ id: "adele", name: "Adele" }), "Adele");
   });
 });
 
