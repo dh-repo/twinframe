@@ -319,8 +319,15 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Lopez (GLAAD + Versace jungle; not blonde-bob yellow eval),
  *         and Aishwarya Rai (Kalyan peach sari; not white ruffle-collar
  *         eval). Hemsworth CCMA crop stayed a group shot (n=11).
+ * 6.5.47: Commons extras that beat pack dTrue for Chris Hemsworth
+ *         (navy pinstripe + Bali 2019 vest; not Comic-Con blue-tie eval),
+ *         Hugh Jackman (charcoal blazer + SDCC 2013; not navy slim-tie
+ *         eval), Rosalía (2023 Latin Grammy lace; not Goya 2019 eval),
+ *         and Andrew Garfield (2011 Comic-Con sweater; not navy-suit
+ *         slim-tie eval). Hemsworth 2017 Gage and Garfield TIFF 09 stay
+ *         out as eval-sitting clones.
  */
-const GALLERY_VERSION = "6.5.46";
+const GALLERY_VERSION = "6.5.47";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -437,6 +437,26 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "aishwarya-rai" && t.source === "extra-photos/aishwarya-rai/004.jpg"),
       "Aishwarya Rai Kalyan extra missing",
     );
+    assert.ok((byId.get("chris-hemsworth") ?? 0) >= 2, "Chris Hemsworth extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "chris-hemsworth" && t.source === "extra-photos/chris-hemsworth/001.jpg"),
+      "Chris Hemsworth pinstripe extra missing",
+    );
+    assert.ok((byId.get("hugh-jackman") ?? 0) >= 2, "Hugh Jackman extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "hugh-jackman" && t.source === "extra-photos/hugh-jackman/001.jpg"),
+      "Hugh Jackman suit extra missing",
+    );
+    assert.ok((byId.get("rosalia") ?? 0) >= 1, "Rosalía extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "rosalia" && t.source === "extra-photos/rosalia/001.jpg"),
+      "Rosalía 2023 Latin Grammy extra missing",
+    );
+    assert.ok((byId.get("andrew-garfield") ?? 0) >= 1, "Andrew Garfield extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "andrew-garfield" && t.source === "extra-photos/andrew-garfield/001.jpg"),
+      "Andrew Garfield 2011 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

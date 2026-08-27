@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 309,
+  "count": 315,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2229,6 +2229,54 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Rachel_McAdams_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T17:59:20.496Z",
       "note": "2011 Cannes teal one-shoulder Old Hollywood waves; not Sherlock 2009 updo red-lipstick eval"
+    },
+    {
+      "id": "chris-hemsworth",
+      "file": "001.jpg",
+      "commonsTitle": "File:Chris Hemsworth (7400859048).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/58/Chris_Hemsworth_%287400859048%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:35:08.397Z",
+      "note": "navy pinstripe 3-piece open collar; not Comic-Con blue matching-tie eval"
+    },
+    {
+      "id": "chris-hemsworth",
+      "file": "002.jpg",
+      "commonsTitle": "File:Chris Hemsworth Bali 2019 3.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Chris_Hemsworth_Bali_2019_3.jpg/1920px-Chris_Hemsworth_Bali_2019_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:35:08.677Z",
+      "note": "MIB 2019 grey vest peace-sign; not Comic-Con blue matching-tie eval"
+    },
+    {
+      "id": "hugh-jackman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Hugh Jackman Suit.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hugh_Jackman_Suit.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:35:08.948Z",
+      "note": "charcoal blazer black shirt outdoor; not navy grey-shirt slim-tie eval"
+    },
+    {
+      "id": "hugh-jackman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Hugh Jackman - SDCC13.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hugh_Jackman_-_SDCC13.jpg/1920px-Hugh_Jackman_-_SDCC13.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:35:09.282Z",
+      "note": "SDCC 2013 white-shirt beard panel; not navy grey-shirt slim-tie eval"
+    },
+    {
+      "id": "rosalia",
+      "file": "001.jpg",
+      "commonsTitle": "File:2023-11-16 Gala de los Latin Grammy, 27 (cropped)02.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/2023-11-16_Gala_de_los_Latin_Grammy%2C_27_%28cropped%2902.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:35:09.579Z",
+      "note": "2023 Latin Grammy black lace over-shoulder; not Goya 2019 embroidered-jacket eval"
+    },
+    {
+      "id": "andrew-garfield",
+      "file": "001.jpg",
+      "commonsTitle": "File:Andrew Garfield 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Andrew_Garfield_2011.jpg/1920px-Andrew_Garfield_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:35:09.881Z",
+      "note": "2011 Comic-Con orange striped sweater; not navy-suit black-shirt slim-tie eval"
     }
   ]
 }
