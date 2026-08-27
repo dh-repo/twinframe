@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 284,
+  "count": 296,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2029,6 +2029,102 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Sandra_Bullock%2C_The_Heat%2C_London%2C_2013_%28crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T16:59:04.904Z",
       "note": "The Heat London 2013 waves black lace; not layered-pearls eval"
+    },
+    {
+      "id": "margot-robbie",
+      "file": "003.jpg",
+      "commonsTitle": "File:Margot Robbie 2016 cropped and retouched.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/26/Margot_Robbie_2016_cropped_and_retouched.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:37.518Z",
+      "note": "2016 beaded white collar; not Comic-Con tan clap eval"
+    },
+    {
+      "id": "margot-robbie",
+      "file": "004.jpg",
+      "commonsTitle": "File:Margot Robbie MTV 2018 (cropped).png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/Margot_Robbie_MTV_2018_%28cropped%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:37.772Z",
+      "note": "MTV 2018 blue geometric shirt; not Comic-Con tan clap eval"
+    },
+    {
+      "id": "margot-robbie",
+      "file": "005.jpg",
+      "commonsTitle": "File:Margot Robbie Whiskey Tango Foxtrot premiere.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Margot_Robbie_Whiskey_Tango_Foxtrot_premiere.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:38.019Z",
+      "note": "WTF premiere black V-neck ponytail; not Comic-Con tan clap eval"
+    },
+    {
+      "id": "penelope-cruz",
+      "file": "001.jpg",
+      "commonsTitle": "File:Penélope Cruz - Cannes 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Pen%C3%A9lope_Cruz_-_Cannes_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:38.260Z",
+      "note": "Cannes 2011 royal-blue halter; not LA City Hall certificate eval"
+    },
+    {
+      "id": "penelope-cruz",
+      "file": "002.jpg",
+      "commonsTitle": "File:Penelope Cruz Cannes 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Penelope_Cruz_Cannes_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:38.518Z",
+      "note": "Cannes 2018 black lace ruby earrings; not LA City Hall certificate eval"
+    },
+    {
+      "id": "penelope-cruz",
+      "file": "003.jpg",
+      "commonsTitle": "File:Penélope Cruz TIFF 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Pen%C3%A9lope_Cruz_TIFF_2012.jpg/1920px-Pen%C3%A9lope_Cruz_TIFF_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:22:38.851Z",
+      "note": "TIFF 2012 blush off-shoulder; not LA City Hall certificate eval"
+    },
+    {
+      "id": "cristiano-ronaldo",
+      "file": "001.jpg",
+      "commonsTitle": "File:Cristiano Ronaldo Portugal 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Cristiano_Ronaldo_Portugal_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.105Z",
+      "note": "Portugal WC 2018 white Uruguay jersey; not Juventus 2019-20 Jeep eval"
+    },
+    {
+      "id": "cristiano-ronaldo",
+      "file": "002.jpg",
+      "commonsTitle": "File:Cristiano Ronaldo 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.361Z",
+      "note": "Portugal WC 2018 red Spain jersey; not Juventus 2019-20 Jeep eval"
+    },
+    {
+      "id": "drew-barrymore",
+      "file": "002.jpg",
+      "commonsTitle": "File:Drew Barrymore Berlin 2014.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Drew_Barrymore_Berlin_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.625Z",
+      "note": "Berlin Blended 2014 3/4 waves; not profile updo sparkly-headband eval"
+    },
+    {
+      "id": "zayn-malik",
+      "file": "001.jpg",
+      "commonsTitle": "File:ZaynWWATchile Cropped.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/ZaynWWATchile_Cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.922Z",
+      "note": "WWA Chile STAY REAL jersey; not 2012 white-red concert eval"
+    },
+    {
+      "id": "zayn-malik",
+      "file": "002.jpg",
+      "commonsTitle": "File:Zayn Malik - One Direction (14936271965).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Zayn_Malik_-_One_Direction_%2814936271965%29.jpg/1920px-Zayn_Malik_-_One_Direction_%2814936271965%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:22:40.192Z",
+      "note": "WWA Iron Maiden tank; not 2012 white-red concert eval"
+    },
+    {
+      "id": "simu-liu",
+      "file": "001.jpg",
+      "commonsTitle": "File:Simu Liu (202).png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Simu_Liu_%28202%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:40.442Z",
+      "note": "Theater dark blazer yellow collar; not Kim's Convenience blue-suit eval"
     }
   ]
 }

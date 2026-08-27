@@ -288,8 +288,18 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Phoenix (Berlinale 2018; not sunglasses eval), and Sandra
  *         Bullock (July 2013 + The Heat London; not layered-pearls
  *         eval).
+ * 6.5.43: Commons extras that beat pack dTrue for Ansel Elgort (Apple
+ *         Store 2014 + 2017 red jacket; not Divergent premiere eval),
+ *         Margot Robbie (I, Tonya + 2016 beaded collar + MTV 2018 +
+ *         WTF premiere; not Comic-Con tan clap eval), Penélope Cruz
+ *         (Cannes 2011 + Cannes 2018 + TIFF 2012; not LA City Hall
+ *         eval), Cristiano Ronaldo (Portugal WC 2018 white + red;
+ *         not Juventus 2019-20 Jeep eval), Drew Barrymore (Berlin
+ *         Blended 2014; not profile updo eval), Zayn Malik (WWA Chile
+ *         + Iron Maiden tank; not 2012 white-red concert eval), and
+ *         Simu Liu (theater blazer; not Kim's Convenience eval).
  */
-const GALLERY_VERSION = "6.5.42";
+const GALLERY_VERSION = "6.5.43";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

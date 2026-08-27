@@ -327,6 +327,41 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "sandra-bullock" && t.source === "extra-photos/sandra-bullock/001.jpg"),
       "Sandra Bullock July 2013 extra missing",
     );
+    assert.ok((byId.get("ansel-elgort") ?? 0) >= 2, "Ansel Elgort extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ansel-elgort" && t.source === "extra-photos/ansel-elgort/004.jpg"),
+      "Ansel Elgort Apple Store 2014 extra missing",
+    );
+    assert.ok((byId.get("margot-robbie") ?? 0) >= 4, "Margot Robbie extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "margot-robbie" && t.source === "extra-photos/margot-robbie/002.jpg"),
+      "Margot Robbie I, Tonya extra missing",
+    );
+    assert.ok((byId.get("penelope-cruz") ?? 0) >= 3, "Penélope Cruz extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "penelope-cruz" && t.source === "extra-photos/penelope-cruz/001.jpg"),
+      "Penélope Cruz Cannes 2011 extra missing",
+    );
+    assert.ok((byId.get("cristiano-ronaldo") ?? 0) >= 2, "Cristiano Ronaldo extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "cristiano-ronaldo" && t.source === "extra-photos/cristiano-ronaldo/001.jpg"),
+      "Cristiano Ronaldo Portugal 2018 extra missing",
+    );
+    assert.ok((byId.get("drew-barrymore") ?? 0) >= 2, "Drew Barrymore extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "drew-barrymore" && t.source === "extra-photos/drew-barrymore/002.jpg"),
+      "Drew Barrymore Berlin 2014 extra missing",
+    );
+    assert.ok((byId.get("zayn-malik") ?? 0) >= 2, "Zayn Malik extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "zayn-malik" && t.source === "extra-photos/zayn-malik/001.jpg"),
+      "Zayn Malik WWA Chile extra missing",
+    );
+    assert.ok((byId.get("simu-liu") ?? 0) >= 1, "Simu Liu extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "simu-liu" && t.source === "extra-photos/simu-liu/001.jpg"),
+      "Simu Liu theater extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
