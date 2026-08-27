@@ -5043,7 +5043,7 @@
     "name": "Colin Ford",
     "path": "/celebs/thumbs/96/colin-ford.webp",
     "path192": "/celebs/thumbs/192/colin-ford.webp",
-    "fallbackPath": "/celebs/thumbs/96/colin-ford.webp",
+    "fallbackPath": "/celebs/colin-ford.jpg",
     "gender": "male",
     "genderProb": 0.994273841381073,
     "ageBuckets": [
@@ -5431,7 +5431,7 @@
     "name": "Samantha Mathis",
     "path": "/celebs/thumbs/96/samantha-mathis.webp",
     "path192": "/celebs/thumbs/192/samantha-mathis.webp",
-    "fallbackPath": "/celebs/thumbs/96/samantha-mathis.webp",
+    "fallbackPath": "/celebs/samantha-mathis.jpg",
     "gender": "female",
     "genderProb": 0.91794653236866,
     "ageBuckets": [

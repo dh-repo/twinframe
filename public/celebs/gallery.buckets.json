@@ -3374,7 +3374,7 @@
     "name": "Colin Ford",
     "path": "/celebs/thumbs/96/colin-ford.webp",
     "path192": "/celebs/thumbs/192/colin-ford.webp",
-    "fallbackPath": "/celebs/thumbs/96/colin-ford.webp",
+    "fallbackPath": "/celebs/colin-ford.jpg",
     "age": 31,
     "gender": "male",
     "genderProb": 0.994273841381073
@@ -3634,7 +3634,7 @@
     "name": "Samantha Mathis",
     "path": "/celebs/thumbs/96/samantha-mathis.webp",
     "path192": "/celebs/thumbs/192/samantha-mathis.webp",
-    "fallbackPath": "/celebs/thumbs/96/samantha-mathis.webp",
+    "fallbackPath": "/celebs/samantha-mathis.jpg",
     "age": 29,
     "gender": "female",
     "genderProb": 0.91794653236866

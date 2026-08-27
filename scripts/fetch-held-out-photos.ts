@@ -77,7 +77,7 @@ export interface Manifest {
 }
 
 const SKIP_NAME =
-  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|fresque|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph|walk of fame|hollywood.?star/i;
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|fresque|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph|walk of fame|hollywood.?star|\busaf\b|official portrait/i;
 
 /** Two people in the frame — largest-face still embeds the wrong subject. */
 const SKIP_PAIR = /(^|[ _(])(and|with|&|feat\.?|vs\.?)[ _]|withdaughters|withfamily/i;
@@ -231,14 +231,20 @@ export function heldOutSamePersonRejectReason(
  * A First Last + year that is not the celebrity is a second person in frame.
  */
 export function heldOutSecondPersonRejectReason(title: string, name: string): "pair" | null {
-  const matches = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}[^\d]{0,3}\d{4}/g) ?? [];
   const celeb = String(name).replace(/[^a-z ]/gi, " ").toLowerCase();
-  for (const raw of matches) {
+  const withYear = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}[^\d]{0,3}\d{4}/g) ?? [];
+  for (const raw of withYear) {
     const who = raw.replace(/\s*\d{4}$/, "").trim().toLowerCase();
     const [first, last] = who.split(/\s+/);
     if (first && last && !(celeb.includes(first) && celeb.includes(last))) return "pair";
   }
-  return null;
+  const named = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}/g) ?? [];
+  let extra = 0;
+  for (const raw of named) {
+    const [first, last] = raw.toLowerCase().split(/\s+/);
+    if (first && last && !(celeb.includes(first) && celeb.includes(last))) extra++;
+  }
+  return extra >= 2 ? "pair" : null;
 }
 
 /** Full catalog by default; HELD_OUT_LIMIT or --limit narrow it. */

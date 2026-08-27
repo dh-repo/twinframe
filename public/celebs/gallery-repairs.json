@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T05:55:13.198Z",
+  "generatedAt": "2026-08-27T06:03:01.592Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6346,6 +6346,32 @@
       "shippedToLive": 0.5913447639581352,
       "beforeFingerprint": "ce500c17579de902d06f313903a528f53926c5c271ac4dfaef51bc83be1ee2db",
       "afterFingerprint": "ee78511317f96e7dd08d682dc019f931af32defcbba94d1ef2a7719f93dac886"
+    },
+    {
+      "id": "colin-ford",
+      "index": 337,
+      "household": false,
+      "source": "public/celebs/colin-ford.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8753628730773926,
+      "shippedToLive": 0.6304993546848915,
+      "beforeFingerprint": "47fad14c20d7b0e2e6edacc47f3dc81a0752f56a434ea4269369db2549c6b3da",
+      "afterFingerprint": "948fb6a329c3e4275b7a984466651506f2b7c699744d6309403f19055038c525"
+    },
+    {
+      "id": "samantha-mathis",
+      "index": 363,
+      "household": false,
+      "source": "public/celebs/samantha-mathis.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.75749671459198,
+      "shippedToLive": 0.5629277362502334,
+      "beforeFingerprint": "8a6428320665fb68a86ba0606414dd688af1b503491b7e058b382738d7ff188b",
+      "afterFingerprint": "1ca63319779cb49c4991eca376ac7dcf05772c2627b5a8659d3be3dc2a17d9d3"
     }
   ]
 }

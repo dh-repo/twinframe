@@ -161,6 +161,7 @@ describe("heldOutFileNameRejectReason", () => {
       "non-photo",
     );
     assert.equal(heldOutFileNameRejectReason("File:Cast of Toy Story 2019.jpg"), "non-photo");
+    assert.equal(heldOutFileNameRejectReason("File:Cahill, Eddie (USAF).jpg"), "non-photo");
   });
 });
 
@@ -202,6 +203,17 @@ describe("heldOutSecondPersonRejectReason", () => {
     );
     assert.equal(
       heldOutSecondPersonRejectReason("File:Dakota Johnson (2014).jpg", "Dakota Johnson"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason(
+        "File:J Curtis Lewis, Richard Nixon, Spiro Agnew.JPG",
+        "Richard J. Lewis",
+      ),
+      "pair",
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Amy Berg by Gage Skidmore.jpg", "Amy Berg"),
       null,
     );
   });
