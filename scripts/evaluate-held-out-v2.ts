@@ -291,7 +291,11 @@ function main() {
 
   const gallery = mergeExtraTemplates(loadGallery());
 
-  const packPath = path.join(CELEBS, "held-out/descriptors.json");
+  const descIdx = process.argv.indexOf("--descriptors");
+  const packPath =
+    descIdx >= 0 && process.argv[descIdx + 1]
+      ? path.resolve(ROOT, process.argv[descIdx + 1])
+      : path.join(CELEBS, "held-out/descriptors.json");
   const pack = JSON.parse(fs.readFileSync(packPath, "utf8")) as { cases: HeldOutCase[] };
 
   assertDimensionsCompatible(pack.cases, GALLERY_DIM);
