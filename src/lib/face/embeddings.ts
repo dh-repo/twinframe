@@ -364,8 +364,17 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         eval), and Scarlett Johansson (pink cardigan Marines visit;
  *         not SDCC 2019 mesh-bun eval). Song Kang 231124 My Demon and
  *         Olsen TIFF 2011 floral stay out as eval-sitting clones.
+ * 6.5.53: Commons extras that beat pack dTrue for Son Ye-jin (March 2024
+ *         studio floral; not Baeksang pearl-strap eval), Tony Leung
+ *         (black vest mic; not Intercontinental dark-shirt eval),
+ *         Lupita Nyong'o (Cannes 2015 emerald gown; not Tribeca TIME
+ *         blue-suit eval), Benedict Cumberbatch (SDCC navy cardigan;
+ *         not Sherlock overcoat eval), and Joseph Gordon-Levitt
+ *         (WonderCon blazer; not v-neck sweater eval). Tom Holland
+ *         SDCC flickr and Lupita 2018 TIME crop stay out as eval
+ *         sittings.
  */
-const GALLERY_VERSION = "6.5.52";
+const GALLERY_VERSION = "6.5.53";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

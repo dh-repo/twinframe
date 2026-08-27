@@ -1,5 +1,5 @@
 {
-  "version": "6.5.52",
+  "version": "6.5.53",
   "model": "AdaFace-IR101-WebFace12M",
   "dim": 512,
   "countCelebs": 1024,

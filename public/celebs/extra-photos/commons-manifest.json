@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 335,
+  "count": 340,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2437,6 +2437,46 @@
         "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Scarlett_Johansson_3.jpg/1280px-Scarlett_Johansson_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
         "fetchedAt": "2026-08-27T19:52:17.390Z",
         "note": "Pink cardigan Marines visit; not SDCC 2019 mesh-bun eval"
+    },
+    {
+        "id": "son-ye-jin",
+        "file": "001.jpg",
+        "commonsTitle": "File:Son Ye-jin in March 2024.png",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Son_Ye-jin_in_March_2024.png/1280px-Son_Ye-jin_in_March_2024.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "Studio white floral shirt hair down; not Baeksang pearl-strap gown eval"
+    },
+    {
+        "id": "tony-leung",
+        "file": "001.jpg",
+        "commonsTitle": "File:Tony Leung (cropped).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Tony_Leung_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "Black vest white shirt mic; not Intercontinental dark-shirt eval"
+    },
+    {
+        "id": "lupita-nyongo",
+        "file": "001.jpg",
+        "commonsTitle": "File:Lupita Nyong'o Cannes 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Lupita_Nyong%27o_Cannes_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "Cannes 2015 emerald gown doughnut bun; not Tribeca TIME blue-suit eval"
+    },
+    {
+        "id": "benedict-cumberbatch",
+        "file": "001.jpg",
+        "commonsTitle": "File:Benedict Cumberbatch (48470892131).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Benedict_Cumberbatch_%2848470892131%29.jpg/1280px-Benedict_Cumberbatch_%2848470892131%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "SDCC navy cardigan grey tee; not Sherlock overcoat scarf eval"
+    },
+    {
+        "id": "joseph-gordon-levitt",
+        "file": "001.jpg",
+        "commonsTitle": "File:Joseph Gordon-Levitt (6855057100).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Joseph_Gordon-Levitt_%286855057100%29.jpg/1280px-Joseph_Gordon-Levitt_%286855057100%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "WonderCon navy blazer striped shirt; not v-neck sweater patterned-tie eval"
     }
   ]
 }
