@@ -394,8 +394,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         high-collar press; not wet-look denim hand-on-head eval). Marie
  *         Claire 230224 is the eval sitting; 231124 / November 2023 My Demon
  *         is the enrolled primary; unused red-sweater 002 did not beat pack.
+ * 6.5.57: Held-out 002+ extras that beat pack dTrue for Olivia Colman (crystal
+ *         mesh red-carpet; not lime-green blouse eval), John Krasinski (navy
+ *         tie solo smile; not tuxedo-bowtie couple eval), and John Cho (plaid
+ *         western + Comic-Con E! + grey tweed scarf; not navy-jacket eval).
+ *         Lee Min-ho 002 is the MISE EN SCÈNE primary sitting.
  */
-const GALLERY_VERSION = "6.5.56";
+const GALLERY_VERSION = "6.5.57";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
