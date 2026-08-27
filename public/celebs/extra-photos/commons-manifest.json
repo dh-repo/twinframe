@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 322,
+  "count": 324,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2333,6 +2333,22 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Oscar_Isaac_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T18:50:01.332Z",
       "note": "2013 navy suit slim tie pocket square; not Comic-Con dark-shirt mic eval"
+    },
+    {
+      "id": "mahershala-ali",
+      "file": "001.jpg",
+      "commonsTitle": "File:MahershalalhashbazAliCCJuly07.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3d/MahershalalhashbazAliCCJuly07.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:02:57.731Z",
+      "note": "2007 Comic-Con cap forest-green polo; not denim white-collar eval"
+    },
+    {
+      "id": "mark-zuckerberg",
+      "file": "001.jpg",
+      "commonsTitle": "File:Mark Zuckerberg (7977779798).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mark_Zuckerberg_%287977779798%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:02:58.005Z",
+      "note": "TechCrunch Disrupt grey tee; not Harvard hoodie iBook eval"
     }
   ]
 }

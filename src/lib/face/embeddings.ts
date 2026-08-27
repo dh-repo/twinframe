@@ -335,8 +335,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         dark-shirt eval). Hyun 2011 crop failed the enroll
  *         detection-score gate. Uma Cannes 2000 and Oscar Venice stay
  *         out as eval-sitting clones.
+ * 6.5.49: Commons extras that beat pack dTrue for Mahershala Ali (2007
+ *         Comic-Con cap; not denim white-collar eval) and Mark
+ *         Zuckerberg (TechCrunch Disrupt grey tee; not Harvard hoodie
+ *         iBook eval). Mahershala Commons cropped/299 stay out as eval
+ *         clones.
  */
-const GALLERY_VERSION = "6.5.48";
+const GALLERY_VERSION = "6.5.49";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
