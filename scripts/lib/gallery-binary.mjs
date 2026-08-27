@@ -116,6 +116,32 @@ export function decodeV4Gallery(buffer) {
   return { header, vectors };
 }
 
+/** Rewrite listed payload rows using the buffer's existing globalScale. Header and other rows stay byte-identical. */
+export function patchQ8Slots(buffer, patches) {
+  const header = decodeV4Header(buffer);
+  const { vectorCount, dimension, globalScale } = header;
+  const expected = V4_HEADER_SIZE + vectorCount * dimension;
+  if (buffer.length !== expected) {
+    throw new Error(`AFv4 payload size ${buffer.length} != expected ${expected}`);
+  }
+  const out = Buffer.from(buffer);
+  for (const patch of patches) {
+    const index = patch.index;
+    if (!Number.isInteger(index) || index < 0 || index >= vectorCount) {
+      throw new Error(`patch index ${index} out of range 0..${vectorCount - 1}`);
+    }
+    const vec = l2Normalize(patch.descriptor);
+    if (vec.length !== dimension) {
+      throw new Error(`patch dimension ${vec.length} != ${dimension}`);
+    }
+    const off = V4_HEADER_SIZE + index * dimension;
+    for (let j = 0; j < dimension; j++) {
+      out[off + j] = quantizeComponent(vec[j], globalScale);
+    }
+  }
+  return out;
+}
+
 export function cosineDistance(a, b) {
   let dot = 0;
   const n = Math.min(a.length, b.length);

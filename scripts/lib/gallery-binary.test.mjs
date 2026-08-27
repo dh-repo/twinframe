@@ -9,6 +9,7 @@ import {
   encodeV4Gallery,
   globalQuantScale,
   l2Normalize,
+  patchQ8Slots,
   quantizeComponent,
 } from "./gallery-binary.mjs";
 
@@ -62,5 +63,37 @@ describe("AFv4 gallery codec", () => {
     wrongMagic.write("XXXX", 0, "ascii");
     assert.throws(() => decodeV4Gallery(wrongMagic), /magic/);
     assert.throws(() => encodeV4Gallery([pseudoVector(dim, 3)], dim + 1), /dimension/);
+  });
+
+  it("patches listed q8 slots with the existing global scale and leaves every other byte alone", () => {
+    const dim = 8;
+    const original = [pseudoVector(dim, 3), pseudoVector(dim, 4), pseudoVector(dim, 5)];
+    const { buffer } = encodeV4Gallery(original, dim);
+    const replacement = pseudoVector(dim, 99);
+    const patched = patchQ8Slots(buffer, [{ index: 1, descriptor: replacement }]);
+    const beforeHeader = decodeV4Header(buffer);
+
+    assert.notEqual(patched, buffer);
+    assert.deepEqual(patched.subarray(0, V4_HEADER_SIZE), buffer.subarray(0, V4_HEADER_SIZE));
+    assert.deepEqual(
+      patched.subarray(V4_HEADER_SIZE, V4_HEADER_SIZE + dim),
+      buffer.subarray(V4_HEADER_SIZE, V4_HEADER_SIZE + dim),
+    );
+    assert.deepEqual(
+      patched.subarray(V4_HEADER_SIZE + 2 * dim),
+      buffer.subarray(V4_HEADER_SIZE + 2 * dim),
+    );
+    assert.notDeepEqual(
+      patched.subarray(V4_HEADER_SIZE + dim, V4_HEADER_SIZE + 2 * dim),
+      buffer.subarray(V4_HEADER_SIZE + dim, V4_HEADER_SIZE + 2 * dim),
+    );
+
+    const { header, vectors } = decodeV4Gallery(patched);
+    assert.equal(header.globalScale, beforeHeader.globalScale);
+    assert.ok(cosineDistance(vectors[0], original[0]) < 5e-3);
+    assert.ok(cosineDistance(vectors[2], original[2]) < 5e-3);
+    assert.ok(cosineDistance(vectors[1], replacement) < 5e-3);
+    assert.throws(() => patchQ8Slots(buffer, [{ index: 1, descriptor: new Float32Array(dim + 1) }]), /dimension/);
+    assert.throws(() => patchQ8Slots(buffer, [{ index: 9, descriptor: replacement }]), /index/);
   });
 });

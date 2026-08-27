@@ -141,8 +141,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * short-circuit and the templates fetch URL below; skipping the bump pins
  * returning visitors to stale artifacts indefinitely (cycle-22 review P1).
  * 5.5.0: multi-shot repair + mislabeled-portrait fix + reconciled demographics.
+ * 6.2.0: surgical AdaFace re-enroll of 14 poisoned collapse slots (household names kept).
  */
-const GALLERY_VERSION = "6.0.0";
+const GALLERY_VERSION = "6.2.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

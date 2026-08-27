@@ -7,6 +7,7 @@ import {
   DEFAULT_EXTRA_VIEW_CAP,
   collectEnrollJobs,
   extraImagePaths,
+  preferRepairSource,
   primaryPhotoPath,
   resolveExtraViewCap,
 } from "./enroll-jobs.mjs";
@@ -24,6 +25,22 @@ function makeCelebDir(id, { heldOut = [], extraPhotos = [] }) {
   }
   return root;
 }
+
+describe("preferRepairSource", () => {
+  it("prefers jpg, then 192-px thumb, and never invents a path", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "repair-src-"));
+    fs.mkdirSync(path.join(root, "thumbs/192"), { recursive: true });
+    fs.mkdirSync(path.join(root, "thumbs/96"), { recursive: true });
+    assert.equal(preferRepairSource("missing", root), null);
+    fs.writeFileSync(path.join(root, "thumbs/96/adele.webp"), "96");
+    assert.equal(preferRepairSource("adele", root), path.join(root, "thumbs/96/adele.webp"));
+    fs.writeFileSync(path.join(root, "thumbs/192/adele.webp"), "192");
+    assert.equal(preferRepairSource("adele", root), path.join(root, "thumbs/192/adele.webp"));
+    fs.writeFileSync(path.join(root, "adele.jpg"), "jpg");
+    assert.equal(preferRepairSource("adele", root), path.join(root, "adele.jpg"));
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+});
 
 describe("primaryPhotoPath", () => {
   it("prefers the hi-res jpg and falls back to a converted png thumb", () => {

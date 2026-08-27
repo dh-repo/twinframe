@@ -56,13 +56,12 @@ describe("shipped AdaFace collapse cluster", () => {
     assert.equal(NEAR_CLONE_MAX, 0.005);
   });
 
-  it("keeps the three smoking-gun pairs at d≤0.005 and not exact clones", () => {
+  it("no longer collapses the smoking-gun pairs after the surgical repair", () => {
     for (const [a, b] of SMOKING_GUN_PAIRS) {
       const hit = clusterPairs.find((p) => (p.a === a && p.b === b) || (p.a === b && p.b === a));
-      assert.ok(hit, `${a} ↔ ${b} dropped out of the d≤${NEAR_CLONE_MAX} cluster`);
-      assert.ok(hit.distance > 0, `${a} ↔ ${b} became an exact clone`);
-      assert.equal(hit.sameFingerprint, false, `${a} ↔ ${b} share a raw q8 fingerprint`);
+      assert.equal(hit, undefined, `${a} ↔ ${b} still at d≤${NEAR_CLONE_MAX}`);
     }
+    assert.equal(clusterPairs.length, 0, `residual collapse pairs: ${JSON.stringify(clusterPairs)}`);
   });
 
   it("does not share one q8 fingerprint across the 14-id neighborhood", () => {
@@ -83,12 +82,29 @@ describe("shipped AdaFace collapse cluster", () => {
     }
   });
 
+  it("keeps healthy control slots byte-identical", () => {
+    assert.equal(byId.get("adele")?.q8Fingerprint, MEASURED_CAUSE.controlFingerprints.adele);
+    assert.equal(byId.get("zendaya")?.q8Fingerprint, MEASURED_CAUSE.controlFingerprints.zendaya);
+  });
+
+  it("records a surgical repair of all 14 ids and keeps household names", () => {
+    const manifestPath = path.join(ROOT, "public/celebs/gallery-repairs.json");
+    assert.equal(fs.existsSync(manifestPath), true, "gallery-repairs.json missing");
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+    const repaired = new Set((manifest.repairs ?? []).map((row) => row.id));
+    assert.deepEqual([...repaired].sort(), [...COLLAPSE_IDS].sort());
+    for (const id of HOUSEHOLD_COLLAPSE_IDS) {
+      assert.ok(repaired.has(id), `${id} must be repaired in place, not dropped`);
+      assert.ok(byId.has(id), `${id} vanished from the gallery`);
+    }
+  });
+
   it("pins the measured cause: poisoned shipped slots, live AdaFace recovers", () => {
     assert.equal(MEASURED_CAUSE.kind, "poisoned-shipped-slots");
     assert.equal(MEASURED_CAUSE.sameQ8Fingerprint, false);
     assert.match(MEASURED_CAUSE.rebuildRule, /refuse whole-crop primaries/);
-    assert.match(MEASURED_CAUSE.rebuildRule, /Do not approve-drop household names/);
-    assert.match(MEASURED_CAUSE.rebuildRule, /Do not rewrite embeddings\.v4\.q8\.bin/);
+    assert.match(MEASURED_CAUSE.rebuildRule, /Household names stay/);
+    assert.match(MEASURED_CAUSE.rebuildRule, /Other q8 rows unchanged/);
     for (const pair of MEASURED_CAUSE.smokingGuns) {
       assert.equal(classifyPair(pair.shipped, pair.liveFar), "shipped-collapsed-live-recovers");
       assert.ok(pair.liveFar > 0.4, `${pair.a} ↔ ${pair.b} liveFar ${pair.liveFar}`);

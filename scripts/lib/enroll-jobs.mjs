@@ -46,6 +46,17 @@ export function extraImagePaths(id, celebsDir, cap = resolveExtraViewCap()) {
   return out.slice(0, cap);
 }
 
+/** Best on-disk portrait for a surgical re-enroll: jpg, else 192-px thumb, else 96-px thumb. */
+export function preferRepairSource(id, celebsDir) {
+  const jpg = path.join(celebsDir, `${id}.jpg`);
+  if (fs.existsSync(jpg)) return jpg;
+  const thumb192 = path.join(celebsDir, "thumbs/192", `${id}.webp`);
+  if (fs.existsSync(thumb192)) return thumb192;
+  const thumb96 = path.join(celebsDir, "thumbs/96", `${id}.webp`);
+  if (fs.existsSync(thumb96)) return thumb96;
+  return null;
+}
+
 /** Primary enroll photo: hi-res jpg if present, else the converted 256-px png thumb. */
 export function primaryPhotoPath(id, celebsDir, thumbDir = "/tmp/twinframe-thumbs-png") {
   const hires = path.join(celebsDir, `${id}.jpg`);

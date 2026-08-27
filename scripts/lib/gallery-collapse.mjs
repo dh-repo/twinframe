@@ -61,7 +61,11 @@ export const MEASURED_CAUSE = {
     { id: "zendaya", source: "thumb192", shippedDistance: 0.00064 },
   ],
   rebuildRule:
-    "Re-enroll the 14 ids from 192-px thumbs or fallback jpg via AdaFace+BGR with pad+retry; refuse whole-crop primaries. Do not approve-drop household names. Do not rewrite embeddings.v4.q8.bin in this increment.",
+    "Surgical in-place AdaFace+BGR re-enroll of the 14 slots from jpg or 192-px thumbs; existing globalScale; refuse whole-crop primaries. Household names stay. Other q8 rows unchanged.",
+  controlFingerprints: {
+    adele: "865e654c0b3fa4d6860de400ef764fb151bb6771810000a0d6b3f980652fb297",
+    zendaya: "52d68177e705681d8a8fa843c1887822563917f660c97ec4a179586f2d650b10",
+  },
 };
 
 export function q8Fingerprint(bytes) {
