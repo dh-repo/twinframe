@@ -75,7 +75,7 @@ export interface Manifest {
 }
 
 const SKIP_NAME =
-  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph/i;
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|fresque|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph/i;
 
 /** Two people in the frame — largest-face still embeds the wrong subject. */
 const SKIP_PAIR = /(^|[ _(])(and|with|&|feat\.?|vs\.?)[ _]|withdaughters|withfamily/i;

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { filterEncodeCases, mergeEncodedCases, parseEncodeArgs, resolveProbePath, decodePathForEmbed, distinctDescriptorCount } from "./encode-held-out-onnx.mjs";
+import { filterEncodeCases, mergeEncodedCases, parseEncodeArgs, resolveProbePath, decodePathForEmbed, distinctDescriptorCount, scanDiskEvalCases } from "./encode-held-out-onnx.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -20,6 +20,7 @@ describe("encode-held-out-onnx harness", () => {
       "meryl-streep",
     ]);
     assert.equal(parseEncodeArgs(["--merge"]).merge, true);
+    assert.equal(parseEncodeArgs(["--scan-disk"]).scanDisk, true);
     assert.ok(parseEncodeArgs(["--concurrency", "4"]).concurrency >= 1);
     assert.equal(parseEncodeArgs(["--concurrency", "4"]).concurrency, 4);
     assert.throws(() => parseEncodeArgs(["--ids"]), /Missing --ids value/);
@@ -38,6 +39,20 @@ describe("encode-held-out-onnx harness", () => {
     const other = { ok: true, descriptor: Array(512).fill(0.02) };
     assert.equal(distinctDescriptorCount([same, { ...same }, { ...same }]), 1);
     assert.equal(distinctDescriptorCount([same, other]), 2);
+  });
+
+  it("scan-disk adds a 001 that is not already in the pack", () => {
+    const tmp = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
+    const extra = scanDiskEvalCases(
+      path.join(tmp, "public/celebs/held-out"),
+      [{ id: "adele", name: "Adele", age: 35, gender: "female", genderProb: 0.9 }],
+      [{ id: "zendaya", source: "/celebs/held-out/zendaya/001.jpg" }],
+    );
+    const adele = extra.find((c) => c.id === "adele");
+    if (adele) {
+      assert.equal(adele.source.startsWith("/celebs/held-out/adele/001."), true);
+      assert.equal(adele.age, 35);
+    }
   });
 
   it("filters and merges packs by id / source without dropping the rest", () => {

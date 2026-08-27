@@ -17,6 +17,7 @@ import sharp from "sharp";
 
 import { adafaceModelReady, embedImageFile } from "./enroll-gallery-onnx.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
+import { EVAL_SLOT, listHeldOutSlots } from "./fetch-held-out-photos.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PACK = path.join(ROOT, "public/celebs/held-out/descriptors.json");
@@ -33,6 +34,7 @@ export function parseEncodeArgs(argv) {
     out: null,
     skipMissing: argv.includes("--skip-missing"),
     merge: argv.includes("--merge"),
+    scanDisk: argv.includes("--scan-disk"),
     concurrency: parseConcurrencyArg(argv),
     ids: /** @type {string[] | null} */ (null),
   };
@@ -67,6 +69,30 @@ export function mergeEncodedCases(previous, encoded) {
   return [...bySource.values()].sort(
     (a, b) => a.id.localeCompare(b.id) || String(a.source).localeCompare(String(b.source)),
   );
+}
+
+export function scanDiskEvalCases(heldOutDir, buckets, existingCases = []) {
+  const have = new Set(existingCases.map((c) => c.source));
+  const byId = new Map(buckets.map((b) => [b.id, b]));
+  const extra = [];
+  for (const slot of listHeldOutSlots(heldOutDir)) {
+    if (slot.slot !== EVAL_SLOT) continue;
+    const source = `/celebs/held-out/${slot.id}/${path.basename(slot.filePath)}`;
+    if (have.has(source)) continue;
+    const b = byId.get(slot.id);
+    if (!b) continue;
+    extra.push({
+      id: slot.id,
+      name: b.name,
+      source,
+      age: b.age,
+      gender: b.gender,
+      genderProb: b.genderProb,
+      ok: true,
+      descriptor: [],
+    });
+  }
+  return extra;
 }
 
 /** Unique decode path per source. Slicing the last 12 hex chars of the path
@@ -172,7 +198,14 @@ async function main() {
     throw new Error("AdaFace ONNX missing or too small. Run: node scripts/ensure-face-model.mjs");
   }
   const pack = JSON.parse(fs.readFileSync(PACK, "utf8"));
-  const cases = filterEncodeCases(pack.cases ?? [], args);
+  let cases = pack.cases ?? [];
+  if (args.scanDisk) {
+    const buckets = JSON.parse(fs.readFileSync(path.join(ROOT, "public/celebs/gallery.buckets.json"), "utf8"));
+    const scanned = scanDiskEvalCases(path.join(ROOT, "public/celebs/held-out"), buckets, cases);
+    cases = cases.concat(scanned);
+    process.stdout.write(`scan-disk: +${scanned.length} eval 001s not already in the pack\n`);
+  }
+  cases = filterEncodeCases(cases, args);
   const out = await encodeCasesPooled(cases, args.concurrency);
   const dest = args.out ? path.resolve(ROOT, args.out) : PACK;
   let kept = args.skipMissing ? out.filter((c) => c.ok) : out;
