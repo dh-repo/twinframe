@@ -11,6 +11,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
@@ -68,8 +69,25 @@ export function mergeEncodedCases(previous, encoded) {
   );
 }
 
+/** Unique decode path per source. Slicing the last 12 hex chars of the path
+ *  collided for every `…/001.jpg` and every worker embedded the same PNG. */
+export function decodePathForEmbed(srcPath, tmpDir = "/tmp/twinframe-heldout-decode") {
+  const digest = crypto.createHash("sha256").update(srcPath).digest("hex").slice(0, 24);
+  const idHint = path.basename(path.dirname(srcPath)).replace(/[^a-z0-9_-]/gi, "").slice(0, 32);
+  return path.join(tmpDir, `${idHint}-${digest}.png`);
+}
+
+export function distinctDescriptorCount(cases, decimals = 4) {
+  const keys = new Set();
+  for (const c of cases) {
+    if (!c?.ok || !Array.isArray(c.descriptor) || c.descriptor.length < 8) continue;
+    keys.add(c.descriptor.slice(0, 8).map((x) => Number(x).toFixed(decimals)).join(","));
+  }
+  return keys.size;
+}
+
 async function materializeForEmbed(srcPath) {
-  const dest = path.join("/tmp/twinframe-heldout-decode", `${path.basename(srcPath, path.extname(srcPath))}-${Buffer.from(srcPath).toString("hex").slice(-12)}.png`);
+  const dest = decodePathForEmbed(srcPath);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   await sharp(srcPath).rotate().png().toFile(dest);
   return dest;
@@ -164,6 +182,12 @@ async function main() {
     if (args.skipMissing) kept = kept.filter((c) => c.ok);
   }
   const ok = kept.filter((c) => c.ok);
+  const distinct = distinctDescriptorCount(ok);
+  if (ok.length >= 8 && distinct < Math.max(3, Math.floor(ok.length * 0.5))) {
+    throw new Error(
+      `AdaFace probe collapse: ${distinct} distinct heads among ${ok.length} encodings (decode-path collision?)`,
+    );
+  }
   const next = {
     version: "2.1.0-adaface512",
     model: "adaface-ir101-512d",

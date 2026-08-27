@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { filterEncodeCases, mergeEncodedCases, parseEncodeArgs, resolveProbePath } from "./encode-held-out-onnx.mjs";
+import { filterEncodeCases, mergeEncodedCases, parseEncodeArgs, resolveProbePath, decodePathForEmbed, distinctDescriptorCount } from "./encode-held-out-onnx.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -23,6 +23,21 @@ describe("encode-held-out-onnx harness", () => {
     assert.ok(parseEncodeArgs(["--concurrency", "4"]).concurrency >= 1);
     assert.equal(parseEncodeArgs(["--concurrency", "4"]).concurrency, 4);
     assert.throws(() => parseEncodeArgs(["--ids"]), /Missing --ids value/);
+  });
+
+  it("does not collide decode paths for two celebrities' 001.jpg", () => {
+    const a = decodePathForEmbed("/workspace/public/celebs/held-out/adele/001.jpg");
+    const b = decodePathForEmbed("/workspace/public/celebs/held-out/zendaya/001.jpg");
+    assert.notEqual(a, b);
+    assert.match(a, /adele-/);
+    assert.match(b, /zendaya-/);
+  });
+
+  it("counts collapsed descriptor heads so a 001.jpg path collision cannot ship", () => {
+    const same = { ok: true, descriptor: Array(512).fill(0.01) };
+    const other = { ok: true, descriptor: Array(512).fill(0.02) };
+    assert.equal(distinctDescriptorCount([same, { ...same }, { ...same }]), 1);
+    assert.equal(distinctDescriptorCount([same, other]), 2);
   });
 
   it("filters and merges packs by id / source without dropping the rest", () => {
