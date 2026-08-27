@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "note": "Reviewed gallery drops applied at load time. Audit output is proposed-only and never rewrites embeddings.v4.q8.bin. Do not dump identity-range collision ids into approved. The proposed cluster is embedding collapse of distinct people (thumbs reviewed 2026-08-27), not same-person clones.",
+  "approved": [
+    {
+      "id": "gwenyth-paltrow",
+      "reason": "exact-clone",
+      "keep": "gwyneth-paltrow",
+      "evidence": "Exact clone of gwyneth-paltrow (public/celebs/gallery-audit-v4.json clonePairs[0], distance 0, same Wikipedia page). Misspelling is already absent from the live AFv4 buckets and extra-templates; keep a reviewed drop so a future merge cannot reintroduce it.",
+      "reviewedAt": "2026-08-26"
+    }
+  ],
+  "proposed": [
+    {
+      "id": "alec-burden",
+      "reason": "identity-range",
+      "evidence": "Distinct person; embedding collapsed onto ralph-fiennes (d=0.0009). Proposed only."
+    },
+    {
+      "id": "ralph-fiennes",
+      "reason": "identity-range",
+      "evidence": "Household name in the d≤0.005 collapse cluster (closest: alec-burden d=0.0009). Do not approve-drop."
+    },
+    {
+      "id": "eugene-lipinski",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto alec-burden (d=0.0017). Proposed only."
+    },
+    {
+      "id": "michael-kopsa",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto eugene-lipinski (d=0.0020). Proposed only."
+    },
+    {
+      "id": "eagle-egilsson",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto alec-burden (d=0.0020). Proposed only."
+    },
+    {
+      "id": "bad-bunny",
+      "reason": "identity-range",
+      "evidence": "Household name; collapsed onto lily-gladstone (d=0.0027) despite distinct portraits. Do not approve-drop."
+    },
+    {
+      "id": "lily-gladstone",
+      "reason": "identity-range",
+      "evidence": "Household name; collapsed onto bad-bunny (d=0.0027) despite distinct portraits. Do not approve-drop."
+    },
+    {
+      "id": "andy-thompson",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto eugene-lipinski (d=0.0031). Proposed only."
+    },
+    {
+      "id": "troy-rudeseal",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto michael-kopsa (d=0.0032). Proposed only."
+    },
+    {
+      "id": "john-morayniss",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto alec-burden (d=0.0035). Proposed only."
+    },
+    {
+      "id": "ray-galletti",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto john-morayniss (d=0.0038). Proposed only."
+    },
+    {
+      "id": "will-pascoe",
+      "reason": "identity-range",
+      "evidence": "Distinct person; collapsed onto bad-bunny (d=0.0047). Proposed only."
+    },
+    {
+      "id": "ed-sheeran",
+      "reason": "identity-range",
+      "evidence": "Household name; collapsed onto oprah-winfrey (d=0.0047) despite distinct portraits. Do not approve-drop."
+    },
+    {
+      "id": "oprah-winfrey",
+      "reason": "identity-range",
+      "evidence": "Household name; collapsed onto ed-sheeran (d=0.0047) despite distinct portraits. Do not approve-drop."
+    }
+  ]
+}

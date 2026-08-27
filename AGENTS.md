@@ -94,6 +94,7 @@ src/lib/face/
   pipeline.ts                       # orchestration; quality/occlusion/CLAHE helpers nearby
 public/celebs/
   embeddings.v4.q8.bin + gallery.buckets.json + index.json   # shipped gallery (1000 enrolled)
+  gallery-demotions.json                                     # reviewed load-time drops (approved only)
   extra-templates.json                                       # +552 templates merged at runtime
   held-out/descriptors.json                                  # tracked eval probes (browser-encoded, AdaFace-512d)
 reports/                           # generated eval artifacts (tracked; restore after local runs)

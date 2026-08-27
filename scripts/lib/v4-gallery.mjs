@@ -6,9 +6,26 @@ import path from "node:path";
 import { parseV4BinaryHeader, l2Normalize } from "../../src/lib/face/embeddings.ts";
 import { rankByDescriptor } from "../../src/lib/face/match.ts";
 import { buildMultiShotCentroidGallery } from "../../src/lib/face/gallery-dedupe.ts";
+import {
+  EMPTY_GALLERY_DEMOTIONS,
+  applyReviewedDemotions,
+  parseGalleryDemotions,
+} from "../../src/lib/face/gallery-demotions.ts";
 import { honestyBand } from "../../src/lib/ux/honesty.ts";
 
-export function loadV4Gallery(root) {
+export function loadGalleryDemotions(root) {
+  const specPath = path.join(root, "public/celebs/gallery-demotions.json");
+  if (!fs.existsSync(specPath)) return EMPTY_GALLERY_DEMOTIONS;
+  return parseGalleryDemotions(JSON.parse(fs.readFileSync(specPath, "utf8")));
+}
+
+/**
+ * Load the shipped AFv4 gallery.
+ * Product evals apply approved demotions (default). Audit must pass
+ * `{ applyDemotions: false }` so review still sees raw collisions.
+ */
+export function loadV4Gallery(root, options = {}) {
+  const applyDemotions = options.applyDemotions !== false;
   const celebs = path.join(root, "public/celebs");
   const buckets = JSON.parse(
     fs.readFileSync(path.join(celebs, "gallery.buckets.json"), "utf8"),
@@ -42,7 +59,11 @@ export function loadV4Gallery(root) {
       genderProb: b.genderProb,
     });
   }
-  return { header, gallery: buildMultiShotCentroidGallery(out) };
+  const built = buildMultiShotCentroidGallery(out);
+  const gallery = applyDemotions
+    ? applyReviewedDemotions(built, loadGalleryDemotions(root))
+    : built;
+  return { header, gallery };
 }
 
 export function quantile(sorted, p) {

@@ -8,6 +8,7 @@
  * Usage:
  *   node --experimental-strip-types scripts/audit-gallery-v4.mjs
  *   node --experimental-strip-types scripts/audit-gallery-v4.mjs --json public/celebs/gallery-audit-v4.json
+ *   node --experimental-strip-types scripts/audit-gallery-v4.mjs --proposed reports/gallery-demotions-proposed.json
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -21,6 +22,7 @@ import {
   findSuspectVectors,
   pairBandLabel,
 } from "../src/lib/face/gallery-audit.ts";
+import { proposeDemotionEntries } from "../src/lib/face/gallery-demotions.ts";
 import { loadV4Gallery, runLeaveOneOut } from "./lib/v4-gallery.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -34,8 +36,16 @@ function jsonOutPath() {
   return path.join(CELEBS, "gallery-audit-v4.json");
 }
 
+function proposedOutPath() {
+  const idx = process.argv.indexOf("--proposed");
+  if (idx >= 0 && process.argv[idx + 1] && !process.argv[idx + 1].startsWith("-")) {
+    return path.resolve(process.argv[idx + 1]);
+  }
+  return null;
+}
+
 function main() {
-  const { header, gallery } = loadV4Gallery(ROOT);
+  const { header, gallery } = loadV4Gallery(ROOT, { applyDemotions: false });
   const pairs = collectCrossIdPairs(gallery);
   const clones = pairs.filter((p) => p.band === "clone");
   const identity = pairs.filter((p) => p.band === "identity-range");
@@ -44,11 +54,12 @@ function main() {
   const loo = runLeaveOneOut(gallery);
   const strongHits = loo.hits.filter((h) => h.band === "strong");
   const demote = demotionIds(pairs, suspects);
+  const proposed = proposeDemotionEntries(pairs);
 
   const report = {
     version: "1.0.0-adaface512",
     generatedAt: new Date().toISOString(),
-    note: "Generated audit — not a ranking source of truth. Demotion list is for human review only.",
+    note: "Generated audit — not a ranking source of truth. proposedDemotions are review-only; promote into gallery-demotions.json approved after human review. This script does not rewrite embeddings.v4.q8.bin.",
     gallery: {
       magic: header.magic,
       dimension: header.dimension,
@@ -68,6 +79,7 @@ function main() {
       suspects: suspects.length,
       looStrong: strongHits.length,
       demotionIds: demote.length,
+      proposedDemotions: proposed.length,
     },
     clonePairs: clones,
     identityRangePairs: identity,
@@ -83,6 +95,7 @@ function main() {
       strongHits,
     },
     demotionIds: demote,
+    proposedDemotions: proposed,
     recommendations: [
       clones.length > 0
         ? `CRITICAL: ${clones.length} exact/near-exact cross-id clones — review ${pairBandLabel("clone")}`
@@ -99,15 +112,24 @@ function main() {
       suspects.length > 0
         ? `MED: ${suspects.length} suspect vectors (padded FaceNet / low energy)`
         : "No suspect vectors",
-      "Do not rewrite embeddings.v4.q8.bin from this report. Feed demotionIds into enroll-gallery-onnx + write-gallery-v4 after review.",
+      "Do not rewrite embeddings.v4.q8.bin from this report.",
+      "Promote reviewed exact clones into public/celebs/gallery-demotions.json approved. Leave proposed unapplied. Do not dump identity-range ids into approved.",
     ],
   };
 
   const out = jsonOutPath();
   fs.writeFileSync(out, JSON.stringify(report, null, 2));
+  const proposedPath = proposedOutPath();
+  if (proposedPath) {
+    fs.mkdirSync(path.dirname(proposedPath), { recursive: true });
+    fs.writeFileSync(
+      proposedPath,
+      JSON.stringify({ version: 1, approved: [], proposed }, null, 2),
+    );
+  }
 
   console.log("================================================================================");
-  console.log("          TWINFRAME GALLERY QUALITY AUDIT (EdgeFace-512 / AFv4)                 ");
+  console.log("          TWINFRAME GALLERY QUALITY AUDIT (AdaFace-512 / AFv4)                  ");
   console.log("================================================================================");
   console.log(`dim=${header.dimension}  headerN=${header.vectorCount}  prototypes=${gallery.length}`);
   console.log(`clone pairs (d < ${AUDIT_CLONE_MAX}):     ${clones.length}`);
@@ -118,6 +140,7 @@ function main() {
     `LOO strong:                        ${strongHits.length}/${loo.scored}  (weak=${loo.bands.weak} soft=${loo.bands.soft})`,
   );
   console.log(`demotion review ids:               ${demote.length}`);
+  console.log(`proposed (clone / near-clone):     ${proposed.length}`);
   console.log("--------------------------------------------------------------------------------");
   console.log("Closest identity-range / clone pairs:");
   for (const p of [...clones, ...identity].slice(0, 12)) {
@@ -129,6 +152,7 @@ function main() {
   console.log("Recommendations:");
   for (const r of report.recommendations) console.log(`  • ${r}`);
   console.log(`\nWrote ${out}`);
+  if (proposedPath) console.log(`Wrote proposed ${proposedPath}`);
 }
 
 main();

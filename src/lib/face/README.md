@@ -16,7 +16,8 @@
 - Extras → prototypes via `buildMultiShotCentroidGallery` (skips FaceNet-padded 128→256 rows)
 - Enrollment QA: `npm`/`node --experimental-strip-types scripts/audit-gallery-enrollment.mjs`
 - Re-enroll (process pool): `scripts/enroll-gallery-onnx.mjs [--concurrency N]` — independent JPEGs in parallel child processes (default `min(16, CPU count)`). One 112×112 AdaFace pass will not fill a big GPU.
-- Gallery collision audit: `scripts/audit-gallery-v4.mjs` → `public/celebs/gallery-audit-v4.json` (demotion list only; does not rewrite the binary)
+- Gallery collision audit: `scripts/audit-gallery-v4.mjs` → `public/celebs/gallery-audit-v4.json` (proposed review list only; does not rewrite the binary)
+- Reviewed drops: `public/celebs/gallery-demotions.json` `approved` ids are filtered at load time. `proposed` is not applied.
 - Open-set gold: `public/celebs/lookalike-gold.json` + `scripts/evaluate-lookalike-gold.mjs`
 - Encode a labeled civilian photo: `scripts/encode-gold-probe.mjs --image fixtures/gold/….jpg --id … --accept id,id` (or `--refuse`)
 - Open-set leave-one-out: `scripts/evaluate-open-set-loo.mjs [--json]` (each gallery id vs the rest)
