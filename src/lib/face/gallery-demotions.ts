@@ -49,10 +49,13 @@ export const CELEB_ID_ALIASES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Identity-range pairs this close are donor clones or quantization collapse,
+ * Identity-range pairs this close are donor clones or embedding collapse,
  * not ordinary look-alikes. Proposed for review only — never auto-approved.
+ * 0.005 is the visually reviewed AdaFace cluster (distinct people, near-zero
+ * cosine). 0.01 also pulled in household names (e.g. robert-downey-jr) that
+ * must not be auto-listed as drop candidates.
  */
-export const NEAR_CLONE_REVIEW_MAX = 0.01;
+export const NEAR_CLONE_REVIEW_MAX = 0.005;
 
 export function isGalleryDemotionReason(value: string): value is GalleryDemotionReason {
   switch (value) {

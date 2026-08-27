@@ -131,6 +131,10 @@ describe("applyReviewedDemotions", () => {
 });
 
 describe("proposeDemotionEntries", () => {
+  it("keeps the near-clone review cutoff at the visually reviewed band", () => {
+    assert.equal(NEAR_CLONE_REVIEW_MAX, 0.005);
+  });
+
   it("drops the known alias on an exact clone and leaves the keep id", () => {
     const pairs: DemotionPairInput[] = [
       {
@@ -195,6 +199,44 @@ describe("shipped gallery-demotions.json", () => {
       if (entry.id === "gwenyth-paltrow") continue;
       assert.equal(kept.has(entry.id), true, `proposed ${entry.id} must not be dropped`);
     }
+  });
+
+  it("does not approve the visually reviewed collapse cluster", () => {
+    const parsed = parseGalleryDemotions(JSON.parse(fs.readFileSync(SHIPPED, "utf8")));
+    assert.deepEqual(
+      parsed.approved.map((e) => e.id),
+      ["gwenyth-paltrow"],
+    );
+    const proposedIds = new Set(parsed.proposed.map((e) => e.id));
+    const cluster = [
+      "alec-burden",
+      "ralph-fiennes",
+      "eugene-lipinski",
+      "michael-kopsa",
+      "eagle-egilsson",
+      "bad-bunny",
+      "lily-gladstone",
+      "andy-thompson",
+      "troy-rudeseal",
+      "john-morayniss",
+      "ray-galletti",
+      "will-pascoe",
+      "ed-sheeran",
+      "oprah-winfrey",
+    ];
+    for (const id of cluster) {
+      assert.ok(proposedIds.has(id), `${id} should stay proposed`);
+      assert.ok(!parsed.approved.some((e) => e.id === id), `${id} must not be approved`);
+    }
+    const famous = ["ralph-fiennes", "bad-bunny", "lily-gladstone", "ed-sheeran", "oprah-winfrey"];
+    const kept = applyReviewedDemotions(
+      famous.map((id) => ({ id })),
+      parsed,
+    );
+    assert.deepEqual(
+      kept.map((r) => r.id),
+      famous,
+    );
   });
 
   it("does not rewrite the shipped AFv4 binary", () => {
