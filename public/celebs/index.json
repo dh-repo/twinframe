@@ -6479,7 +6479,7 @@
     "name": "Amy Berg",
     "path": "/celebs/thumbs/96/amy-berg.webp",
     "path192": "/celebs/thumbs/192/amy-berg.webp",
-    "fallbackPath": "/celebs/thumbs/96/amy-berg.webp",
+    "fallbackPath": "/celebs/amy-berg.jpg",
     "gender": "female",
     "genderProb": 0.9228444993495941,
     "ageBuckets": [
@@ -9402,7 +9402,7 @@
     "name": "Michael Rowe",
     "path": "/celebs/thumbs/96/michael-rowe.webp",
     "path192": "/celebs/thumbs/192/michael-rowe.webp",
-    "fallbackPath": "/celebs/thumbs/96/michael-rowe.webp",
+    "fallbackPath": "/celebs/michael-rowe.jpg",
     "gender": "male",
     "genderProb": 0.9618191719055176,
     "ageBuckets": [
@@ -11559,7 +11559,7 @@
     "name": "Daniel Quinn",
     "path": "/celebs/thumbs/96/daniel-quinn.webp",
     "path192": "/celebs/thumbs/192/daniel-quinn.webp",
-    "fallbackPath": "/celebs/thumbs/96/daniel-quinn.webp",
+    "fallbackPath": "/celebs/daniel-quinn.jpg",
     "gender": "male",
     "genderProb": 0.9715754985809326,
     "ageBuckets": [
@@ -12668,7 +12668,7 @@
     "name": "Michael Rogers",
     "path": "/celebs/thumbs/96/michael-rogers.webp",
     "path192": "/celebs/thumbs/192/michael-rogers.webp",
-    "fallbackPath": "/celebs/thumbs/96/michael-rogers.webp",
+    "fallbackPath": "/celebs/michael-rogers.jpg",
     "gender": "male",
     "genderProb": 0.9561699628829956,
     "ageBuckets": [

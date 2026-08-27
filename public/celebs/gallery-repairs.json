@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T07:37:27.906Z",
+  "generatedAt": "2026-08-27T07:50:22.868Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6970,6 +6970,58 @@
       "shippedToLive": 0.44493420628252023,
       "beforeFingerprint": "2184b3355200bc8fcce32693999fb0a8351064915b40c2d6de5f44e49ccafb6e",
       "afterFingerprint": "e759918832c3b1527717b25b0c18ad58a9a9132d5ce55f36fd936f5184f0e234"
+    },
+    {
+      "id": "michael-rowe",
+      "index": 628,
+      "household": false,
+      "source": "public/celebs/michael-rowe.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8627724647521973,
+      "shippedToLive": 0.36426086589776774,
+      "beforeFingerprint": "49c7e0895a8a8987cdcfad14a674521fe706bb9aa2c2fd10e8af7e1b87cea5f3",
+      "afterFingerprint": "241937992e582a89bd70f8545307eef1cf0167b084f44828554d1d026a88b45d"
+    },
+    {
+      "id": "michael-rogers",
+      "index": 846,
+      "household": false,
+      "source": "public/celebs/michael-rogers.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7412292957305908,
+      "shippedToLive": 0.42702195229972406,
+      "beforeFingerprint": "ac701b2310efd1ad6127f9c983154a757b2e259c2df03654f0b06f5ed0f1d2ae",
+      "afterFingerprint": "918ffe4430cfc4de9b87b912d8168197bdafc8a96f909eab886f06632ca05d51"
+    },
+    {
+      "id": "amy-berg",
+      "index": 433,
+      "household": false,
+      "source": "public/celebs/amy-berg.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8468759059906006,
+      "shippedToLive": 0.5374919856906721,
+      "beforeFingerprint": "3375ba6363a8d53363568e7c7c061066e6766cf9223dd4d53db8169804795452",
+      "afterFingerprint": "5b8fda47f4c89ae46ebb301b98542c06e23d527586abc87636cc614294f27b76"
+    },
+    {
+      "id": "daniel-quinn",
+      "index": 772,
+      "household": false,
+      "source": "public/celebs/daniel-quinn.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8543964624404907,
+      "shippedToLive": 0.07178528730299949,
+      "beforeFingerprint": "2c7fb6cee27c182ab2e2a676630e4b3c6ff23867c7cc9a96c3b8a91776a57b70",
+      "afterFingerprint": "a887fcda2bceba2d4bf4e4c228dc5559ec2848583466c846527df97cd1ea7a30"
     }
   ]
 }
