@@ -217,8 +217,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Harry Styles (November 2014), and Serena (Doha 2013).
  *         Beyoncé Knowles 2009 extra failed detection; Federer
  *         Commons views did not beat pack.
+ * 6.5.31: Product-crops of Childish Gambino concert stills that beat
+ *         pack dTrue for Donald Glover (wide group frames fail
+ *         acceptPrimaryEmbed; TIFF 2015 is a primary near-dup).
  */
-const GALLERY_VERSION = "6.5.30";
+const GALLERY_VERSION = "6.5.31";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

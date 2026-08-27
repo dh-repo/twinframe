@@ -117,6 +117,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "serena-williams" && t.source === "extra-photos/serena-williams/006.jpg"),
       "Serena Doha 2013 extra missing",
     );
+    assert.ok((byId.get("donald-glover") ?? 0) >= 4, "Glover concert extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "donald-glover" && t.source === "extra-photos/donald-glover/001.jpg"),
+      "Glover concert product-crop extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

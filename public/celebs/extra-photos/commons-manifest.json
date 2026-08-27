@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 245,
+  "count": 247,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1717,6 +1717,22 @@
       "commonsTitle": "File:Serena Williams Doha 2013 (cropped).jpg",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Serena_Williams_Doha_2013_(cropped).jpg",
       "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "donald-glover",
+      "file": "001.jpg",
+      "commonsTitle": "File:Childish Gambino (15178926456).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Childish_Gambino_(15178926456).jpg",
+      "fetchedAt": "2026-08-27T13:21:00.000Z",
+      "note": "product-crop of the concert wide shot; group frame fails acceptPrimaryEmbed"
+    },
+    {
+      "id": "donald-glover",
+      "file": "002.jpg",
+      "commonsTitle": "File:Donald Glover.jpeg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Donald_Glover.jpeg",
+      "fetchedAt": "2026-08-27T13:21:00.000Z",
+      "note": "product-crop of full-body concert frame; whole-image embed was too far from primary"
     }
   ]
 }
