@@ -1,5 +1,5 @@
 {
- "at": "2026-08-27T06:03:48.785Z",
+ "at": "2026-08-27T06:17:20.106Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
  "gallerySize": 1005,
@@ -579,7 +579,7 @@
    "dTrue": 0.03297432781929277,
    "dTop1": 0.03297432781929277,
    "dMinSameId": 0.03297432781929277,
-   "dBestWrong": 0.837230917972344,
+   "dBestWrong": 0.8402428201516523,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2403,7 +2403,7 @@
    "dTrue": 0.0009527111266431909,
    "dTop1": 0.0009527111266431909,
    "dMinSameId": 0.0009527111266431909,
-   "dBestWrong": 0.803838336741323,
+   "dBestWrong": 0.7899123662949221,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
