@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T06:55:30.731Z",
+  "generatedAt": "2026-08-27T07:00:24.304Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6593,6 +6593,19 @@
       "shippedToLive": 0.9552447119499471,
       "beforeFingerprint": "ed912004ad70909fcedc91aded9f5ba61579d407340d9943dfddab62ac164795",
       "afterFingerprint": "d5d059d53f39102680c4577f37096c4e724d6b8aa91a83f1b581edadfcb98a75"
+    },
+    {
+      "id": "james-hanlon",
+      "index": 435,
+      "household": false,
+      "source": "public/celebs/james-hanlon.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8741409778594971,
+      "shippedToLive": 0.46485988755071317,
+      "beforeFingerprint": "8672b873de1afc4ef711caadb345a26558791cc7b52f1d2130d0177b3995d2b6",
+      "afterFingerprint": "341f98e1195718adab0f64826b0155960646afd60462bc4e1d0a3ce6e68dfc8e"
     }
   ]
 }

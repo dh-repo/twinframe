@@ -165,8 +165,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.8: Carlos Valdes (Flash) Wikipedia primary; skip disambiguation pages
  *        and match accented catalog names to unaccented Commons filenames.
  * 6.5.9: Joshua Leonard Wikipedia primary (Blair Witch).
+ * 6.5.10: James Hanlon Wikipedia primary (Peabody 2003).
  */
-const GALLERY_VERSION = "6.5.9";
+const GALLERY_VERSION = "6.5.10";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
