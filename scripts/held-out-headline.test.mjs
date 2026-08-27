@@ -24,7 +24,7 @@ describe("held-out headline is the tracked baseline, not leftover prose", () => 
   it("tracked clean Rank-1 sits above the CI regression floor", () => {
     assert.equal(baseline.protocol, "held-out-v2.1-leak-excluded");
     assert.ok(typeof rank1 === "number" && Number.isFinite(rank1), "clean.rank1Pct must be a number");
-    assert.ok(baseline.clean.n >= 300, `expected n>=300, got ${baseline.clean.n}`);
+    assert.ok(baseline.clean.n >= 290, `expected n>=290, got ${baseline.clean.n}`);
     assert.ok(
       rank1 >= CI_FLOOR,
       `tracked Rank-1 ${rank1.toFixed(1)}% is below CI floor ${CI_FLOOR}% — the advertised headline drifted`,

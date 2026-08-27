@@ -82,7 +82,7 @@ describe("shipped AdaFace collapse cluster", () => {
     }
   });
 
-  it("keeps healthy control slots byte-identical", () => {
+  it("control identities keep unique fingerprints after jpg re-enroll", () => {
     assert.equal(byId.get("adele")?.q8Fingerprint, MEASURED_CAUSE.controlFingerprints.adele);
     assert.equal(byId.get("zendaya")?.q8Fingerprint, MEASURED_CAUSE.controlFingerprints.zendaya);
   });

@@ -2714,7 +2714,7 @@
     "name": "Halle Bailey",
     "path": "/celebs/thumbs/96/halle-bailey.webp",
     "path192": "/celebs/thumbs/192/halle-bailey.webp",
-    "fallbackPath": "/celebs/thumbs/96/halle-bailey.webp",
+    "fallbackPath": "/celebs/halle-bailey.jpg",
     "age": 24,
     "gender": "female",
     "genderProb": 0.98
@@ -3084,7 +3084,7 @@
     "name": "Mohanlal",
     "path": "/celebs/thumbs/96/mohanlal.webp",
     "path192": "/celebs/thumbs/192/mohanlal.webp",
-    "fallbackPath": "/celebs/thumbs/96/mohanlal.webp",
+    "fallbackPath": "/celebs/mohanlal.jpg",
     "age": 64,
     "gender": "male",
     "genderProb": 0.98
@@ -3144,7 +3144,7 @@
     "name": "Cha Eun-woo",
     "path": "/celebs/thumbs/96/cha-eun-woo.webp",
     "path192": "/celebs/thumbs/192/cha-eun-woo.webp",
-    "fallbackPath": "/celebs/thumbs/96/cha-eun-woo.webp",
+    "fallbackPath": "/celebs/cha-eun-woo.jpg",
     "age": 27,
     "gender": "male",
     "genderProb": 0.98
@@ -3164,7 +3164,7 @@
     "name": "Wang Yibo",
     "path": "/celebs/thumbs/96/wang-yibo.webp",
     "path192": "/celebs/thumbs/192/wang-yibo.webp",
-    "fallbackPath": "/celebs/thumbs/96/wang-yibo.webp",
+    "fallbackPath": "/celebs/wang-yibo.jpg",
     "age": 27,
     "gender": "male",
     "genderProb": 0.98
@@ -3174,7 +3174,7 @@
     "name": "Xiao Zhan",
     "path": "/celebs/thumbs/96/xiao-zhan.webp",
     "path192": "/celebs/thumbs/192/xiao-zhan.webp",
-    "fallbackPath": "/celebs/thumbs/96/xiao-zhan.webp",
+    "fallbackPath": "/celebs/xiao-zhan.jpg",
     "age": 32,
     "gender": "male",
     "genderProb": 0.98
@@ -3224,7 +3224,7 @@
     "name": "Travis Scott",
     "path": "/celebs/thumbs/96/travis-scott.webp",
     "path192": "/celebs/thumbs/192/travis-scott.webp",
-    "fallbackPath": "/celebs/thumbs/96/travis-scott.webp",
+    "fallbackPath": "/celebs/travis-scott.jpg",
     "age": 33,
     "gender": "male",
     "genderProb": 0.98
@@ -3264,7 +3264,7 @@
     "name": "Samuel L Jackson",
     "path": "/celebs/thumbs/96/samuel-l-jackson.webp",
     "path192": "/celebs/thumbs/192/samuel-l-jackson.webp",
-    "fallbackPath": "/celebs/thumbs/96/samuel-l-jackson.webp",
+    "fallbackPath": "/celebs/samuel-l-jackson.jpg",
     "age": 75,
     "gender": "male",
     "genderProb": 0.98
@@ -3314,7 +3314,7 @@
     "name": "Matt Smith",
     "path": "/celebs/thumbs/96/matt-smith.webp",
     "path192": "/celebs/thumbs/192/matt-smith.webp",
-    "fallbackPath": "/celebs/thumbs/96/matt-smith.webp",
+    "fallbackPath": "/celebs/matt-smith.jpg",
     "age": 41,
     "gender": "male",
     "genderProb": 0.98

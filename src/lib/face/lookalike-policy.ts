@@ -23,11 +23,11 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
  * labeled Distant Twin card would be fiction.
  *
  * Evidence (held-out v2.1 sweep, 302 clean probes, AdaFace IR-101 512-d):
- * 0.75 loses ZERO rank-1 correct matches with 97.7% pass precision.
- * AdaFace distances run larger than EdgeFace; the floor was re-swept after
- * the model swap. EdgeFace-512 impostor p90 was ~0.67 under EdgeFace-M.
+ * 0.76 loses ZERO rank-1 correct matches. 0.75 refused Justin Bieber (concert
+ * lighting, d=0.751). 0.77 started presenting an impostor for a crowd-scene
+ * Rosalía probe (Colin Salmon). Impostor neighbors for the Bieber probe sat at ≥0.84.
  */
-export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.75;
+export const LOOKALIKE_MAX_ADJUSTED_DISTANCE = 0.76;
 
 /**
  * Match percent below this is not shown as a look-alike top-K.

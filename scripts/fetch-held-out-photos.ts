@@ -196,7 +196,7 @@ export function heldOutSceneRejectReason(input: {
   const primary = Number(input.primaryArea) || 0;
   const second = Number(input.secondArea) || 0;
   if (n >= 2 && primary > 0 && second / primary >= 0.35) return "multi-face";
-  if (n >= 3) return "group";
+  if (n >= 3 && primary > 0 && second / primary >= 0.2) return "group";
   return null;
 }
 

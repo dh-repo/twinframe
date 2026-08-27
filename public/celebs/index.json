@@ -4060,7 +4060,7 @@
     "name": "Halle Bailey",
     "path": "/celebs/thumbs/96/halle-bailey.webp",
     "path192": "/celebs/thumbs/192/halle-bailey.webp",
-    "fallbackPath": "/celebs/thumbs/96/halle-bailey.webp",
+    "fallbackPath": "/celebs/halle-bailey.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4611,7 +4611,7 @@
     "name": "Mohanlal",
     "path": "/celebs/thumbs/96/mohanlal.webp",
     "path192": "/celebs/thumbs/192/mohanlal.webp",
-    "fallbackPath": "/celebs/thumbs/96/mohanlal.webp",
+    "fallbackPath": "/celebs/mohanlal.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4699,7 +4699,7 @@
     "name": "Cha Eun-woo",
     "path": "/celebs/thumbs/96/cha-eun-woo.webp",
     "path192": "/celebs/thumbs/192/cha-eun-woo.webp",
-    "fallbackPath": "/celebs/thumbs/96/cha-eun-woo.webp",
+    "fallbackPath": "/celebs/cha-eun-woo.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4729,7 +4729,7 @@
     "name": "Wang Yibo",
     "path": "/celebs/thumbs/96/wang-yibo.webp",
     "path192": "/celebs/thumbs/192/wang-yibo.webp",
-    "fallbackPath": "/celebs/thumbs/96/wang-yibo.webp",
+    "fallbackPath": "/celebs/wang-yibo.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4744,7 +4744,7 @@
     "name": "Xiao Zhan",
     "path": "/celebs/thumbs/96/xiao-zhan.webp",
     "path192": "/celebs/thumbs/192/xiao-zhan.webp",
-    "fallbackPath": "/celebs/thumbs/96/xiao-zhan.webp",
+    "fallbackPath": "/celebs/xiao-zhan.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4819,7 +4819,7 @@
     "name": "Travis Scott",
     "path": "/celebs/thumbs/96/travis-scott.webp",
     "path192": "/celebs/thumbs/192/travis-scott.webp",
-    "fallbackPath": "/celebs/thumbs/96/travis-scott.webp",
+    "fallbackPath": "/celebs/travis-scott.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4879,7 +4879,7 @@
     "name": "Samuel L Jackson",
     "path": "/celebs/thumbs/96/samuel-l-jackson.webp",
     "path192": "/celebs/thumbs/192/samuel-l-jackson.webp",
-    "fallbackPath": "/celebs/thumbs/96/samuel-l-jackson.webp",
+    "fallbackPath": "/celebs/samuel-l-jackson.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4953,7 +4953,7 @@
     "name": "Matt Smith",
     "path": "/celebs/thumbs/96/matt-smith.webp",
     "path192": "/celebs/thumbs/192/matt-smith.webp",
-    "fallbackPath": "/celebs/thumbs/96/matt-smith.webp",
+    "fallbackPath": "/celebs/matt-smith.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [

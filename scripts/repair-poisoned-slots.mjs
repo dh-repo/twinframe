@@ -9,13 +9,16 @@
  *   node --experimental-strip-types scripts/repair-poisoned-slots.mjs
  *   node --experimental-strip-types scripts/repair-poisoned-slots.mjs --write
  *   node --experimental-strip-types scripts/repair-poisoned-slots.mjs --ids alec-burden,ralph-fiennes --write
+ *   node --experimental-strip-types scripts/repair-poisoned-slots.mjs --all-jpgs --write
  */
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 import { acceptPrimaryEmbed, adafaceModelReady, embedImageFile, ensureSessions } from "./enroll-gallery-onnx.mjs";
+import { heldOutSceneRejectReason } from "./fetch-held-out-photos.ts";
 import { preferRepairSource } from "./lib/enroll-jobs.mjs";
 import {
   assertReportsJsonPath,
@@ -34,12 +37,42 @@ const BIN_PATH = join(CELEBS, "embeddings.v4.q8.bin");
 const DECODE_DIR = "/tmp/twinframe-collapse-decode";
 const MANIFEST_PATH = join(CELEBS, "gallery-repairs.json");
 
-export function parseRepairArgs(argv) {
+export function jpgPrimaryIds(celebsDir = CELEBS) {
+  const buckets = JSON.parse(readFileSync(join(celebsDir, "gallery.buckets.json"), "utf8"));
+  return buckets.filter((b) => existsSync(join(celebsDir, `${b.id}.jpg`))).map((b) => b.id);
+}
+
+export function parseRepairArgs(argv, celebsDir = CELEBS) {
   const parsed = parseDiagnoseArgs(argv, [...COLLAPSE_IDS]);
   return {
     ...parsed,
     write: argv.includes("--write"),
+    allJpgs: argv.includes("--all-jpgs"),
+    ids: argv.includes("--all-jpgs") ? jpgPrimaryIds(celebsDir) : parsed.ids,
   };
+}
+
+async function writeThumbsFromJpg(id, jpgPath) {
+  try {
+    await sharp(jpgPath).resize(96, 96, { fit: "cover" }).webp({ quality: 82 }).toFile(join(CELEBS, "thumbs/96", `${id}.webp`));
+    await sharp(jpgPath).resize(192, 192, { fit: "cover" }).webp({ quality: 85 }).toFile(join(CELEBS, "thumbs/192", `${id}.webp`));
+    return true;
+  } catch (error) {
+    process.stderr.write(`thumb skip ${id}: ${error instanceof Error ? error.message : error}\n`);
+    return false;
+  }
+}
+
+function pointFallbacksAtJpgs(ids) {
+  const want = new Set(ids);
+  for (const file of ["gallery.buckets.json", "index.json"]) {
+    const abs = join(CELEBS, file);
+    const rows = JSON.parse(readFileSync(abs, "utf8"));
+    for (const row of rows) {
+      if (want.has(row.id)) row.fallbackPath = `/celebs/${row.id}.jpg`;
+    }
+    writeFileSync(abs, `${JSON.stringify(rows, null, 2)}\n`);
+  }
 }
 
 async function materializeForEmbed(srcPath) {
@@ -54,7 +87,10 @@ async function encodeRepairSource(id, srcPath) {
   const embedPath = await materializeForEmbed(srcPath);
   const emb = await embedImageFile(embedPath);
   if (!acceptPrimaryEmbed(emb)) {
-    throw new Error(`${id}: detection failed — refusing whole-crop`);
+    const scene = typeof emb.faceCount === "number" ? heldOutSceneRejectReason(emb) : null;
+    throw new Error(
+      `${id}: detection failed — refusing ${scene ?? "whole-crop"} (${emb.faceCount ?? 0} faces)`,
+    );
   }
   const descriptor = emb.d512 ?? emb.d256;
   if (!descriptor || descriptor.length !== 512 || emb.embedKind !== "adaface") {
@@ -181,6 +217,14 @@ async function main() {
         2,
       )}\n`,
     );
+    const jpgIds = [];
+    for (const repair of repairs) {
+      if (repair.sourceKind !== "fullres") continue;
+      const jpgPath = join(CELEBS, `${repair.id}.jpg`);
+      if (!existsSync(jpgPath)) continue;
+      if (await writeThumbsFromJpg(repair.id, jpgPath)) jpgIds.push(repair.id);
+    }
+    if (jpgIds.length) pointFallbacksAtJpgs(jpgIds);
     report.wrote = true;
     process.stdout.write(`wrote ${BIN_PATH} and ${MANIFEST_PATH}\n`);
   } else {

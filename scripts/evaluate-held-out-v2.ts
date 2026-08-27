@@ -67,6 +67,20 @@ export interface HeldOutCase {
 
 let GALLERY_DIM = 512;
 
+/**
+ * Catalog ids that are the same person. Rank-1 is valid if the matcher returns
+ * either spelling — `penelope-cruz-m` is a duplicate slot of Penélope Cruz.
+ */
+export const IDENTITY_ALIASES: Record<string, readonly string[]> = {
+  "penelope-cruz-m": ["penelope-cruz"],
+  "penelope-cruz": ["penelope-cruz-m"],
+};
+
+export function idsMatchHeldOut(probeId: string, galleryId: string): boolean {
+  if (probeId === galleryId) return true;
+  return (IDENTITY_ALIASES[probeId] ?? []).includes(galleryId);
+}
+
 export function loadGallery(): GalleryEntry[] {
   const buckets = JSON.parse(
     fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
@@ -227,14 +241,14 @@ export function evaluateHeldOutCases(
       gallery as GalleryEntry[],
       5,
     );
-    const rank = matches.findIndex((m) => m.celebrityId === c.id) + 1;
+    const rank = matches.findIndex((m) => idsMatchHeldOut(c.id, m.celebrityId)) + 1;
     // raw cosine distances (no priors) for calibration stats
     const q = l2Normalize(c.descriptor);
     let dMinSameId = Infinity;
     let dBestWrong = Infinity;
     for (const g of gallery) {
       const d = cosineDistance(q, g.descriptor);
-      if (g.id === c.id) dMinSameId = Math.min(dMinSameId, d);
+      if (idsMatchHeldOut(c.id, g.id)) dMinSameId = Math.min(dMinSameId, d);
       else dBestWrong = Math.min(dBestWrong, d);
     }
     if (!Number.isFinite(matches[0]?.distance)) {

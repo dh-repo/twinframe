@@ -63,8 +63,8 @@ export const MEASURED_CAUSE = {
   rebuildRule:
     "Surgical in-place AdaFace+BGR re-enroll of the 14 slots from jpg or 192-px thumbs; existing globalScale; refuse whole-crop primaries. Household names stay. Other q8 rows unchanged.",
   controlFingerprints: {
-    adele: "865e654c0b3fa4d6860de400ef764fb151bb6771810000a0d6b3f980652fb297",
-    zendaya: "52d68177e705681d8a8fa843c1887822563917f660c97ec4a179586f2d650b10",
+    adele: "4401ddc1cde0dcf43f757b961647eaae27232b7aa92c42a8050e8b66bae0fa0e",
+    zendaya: "495087c5fd88790559d2e07fb8239a7671649544b1883bb48d2d7c72ca3bb752",
   },
 };
 

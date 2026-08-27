@@ -311,9 +311,16 @@ describe("heldOutSceneRejectReason", () => {
     );
   });
 
-  it("rejects crowds and three-person groups", () => {
+  it("rejects crowds and three-person groups with a real second crop", () => {
     assert.equal(heldOutSceneRejectReason({ faceCount: 8, primaryArea: 900, secondArea: 800 }), "crowd");
     assert.equal(heldOutSceneRejectReason({ faceCount: 3, primaryArea: 900, secondArea: 200 }), "group");
+  });
+
+  it("keeps a stadium/red-carpet primary with tiny background heads", () => {
+    assert.equal(
+      heldOutSceneRejectReason({ faceCount: 3, primaryArea: 1000, secondArea: 80 }),
+      null,
+    );
   });
 });
 

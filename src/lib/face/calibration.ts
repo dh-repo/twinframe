@@ -1,23 +1,23 @@
 /**
  * Measured calibration of P(rank-1 is the true identity | geometry), fitted by
  * scripts/calibrate-edgeface.mjs successor logic against the leak-excluded
- * held-out protocol v2.1 in full 512-d geometry (n=302, 2026-08): refit via scripts/refit-calibration.ts, deterministic.
+ * held-out protocol v2.1 in full 512-d geometry (n=296, 2026-08): refit via scripts/refit-calibration.ts, deterministic.
  *
  * Features are raw AdaFace cosine distances:
  *   f1 = dTrue        (distance of the candidate shown to the user)
  *   f2 = gap          (dBestWrong - dTrue: separability from the nearest other identity)
  * Standardized with the recorded mu/sd, then logistic(w . z).
  */
-export const CALIBRATION_VERSION = "adaface-ir101-logistic-512d-2026-08";
+export const CALIBRATION_VERSION = "adaface-ir101-logistic-512d-2026-08-v2";
 
 export const CALIBRATION_COEFFS = {
-  intercept: 6.6547,
-  wDtrue: -0.03,
-  wGap: 3.2948,
-  muDtrue: 0.3547,
-  muGap: 0.3925,
-  sdDtrue: 0.2262,
-  sdGap: 0.2542,
+  intercept: 6.7786,
+  wDtrue: -1.413,
+  wGap: 1.2795,
+  muDtrue: 0.336,
+  muGap: 0.421,
+  sdDtrue: 0.2409,
+  sdGap: 0.2513,
 } as const;
 
 const clampProb = (p: number) => Math.max(0.001, Math.min(0.999, p));

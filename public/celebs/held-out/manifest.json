@@ -1,7 +1,7 @@
 {
   "version": "2.0.0",
   "description": "Held-out photos on disk. Slot 001 is the eval-only query photo; 002+ are enrolled as extra views.",
-  "generatedAt": "2026-08-27T03:27:53.333Z",
+  "generatedAt": "2026-08-27T04:08:38.161Z",
   "count": 843,
   "identities": 306,
   "evalSlotCount": 306,
@@ -5155,7 +5155,7 @@
       "name": "Neymar",
       "slot": "001",
       "imagePath": "/celebs/held-out/neymar/001.jpg",
-      "bytes": 201851,
+      "bytes": 58864,
       "evalSlot": true
     },
     {
@@ -5577,8 +5577,10 @@
       "name": "Penelope Cruz M",
       "slot": "001",
       "imagePath": "/celebs/held-out/penelope-cruz-m/001.jpg",
-      "bytes": 321394,
-      "evalSlot": true
+      "bytes": 157675,
+      "evalSlot": true,
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Goyas_2024_-_Pen%C3%A9lope_Cruz-2_%28cropped%29.jpg/960px-Goyas_2024_-_Pen%C3%A9lope_Cruz-2_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "wikiTitle": "Penélope Cruz"
     },
     {
       "id": "penelope-cruz-m",
@@ -6015,9 +6017,9 @@
       "name": "Ryan Gosling",
       "slot": "001",
       "imagePath": "/celebs/held-out/ryan-gosling/001.jpg",
-      "bytes": 170490,
+      "bytes": 356234,
       "evalSlot": true,
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/GoslingBFI081223_%2822_of_30%29_%2853388157347%29_%28cropped%29.jpg/960px-GoslingBFI081223_%2822_of_30%29_%2853388157347%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/RyanGosling10-19.JPG/960px-RyanGosling10-19.JPG?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "wikiTitle": "Ryan Gosling"
     },
     {
@@ -6465,9 +6467,9 @@
       "name": "Son Ye-jin",
       "slot": "001",
       "imagePath": "/celebs/held-out/son-ye-jin/001.jpg",
-      "bytes": 111665,
+      "bytes": 595758,
       "evalSlot": true,
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/181018_%EC%86%90%EC%98%88%EC%A7%84_04_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Son_Ye-jin_in_May_2026.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "wikiTitle": "Son Ye-jin"
     },
     {
@@ -7193,7 +7195,7 @@
       "name": "Zhang Ziyi",
       "slot": "001",
       "imagePath": "/celebs/held-out/zhang-ziyi/001.jpg",
-      "bytes": 125553,
+      "bytes": 1491266,
       "evalSlot": true
     },
     {

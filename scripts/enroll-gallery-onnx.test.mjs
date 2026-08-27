@@ -49,4 +49,19 @@ describe("AdaFace enroll path", () => {
     assert.equal(acceptPrimaryEmbed({ usedDetection: false }), false);
     assert.equal(acceptPrimaryEmbed({}), false);
   });
+
+  it("refuses a pair/crowd primary so the largest box cannot enroll the wrong person", () => {
+    assert.equal(
+      acceptPrimaryEmbed({ usedDetection: true, faceCount: 2, primaryArea: 1000, secondArea: 600 }),
+      false,
+    );
+    assert.equal(
+      acceptPrimaryEmbed({ usedDetection: true, faceCount: 1, primaryArea: 1000, secondArea: 0 }),
+      true,
+    );
+    assert.equal(
+      acceptPrimaryEmbed({ usedDetection: true, faceCount: 3, primaryArea: 1000, secondArea: 400 }),
+      true,
+    );
+  });
 });

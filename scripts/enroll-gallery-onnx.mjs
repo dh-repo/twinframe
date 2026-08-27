@@ -195,9 +195,22 @@ function l2(v) {
   return Array.from(v, (x) => x / n);
 }
 
-/** Whole-crop primaries are how the 14-id AdaFace cluster got poisoned. */
+/**
+ * Whole-crop primaries poisoned the 14-id AdaFace cluster. True pair shots
+ * (second face ≥ half the primary) enroll the wrong person when the named
+ * celebrity is not the largest box. Tiny background heads on a stadium or
+ * red-carpet photo are not a pair — those still enroll the dominant face.
+ */
 export function acceptPrimaryEmbed(result) {
-  return Boolean(result?.usedDetection);
+  if (!result?.usedDetection) return false;
+  if (typeof result.faceCount !== "number") return true;
+  const n = result.faceCount;
+  if (n === 0) return false;
+  if (n >= 8) return false;
+  const primary = Number(result.primaryArea) || 0;
+  const second = Number(result.secondArea) || 0;
+  if (n >= 2 && primary > 0 && second / primary >= 0.5) return false;
+  return true;
 }
 
 export function swapRgbToBgr(tensorData, size = 112) {
