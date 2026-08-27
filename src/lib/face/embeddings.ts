@@ -262,8 +262,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         the green-court backhand eval) and Kate Middleton (2023
  *         indoor cream portrait; not 2022 Wimbledon yellow-dress
  *         trophy eval).
+ * 6.5.40: Inter Miami 2025 product-crop that beats the 2011-12
+ *         Barcelona action pack dTrue for Lionel Messi. Argentina
+ *         2022 World Cup stills did not beat.
  */
-const GALLERY_VERSION = "6.5.39";
+const GALLERY_VERSION = "6.5.40";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
