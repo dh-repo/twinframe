@@ -249,8 +249,16 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         peacoat eval), Leonardo DiCaprio (held-out 002/004; not
  *         White House Kerry hallway eval), and Sydney Sweeney
  *         (TIFF 2024 floral extra 002; not 2022 Reality corset eval).
+ * 6.5.38: Commons extras that beat pack dTrue for Johnny Depp
+ *         (Cannes 2023; not Public Enemies aviators), LeBron James
+ *         (USA Olympics 2024 + Cavs 2018; not Lakers yellow 23),
+ *         Adam Sandler (2018 interview; not 2006 San Sebastián),
+ *         Cole Sprouse (Tribeca 2026 + Gage Skidmore white-shirt
+ *         panel; not grey-shirt eval), Bradley Cooper (NYFF 2023
+ *         black tee; not 2010 A-Team navy suit), and Jennie Kim
+ *         (2018 fansign + 2017 bomber; not concert black-dress eval).
  */
-const GALLERY_VERSION = "6.5.37";
+const GALLERY_VERSION = "6.5.38";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

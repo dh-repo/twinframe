@@ -198,6 +198,36 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "sydney-sweeney" && t.source === "extra-photos/sydney-sweeney/002.jpg"),
       "Sydney Sweeney TIFF 2024 floral extra missing",
     );
+    assert.ok((byId.get("johnny-depp") ?? 0) >= 1, "Johnny Depp extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "johnny-depp" && t.source === "extra-photos/johnny-depp/005.jpg"),
+      "Johnny Depp Cannes 2023 extra missing",
+    );
+    assert.ok((byId.get("lebron-james") ?? 0) >= 2, "LeBron extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "lebron-james" && t.source === "extra-photos/lebron-james/005.jpg"),
+      "LeBron Olympics 2024 extra missing",
+    );
+    assert.ok((byId.get("adam-sandler") ?? 0) >= 1, "Adam Sandler extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "adam-sandler" && t.source === "extra-photos/adam-sandler/003.jpg"),
+      "Adam Sandler 2018 extra missing",
+    );
+    assert.ok((byId.get("cole-sprouse") ?? 0) >= 2, "Cole Sprouse extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "cole-sprouse" && t.source === "extra-photos/cole-sprouse/001.jpg"),
+      "Cole Sprouse Tribeca 2026 extra missing",
+    );
+    assert.ok((byId.get("bradley-cooper") ?? 0) >= 1, "Bradley Cooper extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "bradley-cooper" && t.source === "extra-photos/bradley-cooper/001.jpg"),
+      "Bradley Cooper NYFF 2023 extra missing",
+    );
+    assert.ok((byId.get("jennie-kim") ?? 0) >= 5, "Jennie extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "jennie-kim" && t.source === "extra-photos/jennie-kim/001.jpg"),
+      "Jennie 2018 fansign extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
