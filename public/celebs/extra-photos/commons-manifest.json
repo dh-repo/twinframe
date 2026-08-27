@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 366,
+  "count": 368,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2685,6 +2685,22 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alexander_Skarsgard_1_by_David_Shankbone.jpg",
         "fetchedAt": "2026-08-27T23:00:00.000Z",
         "note": "Tribeca dark blazer black shirt silver chain gold bead; not black unbuttoned shirt silver-chain SDCC panel eval"
+    },
+    {
+        "id": "chris-pratt",
+        "file": "003.jpg",
+        "commonsTitle": "File:Chris Pratt (29427541570).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chris_Pratt_(29427541570).jpg",
+        "fetchedAt": "2026-08-27T23:20:00.000Z",
+        "note": "gingham shirt burgundy tie dark jacket indoor S-mark backdrop; not grey windowpane geometric-tie studio eval"
+    },
+    {
+        "id": "sadie-sink",
+        "file": "006.jpg",
+        "commonsTitle": "File:Sadie Sink at Paleyfest 2018.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sadie_Sink_at_Paleyfest_2018.jpg",
+        "fetchedAt": "2026-08-27T23:20:00.000Z",
+        "note": "Paleyfest 2018 black headband cream pleated shoulders; not Comic-Con geometric sleeveless panel eval"
     }
   ]
 }

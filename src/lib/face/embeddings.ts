@@ -434,8 +434,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         open-collar; not black-tuxedo necktie outdoor eval), and Alexander
  *         Skarsgård (Gage Comic-Con blazer+DEXTER lanyard + Tribeca Shankbone
  *         chain; not unbuttoned-shirt SDCC panel eval).
+ * 6.5.64: Commons extras that beat pack dTrue for Chris Pratt (gingham
+ *         burgundy-tie indoor; not grey windowpane geometric-tie studio eval)
+ *         and Sadie Sink (Paleyfest 2018 headband; not Comic-Con geometric
+ *         sleeveless panel eval). Pratt 3-face outdoor crop and Sadie floral
+ *         primary clone stay out.
  */
-const GALLERY_VERSION = "6.5.63";
+const GALLERY_VERSION = "6.5.64";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
