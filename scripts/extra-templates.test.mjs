@@ -692,6 +692,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "paul-wesley" && t.source === "extra-photos/paul-wesley/005.jpg"),
       "Paul Wesley People's Choice extra missing",
     );
+    assert.ok((byId.get("drake") ?? 0) >= 1, "Drake extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "drake" && t.source === "extra-photos/drake/001.jpg"),
+      "Drake Summer Sixteen 2016 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

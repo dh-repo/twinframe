@@ -444,8 +444,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Paul Wesley (People's Choice charcoal suit; not Comic-Con grey
  *         zip-hoodie panel eval). Harry 194px source and Comic-Con group
  *         extra stay out.
+ * 6.5.66: Commons extra that beat pack dTrue for Drake (Summer Sixteen 2016
+ *         dark jacket gold curb chains low-angle; not OVO black-tee technical
+ *         parka concert eval). Helen Commons still miss pack; ho 002 stays out.
  */
-const GALLERY_VERSION = "6.5.65";
+const GALLERY_VERSION = "6.5.66";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

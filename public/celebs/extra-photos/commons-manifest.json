@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 370,
+  "count": 371,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2717,6 +2717,14 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paul_Wesley_at_the_38th_People's_Choice_Award.jpg",
         "fetchedAt": "2026-08-27T23:30:00.000Z",
         "note": "People's Choice charcoal suit open grey shirt; not Comic-Con grey zip-hoodie panel eval"
+    },
+    {
+        "id": "drake",
+        "file": "001.jpg",
+        "commonsTitle": "File:Drake and Future 2016 Summer Sixteen Tour (cropped 3x4).jpeg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Drake_and_Future_2016_Summer_Sixteen_Tour_(cropped_3x4).jpeg",
+        "fetchedAt": "2026-08-27T23:50:00.000Z",
+        "note": "Summer Sixteen Tour 2016 dark jacket gold curb chains low-angle; not OVO black-tee technical parka concert eval"
     }
   ]
 }
