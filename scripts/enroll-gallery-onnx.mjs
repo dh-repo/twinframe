@@ -482,10 +482,32 @@ async function main() {
     ? shippedPrimaries()
     : new Map(rows.map((r) => [r.id, Float32Array.from(r.d512)]));
   const existingById = EXTRAS_ONLY ? shippedExtras() : new Map();
+  const probesById = heldOutEvalProbes();
+  // Same-encoder live 001: descriptors.json is browser-encoded and can sit
+  // >0.05 from a Node crop of the same sitting, which would leak on the
+  // product path (Naomi DVF cropped extra vs held-out 001).
+  const liveProbeJobs = [...new Set(extraCandidates.map((c) => c.id))]
+    .map((id) => {
+      const filePath = path.join(CELEBS, "held-out", id, "001.jpg");
+      return fs.existsSync(filePath) ? { id, filePath } : null;
+    })
+    .filter(Boolean);
+  if (liveProbeJobs.length > 0) {
+    const liveResults = await mapProcessPool(liveProbeJobs, {
+      workerPath: EMBED_WORKER,
+      concurrency,
+    });
+    for (let i = 0; i < liveProbeJobs.length; i++) {
+      const result = liveResults[i];
+      if (result?.ok && result.value?.d512?.length) {
+        probesById.set(liveProbeJobs[i].id, result.value.d512);
+      }
+    }
+  }
   const gate = gateExtraCandidates(extraCandidates, {
     primaries,
     existingById,
-    probesById: heldOutEvalProbes(),
+    probesById,
     maxPerId: extraViewCap,
   });
   const extras = gate.accepted.map(({ descriptor: _drop, ...keep }) => keep);

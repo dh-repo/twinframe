@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 221,
+  "count": 217,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1521,34 +1521,6 @@
       "commonsTitle": "File:Doja Cat Hot Pink Party1.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Doja_Cat_Hot_Pink_Party1.png",
       "fetchedAt": "2026-08-27T09:41:00.000Z"
-    },
-    {
-      "id": "naomi-campbell",
-      "file": "002.jpg",
-      "commonsTitle": "File:Diane von F\u00fcrstenberg Spring-Summer 2014 07 (cropped).jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Diane von F\u00fcrstenberg Spring-Summer 2014 07 (cropped).jpg",
-      "fetchedAt": "2026-08-27T10:00:00.000Z"
-    },
-    {
-      "id": "lionel-messi",
-      "file": "002.jpg",
-      "commonsTitle": "File:Lionel Messi close-up.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Lionel Messi close-up.jpg",
-      "fetchedAt": "2026-08-27T10:00:00.000Z"
-    },
-    {
-      "id": "lionel-messi",
-      "file": "003.jpg",
-      "commonsTitle": "File:Lionel Messi 2009.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Lionel Messi 2009.jpg",
-      "fetchedAt": "2026-08-27T10:00:00.000Z"
-    },
-    {
-      "id": "lionel-messi",
-      "file": "005.jpg",
-      "commonsTitle": "File:Messi 2008.jpg",
-      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Messi 2008.jpg",
-      "fetchedAt": "2026-08-27T10:00:00.000Z"
     }
   ]
 }

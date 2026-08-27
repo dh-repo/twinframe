@@ -43,12 +43,6 @@ describe("shipped extra templates", () => {
     assert.ok((byId.get("selena-gomez") ?? 0) >= 1, "Selena extras missing");
     assert.ok((byId.get("alia-bhatt") ?? 0) >= 2, "Alia extras missing");
     assert.ok((byId.get("don-cheadle") ?? 0) >= 1, "Cheadle extras missing");
-    assert.ok((byId.get("lionel-messi") ?? 0) >= 5, "Messi 2008–09 extras missing");
-    assert.ok((byId.get("naomi-campbell") ?? 0) >= 5, "Naomi DVF extra missing");
-    assert.ok(
-      pack.templates.some((t) => t.id === "lionel-messi" && t.source === "extra-photos/lionel-messi/002.jpg"),
-      "Messi close-up extra missing",
-    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
