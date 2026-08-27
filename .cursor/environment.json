@@ -1,0 +1,17 @@
+{
+  "name": "Twinframe",
+  "install": "npm install && npm run model:ensure && npx playwright install chromium",
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "npm run dev",
+      "description": "Vite dev server for Twinframe on http://0.0.0.0:8080 (on-device celebrity look-alike matcher)."
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 8080
+    }
+  ]
+}
