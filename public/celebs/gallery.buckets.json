@@ -3394,7 +3394,7 @@
     "name": "Mackenzie Lintz",
     "path": "/celebs/thumbs/96/mackenzie-lintz.webp",
     "path192": "/celebs/thumbs/192/mackenzie-lintz.webp",
-    "fallbackPath": "/celebs/thumbs/96/mackenzie-lintz.webp",
+    "fallbackPath": "/celebs/mackenzie-lintz.jpg",
     "age": 18,
     "gender": "female",
     "genderProb": 0.9862776156514883
@@ -3494,7 +3494,7 @@
     "name": "Jack Bender",
     "path": "/celebs/thumbs/96/jack-bender.webp",
     "path192": "/celebs/thumbs/192/jack-bender.webp",
-    "fallbackPath": "/celebs/thumbs/96/jack-bender.webp",
+    "fallbackPath": "/celebs/jack-bender.jpg",
     "age": 59,
     "gender": "male",
     "genderProb": 0.8264833688735962
@@ -3514,7 +3514,7 @@
     "name": "Neal Baer",
     "path": "/celebs/thumbs/96/neal-baer.webp",
     "path192": "/celebs/thumbs/192/neal-baer.webp",
-    "fallbackPath": "/celebs/thumbs/96/neal-baer.webp",
+    "fallbackPath": "/celebs/neal-baer.jpg",
     "age": 54,
     "gender": "male",
     "genderProb": 0.9909806847572327
@@ -3544,7 +3544,7 @@
     "name": "Brian K. Vaughan",
     "path": "/celebs/thumbs/96/brian-k-vaughan.webp",
     "path192": "/celebs/thumbs/192/brian-k-vaughan.webp",
-    "fallbackPath": "/celebs/thumbs/96/brian-k-vaughan.webp",
+    "fallbackPath": "/celebs/brian-k-vaughan.jpg",
     "age": 44,
     "gender": "male",
     "genderProb": 0.9887222051620483
@@ -3744,7 +3744,7 @@
     "name": "Ned Bellamy",
     "path": "/celebs/thumbs/96/ned-bellamy.webp",
     "path192": "/celebs/thumbs/192/ned-bellamy.webp",
-    "fallbackPath": "/celebs/thumbs/96/ned-bellamy.webp",
+    "fallbackPath": "/celebs/ned-bellamy.jpg",
     "age": 50,
     "gender": "male",
     "genderProb": 0.9522655010223389
@@ -3934,7 +3934,7 @@
     "name": "Kari Skogland",
     "path": "/celebs/thumbs/96/kari-skogland.webp",
     "path192": "/celebs/thumbs/192/kari-skogland.webp",
-    "fallbackPath": "/celebs/thumbs/96/kari-skogland.webp",
+    "fallbackPath": "/celebs/kari-skogland.jpg",
     "age": 59,
     "gender": "female",
     "genderProb": 0.9258616641163826
@@ -4214,7 +4214,7 @@
     "name": "Michael Emerson",
     "path": "/celebs/thumbs/96/michael-emerson.webp",
     "path192": "/celebs/thumbs/192/michael-emerson.webp",
-    "fallbackPath": "/celebs/thumbs/96/michael-emerson.webp",
+    "fallbackPath": "/celebs/michael-emerson.jpg",
     "age": 56,
     "gender": "male",
     "genderProb": 0.9964715242385864
@@ -4254,7 +4254,7 @@
     "name": "Bryan Burk",
     "path": "/celebs/thumbs/96/bryan-burk.webp",
     "path192": "/celebs/thumbs/192/bryan-burk.webp",
-    "fallbackPath": "/celebs/thumbs/96/bryan-burk.webp",
+    "fallbackPath": "/celebs/bryan-burk.jpg",
     "age": 46,
     "gender": "male",
     "genderProb": 0.9702996015548706
@@ -4594,7 +4594,7 @@
     "name": "Al Sapienza",
     "path": "/celebs/thumbs/96/al-sapienza.webp",
     "path192": "/celebs/thumbs/192/al-sapienza.webp",
-    "fallbackPath": "/celebs/thumbs/96/al-sapienza.webp",
+    "fallbackPath": "/celebs/al-sapienza.jpg",
     "age": 53,
     "gender": "male",
     "genderProb": 0.9811636805534363
@@ -4904,7 +4904,7 @@
     "name": "Greyston Holt",
     "path": "/celebs/thumbs/96/greyston-holt.webp",
     "path192": "/celebs/thumbs/192/greyston-holt.webp",
-    "fallbackPath": "/celebs/thumbs/96/greyston-holt.webp",
+    "fallbackPath": "/celebs/greyston-holt.jpg",
     "age": 35,
     "gender": "male",
     "genderProb": 0.927376389503479
@@ -5494,7 +5494,7 @@
     "name": "Benjamin Ayres",
     "path": "/celebs/thumbs/96/benjamin-ayres.webp",
     "path192": "/celebs/thumbs/192/benjamin-ayres.webp",
-    "fallbackPath": "/celebs/thumbs/96/benjamin-ayres.webp",
+    "fallbackPath": "/celebs/benjamin-ayres.jpg",
     "age": 42,
     "gender": "male",
     "genderProb": 0.9882628321647644
@@ -5644,7 +5644,7 @@
     "name": "T.J. Scott",
     "path": "/celebs/thumbs/96/t-j-scott.webp",
     "path192": "/celebs/thumbs/192/t-j-scott.webp",
-    "fallbackPath": "/celebs/thumbs/96/t-j-scott.webp",
+    "fallbackPath": "/celebs/t-j-scott.jpg",
     "age": 45,
     "gender": "male",
     "genderProb": 0.9518246650695801
@@ -5714,7 +5714,7 @@
     "name": "Colin Donnell",
     "path": "/celebs/thumbs/96/colin-donnell.webp",
     "path192": "/celebs/thumbs/192/colin-donnell.webp",
-    "fallbackPath": "/celebs/thumbs/96/colin-donnell.webp",
+    "fallbackPath": "/celebs/colin-donnell.jpg",
     "age": 33,
     "gender": "male",
     "genderProb": 0.9009979367256165
@@ -5744,7 +5744,7 @@
     "name": "Emily Bett Rickards",
     "path": "/celebs/thumbs/96/emily-bett-rickards.webp",
     "path192": "/celebs/thumbs/192/emily-bett-rickards.webp",
-    "fallbackPath": "/celebs/thumbs/96/emily-bett-rickards.webp",
+    "fallbackPath": "/celebs/emily-bett-rickards.jpg",
     "age": 30,
     "gender": "female",
     "genderProb": 0.9471333250403404
@@ -5944,7 +5944,7 @@
     "name": "Jacqueline MacInnes Wood",
     "path": "/celebs/thumbs/96/jacqueline-macinnes-wood.webp",
     "path192": "/celebs/thumbs/192/jacqueline-macinnes-wood.webp",
-    "fallbackPath": "/celebs/thumbs/96/jacqueline-macinnes-wood.webp",
+    "fallbackPath": "/celebs/jacqueline-macinnes-wood.jpg",
     "age": 27,
     "gender": "female",
     "genderProb": 0.9814561940729618
@@ -5954,7 +5954,7 @@
     "name": "Kathleen Gati",
     "path": "/celebs/thumbs/96/kathleen-gati.webp",
     "path192": "/celebs/thumbs/192/kathleen-gati.webp",
-    "fallbackPath": "/celebs/thumbs/96/kathleen-gati.webp",
+    "fallbackPath": "/celebs/kathleen-gati.jpg",
     "age": 42,
     "gender": "female",
     "genderProb": 0.9081379771232605
@@ -6074,7 +6074,7 @@
     "name": "Darren Shahlavi",
     "path": "/celebs/thumbs/96/darren-shahlavi.webp",
     "path192": "/celebs/thumbs/192/darren-shahlavi.webp",
-    "fallbackPath": "/celebs/thumbs/96/darren-shahlavi.webp",
+    "fallbackPath": "/celebs/darren-shahlavi.jpg",
     "age": 41,
     "gender": "male",
     "genderProb": 0.9841111898422241
@@ -6374,7 +6374,7 @@
     "name": "Kirby Morrow",
     "path": "/celebs/thumbs/96/kirby-morrow.webp",
     "path192": "/celebs/thumbs/192/kirby-morrow.webp",
-    "fallbackPath": "/celebs/thumbs/96/kirby-morrow.webp",
+    "fallbackPath": "/celebs/kirby-morrow.jpg",
     "age": 41,
     "gender": "male",
     "genderProb": 0.9857132434844971
@@ -6454,7 +6454,7 @@
     "name": "Michael Schultz",
     "path": "/celebs/thumbs/96/michael-schultz.webp",
     "path192": "/celebs/thumbs/192/michael-schultz.webp",
-    "fallbackPath": "/celebs/thumbs/96/michael-schultz.webp",
+    "fallbackPath": "/celebs/michael-schultz.jpg",
     "age": 61,
     "gender": "male",
     "genderProb": 0.9995183944702148
@@ -6594,7 +6594,7 @@
     "name": "John Behring",
     "path": "/celebs/thumbs/96/john-behring.webp",
     "path192": "/celebs/thumbs/192/john-behring.webp",
-    "fallbackPath": "/celebs/thumbs/96/john-behring.webp",
+    "fallbackPath": "/celebs/john-behring.jpg",
     "age": 48,
     "gender": "male",
     "genderProb": 0.897671103477478
@@ -6834,7 +6834,7 @@
     "name": "Alex Zahara",
     "path": "/celebs/thumbs/96/alex-zahara.webp",
     "path192": "/celebs/thumbs/192/alex-zahara.webp",
-    "fallbackPath": "/celebs/thumbs/96/alex-zahara.webp",
+    "fallbackPath": "/celebs/alex-zahara.jpg",
     "age": 52,
     "gender": "male",
     "genderProb": 0.9842135906219482
@@ -7024,7 +7024,7 @@
     "name": "Gabrielle Stanton",
     "path": "/celebs/thumbs/96/gabrielle-stanton.webp",
     "path192": "/celebs/thumbs/192/gabrielle-stanton.webp",
-    "fallbackPath": "/celebs/thumbs/96/gabrielle-stanton.webp",
+    "fallbackPath": "/celebs/gabrielle-stanton.jpg",
     "age": 44,
     "gender": "female",
     "genderProb": 0.8710039258003235
@@ -7114,7 +7114,7 @@
     "name": "Serge Houde",
     "path": "/celebs/thumbs/96/serge-houde.webp",
     "path192": "/celebs/thumbs/192/serge-houde.webp",
-    "fallbackPath": "/celebs/thumbs/96/serge-houde.webp",
+    "fallbackPath": "/celebs/serge-houde.jpg",
     "age": 61,
     "gender": "male",
     "genderProb": 0.9986433386802673
@@ -7134,7 +7134,7 @@
     "name": "Patrick Sabongui",
     "path": "/celebs/thumbs/96/patrick-sabongui.webp",
     "path192": "/celebs/thumbs/192/patrick-sabongui.webp",
-    "fallbackPath": "/celebs/thumbs/96/patrick-sabongui.webp",
+    "fallbackPath": "/celebs/patrick-sabongui.jpg",
     "age": 46,
     "gender": "male",
     "genderProb": 0.9887692928314209
@@ -7164,7 +7164,7 @@
     "name": "Agam Darshi",
     "path": "/celebs/thumbs/96/agam-darshi.webp",
     "path192": "/celebs/thumbs/192/agam-darshi.webp",
-    "fallbackPath": "/celebs/thumbs/96/agam-darshi.webp",
+    "fallbackPath": "/celebs/agam-darshi.jpg",
     "age": 28,
     "gender": "female",
     "genderProb": 0.98518156260252
@@ -7244,7 +7244,7 @@
     "name": "Jarod Joseph",
     "path": "/celebs/thumbs/96/jarod-joseph.webp",
     "path192": "/celebs/thumbs/192/jarod-joseph.webp",
-    "fallbackPath": "/celebs/thumbs/96/jarod-joseph.webp",
+    "fallbackPath": "/celebs/jarod-joseph.jpg",
     "age": 26,
     "gender": "male",
     "genderProb": 0.9512318968772888
@@ -8164,7 +8164,7 @@
     "name": "Teryl Rothery",
     "path": "/celebs/thumbs/96/teryl-rothery.webp",
     "path192": "/celebs/thumbs/192/teryl-rothery.webp",
-    "fallbackPath": "/celebs/thumbs/96/teryl-rothery.webp",
+    "fallbackPath": "/celebs/teryl-rothery.jpg",
     "age": 54,
     "gender": "female",
     "genderProb": 0.9879226367920637
@@ -8264,7 +8264,7 @@
     "name": "Jesse Hutch",
     "path": "/celebs/thumbs/96/jesse-hutch.webp",
     "path192": "/celebs/thumbs/192/jesse-hutch.webp",
-    "fallbackPath": "/celebs/thumbs/96/jesse-hutch.webp",
+    "fallbackPath": "/celebs/jesse-hutch.jpg",
     "age": 29,
     "gender": "male",
     "genderProb": 0.9470521211624146
@@ -8274,7 +8274,7 @@
     "name": "Clé Bennett",
     "path": "/celebs/thumbs/96/cl-bennett.webp",
     "path192": "/celebs/thumbs/192/cl-bennett.webp",
-    "fallbackPath": "/celebs/thumbs/96/cl-bennett.webp",
+    "fallbackPath": "/celebs/cl-bennett.jpg",
     "age": 31,
     "gender": "male",
     "genderProb": 0.9772335290908813
@@ -9324,7 +9324,7 @@
     "name": "Karl Yune",
     "path": "/celebs/thumbs/96/karl-yune.webp",
     "path192": "/celebs/thumbs/192/karl-yune.webp",
-    "fallbackPath": "/celebs/thumbs/96/karl-yune.webp",
+    "fallbackPath": "/celebs/karl-yune.jpg",
     "age": 26,
     "gender": "male",
     "genderProb": 0.9672561287879944
@@ -9504,7 +9504,7 @@
     "name": "Brad Carter",
     "path": "/celebs/thumbs/96/brad-carter.webp",
     "path192": "/celebs/thumbs/192/brad-carter.webp",
-    "fallbackPath": "/celebs/thumbs/96/brad-carter.webp",
+    "fallbackPath": "/celebs/brad-carter.jpg",
     "age": 46,
     "gender": "male",
     "genderProb": 0.9936301112174988
@@ -9514,7 +9514,7 @@
     "name": "Joe Chrest",
     "path": "/celebs/thumbs/96/joe-chrest.webp",
     "path192": "/celebs/thumbs/192/joe-chrest.webp",
-    "fallbackPath": "/celebs/thumbs/96/joe-chrest.webp",
+    "fallbackPath": "/celebs/joe-chrest.jpg",
     "age": 54,
     "gender": "male",
     "genderProb": 0.9746178388595581
@@ -9824,7 +9824,7 @@
     "name": "Jo-El Sonnier",
     "path": "/celebs/thumbs/96/jo-el-sonnier.webp",
     "path192": "/celebs/thumbs/192/jo-el-sonnier.webp",
-    "fallbackPath": "/celebs/thumbs/96/jo-el-sonnier.webp",
+    "fallbackPath": "/celebs/jo-el-sonnier.jpg",
     "age": 41,
     "gender": "male",
     "genderProb": 0.9961005449295044

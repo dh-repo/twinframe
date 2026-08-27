@@ -177,6 +177,15 @@ describe("heldOutIdentityRejectReason", () => {
     );
   });
 
+  it("does not enroll Lee Jung-jae under Lee Jung Mi", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("File:240305 Lee Jung-jae (cropped).jpg", "Lee Jung-mi"),
+      "wrong-person",
+    );
+    assert.equal(heldOutIdentityRejectReason("Lee Jung-jae", "Lee Jung-mi"), "wrong-person");
+    assert.equal(heldOutIdentityRejectReason("File:Lee Jung-mi 2019.jpg", "Lee Jung-mi"), null);
+  });
+
   it("does not guess on opaque camera-dump filenames", () => {
     assert.equal(
       heldOutIdentityRejectReason("File:170217-D-GO396-0147 (32577063650).jpg", "Bill Gates"),

@@ -152,7 +152,6 @@ export const WIKI_SEARCH_NAME: Record<string, string> = {
   "j-j-abrams": "J. J. Abrams",
   "carlos-vald-s": "Carlos Valdés",
   "cynthia-addai-robinson": "Cynthia Addai-Robinson",
-  "lee-jung-mi": "Lee Jung-mi",
 };
 
 export function wikiSearchName(entry: { id: string; name: string }): string {
@@ -167,18 +166,20 @@ export function wikiSearchName(entry: { id: string; name: string }): string {
 export function heldOutIdentityRejectReason(title: string, name: string): "wrong-person" | null {
   if (!filenameLooksLikeNamedSubject(title)) return null;
   const hay = title.replace(/[^a-z0-9]/gi, "").toLowerCase();
-  const tokens = String(name)
+  const parts = String(name)
     .split(/[\s-]+/)
     .map((t) => t.replace(/[^a-z0-9]/gi, "").toLowerCase())
-    .filter((t) => t.length >= 4);
-  if (tokens.length === 0) {
-    tokens.push(
-      ...String(name)
-        .split(/[\s-]+/)
-        .map((t) => t.replace(/[^a-z0-9]/gi, "").toLowerCase())
-        .filter((t) => t.length >= 3),
-    );
+    .filter(Boolean);
+  const tokens3 = parts.filter((t) => t.length >= 3);
+  const last = parts[parts.length - 1];
+  // Two given-name tokens must all appear — "Jung" alone enrolled Lee Jung-jae
+  // under Lee Jung Mi. Short final syllables ("mi") still have to match.
+  if (tokens3.length >= 2) {
+    const need = last && last.length === 2 ? [...tokens3, last] : tokens3;
+    return need.every((t) => hay.includes(t)) ? null : "wrong-person";
   }
+  const tokens = parts.filter((t) => t.length >= 4);
+  if (tokens.length === 0) tokens.push(...parts.filter((t) => t.length >= 3));
   return tokens.some((t) => hay.includes(t)) ? null : "wrong-person";
 }
 
@@ -620,6 +621,12 @@ async function main() {
       const title = await resolveTitle(searchName);
       if (!title) {
         console.log(`- no wiki title  ${entry.id}`);
+        fail++;
+        await sleep(DELAY_MS);
+        continue;
+      }
+      if (heldOutIdentityRejectReason(title, searchName)) {
+        console.log(`- wiki title mismatch  ${entry.id} (${title})`);
         fail++;
         await sleep(DELAY_MS);
         continue;

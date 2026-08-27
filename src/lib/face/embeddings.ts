@@ -153,8 +153,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        (Alcock, Shahi, Vogel, and other TV/film names).
  * 6.5.3: Wikipedia primaries for McConaughey, Harrelson, Cardellini, Gustin,
  *        Emma D'Arcy, and other household thumb-only names.
+ * 6.5.4: Wikipedia primaries for Emerson, Rickards, Donnell, and other
+ *        remaining recognizable thumb-only names; reject namesake Wikipedia
+ *        hits (Lee Jung-jae is not Lee Jung Mi).
  */
-const GALLERY_VERSION = "6.5.3";
+const GALLERY_VERSION = "6.5.4";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
