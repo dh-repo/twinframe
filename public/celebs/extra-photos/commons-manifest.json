@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 217,
+  "count": 220,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1521,6 +1521,27 @@
       "commonsTitle": "File:Doja Cat Hot Pink Party1.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Doja_Cat_Hot_Pink_Party1.png",
       "fetchedAt": "2026-08-27T09:41:00.000Z"
+    },
+    {
+      "id": "karol-g",
+      "file": "003.jpg",
+      "commonsTitle": "File:Karol G 2018.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Karol_G_2018.png",
+      "fetchedAt": "2026-08-27T10:31:30.558Z"
+    },
+    {
+      "id": "karol-g",
+      "file": "005.jpg",
+      "commonsTitle": "File:Karol G entrevista.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Karol_G_entrevista.jpg",
+      "fetchedAt": "2026-08-27T10:31:41.401Z"
+    },
+    {
+      "id": "karol-g",
+      "file": "006.jpg",
+      "commonsTitle": "File:Karol G 2018 2.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/Karol_G_2018_2.png",
+      "fetchedAt": "2026-08-27T10:31:53.994Z"
     }
   ]
 }

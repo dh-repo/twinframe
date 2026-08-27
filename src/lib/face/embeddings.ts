@@ -193,8 +193,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Doja Cat Hot Pink solo closer to the yellow-latex eval look.
  * 6.5.24: Gated extras for remaining weak Rank-1 names (Bezos, Comer,
  *         Dua Lipa, Selena, Alia, Cheadle).
+ * 6.5.25: Karol G 2018-era extras (NTN interview + Boca en Boca) plus the
+ *         sunglasses held-out 002; Telemedellín braid frames of eval 001
+ *         stay unenrolled.
  */
-const GALLERY_VERSION = "6.5.24";
+const GALLERY_VERSION = "6.5.25";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
