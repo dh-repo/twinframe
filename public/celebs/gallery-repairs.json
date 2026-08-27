@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T06:49:52.877Z",
+  "generatedAt": "2026-08-27T06:55:30.731Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6580,6 +6580,19 @@
       "shippedToLive": 0.508158277013128,
       "beforeFingerprint": "05f4f46e390f94808624d79330062b2a0663f7601be1affe9ec5e4796662bc37",
       "afterFingerprint": "95b6ec1e04861f77b646fe0583de1c8813a9298574561e0306888af52dfcc381"
+    },
+    {
+      "id": "joshua-leonard",
+      "index": 994,
+      "household": false,
+      "source": "public/celebs/joshua-leonard.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8306636810302734,
+      "shippedToLive": 0.9552447119499471,
+      "beforeFingerprint": "ed912004ad70909fcedc91aded9f5ba61579d407340d9943dfddab62ac164795",
+      "afterFingerprint": "d5d059d53f39102680c4577f37096c4e724d6b8aa91a83f1b581edadfcb98a75"
     }
   ]
 }

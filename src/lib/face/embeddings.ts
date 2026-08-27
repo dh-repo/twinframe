@@ -164,8 +164,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        that the year-pair heuristic had treated as second-person shots.
  * 6.5.8: Carlos Valdes (Flash) Wikipedia primary; skip disambiguation pages
  *        and match accented catalog names to unaccented Commons filenames.
+ * 6.5.9: Joshua Leonard Wikipedia primary (Blair Witch).
  */
-const GALLERY_VERSION = "6.5.8";
+const GALLERY_VERSION = "6.5.9";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
