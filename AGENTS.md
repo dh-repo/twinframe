@@ -87,13 +87,13 @@ src/lib/face/
   embeddings.ts                     # v4 q8 binary parse ("AFv4", int8 biased+globalScale), cosine,
                                     #   Hill curve P(d)=100/(1+(d/d0)^n), demographic affinities
   match.ts                          # rankByDescriptor: cosine-primary ranking + soft age/gender
-                                    #   priors; presentable-rank gender policy (#1 any gender,
-                                    #   #2+ same gender when probe gender confident ≥0.7)
+                                    #   priors; presentable-rank gender policy; verified-jpg-only
+                                    #   gallery from buildMultiShotCentroidGallery
   open-set-score.ts, lookalike-policy.ts  # margin-aware percents + distance gates
   anti-gan.ts, biohash.ts           # legacy session projections (bypassed in live pipeline)
-  pipeline.ts                       # orchestration; quality/occlusion/CLAHE helpers nearby
+  gallery-dedupe.ts                 # multi-shot centroids, poisoned-cluster drop, thumb-only ranking filter
 public/celebs/
-  embeddings.v4.q8.bin + gallery.buckets.json + index.json   # shipped gallery (1000 enrolled)
+  embeddings.v4.q8.bin + gallery.buckets.json + index.json   # catalog 1024; ranking uses verified jpg primaries only
   extra-templates.json                                       # +552 templates merged at runtime
   held-out/descriptors.json                                  # tracked eval probes (AdaFace-512d, Node enroll path)
 reports/                           # generated eval artifacts (tracked; restore after local runs)

@@ -178,8 +178,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         ranking extras were the same impostor face).
  * 6.5.17: Wikidata P18 primaries (Garrow, Turner, Sugar); cluster drop d<0.12.
  * 6.5.18: Absorb the remaining d<0.15 halo of the poisoned thumb pile.
+ * 6.5.19: Rank verified jpg primaries only; thumb-only slots stay in
+ *         index.json for browse but cannot win a look-alike.
  */
-const GALLERY_VERSION = "6.5.18";
+const GALLERY_VERSION = "6.5.19";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

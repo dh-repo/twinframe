@@ -3,7 +3,7 @@
  *
  * The displayed percent already blends absolute distance (Hill) with the
  * top-2 gap (open-set factor). A verdict answers the blunter question a user
- * actually asks: "is this my twin, or just the closest of 1,000 faces?"
+ * actually asks: "is this my twin, or just the closest enrolled face?"
  *
  * Two independent signals decide it:
  *  - absolute adjusted distance — how close the nearest face really is

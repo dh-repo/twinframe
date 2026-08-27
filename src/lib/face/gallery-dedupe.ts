@@ -18,6 +18,35 @@ export const GALLERY_CLONE_EPS = 1e-4;
 export const POISONED_CLUSTER_MAX_DISTANCE = 0.15;
 export const POISONED_CLUSTER_MIN_IDS = 8;
 
+/**
+ * Thumb-only slots keep a 96/192px webp under `/thumbs/` as both `path` and
+ * `fallbackPath`. Verified primaries point `fallbackPath` at `/celebs/<id>.jpg`
+ * (or another non-thumbs still). Ranking must not treat those thumbs as
+ * identities — many are the wrong person, including a poisoned clone pile.
+ * Browse/index.json still lists them.
+ */
+export function isThumbAssetPath(assetPath: string | undefined | null): boolean {
+  if (!assetPath) return false;
+  return assetPath.replace(/\\/g, "/").toLowerCase().includes("/thumbs/");
+}
+
+export function isThumbOnlyEnrollment(row: {
+  path?: string;
+  fallbackPath?: string;
+}): boolean {
+  const paths = [row.fallbackPath, row.path].filter(
+    (p): p is string => typeof p === "string" && p.length > 0,
+  );
+  if (paths.length === 0) return false;
+  return paths.every(isThumbAssetPath);
+}
+
+export function dropThumbOnlyEnrollments<T extends { path?: string; fallbackPath?: string }>(
+  gallery: T[],
+): T[] {
+  return gallery.filter((row) => !isThumbOnlyEnrollment(row));
+}
+
 function fingerprint(d: ArrayLike<number>): string {
   let a = 0;
   let b = 0;
@@ -221,8 +250,9 @@ export function isPaddedFaceNetDescriptor(
 export function buildMultiShotCentroidGallery(
   gallery: CelebrityEmbedding[],
 ): CelebrityEmbedding[] {
+  const ranking = dropThumbOnlyEnrollments(gallery);
   const byId = new Map<string, CelebrityEmbedding[]>();
-  for (const entry of gallery) {
+  for (const entry of ranking) {
     if (isPaddedFaceNetDescriptor(entry.descriptor)) continue;
     const list = byId.get(entry.id) ?? [];
     list.push(entry);
@@ -230,7 +260,7 @@ export function buildMultiShotCentroidGallery(
   }
 
   // Preserve ids whose only rows were padded FaceNet (fall back to original row)
-  for (const entry of gallery) {
+  for (const entry of ranking) {
     if (byId.has(entry.id)) continue;
     byId.set(entry.id, [entry]);
   }

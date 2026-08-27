@@ -26,8 +26,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { applyAppearanceFamilyManifest } from "../src/lib/celebrities/appearance-family.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
-import { l2Normalize, cosineDistance } from "../src/lib/face/embeddings.ts";
-import { dropPoisonedNearCloneClusters } from "../src/lib/face/gallery-dedupe.ts";
+import { l2Normalize, cosineDistance, type CelebrityEmbedding } from "../src/lib/face/embeddings.ts";
+import { buildMultiShotCentroidGallery, isPaddedFaceNetDescriptor } from "../src/lib/face/gallery-dedupe.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -50,6 +50,8 @@ interface GalleryEntry {
   id: string;
   name: string;
   path: string;
+  path192?: string;
+  fallbackPath?: string;
   descriptor: Float32Array;
   age: number;
   gender: "male" | "female";
@@ -92,6 +94,8 @@ export function loadGallery(): GalleryEntry[] {
     id: string;
     name: string;
     path: string;
+    path192?: string;
+    fallbackPath?: string;
     age: number;
     gender: "male" | "female";
     genderProb: number;
@@ -124,6 +128,8 @@ export function loadGallery(): GalleryEntry[] {
       id: b.id,
       name: b.name,
       path: b.path,
+      path192: b.path192,
+      fallbackPath: b.fallbackPath,
       descriptor: l2Normalize(raw),
       age: b.age,
       gender: b.gender,
@@ -133,7 +139,7 @@ export function loadGallery(): GalleryEntry[] {
   return out;
 }
 
-function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
+export function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
   const file = path.join(CELEBS, "extra-templates.json");
   let merged = base;
   if (fs.existsSync(file)) {
@@ -146,12 +152,13 @@ function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
       for (const t of data.templates) {
         const proto = byId.get(t.id);
         if (!proto || !t.descriptor?.length) continue;
+        if (isPaddedFaceNetDescriptor(t.descriptor)) continue;
         extras.push({ ...proto, descriptor: l2Normalize(t.descriptor) });
       }
       if (extras.length) merged = base.concat(extras);
     }
   }
-  return dropPoisonedNearCloneClusters(merged).gallery;
+  return buildMultiShotCentroidGallery(merged as CelebrityEmbedding[]) as GalleryEntry[];
 }
 
 /** Every image file that contributed to any shipped gallery artifact. */
