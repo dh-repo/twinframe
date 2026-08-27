@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 353,
+  "count": 356,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2581,6 +2581,30 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Robert_De_Niro_2011_1.JPG",
         "fetchedAt": "2026-08-27T21:45:00.000Z",
         "note": "2011 bowtie glasses; not salt-pepper patterned-tie eval"
+    }    ,
+    {
+        "id": "cara-delevingne",
+        "file": "006.jpg",
+        "commonsTitle": "File:Cara Delevingne September 2014.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cara_Delevingne_September_2014.jpg",
+        "fetchedAt": "2026-08-27T22:05:00.000Z",
+        "note": "September 2014 velvet blazer bun; not runway color-block eval"
+    }    ,
+    {
+        "id": "penelope-cruz-m",
+        "file": "001.jpg",
+        "commonsTitle": "File:Penélope Cruz TIFF 2012.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pen%C3%A9lope_Cruz_TIFF_2012.jpg",
+        "fetchedAt": "2026-08-27T22:05:00.000Z",
+        "note": "TIFF 2012 blush off-shoulder; not burgundy strapless updo eval"
+    }    ,
+    {
+        "id": "penelope-cruz-m",
+        "file": "002.jpg",
+        "commonsTitle": "File:Premios Goya 2018 - Penélope Cruz.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Premios_Goya_2018_-_Pen%C3%A9lope_Cruz.jpg",
+        "fetchedAt": "2026-08-27T22:05:00.000Z",
+        "note": "Goya 2018 white beaded; not burgundy strapless updo eval"
     }
   ]
 }

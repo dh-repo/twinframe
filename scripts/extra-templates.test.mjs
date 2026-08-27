@@ -627,6 +627,16 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "robert-de-niro" && t.source === "extra-photos/robert-de-niro/008.jpg"),
       "Robert De Niro 2011 extra missing",
     );
+    assert.ok((byId.get("cara-delevingne") ?? 0) >= 1, "Cara Delevingne extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "cara-delevingne" && t.source === "extra-photos/cara-delevingne/006.jpg"),
+      "Cara Delevingne September 2014 extra missing",
+    );
+    assert.ok((byId.get("penelope-cruz-m") ?? 0) >= 2, "Penélope Cruz extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "penelope-cruz-m" && t.source === "extra-photos/penelope-cruz-m/001.jpg"),
+      "Penélope Cruz TIFF 2012 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

@@ -414,8 +414,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         linen blazer; not navy-sweater Comic-Con eval), and Robert De Niro
  *         (2011 bowtie glasses; not salt-pepper patterned-tie eval). De Niro
  *         KVIFF portrait is the eval sitting.
+ * 6.5.60: Commons extras that beat pack dTrue for Cara Delevingne (September
+ *         2014 velvet blazer bun; not runway color-block eval) and Penélope
+ *         Cruz (TIFF 2012 blush off-shoulder + Goya 2018 white beaded; not
+ *         burgundy strapless updo eval). Helen Mirren 2020 is the Berlinale
+ *         70 eval sitting.
  */
-const GALLERY_VERSION = "6.5.59";
+const GALLERY_VERSION = "6.5.60";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
