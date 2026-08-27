@@ -186,9 +186,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         held-out 001 are dropped so eval stays unseen. Thumb-only slots
  * 6.5.21: Extra views for remaining weak Rank-1 names (Gaga, Rogen, Jennie,
  *         Gerwig, Carell, Efron, Mbappé) plus a verified adult Bieber extra.
- *         Eval near-clones and namesake/art dumps still stay out.
+ * 6.5.22: Replace Pacino beanie primary with a verified Serpico solo so
+ *         era extras can pass the same-person gate; add Adele/Naomi extras.
  */
-const GALLERY_VERSION = "6.5.21";
+const GALLERY_VERSION = "6.5.22";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

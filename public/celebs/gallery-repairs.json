@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T08:09:47.216Z",
+  "generatedAt": "2026-08-27T09:19:36.948Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -1623,10 +1623,10 @@
       "sourceKind": "fullres",
       "usedDetection": true,
       "padded": false,
-      "score": 0.781872034072876,
-      "shippedToLive": 0.09226687525897626,
-      "beforeFingerprint": "06463357dfea1e44e6500d51c97b4b9b0e903d8398886c12bf12d595e2c2095b",
-      "afterFingerprint": "4f8db4bdffb0fa9ea9b4cd34237cbf951e61343a77f20355bcde7ee367157959"
+      "score": 0.7042490839958191,
+      "shippedToLive": 0.778332526061038,
+      "beforeFingerprint": "4f8db4bdffb0fa9ea9b4cd34237cbf951e61343a77f20355bcde7ee367157959",
+      "afterFingerprint": "44753a602802dae092d6189a542db425433cdb23c9998fb668d821f4e03305f9"
     },
     {
       "id": "alexander-skarsgard",
