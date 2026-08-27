@@ -7,6 +7,7 @@ import {
   DEFAULT_EXTRA_VIEW_CAP,
   collectEnrollJobs,
   extraImagePaths,
+  primaryPhotoPath,
   resolveExtraViewCap,
 } from "./enroll-jobs.mjs";
 
@@ -23,6 +24,20 @@ function makeCelebDir(id, { heldOut = [], extraPhotos = [] }) {
   }
   return root;
 }
+
+describe("primaryPhotoPath", () => {
+  it("prefers the hi-res jpg and falls back to a converted png thumb", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "enroll-primary-"));
+    const thumbs = path.join(root, "thumbs");
+    fs.mkdirSync(thumbs);
+    assert.equal(primaryPhotoPath("missing", root, thumbs), null);
+    fs.writeFileSync(path.join(thumbs, "adele.png"), "p");
+    assert.equal(primaryPhotoPath("adele", root, thumbs), path.join(thumbs, "adele.png"));
+    fs.writeFileSync(path.join(root, "adele.jpg"), "j");
+    assert.equal(primaryPhotoPath("adele", root, thumbs), path.join(root, "adele.jpg"));
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+});
 
 describe("collectEnrollJobs", () => {
   it("fans primary + extra views and skips held-out 001", () => {

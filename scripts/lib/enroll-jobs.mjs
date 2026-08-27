@@ -46,13 +46,20 @@ export function extraImagePaths(id, celebsDir, cap = resolveExtraViewCap()) {
   return out.slice(0, cap);
 }
 
+/** Primary enroll photo: hi-res jpg if present, else the converted 256-px png thumb. */
+export function primaryPhotoPath(id, celebsDir, thumbDir = "/tmp/twinframe-thumbs-png") {
+  const hires = path.join(celebsDir, `${id}.jpg`);
+  if (fs.existsSync(hires)) return hires;
+  const thumb = path.join(thumbDir, `${id}.png`);
+  if (fs.existsSync(thumb)) return thumb;
+  return null;
+}
+
 export function collectEnrollJobs(buckets, { celebsDir, thumbDir, extraViewCap }) {
   const cap = extraViewCap ?? resolveExtraViewCap();
   const jobs = [];
   for (const b of buckets) {
-    const hires = path.join(celebsDir, `${b.id}.jpg`);
-    const thumb = path.join(thumbDir, `${b.id}.png`);
-    const src = fs.existsSync(hires) ? hires : fs.existsSync(thumb) ? thumb : null;
+    const src = primaryPhotoPath(b.id, celebsDir, thumbDir);
     // A celeb whose primary photo is not on disk (webp-thumb-only ids) still has
     // enrollable extra views — those were the ones starved of multi-shot coverage.
     jobs.push(
