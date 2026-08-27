@@ -2664,7 +2664,7 @@
     "name": "Barry Keoghan",
     "path": "/celebs/thumbs/96/barry-keoghan.webp",
     "path192": "/celebs/thumbs/192/barry-keoghan.webp",
-    "fallbackPath": "/celebs/thumbs/96/barry-keoghan.webp",
+    "fallbackPath": "/celebs/barry-keoghan.jpg",
     "age": 31,
     "gender": "male",
     "genderProb": 0.98
@@ -2674,7 +2674,7 @@
     "name": "Bella Ramsey",
     "path": "/celebs/thumbs/96/bella-ramsey.webp",
     "path192": "/celebs/thumbs/192/bella-ramsey.webp",
-    "fallbackPath": "/celebs/thumbs/96/bella-ramsey.webp",
+    "fallbackPath": "/celebs/bella-ramsey.jpg",
     "age": 20,
     "gender": "female",
     "genderProb": 0.98
@@ -2684,7 +2684,7 @@
     "name": "Brendan Fraser",
     "path": "/celebs/thumbs/96/brendan-fraser.webp",
     "path192": "/celebs/thumbs/192/brendan-fraser.webp",
-    "fallbackPath": "/celebs/thumbs/96/brendan-fraser.webp",
+    "fallbackPath": "/celebs/brendan-fraser.jpg",
     "age": 55,
     "gender": "male",
     "genderProb": 0.98
@@ -2694,7 +2694,7 @@
     "name": "Colman Domingo",
     "path": "/celebs/thumbs/96/colman-domingo.webp",
     "path192": "/celebs/thumbs/192/colman-domingo.webp",
-    "fallbackPath": "/celebs/thumbs/96/colman-domingo.webp",
+    "fallbackPath": "/celebs/colman-domingo.jpg",
     "age": 54,
     "gender": "male",
     "genderProb": 0.98
@@ -2704,7 +2704,7 @@
     "name": "Greta Gerwig",
     "path": "/celebs/thumbs/96/greta-gerwig.webp",
     "path192": "/celebs/thumbs/192/greta-gerwig.webp",
-    "fallbackPath": "/celebs/thumbs/96/greta-gerwig.webp",
+    "fallbackPath": "/celebs/greta-gerwig.jpg",
     "age": 41,
     "gender": "female",
     "genderProb": 0.98
@@ -2734,7 +2734,7 @@
     "name": "Jodie Comer",
     "path": "/celebs/thumbs/96/jodie-comer.webp",
     "path192": "/celebs/thumbs/192/jodie-comer.webp",
-    "fallbackPath": "/celebs/thumbs/96/jodie-comer.webp",
+    "fallbackPath": "/celebs/jodie-comer.jpg",
     "age": 31,
     "gender": "female",
     "genderProb": 0.98
@@ -2754,7 +2754,7 @@
     "name": "Lily Gladstone",
     "path": "/celebs/thumbs/96/lily-gladstone.webp",
     "path192": "/celebs/thumbs/192/lily-gladstone.webp",
-    "fallbackPath": "/celebs/thumbs/96/lily-gladstone.webp",
+    "fallbackPath": "/celebs/lily-gladstone.jpg",
     "age": 38,
     "gender": "female",
     "genderProb": 0.98
@@ -2764,7 +2764,7 @@
     "name": "Maitreyi Ramakrishnan",
     "path": "/celebs/thumbs/96/maitreyi-ramakrishnan.webp",
     "path192": "/celebs/thumbs/192/maitreyi-ramakrishnan.webp",
-    "fallbackPath": "/celebs/thumbs/96/maitreyi-ramakrishnan.webp",
+    "fallbackPath": "/celebs/maitreyi-ramakrishnan.jpg",
     "age": 22,
     "gender": "female",
     "genderProb": 0.98
@@ -2774,7 +2774,7 @@
     "name": "Martin Scorsese",
     "path": "/celebs/thumbs/96/martin-scorsese.webp",
     "path192": "/celebs/thumbs/192/martin-scorsese.webp",
-    "fallbackPath": "/celebs/thumbs/96/martin-scorsese.webp",
+    "fallbackPath": "/celebs/martin-scorsese.jpg",
     "age": 81,
     "gender": "male",
     "genderProb": 0.98
@@ -2784,7 +2784,7 @@
     "name": "Mia Goth",
     "path": "/celebs/thumbs/96/mia-goth.webp",
     "path192": "/celebs/thumbs/192/mia-goth.webp",
-    "fallbackPath": "/celebs/thumbs/96/mia-goth.webp",
+    "fallbackPath": "/celebs/mia-goth.jpg",
     "age": 30,
     "gender": "female",
     "genderProb": 0.98
@@ -2794,7 +2794,7 @@
     "name": "Mike Faist",
     "path": "/celebs/thumbs/96/mike-faist.webp",
     "path192": "/celebs/thumbs/192/mike-faist.webp",
-    "fallbackPath": "/celebs/thumbs/96/mike-faist.webp",
+    "fallbackPath": "/celebs/mike-faist.jpg",
     "age": 32,
     "gender": "male",
     "genderProb": 0.98
@@ -2804,7 +2804,7 @@
     "name": "Nicolas Cage",
     "path": "/celebs/thumbs/96/nicolas-cage.webp",
     "path192": "/celebs/thumbs/192/nicolas-cage.webp",
-    "fallbackPath": "/celebs/thumbs/96/nicolas-cage.webp",
+    "fallbackPath": "/celebs/nicolas-cage.jpg",
     "age": 60,
     "gender": "male",
     "genderProb": 0.98
@@ -2814,7 +2814,7 @@
     "name": "Olivia Colman",
     "path": "/celebs/thumbs/96/olivia-colman.webp",
     "path192": "/celebs/thumbs/192/olivia-colman.webp",
-    "fallbackPath": "/celebs/thumbs/96/olivia-colman.webp",
+    "fallbackPath": "/celebs/olivia-colman.jpg",
     "age": 50,
     "gender": "female",
     "genderProb": 0.98
@@ -2844,7 +2844,7 @@
     "name": "Uma Thurman",
     "path": "/celebs/thumbs/96/uma-thurman.webp",
     "path192": "/celebs/thumbs/192/uma-thurman.webp",
-    "fallbackPath": "/celebs/thumbs/96/uma-thurman.webp",
+    "fallbackPath": "/celebs/uma-thurman.jpg",
     "age": 54,
     "gender": "female",
     "genderProb": 0.98
@@ -2854,7 +2854,7 @@
     "name": "Chris Pratt",
     "path": "/celebs/thumbs/96/chris-pratt.webp",
     "path192": "/celebs/thumbs/192/chris-pratt.webp",
-    "fallbackPath": "/celebs/thumbs/96/chris-pratt.webp",
+    "fallbackPath": "/celebs/chris-pratt.jpg",
     "age": 45,
     "gender": "male",
     "genderProb": 0.98
@@ -2864,7 +2864,7 @@
     "name": "Tom Hiddleston",
     "path": "/celebs/thumbs/96/tom-hiddleston.webp",
     "path192": "/celebs/thumbs/192/tom-hiddleston.webp",
-    "fallbackPath": "/celebs/thumbs/96/tom-hiddleston.webp",
+    "fallbackPath": "/celebs/tom-hiddleston.jpg",
     "age": 43,
     "gender": "male",
     "genderProb": 0.98
@@ -2874,7 +2874,7 @@
     "name": "Jack Black",
     "path": "/celebs/thumbs/96/jack-black.webp",
     "path192": "/celebs/thumbs/192/jack-black.webp",
-    "fallbackPath": "/celebs/thumbs/96/jack-black.webp",
+    "fallbackPath": "/celebs/jack-black.jpg",
     "age": 54,
     "gender": "male",
     "genderProb": 0.98
@@ -2884,7 +2884,7 @@
     "name": "Anne Hathaway",
     "path": "/celebs/thumbs/96/anne-hathaway.webp",
     "path192": "/celebs/thumbs/192/anne-hathaway.webp",
-    "fallbackPath": "/celebs/thumbs/96/anne-hathaway.webp",
+    "fallbackPath": "/celebs/anne-hathaway.jpg",
     "age": 41,
     "gender": "female",
     "genderProb": 0.98
@@ -2894,7 +2894,7 @@
     "name": "Daniel Radcliffe",
     "path": "/celebs/thumbs/96/daniel-radcliffe.webp",
     "path192": "/celebs/thumbs/192/daniel-radcliffe.webp",
-    "fallbackPath": "/celebs/thumbs/96/daniel-radcliffe.webp",
+    "fallbackPath": "/celebs/daniel-radcliffe.jpg",
     "age": 35,
     "gender": "male",
     "genderProb": 0.98
@@ -2904,7 +2904,7 @@
     "name": "Ralph Fiennes",
     "path": "/celebs/thumbs/96/ralph-fiennes.webp",
     "path192": "/celebs/thumbs/192/ralph-fiennes.webp",
-    "fallbackPath": "/celebs/thumbs/96/ralph-fiennes.webp",
+    "fallbackPath": "/celebs/ralph-fiennes.jpg",
     "age": 61,
     "gender": "male",
     "genderProb": 0.98
@@ -2914,7 +2914,7 @@
     "name": "Penelope Cruz",
     "path": "/celebs/thumbs/96/penelope-cruz.webp",
     "path192": "/celebs/thumbs/192/penelope-cruz.webp",
-    "fallbackPath": "/celebs/thumbs/96/penelope-cruz.webp",
+    "fallbackPath": "/celebs/penelope-cruz.jpg",
     "age": 50,
     "gender": "female",
     "genderProb": 0.98
@@ -2924,7 +2924,7 @@
     "name": "Sofia Vergara",
     "path": "/celebs/thumbs/96/sofia-vergara.webp",
     "path192": "/celebs/thumbs/192/sofia-vergara.webp",
-    "fallbackPath": "/celebs/thumbs/96/sofia-vergara.webp",
+    "fallbackPath": "/celebs/sofia-vergara.jpg",
     "age": 52,
     "gender": "female",
     "genderProb": 0.98
@@ -2934,7 +2934,7 @@
     "name": "Karol G",
     "path": "/celebs/thumbs/96/karol-g.webp",
     "path192": "/celebs/thumbs/192/karol-g.webp",
-    "fallbackPath": "/celebs/thumbs/96/karol-g.webp",
+    "fallbackPath": "/celebs/karol-g.jpg",
     "age": 33,
     "gender": "female",
     "genderProb": 0.98
@@ -2944,7 +2944,7 @@
     "name": "Maluma",
     "path": "/celebs/thumbs/96/maluma.webp",
     "path192": "/celebs/thumbs/192/maluma.webp",
-    "fallbackPath": "/celebs/thumbs/96/maluma.webp",
+    "fallbackPath": "/celebs/maluma.jpg",
     "age": 30,
     "gender": "male",
     "genderProb": 0.98
@@ -2954,7 +2954,7 @@
     "name": "Anitta",
     "path": "/celebs/thumbs/96/anitta.webp",
     "path192": "/celebs/thumbs/192/anitta.webp",
-    "fallbackPath": "/celebs/thumbs/96/anitta.webp",
+    "fallbackPath": "/celebs/anitta.jpg",
     "age": 31,
     "gender": "female",
     "genderProb": 0.98
@@ -2964,7 +2964,7 @@
     "name": "Rosalia",
     "path": "/celebs/thumbs/96/rosalia.webp",
     "path192": "/celebs/thumbs/192/rosalia.webp",
-    "fallbackPath": "/celebs/thumbs/96/rosalia.webp",
+    "fallbackPath": "/celebs/rosalia.jpg",
     "age": 31,
     "gender": "female",
     "genderProb": 0.98

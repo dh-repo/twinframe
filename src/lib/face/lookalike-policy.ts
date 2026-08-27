@@ -22,8 +22,8 @@ export const HARD_FACE_COVERAGE_MIN = 0.02;
  * rankByDescriptor returns [] — the probe is orthogonal/garbage and even a
  * labeled Distant Twin card would be fiction.
  *
- * Evidence (held-out v2.1 sweep, 301 clean probes, AdaFace IR-101 512-d):
- * 0.75 loses ZERO rank-1 correct matches with 95.2% pass precision.
+ * Evidence (held-out v2.1 sweep, 302 clean probes, AdaFace IR-101 512-d):
+ * 0.75 loses ZERO rank-1 correct matches with 97.7% pass precision.
  * AdaFace distances run larger than EdgeFace; the floor was re-swept after
  * the model swap. EdgeFace-512 impostor p90 was ~0.67 under EdgeFace-M.
  */

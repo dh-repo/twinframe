@@ -143,8 +143,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 5.5.0: multi-shot repair + mislabeled-portrait fix + reconciled demographics.
  * 6.2.0: surgical AdaFace re-enroll of 14 poisoned collapse slots (household names kept).
  * 6.3.0: AdaFace extra templates for held-out miss identities.
+ * 6.4.0: re-enroll miss identities whose 192-px thumbs were the wrong person.
  */
-const GALLERY_VERSION = "6.3.0";
+const GALLERY_VERSION = "6.4.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -3985,7 +3985,7 @@
     "name": "Barry Keoghan",
     "path": "/celebs/thumbs/96/barry-keoghan.webp",
     "path192": "/celebs/thumbs/192/barry-keoghan.webp",
-    "fallbackPath": "/celebs/thumbs/96/barry-keoghan.webp",
+    "fallbackPath": "/celebs/barry-keoghan.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4000,7 +4000,7 @@
     "name": "Bella Ramsey",
     "path": "/celebs/thumbs/96/bella-ramsey.webp",
     "path192": "/celebs/thumbs/192/bella-ramsey.webp",
-    "fallbackPath": "/celebs/thumbs/96/bella-ramsey.webp",
+    "fallbackPath": "/celebs/bella-ramsey.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4015,7 +4015,7 @@
     "name": "Brendan Fraser",
     "path": "/celebs/thumbs/96/brendan-fraser.webp",
     "path192": "/celebs/thumbs/192/brendan-fraser.webp",
-    "fallbackPath": "/celebs/thumbs/96/brendan-fraser.webp",
+    "fallbackPath": "/celebs/brendan-fraser.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4030,7 +4030,7 @@
     "name": "Colman Domingo",
     "path": "/celebs/thumbs/96/colman-domingo.webp",
     "path192": "/celebs/thumbs/192/colman-domingo.webp",
-    "fallbackPath": "/celebs/thumbs/96/colman-domingo.webp",
+    "fallbackPath": "/celebs/colman-domingo.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4045,7 +4045,7 @@
     "name": "Greta Gerwig",
     "path": "/celebs/thumbs/96/greta-gerwig.webp",
     "path192": "/celebs/thumbs/192/greta-gerwig.webp",
-    "fallbackPath": "/celebs/thumbs/96/greta-gerwig.webp",
+    "fallbackPath": "/celebs/greta-gerwig.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4090,7 +4090,7 @@
     "name": "Jodie Comer",
     "path": "/celebs/thumbs/96/jodie-comer.webp",
     "path192": "/celebs/thumbs/192/jodie-comer.webp",
-    "fallbackPath": "/celebs/thumbs/96/jodie-comer.webp",
+    "fallbackPath": "/celebs/jodie-comer.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4120,7 +4120,7 @@
     "name": "Lily Gladstone",
     "path": "/celebs/thumbs/96/lily-gladstone.webp",
     "path192": "/celebs/thumbs/192/lily-gladstone.webp",
-    "fallbackPath": "/celebs/thumbs/96/lily-gladstone.webp",
+    "fallbackPath": "/celebs/lily-gladstone.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4135,7 +4135,7 @@
     "name": "Maitreyi Ramakrishnan",
     "path": "/celebs/thumbs/96/maitreyi-ramakrishnan.webp",
     "path192": "/celebs/thumbs/192/maitreyi-ramakrishnan.webp",
-    "fallbackPath": "/celebs/thumbs/96/maitreyi-ramakrishnan.webp",
+    "fallbackPath": "/celebs/maitreyi-ramakrishnan.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4150,7 +4150,7 @@
     "name": "Martin Scorsese",
     "path": "/celebs/thumbs/96/martin-scorsese.webp",
     "path192": "/celebs/thumbs/192/martin-scorsese.webp",
-    "fallbackPath": "/celebs/thumbs/96/martin-scorsese.webp",
+    "fallbackPath": "/celebs/martin-scorsese.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4165,7 +4165,7 @@
     "name": "Mia Goth",
     "path": "/celebs/thumbs/96/mia-goth.webp",
     "path192": "/celebs/thumbs/192/mia-goth.webp",
-    "fallbackPath": "/celebs/thumbs/96/mia-goth.webp",
+    "fallbackPath": "/celebs/mia-goth.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4180,7 +4180,7 @@
     "name": "Mike Faist",
     "path": "/celebs/thumbs/96/mike-faist.webp",
     "path192": "/celebs/thumbs/192/mike-faist.webp",
-    "fallbackPath": "/celebs/thumbs/96/mike-faist.webp",
+    "fallbackPath": "/celebs/mike-faist.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4195,7 +4195,7 @@
     "name": "Nicolas Cage",
     "path": "/celebs/thumbs/96/nicolas-cage.webp",
     "path192": "/celebs/thumbs/192/nicolas-cage.webp",
-    "fallbackPath": "/celebs/thumbs/96/nicolas-cage.webp",
+    "fallbackPath": "/celebs/nicolas-cage.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4210,7 +4210,7 @@
     "name": "Olivia Colman",
     "path": "/celebs/thumbs/96/olivia-colman.webp",
     "path192": "/celebs/thumbs/192/olivia-colman.webp",
-    "fallbackPath": "/celebs/thumbs/96/olivia-colman.webp",
+    "fallbackPath": "/celebs/olivia-colman.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4251,7 +4251,7 @@
     "name": "Uma Thurman",
     "path": "/celebs/thumbs/96/uma-thurman.webp",
     "path192": "/celebs/thumbs/192/uma-thurman.webp",
-    "fallbackPath": "/celebs/thumbs/96/uma-thurman.webp",
+    "fallbackPath": "/celebs/uma-thurman.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4266,7 +4266,7 @@
     "name": "Chris Pratt",
     "path": "/celebs/thumbs/96/chris-pratt.webp",
     "path192": "/celebs/thumbs/192/chris-pratt.webp",
-    "fallbackPath": "/celebs/thumbs/96/chris-pratt.webp",
+    "fallbackPath": "/celebs/chris-pratt.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4281,7 +4281,7 @@
     "name": "Tom Hiddleston",
     "path": "/celebs/thumbs/96/tom-hiddleston.webp",
     "path192": "/celebs/thumbs/192/tom-hiddleston.webp",
-    "fallbackPath": "/celebs/thumbs/96/tom-hiddleston.webp",
+    "fallbackPath": "/celebs/tom-hiddleston.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4296,7 +4296,7 @@
     "name": "Jack Black",
     "path": "/celebs/thumbs/96/jack-black.webp",
     "path192": "/celebs/thumbs/192/jack-black.webp",
-    "fallbackPath": "/celebs/thumbs/96/jack-black.webp",
+    "fallbackPath": "/celebs/jack-black.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4311,7 +4311,7 @@
     "name": "Anne Hathaway",
     "path": "/celebs/thumbs/96/anne-hathaway.webp",
     "path192": "/celebs/thumbs/192/anne-hathaway.webp",
-    "fallbackPath": "/celebs/thumbs/96/anne-hathaway.webp",
+    "fallbackPath": "/celebs/anne-hathaway.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4326,7 +4326,7 @@
     "name": "Daniel Radcliffe",
     "path": "/celebs/thumbs/96/daniel-radcliffe.webp",
     "path192": "/celebs/thumbs/192/daniel-radcliffe.webp",
-    "fallbackPath": "/celebs/thumbs/96/daniel-radcliffe.webp",
+    "fallbackPath": "/celebs/daniel-radcliffe.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4341,7 +4341,7 @@
     "name": "Ralph Fiennes",
     "path": "/celebs/thumbs/96/ralph-fiennes.webp",
     "path192": "/celebs/thumbs/192/ralph-fiennes.webp",
-    "fallbackPath": "/celebs/thumbs/96/ralph-fiennes.webp",
+    "fallbackPath": "/celebs/ralph-fiennes.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4356,7 +4356,7 @@
     "name": "Penelope Cruz",
     "path": "/celebs/thumbs/96/penelope-cruz.webp",
     "path192": "/celebs/thumbs/192/penelope-cruz.webp",
-    "fallbackPath": "/celebs/thumbs/96/penelope-cruz.webp",
+    "fallbackPath": "/celebs/penelope-cruz.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4371,7 +4371,7 @@
     "name": "Sofia Vergara",
     "path": "/celebs/thumbs/96/sofia-vergara.webp",
     "path192": "/celebs/thumbs/192/sofia-vergara.webp",
-    "fallbackPath": "/celebs/thumbs/96/sofia-vergara.webp",
+    "fallbackPath": "/celebs/sofia-vergara.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4386,7 +4386,7 @@
     "name": "Karol G",
     "path": "/celebs/thumbs/96/karol-g.webp",
     "path192": "/celebs/thumbs/192/karol-g.webp",
-    "fallbackPath": "/celebs/thumbs/96/karol-g.webp",
+    "fallbackPath": "/celebs/karol-g.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4401,7 +4401,7 @@
     "name": "Maluma",
     "path": "/celebs/thumbs/96/maluma.webp",
     "path192": "/celebs/thumbs/192/maluma.webp",
-    "fallbackPath": "/celebs/thumbs/96/maluma.webp",
+    "fallbackPath": "/celebs/maluma.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4416,7 +4416,7 @@
     "name": "Anitta",
     "path": "/celebs/thumbs/96/anitta.webp",
     "path192": "/celebs/thumbs/192/anitta.webp",
-    "fallbackPath": "/celebs/thumbs/96/anitta.webp",
+    "fallbackPath": "/celebs/anitta.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4431,7 +4431,7 @@
     "name": "Rosalia",
     "path": "/celebs/thumbs/96/rosalia.webp",
     "path192": "/celebs/thumbs/192/rosalia.webp",
-    "fallbackPath": "/celebs/thumbs/96/rosalia.webp",
+    "fallbackPath": "/celebs/rosalia.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [

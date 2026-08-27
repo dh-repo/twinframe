@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -8,10 +9,15 @@ import {
   MANIFEST_VERSION,
   PHOTO_MIN_BYTES_PER_PIXEL,
   PHOTO_MIN_DIMENSION,
+  HELD_OUT_MAX_SAME_PERSON_DISTANCE,
   heldOutFileNameRejectReason,
   heldOutIdentityRejectReason,
+  heldOutSamePersonRejectReason,
+  heldOutSceneRejectReason,
   heldOutSecondPersonRejectReason,
+  blockedEvalHashes,
   listHeldOutSlots,
+  parseFetchMode,
   photoRejectReason,
   rebuildManifestFromDisk,
   resolveFetchIds,
@@ -136,7 +142,7 @@ describe("heldOutFileNameRejectReason", () => {
 
   it("rejects a Broadway entrance that is not a face", () => {
     assert.equal(
-      heldOutFileNameRejectReason("File:Broadway Theatre NYC entrance.jpg"),
+      heldOutFileNameRejectReason("File:Martin Scorsese Walk of Fame.jpg"),
       "non-photo",
     );
   });
@@ -265,5 +271,73 @@ describe("rebuildManifestFromDisk", () => {
     const root = tempHeldOut();
     const manifest = rebuildManifestFromDisk({ heldOutDir: root, index: [] });
     assert.equal(manifest.cases[0].name, "adele");
+  });
+});
+
+describe("parseFetchMode", () => {
+  it("defaults to a fill-missing held-out fetch", () => {
+    assert.deepEqual(parseFetchMode([]), {
+      replace: false,
+      primaries: false,
+      audit: false,
+      manifestOnly: false,
+    });
+  });
+
+  it("recognises replace, primaries, and maintenance flags", () => {
+    assert.equal(parseFetchMode(["--replace", "--primaries"]).replace, true);
+    assert.equal(parseFetchMode(["--replace", "--primaries"]).primaries, true);
+    assert.equal(parseFetchMode(["--audit"]).audit, true);
+    assert.equal(parseFetchMode(["--manifest-only"]).manifestOnly, true);
+  });
+});
+
+describe("heldOutSceneRejectReason", () => {
+  it("rejects a plaque or empty frame with no face", () => {
+    assert.equal(heldOutSceneRejectReason({ faceCount: 0, primaryArea: 0, secondArea: 0 }), "no-face");
+  });
+
+  it("rejects a pair whose second face is a real rival crop", () => {
+    assert.equal(
+      heldOutSceneRejectReason({ faceCount: 2, primaryArea: 1000, secondArea: 400 }),
+      "multi-face",
+    );
+  });
+
+  it("keeps a tiny background extra behind a dominant subject", () => {
+    assert.equal(
+      heldOutSceneRejectReason({ faceCount: 2, primaryArea: 1000, secondArea: 100 }),
+      null,
+    );
+  });
+
+  it("rejects crowds and three-person groups", () => {
+    assert.equal(heldOutSceneRejectReason({ faceCount: 8, primaryArea: 900, secondArea: 800 }), "crowd");
+    assert.equal(heldOutSceneRejectReason({ faceCount: 3, primaryArea: 900, secondArea: 200 }), "group");
+  });
+});
+
+describe("blockedEvalHashes", () => {
+  it("blocks enrolled extras so 001 cannot reuse a 002 view", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "twinframe-blocked-"));
+    fs.mkdirSync(path.join(root, "held-out", "adele"), { recursive: true });
+    fs.writeFileSync(path.join(root, "adele.jpg"), "primary");
+    fs.writeFileSync(path.join(root, "held-out", "adele", "002.jpg"), "extra-view");
+    fs.writeFileSync(path.join(root, "held-out", "adele", "001.jpg"), "eval-slot");
+    const blocked = blockedEvalHashes({ id: "adele", name: "Adele" }, root);
+    const sha = (s) => crypto.createHash("sha256").update(s).digest("hex");
+    assert.equal(blocked.has(sha("primary")), true);
+    assert.equal(blocked.has(sha("extra-view")), true);
+    assert.equal(blocked.has(sha("eval-slot")), false);
+  });
+});
+
+describe("heldOutSamePersonRejectReason", () => {
+  it("keeps genuine AdaFace pairs and rejects impostor-range candidates", () => {
+    assert.equal(heldOutSamePersonRejectReason(0.36), null);
+    assert.equal(heldOutSamePersonRejectReason(0.8), null);
+    assert.equal(heldOutSamePersonRejectReason(0.801), "different-person");
+    assert.equal(HELD_OUT_MAX_SAME_PERSON_DISTANCE, 0.8);
+    assert.equal(heldOutSamePersonRejectReason(Number.NaN), null);
   });
 });

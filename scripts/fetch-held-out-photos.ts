@@ -22,6 +22,8 @@
  *
  * Usage:
  *   node --experimental-strip-types scripts/fetch-held-out-photos.ts [--limit N] [--ids a,b] [--manifest-only]
+ *   node --experimental-strip-types scripts/fetch-held-out-photos.ts --primaries --ids jack-black,anne-hathaway
+ *   node --experimental-strip-types scripts/fetch-held-out-photos.ts --replace --ids meryl-streep
  *   HELD_OUT_LIMIT=50 node --experimental-strip-types scripts/fetch-held-out-photos.ts
  *   HELD_OUT_DELAY_MS=2000 node --experimental-strip-types scripts/fetch-held-out-photos.ts --ids adam-sandler,al-pacino
  *
@@ -75,7 +77,7 @@ export interface Manifest {
 }
 
 const SKIP_NAME =
-  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|fresque|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph/i;
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|fresque|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph|walk of fame|hollywood.?star/i;
 
 /** Two people in the frame — largest-face still embeds the wrong subject. */
 const SKIP_PAIR = /(^|[ _(])(and|with|&|feat\.?|vs\.?)[ _]|withdaughters|withfamily/i;
@@ -95,6 +97,12 @@ export const PHOTO_MIN_DIMENSION = 200;
  * to the same size lands near 0.008.
  */
 export const PHOTO_MIN_BYTES_PER_PIXEL = 0.02;
+/**
+ * Cosine distance above this vs the enrolled primary means the candidate is a
+ * different person, not a hard same-identity view. Genuine AdaFace pairs sit
+ * well below 0.7; impostors cluster near 0.9–1.1.
+ */
+export const HELD_OUT_MAX_SAME_PERSON_DISTANCE = 0.8;
 
 /**
  * Why a candidate is not a usable portrait, or null when it looks like one.
@@ -156,6 +164,49 @@ export function heldOutIdentityRejectReason(title: string, name: string): "wrong
     );
   }
   return tokens.some((t) => hay.includes(t)) ? null : "wrong-person";
+}
+
+/** `--replace` overwrites an existing dest; `--primaries` writes `public/celebs/<id>.jpg`. */
+export function parseFetchMode(argv: string[] = process.argv): {
+  replace: boolean;
+  primaries: boolean;
+  audit: boolean;
+  manifestOnly: boolean;
+} {
+  return {
+    replace: argv.includes("--replace"),
+    primaries: argv.includes("--primaries"),
+    audit: argv.includes("--audit"),
+    manifestOnly: argv.includes("--manifest-only"),
+  };
+}
+
+/**
+ * Why a detected face set is not a solo eval portrait. Pair shots and crowds
+ * make largest-face embed the wrong subject, which then scores as a model miss.
+ */
+export function heldOutSceneRejectReason(input: {
+  faceCount?: number;
+  primaryArea?: number;
+  secondArea?: number;
+}): "crowd" | "multi-face" | "group" | "no-face" | null {
+  const n = Number(input.faceCount) || 0;
+  if (n === 0) return "no-face";
+  if (n >= 8) return "crowd";
+  const primary = Number(input.primaryArea) || 0;
+  const second = Number(input.secondArea) || 0;
+  if (n >= 2 && primary > 0 && second / primary >= 0.35) return "multi-face";
+  if (n >= 3) return "group";
+  return null;
+}
+
+/** Reject a candidate whose descriptor is in impostor range of the enrolled identity. */
+export function heldOutSamePersonRejectReason(
+  distance: number,
+  max = HELD_OUT_MAX_SAME_PERSON_DISTANCE,
+): "different-person" | null {
+  if (!Number.isFinite(distance)) return null;
+  return distance > max ? "different-person" : null;
 }
 
 /**
@@ -339,6 +390,32 @@ function enrollPath(entry: IndexEntry): string | null {
   return fs.existsSync(abs) ? abs : null;
 }
 
+/** Hashes that must not become the eval 001: enrolled primary, extra views, extra-photos. */
+export function blockedEvalHashes(entry: IndexEntry, celebsDir = path.join(ROOT, "public/celebs")): Set<string> {
+  const out = new Set<string>();
+  const add = (p: string | null) => {
+    const s = p ? fileSha(p) : null;
+    if (s) out.add(s);
+  };
+  add(enrollPath(entry));
+  add(path.join(celebsDir, `${entry.id}.jpg`));
+  const extraDir = path.join(celebsDir, "extra-photos", entry.id);
+  if (fs.existsSync(extraDir)) {
+    for (const f of fs.readdirSync(extraDir)) {
+      if (IMAGE_RE.test(f)) add(path.join(extraDir, f));
+    }
+  }
+  const held = path.join(celebsDir, "held-out", entry.id);
+  if (fs.existsSync(held)) {
+    for (const f of fs.readdirSync(held)) {
+      if (!IMAGE_RE.test(f)) continue;
+      if (f.replace(IMAGE_RE, "") === EVAL_SLOT) continue;
+      add(path.join(held, f));
+    }
+  }
+  return out;
+}
+
 async function resolveTitle(name: string): Promise<string | null> {
   const j = await wiki({
     action: "query",
@@ -370,7 +447,7 @@ async function pageImages(
     action: "query",
     titles: title,
     generator: "images",
-    gimlimit: "16",
+    gimlimit: "40",
     prop: "imageinfo",
     iiprop: "url|size|mime",
     iiurlwidth: "900",
@@ -442,7 +519,8 @@ async function main() {
     return;
   }
 
-  if (process.argv.includes("--manifest-only")) {
+  const mode = parseFetchMode();
+  if (mode.manifestOnly) {
     const manifest = rebuildManifestFromDisk({ heldOutDir: OUT_DIR, index, previous });
     writeManifest(manifest);
     console.log(
@@ -456,8 +534,45 @@ async function main() {
     ? wantedIds.map((id) => index.find((entry) => entry.id === id)!)
     : index.slice(0, resolveLimit(index.length));
   fs.mkdirSync(OUT_DIR, { recursive: true });
+  const celebsDir = path.join(ROOT, "public/celebs");
 
-  // Provenance is only used to avoid re-downloading; presence on disk decides.
+  let inspectPortrait:
+    | null
+    | ((filePath: string) => Promise<{
+        faceCount: number;
+        primaryArea: number;
+        secondArea: number;
+        d512?: number[];
+      }>) = null;
+  let galleryById: Map<string, Float32Array> | null = null;
+  try {
+    const enroll = await import("./enroll-gallery-onnx.mjs");
+    if (enroll.adafaceModelReady()) {
+      inspectPortrait = async (filePath: string) => {
+        const emb = await enroll.embedImageFile(filePath);
+        return {
+          faceCount: emb.faceCount ?? 0,
+          primaryArea: emb.primaryArea ?? 0,
+          secondArea: emb.secondArea ?? 0,
+          d512: emb.d512,
+        };
+      };
+      if (!mode.primaries) {
+        const { decodeV4Gallery, l2Normalize } = await import("./lib/gallery-binary.mjs");
+        const buckets = JSON.parse(fs.readFileSync(path.join(celebsDir, "gallery.buckets.json"), "utf8")) as Array<{
+          id: string;
+        }>;
+        const { vectors } = decodeV4Gallery(fs.readFileSync(path.join(celebsDir, "embeddings.v4.q8.bin")));
+        galleryById = new Map();
+        for (let i = 0; i < buckets.length; i++) {
+          if (!galleryById.has(buckets[i]!.id)) galleryById.set(buckets[i]!.id, l2Normalize(vectors[i]!));
+        }
+      }
+    }
+  } catch {
+    inspectPortrait = null;
+  }
+
   const fetched = new Map<string, { sourceUrl: string; wikiTitle: string }>();
   for (const row of previous.cases ?? []) {
     if (row?.imagePath && row.sourceUrl && row.wikiTitle) {
@@ -469,12 +584,17 @@ async function main() {
   let skip = 0;
   let fail = 0;
 
-  console.log(`held-out fetch: ${slice.length} of ${index.length} catalog ids`);
+  console.log(
+    `${mode.primaries ? "primary" : "held-out"} fetch: ${slice.length} of ${index.length} catalog ids` +
+      `${mode.replace ? " (replace)" : ""}`,
+  );
 
   for (const entry of slice) {
-    const destDir = path.join(OUT_DIR, entry.id);
-    const dest = path.join(destDir, `${EVAL_SLOT}.jpg`);
-    if (fs.existsSync(dest)) {
+    const destDir = mode.primaries ? celebsDir : path.join(OUT_DIR, entry.id);
+    const dest = mode.primaries
+      ? path.join(celebsDir, `${entry.id}.jpg`)
+      : path.join(destDir, `${EVAL_SLOT}.jpg`);
+    if (fs.existsSync(dest) && !mode.replace) {
       skip++;
       continue;
     }
@@ -489,13 +609,17 @@ async function main() {
       }
       const infobox = await pageImageTitle(title);
       const imgs = await pageImages(title);
-      const enroll = enrollPath(entry);
-      const enrollSha = enroll ? fileSha(enroll) : null;
+      const blocked = mode.primaries ? new Set<string>() : blockedEvalHashes(entry, celebsDir);
 
-      const ordered = [
-        ...imgs.filter((i) => infobox && i.title !== infobox),
-        ...imgs.filter((i) => !infobox || i.title === infobox),
-      ];
+      const ordered = mode.primaries
+        ? [
+            ...imgs.filter((i) => infobox && i.title === infobox),
+            ...imgs.filter((i) => !infobox || i.title !== infobox),
+          ]
+        : [
+            ...imgs.filter((i) => infobox && i.title !== infobox),
+            ...imgs.filter((i) => !infobox || i.title === infobox),
+          ];
 
       let saved = false;
       for (const cand of ordered) {
@@ -514,14 +638,41 @@ async function main() {
         }
         const buf = result.buffer;
         const sha = crypto.createHash("sha256").update(buf).digest("hex");
-        if (enrollSha && sha === enrollSha) continue;
-        if (enroll && Math.abs(buf.length - fs.statSync(enroll).size) < 80) continue;
+        if (!mode.primaries && blocked.has(sha)) continue;
+
         fs.mkdirSync(destDir, { recursive: true });
-        fs.writeFileSync(dest, buf);
-        fetched.set(`/celebs/held-out/${entry.id}/${EVAL_SLOT}.jpg`, {
-          sourceUrl: cand.url,
-          wikiTitle: title,
-        });
+        const tmp = `${dest}.part`;
+        fs.writeFileSync(tmp, buf);
+
+        if (inspectPortrait) {
+          const insp = await inspectPortrait(tmp);
+          const scene = heldOutSceneRejectReason(insp);
+          if (scene) {
+            console.log(`  skip ${cand.title}: ${scene} (${insp.faceCount} faces)`);
+            fs.unlinkSync(tmp);
+            continue;
+          }
+          const enrolled = galleryById?.get(entry.id);
+          const primaryJpg = path.join(celebsDir, `${entry.id}.jpg`);
+          if (enrolled && insp.d512?.length && fs.existsSync(primaryJpg)) {
+            const { cosineDistance, l2Normalize } = await import("./lib/gallery-binary.mjs");
+            const d = cosineDistance(l2Normalize(Float32Array.from(insp.d512)), enrolled);
+            const same = heldOutSamePersonRejectReason(d);
+            if (same) {
+              console.log(`  skip ${cand.title}: ${same} (d=${d.toFixed(3)})`);
+              fs.unlinkSync(tmp);
+              continue;
+            }
+          }
+        }
+
+        fs.renameSync(tmp, dest);
+        if (!mode.primaries) {
+          fetched.set(`/celebs/held-out/${entry.id}/${EVAL_SLOT}.jpg`, {
+            sourceUrl: cand.url,
+            wikiTitle: title,
+          });
+        }
         console.log(`+ ${entry.id}  ← ${title}  (${cand.title})`);
         ok++;
         saved = true;
@@ -536,6 +687,11 @@ async function main() {
       fail++;
     }
     await sleep(DELAY_MS);
+  }
+
+  if (mode.primaries) {
+    console.log(`done primaries ok=${ok} skip=${skip} fail=${fail}`);
+    return;
   }
 
   const carried = [

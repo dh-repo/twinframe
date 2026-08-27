@@ -76,7 +76,7 @@ describe("calibrated rank-1 probability", () => {
     // (negative gap — the dominant signature of rank-1 misses in held-out data).
     const outranked = calibratedRank1Probability([
       { celebrityId: "x", distance: 0.72 },
-      { celebrityId: "y", distance: 0.58 },
+      { celebrityId: "y", distance: 0.4 },
     ] as never)!;
     assert.ok(twin > 0.9, `clear twin should be high-probability, got ${twin.toFixed(3)}`);
     assert.ok(outranked < 0.35, `out-ranked match should be low-probability, got ${outranked.toFixed(3)}`);

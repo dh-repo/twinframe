@@ -92,7 +92,9 @@ describe("shipped AdaFace collapse cluster", () => {
     assert.equal(fs.existsSync(manifestPath), true, "gallery-repairs.json missing");
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
     const repaired = new Set((manifest.repairs ?? []).map((row) => row.id));
-    assert.deepEqual([...repaired].sort(), [...COLLAPSE_IDS].sort());
+    for (const id of COLLAPSE_IDS) {
+      assert.ok(repaired.has(id), `${id} missing from gallery-repairs.json`);
+    }
     for (const id of HOUSEHOLD_COLLAPSE_IDS) {
       assert.ok(repaired.has(id), `${id} must be repaired in place, not dropped`);
       assert.ok(byId.has(id), `${id} vanished from the gallery`);

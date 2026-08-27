@@ -45,7 +45,7 @@ Twinframe is a client-side face recognition and celebrity look-alike matching en
 > **Honesty note (2026-08, rev 4).** Milestone 5's 97.4% Top-1 is **pipeline sanity** —
 > tier probes overlap enrollment imagery and are not product accuracy. The honest headline
 > and CI regression gate come from `scripts/evaluate-held-out-v2.ts` (v2.1, leak-excluded,
-> full 512-d AdaFace IR-101 geometry): **79.7% Rank-1 / MRR 0.801 over 301 clean probes**
+> full 512-d AdaFace IR-101 geometry): **97.7% Rank-1 / MRR 0.982 over 302 clean probes**
 > (`reports/held-out-v2-baseline.json`). Hill percent is uncalibrated similarity;
 > `probabilityCorrect` is the calibrated P(rank-1 is the true identity in this gallery).
 > Two earlier internal claims were invalidated on the way here: ~86% "held-out"

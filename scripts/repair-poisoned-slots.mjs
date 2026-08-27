@@ -99,21 +99,29 @@ async function main() {
     if (!row) throw new Error(`id not in shipped gallery: ${id}`);
     const srcPath = preferRepairSource(id, CELEBS);
     if (!srcPath) throw new Error(`no repair source for ${id}`);
-    const encoded = await encodeRepairSource(id, srcPath);
-    const liveDistance = cosineDistance(row.descriptor, encoded.descriptor);
-    repairs.push({
-      id,
-      index: row.index,
-      household: HOUSEHOLD_COLLAPSE_IDS.has(id),
-      source: srcPath.replace(`${ROOT}/`, ""),
-      sourceKind: encoded.sourceKind,
-      usedDetection: encoded.usedDetection,
-      padded: encoded.padded,
-      score: encoded.score,
-      shippedToLive: liveDistance,
-      beforeFingerprint: row.q8Fingerprint,
-    });
-    patches.push({ index: row.index, descriptor: encoded.descriptor, id });
+    try {
+      const encoded = await encodeRepairSource(id, srcPath);
+      const liveDistance = cosineDistance(row.descriptor, encoded.descriptor);
+      repairs.push({
+        id,
+        index: row.index,
+        household: HOUSEHOLD_COLLAPSE_IDS.has(id),
+        source: srcPath.replace(`${ROOT}/`, ""),
+        sourceKind: encoded.sourceKind,
+        usedDetection: encoded.usedDetection,
+        padded: encoded.padded,
+        score: encoded.score,
+        shippedToLive: liveDistance,
+        beforeFingerprint: row.q8Fingerprint,
+      });
+      patches.push({ index: row.index, descriptor: encoded.descriptor, id });
+    } catch (error) {
+      process.stderr.write(`skip ${id}: ${error instanceof Error ? error.message : error}\n`);
+    }
+  }
+
+  if (patches.length === 0) {
+    throw new Error("no slots encoded");
   }
 
   const before = await readFile(BIN_PATH);
@@ -150,15 +158,24 @@ async function main() {
   process.stdout.write(`${lines.join("\n")}\n`);
 
   if (args.write) {
+    let previous = { repairs: [] };
+    try {
+      previous = JSON.parse(await readFile(MANIFEST_PATH, "utf8"));
+    } catch {
+      previous = { repairs: [] };
+    }
+    const byId = new Map((previous.repairs ?? []).map((r) => [r.id, r]));
+    for (const repair of repairs) byId.set(repair.id, repair);
+    const merged = [...byId.values()];
     await writeFile(BIN_PATH, after);
     await writeFile(
       MANIFEST_PATH,
       `${JSON.stringify(
         {
           version: 1,
-          note: "Surgical AdaFace re-enroll of poisoned slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
+          note: "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
           generatedAt: report.generatedAt,
-          repairs,
+          repairs: merged,
         },
         null,
         2,

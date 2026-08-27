@@ -307,11 +307,16 @@ export async function embedImageFile(filePath) {
     ? alignTensor(alignSource, primary.landmarks)
     : wholeCropTensor(img);
   const emb = await embed(tensor);
+  const areas = faces
+    .map((f) => Math.max(0, f.bbox.width) * Math.max(0, f.bbox.height))
+    .sort((a, b) => b - a);
   return {
     ...emb,
     usedDetection,
     padded: offset > 0 && usedDetection,
     faceCount: faces.length,
+    primaryArea: areas[0] ?? 0,
+    secondArea: areas[1] ?? 0,
     score: primary?.score ?? 0,
   };
 }
