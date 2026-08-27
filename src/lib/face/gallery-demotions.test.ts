@@ -12,6 +12,7 @@ import {
   isGalleryDemotionReason,
   parseGalleryDemotions,
   proposeDemotionEntries,
+  type DemotionPairInput,
 } from "./gallery-demotions.ts";
 
 const SHIPPED = path.resolve(process.cwd(), "public/celebs/gallery-demotions.json");
@@ -131,7 +132,7 @@ describe("applyReviewedDemotions", () => {
 
 describe("proposeDemotionEntries", () => {
   it("drops the known alias on an exact clone and leaves the keep id", () => {
-    const pairs = [
+    const pairs: DemotionPairInput[] = [
       {
         a: "gwenyth-paltrow",
         b: "gwyneth-paltrow",
