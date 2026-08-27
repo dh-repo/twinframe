@@ -78,6 +78,20 @@ describe("shipped extra templates", () => {
     assert.ok((byId.get("bella-hadid") ?? 0) >= 2, "Bella extras missing");
     assert.ok((byId.get("hugh-grant") ?? 0) >= 1, "Hugh Grant extra missing");
     assert.ok((byId.get("nicki-minaj") ?? 0) >= 1, "Nicki extra missing");
+    assert.ok((byId.get("antonio-banderas") ?? 0) >= 1, "Antonio Banderas 2020 extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "antonio-banderas" && t.source === "extra-photos/antonio-banderas/001.jpg"),
+      "Antonio Banderas 2020 Goya extra missing",
+    );
+    assert.ok((byId.get("nicole-kidman") ?? 0) >= 3, "Nicole Kidman extras missing");
+    assert.ok((byId.get("elizabeth-olsen") ?? 0) >= 2, "Elizabeth Olsen extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "elizabeth-olsen" && t.source === "extra-photos/elizabeth-olsen/001.jpg"),
+      "Elizabeth Olsen 2018 extra missing",
+    );
+    assert.ok((byId.get("sofia-vergara") ?? 0) >= 1, "Sofia Vergara PaleyFest extra missing");
+    assert.ok((byId.get("chris-evans") ?? 0) >= 2, "Chris Evans extras missing");
+    assert.ok((byId.get("cardi-b") ?? 0) >= 1, "Cardi B 2021 extra missing");
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

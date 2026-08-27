@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 223,
+  "count": 237,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1563,6 +1563,104 @@
       "commonsTitle": "File:20240314 Lisa Manoban 12 (cropped).jpg",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:20240314_Lisa_Manoban_12_(cropped).jpg",
       "fetchedAt": "2026-08-27T11:26:00.000Z"
+    },
+    {
+      "id": "antonio-banderas",
+      "file": "001.jpg",
+      "commonsTitle": "File:Antonio Banderas 2020.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antonio_Banderas_2020.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "antonio-banderas",
+      "file": "002.jpg",
+      "commonsTitle": "File:Antonio Banderas 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antonio_Banderas_2014.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "antonio-banderas",
+      "file": "003.jpg",
+      "commonsTitle": "File:Antonio Banderas 2011.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antonio_Banderas_2011.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "nicole-kidman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Nicole Kidman Cannes 2013.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicole_Kidman_Cannes_2013.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "nicole-kidman",
+      "file": "003.jpg",
+      "commonsTitle": "File:Nicole Kidman 10 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicole_Kidman_10_(cropped).jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "nicole-kidman",
+      "file": "004.jpg",
+      "commonsTitle": "File:Nicole Kidman Cannes 2017 2.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicole_Kidman_Cannes_2017_2.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "file": "001.jpg",
+      "commonsTitle": "File:Elizabeth Olsen 2018.png",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Olsen_2018.png",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "file": "002.jpg",
+      "commonsTitle": "File:Elizabeth Olsen by Gage Skidmore.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Olsen_by_Gage_Skidmore.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "file": "003.jpg",
+      "commonsTitle": "File:Elizabeth Olsen 2 SDCC 2014 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Olsen_2_SDCC_2014_(cropped).jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "sofia-vergara",
+      "file": "001.jpg",
+      "commonsTitle": "File:Sof\u00eda Vergara at 2015 PaleyFest.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sof\u00eda_Vergara_at_2015_PaleyFest.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "sofia-vergara",
+      "file": "002.jpg",
+      "commonsTitle": "File:Sofia Vergara at Golden Globes Red Carpet 2020.png",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sofia_Vergara_at_Golden_Globes_Red_Carpet_2020.png",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "chris-evans",
+      "file": "003.jpg",
+      "commonsTitle": "File:Chris Evans TIFF 2012.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chris_Evans_TIFF_2012.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "chris-evans",
+      "file": "004.jpg",
+      "commonsTitle": "File:Chris Evans in 2019.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chris_Evans_in_2019.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "cardi-b",
+      "file": "001.jpg",
+      "commonsTitle": "File:Cardi B 2021 02.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cardi_B_2021_02.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
     }
   ]
 }

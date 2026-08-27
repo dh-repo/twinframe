@@ -207,8 +207,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Dakota, Miles, Dev, Bella, Hugh, and Nicki. Dakota extra 004
  *         was a byte-clone of eval 001 and was dropped. Glover 2012
  *         Commons views fail the eval look or the 0.7 gate.
+ * 6.5.29: Commons extras that beat pack dTrue for Antonio (2020 Goya
+ *         tuxedo), Nicole, Elizabeth Olsen (not 2011 TIFF floral eval
+ *         sitting), Sofia PaleyFest, Chris Evans, and Cardi 2021.
+ *         Chris Evans 2014.jpg and Cardi WEHO crop are eval clones.
  */
-const GALLERY_VERSION = "6.5.28";
+const GALLERY_VERSION = "6.5.29";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
