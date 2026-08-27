@@ -169,8 +169,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.11: Arrowverse and TV Wikipedia primaries (Thompson, Cross, Laing,
  *         Horsdal, Anderson, Maher, Lea, Whigham, Nykl, Sharma, Hudson,
  *         Pizzolatto).
+ * 6.5.12: Dahl, Samuda, Redman, Golin, and Evans Wikipedia primaries.
  */
-const GALLERY_VERSION = "6.5.11";
+const GALLERY_VERSION = "6.5.12";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

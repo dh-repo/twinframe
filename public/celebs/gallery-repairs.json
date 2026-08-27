@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T07:10:28.795Z",
+  "generatedAt": "2026-08-27T07:17:44.715Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6762,6 +6762,71 @@
       "shippedToLive": 0.9386311499512795,
       "beforeFingerprint": "b7811ea364061d481402865b3601097f23fb58448c9a0bcc432b1439b55cb389",
       "afterFingerprint": "9e376dbdcfabdae48eb129893d955b0ae4a1882dddd93227ee02aee77b445998"
+    },
+    {
+      "id": "john-dahl",
+      "index": 685,
+      "household": false,
+      "source": "public/celebs/john-dahl.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7161151170730591,
+      "shippedToLive": 1.0500567553389837,
+      "beforeFingerprint": "28e7c08894ed86bc051d7d0ca32b8716c18d314d2cedaf2b105193b3442538d7",
+      "afterFingerprint": "40932d380f1c4bac456474c8ed935244d49dbb8ab0bbacc573d4ab43ff1297f9"
+    },
+    {
+      "id": "jacqueline-samuda",
+      "index": 700,
+      "household": false,
+      "source": "public/celebs/jacqueline-samuda.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8845982551574707,
+      "shippedToLive": 0.5696155964781213,
+      "beforeFingerprint": "9c79c8f1a7835a9dda25fb3681695e6a25778dde9016671cba4739bef526b384",
+      "afterFingerprint": "79829086bf14f1af4316fae611d2491c2436f4e31faf5421d385ae49718572f8"
+    },
+    {
+      "id": "dean-redman",
+      "index": 729,
+      "household": false,
+      "source": "public/celebs/dean-redman.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7993596196174622,
+      "shippedToLive": 0.9882083000121499,
+      "beforeFingerprint": "6622f8db90a62d997c9b2078fef01d00036f61538bc55151046e8cbf9dc608fc",
+      "afterFingerprint": "e9c7b66d107deb3fd915c99be9dfcf6e55d9f6af2ddf9a33e1622a8de14ca9af"
+    },
+    {
+      "id": "steve-golin",
+      "index": 945,
+      "household": false,
+      "source": "public/celebs/steve-golin.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7994378805160522,
+      "shippedToLive": 0.9964273054272024,
+      "beforeFingerprint": "ed2ea171adfe517dc4a9c7c81da4a07b79bd606adbdae8384347c12e99c31c09",
+      "afterFingerprint": "cc1844ba9e251f284fc0a91e32777739e6d2eefc8de7f8c17d73c7193e51432e"
+    },
+    {
+      "id": "lini-evans",
+      "index": 629,
+      "household": false,
+      "source": "public/celebs/lini-evans.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.843783438205719,
+      "shippedToLive": 0.4268629719797541,
+      "beforeFingerprint": "d056fd0acd3a0c22322dc83a8281135dc92bde5d6fdc3f7b482d43dfe5b21717",
+      "afterFingerprint": "45afac39dc253829e76f1910156d72df26b2820d01faad08c3250829b17a3fa1"
     }
   ]
 }

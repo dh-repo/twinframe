@@ -6294,7 +6294,7 @@
     "name": "Lini Evans",
     "path": "/celebs/thumbs/96/lini-evans.webp",
     "path192": "/celebs/thumbs/192/lini-evans.webp",
-    "fallbackPath": "/celebs/thumbs/96/lini-evans.webp",
+    "fallbackPath": "/celebs/lini-evans.jpg",
     "age": 41,
     "gender": "female",
     "genderProb": 0.9318630993366241
@@ -6854,7 +6854,7 @@
     "name": "John Dahl",
     "path": "/celebs/thumbs/96/john-dahl.webp",
     "path192": "/celebs/thumbs/192/john-dahl.webp",
-    "fallbackPath": "/celebs/thumbs/96/john-dahl.webp",
+    "fallbackPath": "/celebs/john-dahl.jpg",
     "age": 58,
     "gender": "male",
     "genderProb": 0.9973676800727844
@@ -7004,7 +7004,7 @@
     "name": "Jacqueline Samuda",
     "path": "/celebs/thumbs/96/jacqueline-samuda.webp",
     "path192": "/celebs/thumbs/192/jacqueline-samuda.webp",
-    "fallbackPath": "/celebs/thumbs/96/jacqueline-samuda.webp",
+    "fallbackPath": "/celebs/jacqueline-samuda.jpg",
     "age": 41,
     "gender": "female",
     "genderProb": 0.9438415803015232
@@ -7294,7 +7294,7 @@
     "name": "Dean Redman",
     "path": "/celebs/thumbs/96/dean-redman.webp",
     "path192": "/celebs/thumbs/192/dean-redman.webp",
-    "fallbackPath": "/celebs/thumbs/96/dean-redman.webp",
+    "fallbackPath": "/celebs/dean-redman.jpg",
     "age": 28,
     "gender": "male",
     "genderProb": 0.982485294342041
@@ -9454,7 +9454,7 @@
     "name": "Steve Golin",
     "path": "/celebs/thumbs/96/steve-golin.webp",
     "path192": "/celebs/thumbs/192/steve-golin.webp",
-    "fallbackPath": "/celebs/thumbs/96/steve-golin.webp",
+    "fallbackPath": "/celebs/steve-golin.jpg",
     "age": 63,
     "gender": "male",
     "genderProb": 0.9931488633155823
