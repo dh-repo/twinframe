@@ -44,6 +44,13 @@ describe("AdaFace enroll path", () => {
     assert.equal(selectPrimaryFace([]), null);
   });
 
+  it("breaks an action-shot near-tie toward the central face", () => {
+    const left = { score: 0.83, bbox: { x: 163, y: 142, width: 46, height: 67 } };
+    const center = { score: 0.8, bbox: { x: 458, y: 155, width: 45, height: 66 } };
+    assert.equal(selectPrimaryFace([left, center]), left);
+    assert.equal(selectPrimaryFace([left, center], { width: 960, height: 640 }), center);
+  });
+
   it("refuses a whole-crop primary so a rebuild cannot re-poison a slot", () => {
     assert.equal(acceptPrimaryEmbed({ usedDetection: true }), true);
     assert.equal(acceptPrimaryEmbed({ usedDetection: false }), false);

@@ -257,12 +257,12 @@ function padImage(img, marginRatio = 0.6) {
 export async function productCropImageFile(filePath, outPath) {
   const img = await loadImage(filePath);
   let faces = await detectFaces(img);
-  let primary = selectPrimaryFace(faces);
+  let primary = selectPrimaryFace(faces, { width: img.width, height: img.height });
   let box = primary?.bbox;
   if (!box) {
     const padded = padImage(img);
     faces = await detectFaces(padded.canvas);
-    primary = selectPrimaryFace(faces);
+    primary = selectPrimaryFace(faces, { width: padded.canvas.width, height: padded.canvas.height });
     if (primary) {
       box = {
         x: primary.bbox.x - padded.margin,
@@ -314,7 +314,10 @@ export async function embedImageFile(filePath) {
     offset = margin;
   }
 
-  const primary = selectPrimaryFace(faces);
+  const primary = selectPrimaryFace(faces, {
+    width: alignSource.width,
+    height: alignSource.height,
+  });
   const usedDetection = Boolean(primary);
   const tensor = usedDetection
     ? alignTensor(alignSource, primary.landmarks)
