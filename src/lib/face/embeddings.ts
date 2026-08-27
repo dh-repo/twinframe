@@ -345,8 +345,17 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Fan Bingbing (BIFAN 2026 silver gown; not X-Men Hugh Jackman
  *         eval). Bad Bunny 2017-2 and Performs cropped 2 stay out as
  *         eval clones. Song Kang Cartier missed the 0.005 beat margin.
+ * 6.5.51: Unused extra-photos that beat pack dTrue for Ryan Reynolds
+ *         (TIFF 2010 necktie looking down; not tuxedo bowtie eval),
+ *         Gael García Bernal (navy blazer watercolor shirt; not black
+ *         tuxedo bowtie eval), Josh Hutcherson (Journey 2 grey blazer;
+ *         not Fantastic Fest cardigan eval), Gigi Hadid (car mesh-top
+ *         solo; not B&W Bella group eval), and Barry Keoghan (pink LV
+ *         vest; not cream-tee lion-pendant eval). Ryan Oscars extra
+ *         and Harry 001/002 stay out as eval clones. Barry 002 is a
+ *         near-dup of primary.
  */
-const GALLERY_VERSION = "6.5.50";
+const GALLERY_VERSION = "6.5.51";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -502,6 +502,31 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "fan-bingbing" && t.source === "extra-photos/fan-bingbing/001.jpg"),
       "Fan Bingbing BIFAN extra missing",
     );
+    assert.ok((byId.get("ryan-reynolds") ?? 0) >= 1, "Ryan Reynolds extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ryan-reynolds" && t.source === "extra-photos/ryan-reynolds/003.jpg"),
+      "Ryan Reynolds TIFF 2010 extra missing",
+    );
+    assert.ok((byId.get("gael-garcia-bernal") ?? 0) >= 1, "Gael García Bernal extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "gael-garcia-bernal" && t.source === "extra-photos/gael-garcia-bernal/001.jpg"),
+      "Gael García Bernal navy-blazer extra missing",
+    );
+    assert.ok((byId.get("josh-hutcherson") ?? 0) >= 1, "Josh Hutcherson extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "josh-hutcherson" && t.source === "extra-photos/josh-hutcherson/002.jpg"),
+      "Josh Hutcherson Journey 2 extra missing",
+    );
+    assert.ok((byId.get("gigi-hadid") ?? 0) >= 1, "Gigi Hadid extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "gigi-hadid" && t.source === "extra-photos/gigi-hadid/002.jpg"),
+      "Gigi Hadid car-portrait extra missing",
+    );
+    assert.ok((byId.get("barry-keoghan") ?? 0) >= 1, "Barry Keoghan extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "barry-keoghan" && t.source === "extra-photos/barry-keoghan/004.jpg"),
+      "Barry Keoghan LV-vest extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
