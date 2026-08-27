@@ -492,6 +492,16 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "mark-zuckerberg" && t.source === "extra-photos/mark-zuckerberg/001.jpg"),
       "Mark Zuckerberg Disrupt extra missing",
     );
+    assert.ok((byId.get("brie-larson") ?? 0) >= 2, "Brie Larson extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "brie-larson" && t.source === "extra-photos/brie-larson/001.jpg"),
+      "Brie Larson Comic-Con extra missing",
+    );
+    assert.ok((byId.get("fan-bingbing") ?? 0) >= 1, "Fan Bingbing extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "fan-bingbing" && t.source === "extra-photos/fan-bingbing/001.jpg"),
+      "Fan Bingbing BIFAN extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 324,
+  "count": 327,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2349,6 +2349,30 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mark_Zuckerberg_%287977779798%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T19:02:58.005Z",
       "note": "TechCrunch Disrupt grey tee; not Harvard hoodie iBook eval"
+    },
+    {
+      "id": "brie-larson",
+      "file": "001.jpg",
+      "commonsTitle": "File:Brie Larson (28503337132) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Brie_Larson_%2828503337132%29_%28cropped%29.jpg/1920px-Brie_Larson_%2828503337132%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T19:13:51.442Z",
+      "note": "Comic-Con panel white ruffle mic; not SXSW 2013 Lacoste eval"
+    },
+    {
+      "id": "brie-larson",
+      "file": "002.jpg",
+      "commonsTitle": "File:Kong- Skull Island Japan Premiere Red Carpet - Brie Larson (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Kong-_Skull_Island_Japan_Premiere_Red_Carpet_-_Brie_Larson_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:13:51.717Z",
+      "note": "Kong Japan premiere updo toothy smile; not SXSW 2013 Lacoste eval"
+    },
+    {
+      "id": "fan-bingbing",
+      "file": "001.jpg",
+      "commonsTitle": "File:Fan Bingbing attending BIFAN 2026 11.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Fan_Bingbing_attending_BIFAN_2026_11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:13:51.971Z",
+      "note": "BIFAN 2026 silver gown black gloves; not X-Men Hugh Jackman eval"
     }
   ]
 }

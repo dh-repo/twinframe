@@ -340,8 +340,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Zuckerberg (TechCrunch Disrupt grey tee; not Harvard hoodie
  *         iBook eval). Mahershala Commons cropped/299 stay out as eval
  *         clones.
+ * 6.5.50: Commons extras that beat pack dTrue for Brie Larson (Comic-Con
+ *         panel + Kong Japan premiere; not SXSW 2013 Lacoste eval) and
+ *         Fan Bingbing (BIFAN 2026 silver gown; not X-Men Hugh Jackman
+ *         eval). Bad Bunny 2017-2 and Performs cropped 2 stay out as
+ *         eval clones. Song Kang Cartier missed the 0.005 beat margin.
  */
-const GALLERY_VERSION = "6.5.49";
+const GALLERY_VERSION = "6.5.50";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
