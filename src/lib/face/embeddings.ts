@@ -399,8 +399,17 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         tie solo smile; not tuxedo-bowtie couple eval), and John Cho (plaid
  *         western + Comic-Con E! + grey tweed scarf; not navy-jacket eval).
  *         Lee Min-ho 002 is the MISE EN SCÈNE primary sitting.
+ * 6.5.58: Unused extra-photos that beat pack dTrue for Sterling K. Brown
+ *         (plaid backstage + Paley Media grey suit; not Comic-Con hoodie eval),
+ *         Brad Pitt (solo tuxedo goatee; not Jolie couple eval), Sandra Oh
+ *         (glasses striped top; skip 2011 Spirit Awards group), Diego Luna
+ *         (Berlinale polo + Spirit pinstripe + LED blazer; not Documentales
+ *         2020 chin-on-hand eval), Maitreyi Ramakrishnan (webcam turtleneck;
+ *         not red iHeartRADIO jersey eval), and Kit Harington (GoT WesterosVIP
+ *         three-piece; not Comic-Con henley eval). Sadie Sink extras are the
+ *         same Comic-Con sitting as eval.
  */
-const GALLERY_VERSION = "6.5.57";
+const GALLERY_VERSION = "6.5.58";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
