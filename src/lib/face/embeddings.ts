@@ -171,8 +171,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Pizzolatto).
  * 6.5.12: Dahl, Samuda, Redman, Golin, and Evans Wikipedia primaries.
  * 6.5.13: Cullen and Brocklebank GalaxyCon Wikipedia infobox portraits.
+ * 6.5.14: Wikipedia/Commons primaries for remaining thumb-only slots
+ *         (Majdoub, Xavier, and Stein thumbs were impostors).
  */
-const GALLERY_VERSION = "6.5.13";
+const GALLERY_VERSION = "6.5.14";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

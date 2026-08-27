@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T07:22:12.126Z",
+  "generatedAt": "2026-08-27T07:37:27.906Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6853,6 +6853,123 @@
       "shippedToLive": 0.566113771262462,
       "beforeFingerprint": "62df605ab74b7b92073eeecb0809173c7a755a633a8eed23fcc5c7ed2559b0a4",
       "afterFingerprint": "f178ecfcee9e0b3c3184ee43178fcc0641ca88b32714c4445a99b55112c340ef"
+    },
+    {
+      "id": "lee-majdoub",
+      "index": 887,
+      "household": false,
+      "source": "public/celebs/lee-majdoub.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8356744050979614,
+      "shippedToLive": 1.017238321014158,
+      "beforeFingerprint": "43d919334dad727c53ddd44d68a6b2c49a7408f255faa3d90ee7096c8a17af32",
+      "afterFingerprint": "1f2134fc2b6d4adbcbc58fa5458a020c6fa99ac08de81cae63a55213bf269130"
+    },
+    {
+      "id": "drew-tanner",
+      "index": 707,
+      "household": false,
+      "source": "public/celebs/drew-tanner.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.886927604675293,
+      "shippedToLive": 0.19681967740940853,
+      "beforeFingerprint": "6df5a401ca32cfe0fda4b4964b0b1cd9fdebc1b976ebe1bd07a0ebc3d01fd74b",
+      "afterFingerprint": "5b9e800375be37ebf1e72d59fb3d97ecd805a6c7f32285a1b8c91c3e5b340d5f"
+    },
+    {
+      "id": "jessica-harmon",
+      "index": 768,
+      "household": false,
+      "source": "public/celebs/jessica-harmon.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7537108659744263,
+      "shippedToLive": 0.40636822273500983,
+      "beforeFingerprint": "88ed396f71e221e7ec2f28260cee05e7c04469beb25911cf1e5b76b3d009b933",
+      "afterFingerprint": "9aa717a22d6a70586c56ab08abebb80c168794681fb3bd70184e4592ecf21052"
+    },
+    {
+      "id": "andrew-moodie",
+      "index": 539,
+      "household": false,
+      "source": "public/celebs/andrew-moodie.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8292300701141357,
+      "shippedToLive": 0.046219777777028126,
+      "beforeFingerprint": "ef490b3ed81ef7442d44d60a823c71453b5673736b7e98ff666104ec39f10a65",
+      "afterFingerprint": "8450fdc6f96b9d0a837665d57f2bfecaf98d75c160525e897e1e717b6d2ec080"
+    },
+    {
+      "id": "briana-buckmaster",
+      "index": 840,
+      "household": false,
+      "source": "public/celebs/briana-buckmaster.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7668070793151855,
+      "shippedToLive": 0.5859490193416725,
+      "beforeFingerprint": "a0daa527430d118d5d156065e17dcbeb94ff709079518ba097215d265a3cd979",
+      "afterFingerprint": "f67a75936a05e2b59339eb396cd4ec4ab75273364954657155815ce4dd2933d7"
+    },
+    {
+      "id": "raugi-yu",
+      "index": 854,
+      "household": false,
+      "source": "public/celebs/raugi-yu.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.868308424949646,
+      "shippedToLive": 0.556104538837136,
+      "beforeFingerprint": "c7c50342a32918ceefce6c721b65ca611fcbf263574b495b489c64e0457a756f",
+      "afterFingerprint": "03d8576b33c04e4ebbff025ef620a2d50811cbad39f8b0d143ecb9db9bd41cbb"
+    },
+    {
+      "id": "michael-xavier",
+      "index": 501,
+      "household": false,
+      "source": "public/celebs/michael-xavier.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8614452481269836,
+      "shippedToLive": 0.9731749313664998,
+      "beforeFingerprint": "74c98ed47976a5ff26550f9645fd421d2b9abbd77869dd10d2588d6cf0ba60c3",
+      "afterFingerprint": "6cce0ed1349548f3617e64ab59a15642736681f877c5cd98647e8d6769f75c9f"
+    },
+    {
+      "id": "adam-stein",
+      "index": 384,
+      "household": false,
+      "source": "public/celebs/adam-stein.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8832206726074219,
+      "shippedToLive": 0.9341977371040547,
+      "beforeFingerprint": "1abf3870e43a9bc52391feb7203619fb805ad4e76c96ba437d79c740dc38179f",
+      "afterFingerprint": "acc2f85e723660ca2b0897835621ffc6378dc04ea44b20418762816459455cc7"
+    },
+    {
+      "id": "james-dunnison",
+      "index": 558,
+      "household": false,
+      "source": "public/celebs/james-dunnison.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8305230736732483,
+      "shippedToLive": 0.44493420628252023,
+      "beforeFingerprint": "2184b3355200bc8fcce32693999fb0a8351064915b40c2d6de5f44e49ccafb6e",
+      "afterFingerprint": "e759918832c3b1527717b25b0c18ad58a9a9132d5ce55f36fd936f5184f0e234"
     }
   ]
 }

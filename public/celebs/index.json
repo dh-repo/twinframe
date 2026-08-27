@@ -5746,7 +5746,7 @@
     "name": "Adam Stein",
     "path": "/celebs/thumbs/96/adam-stein.webp",
     "path192": "/celebs/thumbs/192/adam-stein.webp",
-    "fallbackPath": "/celebs/thumbs/96/adam-stein.webp",
+    "fallbackPath": "/celebs/adam-stein.jpg",
     "gender": "male",
     "genderProb": 0.9811253547668457,
     "ageBuckets": [
@@ -7499,7 +7499,7 @@
     "name": "Michael Xavier",
     "path": "/celebs/thumbs/96/michael-xavier.webp",
     "path192": "/celebs/thumbs/192/michael-xavier.webp",
-    "fallbackPath": "/celebs/thumbs/96/michael-xavier.webp",
+    "fallbackPath": "/celebs/michael-xavier.jpg",
     "gender": "male",
     "genderProb": 0.9897361993789673,
     "ageBuckets": [
@@ -8067,7 +8067,7 @@
     "name": "Andrew Moodie",
     "path": "/celebs/thumbs/96/andrew-moodie.webp",
     "path192": "/celebs/thumbs/192/andrew-moodie.webp",
-    "fallbackPath": "/celebs/thumbs/96/andrew-moodie.webp",
+    "fallbackPath": "/celebs/andrew-moodie.jpg",
     "gender": "male",
     "genderProb": 0.9873560667037964,
     "ageBuckets": [
@@ -8352,7 +8352,7 @@
     "name": "James Dunnison",
     "path": "/celebs/thumbs/96/james-dunnison.webp",
     "path192": "/celebs/thumbs/192/james-dunnison.webp",
-    "fallbackPath": "/celebs/thumbs/96/james-dunnison.webp",
+    "fallbackPath": "/celebs/james-dunnison.jpg",
     "gender": "male",
     "genderProb": 0.9425158500671387,
     "ageBuckets": [
@@ -10587,7 +10587,7 @@
     "name": "Drew Tanner",
     "path": "/celebs/thumbs/96/drew-tanner.webp",
     "path192": "/celebs/thumbs/192/drew-tanner.webp",
-    "fallbackPath": "/celebs/thumbs/96/drew-tanner.webp",
+    "fallbackPath": "/celebs/drew-tanner.jpg",
     "gender": "male",
     "genderProb": 0.9646763205528259,
     "ageBuckets": [
@@ -11499,7 +11499,7 @@
     "name": "Jessica Harmon",
     "path": "/celebs/thumbs/96/jessica-harmon.webp",
     "path192": "/celebs/thumbs/192/jessica-harmon.webp",
-    "fallbackPath": "/celebs/thumbs/96/jessica-harmon.webp",
+    "fallbackPath": "/celebs/jessica-harmon.jpg",
     "gender": "female",
     "genderProb": 0.9682690501213074,
     "ageBuckets": [
@@ -12578,7 +12578,7 @@
     "name": "Briana Buckmaster",
     "path": "/celebs/thumbs/96/briana-buckmaster.webp",
     "path192": "/celebs/thumbs/192/briana-buckmaster.webp",
-    "fallbackPath": "/celebs/thumbs/96/briana-buckmaster.webp",
+    "fallbackPath": "/celebs/briana-buckmaster.jpg",
     "gender": "female",
     "genderProb": 0.9347570389509201,
     "ageBuckets": [
@@ -12788,7 +12788,7 @@
     "name": "Raugi Yu",
     "path": "/celebs/thumbs/96/raugi-yu.webp",
     "path192": "/celebs/thumbs/192/raugi-yu.webp",
-    "fallbackPath": "/celebs/thumbs/96/raugi-yu.webp",
+    "fallbackPath": "/celebs/raugi-yu.jpg",
     "gender": "male",
     "genderProb": 0.9210889935493469,
     "ageBuckets": [
@@ -13282,7 +13282,7 @@
     "name": "Lee Majdoub",
     "path": "/celebs/thumbs/96/lee-majdoub.webp",
     "path192": "/celebs/thumbs/192/lee-majdoub.webp",
-    "fallbackPath": "/celebs/thumbs/96/lee-majdoub.webp",
+    "fallbackPath": "/celebs/lee-majdoub.jpg",
     "gender": "male",
     "genderProb": 0.9788442254066467,
     "ageBuckets": [
