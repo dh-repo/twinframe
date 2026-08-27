@@ -392,6 +392,36 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "anthony-hopkins" && t.source === "extra-photos/anthony-hopkins/002.jpg"),
       "Anthony Hopkins Berlin 2001 extra missing",
     );
+    assert.ok((byId.get("eva-longoria") ?? 0) >= 2, "Eva Longoria extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "eva-longoria" && t.source === "extra-photos/eva-longoria/001.jpg"),
+      "Eva Longoria 2012 extra missing",
+    );
+    assert.ok((byId.get("logan-lerman") ?? 0) >= 2, "Logan Lerman extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "logan-lerman" && t.source === "extra-photos/logan-lerman/001.jpg"),
+      "Logan Lerman TIFF 2012 extra missing",
+    );
+    assert.ok((byId.get("amy-adams") ?? 0) >= 2, "Amy Adams extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "amy-adams" && t.source === "extra-photos/amy-adams/001.jpg"),
+      "Amy Adams 2016 extra missing",
+    );
+    assert.ok((byId.get("rachel-mcadams") ?? 0) >= 1, "Rachel McAdams extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "rachel-mcadams" && t.source === "extra-photos/rachel-mcadams/001.jpg"),
+      "Rachel McAdams 2011 Cannes extra missing",
+    );
+    assert.ok((byId.get("kerry-washington") ?? 0) >= 1, "Kerry Washington extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "kerry-washington" && t.source === "extra-photos/kerry-washington/002.jpg"),
+      "Kerry Washington taupe-coat extra missing",
+    );
+    assert.ok((byId.get("kristen-stewart") ?? 0) >= 1, "Kristen Stewart extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "kristen-stewart" && t.source === "extra-photos/kristen-stewart/002.jpg"),
+      "Kristen Stewart Cannes 2014 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

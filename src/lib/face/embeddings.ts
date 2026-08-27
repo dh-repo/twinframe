@@ -306,8 +306,16 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Cailee Spaeny (TIFF 2025; not pink crystal-cutout eval), and
  *         Anthony Hopkins (Berlin 2001 turtleneck; not fedora polo eval).
  *         Hopkins TIFF crop failed the enroll detection-score gate.
+ * 6.5.45: Commons extras that beat pack dTrue for Eva Longoria (2012
+ *         black velvet + 2011 red origami; not cream sleeveless eval),
+ *         Logan Lerman (TIFF 2012 + Percy Jackson 2013; not Fury 2014
+ *         eval), Amy Adams (2016 cobalt + 2014 BAFTA velvet; not 2009
+ *         Oscars red eval), Rachel McAdams (2011 Cannes teal; not
+ *         Sherlock 2009 updo eval), plus unused extra-photos for Kerry
+ *         Washington (taupe coat) and Kristen Stewart (Cannes 2014
+ *         copper; not Breaking Dawn 2012 lace eval).
  */
-const GALLERY_VERSION = "6.5.44";
+const GALLERY_VERSION = "6.5.45";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

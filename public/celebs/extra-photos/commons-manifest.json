@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 302,
+  "count": 309,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2173,6 +2173,62 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Oliver_Mark_-_Anthony_Hopkins%2C_Berlin_2001.jpg/1920px-Oliver_Mark_-_Anthony_Hopkins%2C_Berlin_2001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-27T17:40:19.205Z",
       "note": "Berlin 2001 black turtleneck; not fedora popped-collar polo eval"
+    },
+    {
+      "id": "eva-longoria",
+      "file": "001.jpg",
+      "commonsTitle": "File:Eva Longoria 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/64/Eva_Longoria_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:18.803Z",
+      "note": "2012 black velvet Pepsi LIVE; not cream sleeveless swirl-pendant eval"
+    },
+    {
+      "id": "eva-longoria",
+      "file": "002.jpg",
+      "commonsTitle": "File:Eva Longoria 6, 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Eva_Longoria_6%2C_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.071Z",
+      "note": "2011 red origami strapless updo; not cream sleeveless swirl-pendant eval"
+    },
+    {
+      "id": "logan-lerman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Logan Lerman TIFF 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Logan_Lerman_TIFF_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.371Z",
+      "note": "TIFF 2012 buzz-cut brown blazer loosened tie; not Fury 2014 tweed eval"
+    },
+    {
+      "id": "logan-lerman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Logan Lerman 2013.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Logan_Lerman_2013.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.629Z",
+      "note": "Percy Jackson 2013 interview; not Fury 2014 tweed eval"
+    },
+    {
+      "id": "amy-adams",
+      "file": "001.jpg",
+      "commonsTitle": "File:Amy Adams (29708985502) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Amy_Adams_%2829708985502%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.893Z",
+      "note": "2016 cobalt ruffle wave; not 2009 Oscars red bib-necklace eval"
+    },
+    {
+      "id": "amy-adams",
+      "file": "002.jpg",
+      "commonsTitle": "File:Amy Adams UK Nocturnal Animals Premiere (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Amy_Adams_UK_Nocturnal_Animals_Premiere_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:20.243Z",
+      "note": "2014 BAFTA black velvet knotted neckline; not 2009 Oscars red bib-necklace eval"
+    },
+    {
+      "id": "rachel-mcadams",
+      "file": "001.jpg",
+      "commonsTitle": "File:Rachel McAdams 3.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Rachel_McAdams_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:20.496Z",
+      "note": "2011 Cannes teal one-shoulder Old Hollywood waves; not Sherlock 2009 updo red-lipstick eval"
     }
   ]
 }
