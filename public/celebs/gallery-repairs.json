@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T06:03:01.592Z",
+  "generatedAt": "2026-08-27T06:16:38.740Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6372,6 +6372,97 @@
       "shippedToLive": 0.5629277362502334,
       "beforeFingerprint": "8a6428320665fb68a86ba0606414dd688af1b503491b7e058b382738d7ff188b",
       "afterFingerprint": "1ca63319779cb49c4991eca376ac7dcf05772c2627b5a8659d3be3dc2a17d9d3"
+    },
+    {
+      "id": "alex-kingston",
+      "index": 733,
+      "household": false,
+      "source": "public/celebs/alex-kingston.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8518046140670776,
+      "shippedToLive": 0.34585538518454706,
+      "beforeFingerprint": "894e18d644655d63bb4ead65fa150d90bc2a70c2843dedc34a65de29a74298da",
+      "afterFingerprint": "37135fab22d4fecd8cc9398740357bfc3f628c019a546f034c39858bf44bd52b"
+    },
+    {
+      "id": "james-bamford",
+      "index": 603,
+      "household": false,
+      "source": "public/celebs/james-bamford.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8542566299438477,
+      "shippedToLive": 0.08800282483472899,
+      "beforeFingerprint": "1c2d1ee76700c4d0009bdf4bb63d368ac228fdb2fc58f14c2500f0d94250affe",
+      "afterFingerprint": "6889fd976afd3253e51b8b7bd20078e4a40ad7f03b9f473b28051fad5b263c60"
+    },
+    {
+      "id": "michael-eklund",
+      "index": 815,
+      "household": false,
+      "source": "public/celebs/michael-eklund.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8074097633361816,
+      "shippedToLive": 0.3941368291505045,
+      "beforeFingerprint": "ec5c7717ea64e0d0b1db43f7ff280b31aba9c26c6582c8909a3d41f5c3095ecb",
+      "afterFingerprint": "c75fa0af74c4cd9d7f49c0ce2064699a35ac41d54bcae3a3a991461a9b1a8582"
+    },
+    {
+      "id": "a-c-bradley",
+      "index": 892,
+      "household": false,
+      "source": "public/celebs/a-c-bradley.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.853887140750885,
+      "shippedToLive": 0.27880890678787884,
+      "beforeFingerprint": "b76c818ae408df60a22cdb882db3778d87d9ddb3b3394b528ea5c7fdb71a1bcc",
+      "afterFingerprint": "36561f0d64fc2ffb0a6203078c57f7a0f4d74bcb4329829274b25b5ebb5122b7"
+    },
+    {
+      "id": "flux-pavilion",
+      "index": 759,
+      "household": false,
+      "source": "public/celebs/flux-pavilion.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7605645656585693,
+      "shippedToLive": 0.7843068744128171,
+      "beforeFingerprint": "a652439673cf927c168ce19ef1a159a7d686deac4eb2fe24c81b6e1091fa5828",
+      "afterFingerprint": "2d098380c17aa30d7dcaec73ca24cc5d7bd06ea22ebed18cac7a014b8be9574c"
+    },
+    {
+      "id": "chris-chalk",
+      "index": 437,
+      "household": false,
+      "source": "public/celebs/chris-chalk.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7574089765548706,
+      "shippedToLive": 0.46545013916645095,
+      "beforeFingerprint": "4c5dbd9af11022f1d5971831db4383f0da5d4d4ee793d88db0e3af5b70b6e2ce",
+      "afterFingerprint": "4ecd3544d4979120d7080d9a549d174bf0409c4680e4618c22fdd50dcb3b986d"
+    },
+    {
+      "id": "grant-harvey",
+      "index": 548,
+      "household": false,
+      "source": "public/celebs/grant-harvey.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8364540338516235,
+      "shippedToLive": 1.0355490408276982,
+      "beforeFingerprint": "4e3db768cedf2418970476c5bc22ba90cfcad56da83056d89d2d65b9900c62f3",
+      "afterFingerprint": "78a9b52388b171f8c17bfeff753654ea6974a9a078a335fc1e2ebd3caf2f5025"
     }
   ]
 }

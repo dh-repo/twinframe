@@ -4374,7 +4374,7 @@
     "name": "Chris Chalk",
     "path": "/celebs/thumbs/96/chris-chalk.webp",
     "path192": "/celebs/thumbs/192/chris-chalk.webp",
-    "fallbackPath": "/celebs/thumbs/96/chris-chalk.webp",
+    "fallbackPath": "/celebs/chris-chalk.jpg",
     "age": 37,
     "gender": "male",
     "genderProb": 0.9873666763305664
@@ -5484,7 +5484,7 @@
     "name": "Grant Harvey",
     "path": "/celebs/thumbs/96/grant-harvey.webp",
     "path192": "/celebs/thumbs/192/grant-harvey.webp",
-    "fallbackPath": "/celebs/thumbs/96/grant-harvey.webp",
+    "fallbackPath": "/celebs/grant-harvey.jpg",
     "age": 25,
     "gender": "male",
     "genderProb": 0.9819846749305725
@@ -6034,7 +6034,7 @@
     "name": "James Bamford",
     "path": "/celebs/thumbs/96/james-bamford.webp",
     "path192": "/celebs/thumbs/192/james-bamford.webp",
-    "fallbackPath": "/celebs/thumbs/96/james-bamford.webp",
+    "fallbackPath": "/celebs/james-bamford.jpg",
     "age": 57,
     "gender": "male",
     "genderProb": 0.9993261098861694
@@ -7334,7 +7334,7 @@
     "name": "Alex Kingston",
     "path": "/celebs/thumbs/96/alex-kingston.webp",
     "path192": "/celebs/thumbs/192/alex-kingston.webp",
-    "fallbackPath": "/celebs/thumbs/96/alex-kingston.webp",
+    "fallbackPath": "/celebs/alex-kingston.jpg",
     "age": 41,
     "gender": "female",
     "genderProb": 0.8886557519435883
@@ -7594,7 +7594,7 @@
     "name": "Flux Pavilion",
     "path": "/celebs/thumbs/96/flux-pavilion.webp",
     "path192": "/celebs/thumbs/192/flux-pavilion.webp",
-    "fallbackPath": "/celebs/thumbs/96/flux-pavilion.webp",
+    "fallbackPath": "/celebs/flux-pavilion.jpg",
     "age": 26,
     "gender": "male",
     "genderProb": 0.9561314582824707
@@ -8154,7 +8154,7 @@
     "name": "Michael Eklund",
     "path": "/celebs/thumbs/96/michael-eklund.webp",
     "path192": "/celebs/thumbs/192/michael-eklund.webp",
-    "fallbackPath": "/celebs/thumbs/96/michael-eklund.webp",
+    "fallbackPath": "/celebs/michael-eklund.jpg",
     "age": 35,
     "gender": "male",
     "genderProb": 0.9624231457710266
@@ -8924,7 +8924,7 @@
     "name": "A.C. Bradley",
     "path": "/celebs/thumbs/96/a-c-bradley.webp",
     "path192": "/celebs/thumbs/192/a-c-bradley.webp",
-    "fallbackPath": "/celebs/thumbs/96/a-c-bradley.webp",
+    "fallbackPath": "/celebs/a-c-bradley.jpg",
     "age": 38,
     "gender": "female",
     "genderProb": 0.9765785094350576
