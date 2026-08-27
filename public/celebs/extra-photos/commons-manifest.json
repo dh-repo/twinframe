@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 249,
+  "count": 252,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1749,6 +1749,30 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Julia_Roberts_2010.jpg",
       "fetchedAt": "2026-08-27T13:40:00.000Z",
       "note": "product-crop of 2010 event portrait"
+    },
+    {
+      "id": "sebastian-stan",
+      "file": "001.jpg",
+      "commonsTitle": "File:Sebastian Stan at the 2026 Cannes Film Festival.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sebastian_Stan_at_the_2026_Cannes_Film_Festival.jpg",
+      "fetchedAt": "2026-08-27T14:04:00.000Z",
+      "note": "product-crop of 2026 Cannes buzz-cut tuxedo; not the 2024 beige-suit eval sitting"
+    },
+    {
+      "id": "ariana-grande",
+      "file": "001.jpg",
+      "commonsTitle": "File:Ariana Grande during The Honeymoon Tour in Jakarta 2015.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ariana_Grande_during_The_Honeymoon_Tour_in_Jakarta_2015.jpg",
+      "fetchedAt": "2026-08-27T14:04:00.000Z",
+      "note": "product-crop of Honeymoon Tour Jakarta 2015 cat-ears still; not the 2013 Jingle Ball eval sitting"
+    },
+    {
+      "id": "doja-cat",
+      "file": "003.jpg",
+      "commonsTitle": "File:Doja Cat in 2024.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Doja_Cat_in_2024.jpg",
+      "fetchedAt": "2026-08-27T14:04:00.000Z",
+      "note": "product-crop of Scarlet-era profile; Austin jumbotron frame is the same sitting and was not enrolled"
     }
   ]
 }

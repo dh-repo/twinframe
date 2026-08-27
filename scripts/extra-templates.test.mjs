@@ -32,7 +32,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "adele" && t.source === "extra-photos/adele/003.jpg"),
       "Adele Live 2009 turtleneck extra missing",
     );
-    assert.ok((byId.get("doja-cat") ?? 0) >= 4, "Doja extras missing");
+    assert.ok((byId.get("doja-cat") ?? 0) >= 5, "Doja extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "doja-cat" && t.source === "extra-photos/doja-cat/003.jpg"),
+      "Doja Scarlet-era 2024 extra missing",
+    );
     assert.ok((byId.get("zendaya") ?? 0) >= 3, "Zendaya extras missing");
     assert.ok((byId.get("justin-bieber") ?? 0) >= 1, "Bieber extras missing");
     assert.ok((byId.get("lady-gaga") ?? 0) >= 1, "Gaga extras missing");
@@ -126,6 +130,16 @@ describe("shipped extra templates", () => {
     assert.ok(
       pack.templates.some((t) => t.id === "julia-roberts" && t.source === "extra-photos/julia-roberts/001.jpg"),
       "Julia Roberts 2011 Shankbone extra missing",
+    );
+    assert.ok((byId.get("ariana-grande") ?? 0) >= 3, "Ariana Jakarta extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ariana-grande" && t.source === "extra-photos/ariana-grande/001.jpg"),
+      "Ariana Honeymoon Tour Jakarta extra missing",
+    );
+    assert.ok((byId.get("sebastian-stan") ?? 0) >= 4, "Sebastian Stan extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "sebastian-stan" && t.source === "extra-photos/sebastian-stan/001.jpg"),
+      "Sebastian Stan 2026 Cannes extra missing",
     );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });

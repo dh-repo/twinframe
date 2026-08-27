@@ -223,8 +223,15 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.32: Product-crops of Julia Roberts 2010/2011 event portraits
  *         that beat the 80s B&W eval pack dTrue. Florence Comic-Con
  *         extra 003 is the same sitting as eval 001 and was not enrolled.
+ * 6.5.33: Product-crops that beat pack dTrue for Sebastian Stan
+ *         (2026 Cannes buzz-cut tuxedo, not the 2024 beige-suit
+ *         eval sitting), Ariana Grande (Honeymoon Tour Jakarta 2015
+ *         cat-ears; 2013 Jingle Ball frames are the eval sitting),
+ *         and Doja Cat (Scarlet-era 2024 profile; Austin jumbotron
+ *         is the same sitting). Naomi amfAR bangs stills did not
+ *         beat DVF runway pack dTrue.
  */
-const GALLERY_VERSION = "6.5.32";
+const GALLERY_VERSION = "6.5.33";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
