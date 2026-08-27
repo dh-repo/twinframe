@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 368,
+  "count": 370,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2701,6 +2701,22 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sadie_Sink_at_Paleyfest_2018.jpg",
         "fetchedAt": "2026-08-27T23:20:00.000Z",
         "note": "Paleyfest 2018 black headband cream pleated shoulders; not Comic-Con geometric sleeveless panel eval"
+    },
+    {
+        "id": "prince-harry",
+        "file": "004.jpg",
+        "commonsTitle": "File:Prince Harry in the US 2013.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Prince_Harry_in_the_US_2013.jpg",
+        "fetchedAt": "2026-08-27T23:30:00.000Z",
+        "note": "2013 US navy suit pink patterned tie; not Blues and Royals beret medals waving eval"
+    },
+    {
+        "id": "paul-wesley",
+        "file": "005.jpg",
+        "commonsTitle": "File:Paul Wesley at the 38th People's Choice Award.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paul_Wesley_at_the_38th_People's_Choice_Award.jpg",
+        "fetchedAt": "2026-08-27T23:30:00.000Z",
+        "note": "People's Choice charcoal suit open grey shirt; not Comic-Con grey zip-hoodie panel eval"
     }
   ]
 }

@@ -682,6 +682,16 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "sadie-sink" && t.source === "extra-photos/sadie-sink/006.jpg"),
       "Sadie Sink Paleyfest 2018 extra missing",
     );
+    assert.ok((byId.get("prince-harry") ?? 0) >= 1, "Prince Harry extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "prince-harry" && t.source === "extra-photos/prince-harry/004.jpg"),
+      "Prince Harry 2013 US extra missing",
+    );
+    assert.ok((byId.get("paul-wesley") ?? 0) >= 1, "Paul Wesley extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "paul-wesley" && t.source === "extra-photos/paul-wesley/005.jpg"),
+      "Paul Wesley People's Choice extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

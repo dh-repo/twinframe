@@ -439,8 +439,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         and Sadie Sink (Paleyfest 2018 headband; not Comic-Con geometric
  *         sleeveless panel eval). Pratt 3-face outdoor crop and Sadie floral
  *         primary clone stay out.
+ * 6.5.65: Commons extras that beat pack dTrue for Prince Harry (2013 US navy
+ *         suit pink tie; not Blues and Royals beret medals waving eval) and
+ *         Paul Wesley (People's Choice charcoal suit; not Comic-Con grey
+ *         zip-hoodie panel eval). Harry 194px source and Comic-Con group
+ *         extra stay out.
  */
-const GALLERY_VERSION = "6.5.64";
+const GALLERY_VERSION = "6.5.65";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
