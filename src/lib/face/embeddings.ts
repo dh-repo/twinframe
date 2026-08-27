@@ -151,8 +151,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        Caviezel, and other remaining household names.
  * 6.5.2: Wikipedia primaries for remaining recognizable thumb-only slots
  *        (Alcock, Shahi, Vogel, and other TV/film names).
+ * 6.5.3: Wikipedia primaries for McConaughey, Harrelson, Cardellini, Gustin,
+ *        Emma D'Arcy, and other household thumb-only names.
  */
-const GALLERY_VERSION = "6.5.2";
+const GALLERY_VERSION = "6.5.3";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

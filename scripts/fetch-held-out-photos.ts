@@ -150,7 +150,7 @@ export function filenameLooksLikeNamedSubject(title: string): boolean {
 export const WIKI_SEARCH_NAME: Record<string, string> = {
   "emma-darcy": "Emma D'Arcy",
   "j-j-abrams": "J. J. Abrams",
-  "carlos-vald-s": "Carlos Valdés (actor)",
+  "carlos-vald-s": "Carlos Valdés",
   "cynthia-addai-robinson": "Cynthia Addai-Robinson",
   "lee-jung-mi": "Lee Jung-mi",
 };
