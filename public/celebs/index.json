@@ -4075,7 +4075,7 @@
     "name": "Hayao Miyazaki",
     "path": "/celebs/thumbs/96/hayao-miyazaki.webp",
     "path192": "/celebs/thumbs/192/hayao-miyazaki.webp",
-    "fallbackPath": "/celebs/thumbs/96/hayao-miyazaki.webp",
+    "fallbackPath": "/celebs/hayao-miyazaki.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4446,7 +4446,7 @@
     "name": "Kareena Kapoor",
     "path": "/celebs/thumbs/96/kareena-kapoor.webp",
     "path192": "/celebs/thumbs/192/kareena-kapoor.webp",
-    "fallbackPath": "/celebs/thumbs/96/kareena-kapoor.webp",
+    "fallbackPath": "/celebs/kareena-kapoor.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4461,7 +4461,7 @@
     "name": "Anushka Sharma",
     "path": "/celebs/thumbs/96/anushka-sharma.webp",
     "path192": "/celebs/thumbs/192/anushka-sharma.webp",
-    "fallbackPath": "/celebs/thumbs/96/anushka-sharma.webp",
+    "fallbackPath": "/celebs/anushka-sharma.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4476,7 +4476,7 @@
     "name": "Vicky Kaushal",
     "path": "/celebs/thumbs/96/vicky-kaushal.webp",
     "path192": "/celebs/thumbs/192/vicky-kaushal.webp",
-    "fallbackPath": "/celebs/thumbs/96/vicky-kaushal.webp",
+    "fallbackPath": "/celebs/vicky-kaushal.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4491,7 +4491,7 @@
     "name": "Nawazuddin Siddiqui",
     "path": "/celebs/thumbs/96/nawazuddin-siddiqui.webp",
     "path192": "/celebs/thumbs/192/nawazuddin-siddiqui.webp",
-    "fallbackPath": "/celebs/thumbs/96/nawazuddin-siddiqui.webp",
+    "fallbackPath": "/celebs/nawazuddin-siddiqui.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4506,7 +4506,7 @@
     "name": "Radhika Apte",
     "path": "/celebs/thumbs/96/radhika-apte.webp",
     "path192": "/celebs/thumbs/192/radhika-apte.webp",
-    "fallbackPath": "/celebs/thumbs/96/radhika-apte.webp",
+    "fallbackPath": "/celebs/radhika-apte.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4521,7 +4521,7 @@
     "name": "Vijay Sethupathi",
     "path": "/celebs/thumbs/96/vijay-sethupathi.webp",
     "path192": "/celebs/thumbs/192/vijay-sethupathi.webp",
-    "fallbackPath": "/celebs/thumbs/96/vijay-sethupathi.webp",
+    "fallbackPath": "/celebs/vijay-sethupathi.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4536,7 +4536,7 @@
     "name": "Dhanush",
     "path": "/celebs/thumbs/96/dhanush.webp",
     "path192": "/celebs/thumbs/192/dhanush.webp",
-    "fallbackPath": "/celebs/thumbs/96/dhanush.webp",
+    "fallbackPath": "/celebs/dhanush.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4551,7 +4551,7 @@
     "name": "Samantha Ruth Prabhu",
     "path": "/celebs/thumbs/96/samantha-ruth-prabhu.webp",
     "path192": "/celebs/thumbs/192/samantha-ruth-prabhu.webp",
-    "fallbackPath": "/celebs/thumbs/96/samantha-ruth-prabhu.webp",
+    "fallbackPath": "/celebs/samantha-ruth-prabhu.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4566,7 +4566,7 @@
     "name": "Allu Arjun",
     "path": "/celebs/thumbs/96/allu-arjun.webp",
     "path192": "/celebs/thumbs/192/allu-arjun.webp",
-    "fallbackPath": "/celebs/thumbs/96/allu-arjun.webp",
+    "fallbackPath": "/celebs/allu-arjun.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4581,7 +4581,7 @@
     "name": "Yash",
     "path": "/celebs/thumbs/96/yash.webp",
     "path192": "/celebs/thumbs/192/yash.webp",
-    "fallbackPath": "/celebs/thumbs/96/yash.webp",
+    "fallbackPath": "/celebs/yash.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4596,7 +4596,7 @@
     "name": "Prabhas",
     "path": "/celebs/thumbs/96/prabhas.webp",
     "path192": "/celebs/thumbs/192/prabhas.webp",
-    "fallbackPath": "/celebs/thumbs/96/prabhas.webp",
+    "fallbackPath": "/celebs/prabhas.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4626,7 +4626,7 @@
     "name": "Fahadh Faasil",
     "path": "/celebs/thumbs/96/fahadh-faasil.webp",
     "path192": "/celebs/thumbs/192/fahadh-faasil.webp",
-    "fallbackPath": "/celebs/thumbs/96/fahadh-faasil.webp",
+    "fallbackPath": "/celebs/fahadh-faasil.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4654,7 +4654,7 @@
     "name": "IU",
     "path": "/celebs/thumbs/96/iu.webp",
     "path192": "/celebs/thumbs/192/iu.webp",
-    "fallbackPath": "/celebs/thumbs/96/iu.webp",
+    "fallbackPath": "/celebs/iu.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4669,7 +4669,7 @@
     "name": "Jungkook",
     "path": "/celebs/thumbs/96/jungkook.webp",
     "path192": "/celebs/thumbs/192/jungkook.webp",
-    "fallbackPath": "/celebs/thumbs/96/jungkook.webp",
+    "fallbackPath": "/celebs/jungkook.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4714,7 +4714,7 @@
     "name": "Song Hye-kyo",
     "path": "/celebs/thumbs/96/song-hye-kyo.webp",
     "path192": "/celebs/thumbs/192/song-hye-kyo.webp",
-    "fallbackPath": "/celebs/thumbs/96/song-hye-kyo.webp",
+    "fallbackPath": "/celebs/song-hye-kyo.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4759,7 +4759,7 @@
     "name": "Shohei Ohtani",
     "path": "/celebs/thumbs/96/shohei-ohtani.webp",
     "path192": "/celebs/thumbs/192/shohei-ohtani.webp",
-    "fallbackPath": "/celebs/thumbs/96/shohei-ohtani.webp",
+    "fallbackPath": "/celebs/shohei-ohtani.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4789,7 +4789,7 @@
     "name": "Rafael Nadal",
     "path": "/celebs/thumbs/96/rafael-nadal.webp",
     "path192": "/celebs/thumbs/192/rafael-nadal.webp",
-    "fallbackPath": "/celebs/thumbs/96/rafael-nadal.webp",
+    "fallbackPath": "/celebs/rafael-nadal.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4804,7 +4804,7 @@
     "name": "Novak Djokovic",
     "path": "/celebs/thumbs/96/novak-djokovic.webp",
     "path192": "/celebs/thumbs/192/novak-djokovic.webp",
-    "fallbackPath": "/celebs/thumbs/96/novak-djokovic.webp",
+    "fallbackPath": "/celebs/novak-djokovic.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4834,7 +4834,7 @@
     "name": "J Balvin",
     "path": "/celebs/thumbs/96/j-balvin.webp",
     "path192": "/celebs/thumbs/192/j-balvin.webp",
-    "fallbackPath": "/celebs/thumbs/96/j-balvin.webp",
+    "fallbackPath": "/celebs/j-balvin.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4849,7 +4849,7 @@
     "name": "Finn Wolfhard",
     "path": "/celebs/thumbs/96/finn-wolfhard.webp",
     "path192": "/celebs/thumbs/192/finn-wolfhard.webp",
-    "fallbackPath": "/celebs/thumbs/96/finn-wolfhard.webp",
+    "fallbackPath": "/celebs/finn-wolfhard.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4864,7 +4864,7 @@
     "name": "Evangeline Lilly",
     "path": "/celebs/thumbs/96/evangeline-lilly.webp",
     "path192": "/celebs/thumbs/192/evangeline-lilly.webp",
-    "fallbackPath": "/celebs/thumbs/96/evangeline-lilly.webp",
+    "fallbackPath": "/celebs/evangeline-lilly.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4893,7 +4893,7 @@
     "name": "Harrison Ford",
     "path": "/celebs/thumbs/96/harrison-ford.webp",
     "path192": "/celebs/thumbs/192/harrison-ford.webp",
-    "fallbackPath": "/celebs/thumbs/96/harrison-ford.webp",
+    "fallbackPath": "/celebs/harrison-ford.jpg",
     "gender": "male",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4908,7 +4908,7 @@
     "name": "Emilia Clarke",
     "path": "/celebs/thumbs/96/emilia-clarke.webp",
     "path192": "/celebs/thumbs/192/emilia-clarke.webp",
-    "fallbackPath": "/celebs/thumbs/96/emilia-clarke.webp",
+    "fallbackPath": "/celebs/emilia-clarke.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4923,7 +4923,7 @@
     "name": "Olivia Cooke",
     "path": "/celebs/thumbs/96/olivia-cooke.webp",
     "path192": "/celebs/thumbs/192/olivia-cooke.webp",
-    "fallbackPath": "/celebs/thumbs/96/olivia-cooke.webp",
+    "fallbackPath": "/celebs/olivia-cooke.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -5102,7 +5102,7 @@
     "name": "Dean Norris",
     "path": "/celebs/thumbs/96/dean-norris.webp",
     "path192": "/celebs/thumbs/192/dean-norris.webp",
-    "fallbackPath": "/celebs/thumbs/96/dean-norris.webp",
+    "fallbackPath": "/celebs/dean-norris.jpg",
     "gender": "male",
     "genderProb": 0.977952778339386,
     "ageBuckets": [
@@ -5192,7 +5192,7 @@
     "name": "Stephen King",
     "path": "/celebs/thumbs/96/stephen-king.webp",
     "path192": "/celebs/thumbs/192/stephen-king.webp",
-    "fallbackPath": "/celebs/thumbs/96/stephen-king.webp",
+    "fallbackPath": "/celebs/stephen-king.jpg",
     "gender": "male",
     "genderProb": 0.9943576455116272,
     "ageBuckets": [
@@ -5207,7 +5207,7 @@
     "name": "Steven Spielberg",
     "path": "/celebs/thumbs/96/steven-spielberg.webp",
     "path192": "/celebs/thumbs/192/steven-spielberg.webp",
-    "fallbackPath": "/celebs/thumbs/96/steven-spielberg.webp",
+    "fallbackPath": "/celebs/steven-spielberg.jpg",
     "gender": "male",
     "genderProb": 0.9032974243164062,
     "ageBuckets": [
@@ -6239,7 +6239,7 @@
     "name": "Taraji P. Henson",
     "path": "/celebs/thumbs/96/taraji-p-henson.webp",
     "path192": "/celebs/thumbs/192/taraji-p-henson.webp",
-    "fallbackPath": "/celebs/thumbs/96/taraji-p-henson.webp",
+    "fallbackPath": "/celebs/taraji-p-henson.jpg",
     "gender": "female",
     "genderProb": 0.9618543349206448,
     "ageBuckets": [
@@ -8817,7 +8817,7 @@
     "name": "Colin Salmon",
     "path": "/celebs/thumbs/96/colin-salmon.webp",
     "path192": "/celebs/thumbs/192/colin-salmon.webp",
-    "fallbackPath": "/celebs/thumbs/96/colin-salmon.webp",
+    "fallbackPath": "/celebs/colin-salmon.jpg",
     "gender": "male",
     "genderProb": 0.99134761095047,
     "ageBuckets": [

@@ -81,14 +81,28 @@ describe("appearance glance families", () => {
       "wendy-mericle": "white",
     });
     const ranked = [
-      { celeb: { id: "sandra-oh" } },
-      { celeb: { id: "wendy-mericle" } },
+      { celeb: { id: "sandra-oh" }, dist: 0.62, adjusted: 0.62 },
+      { celeb: { id: "wendy-mericle" }, dist: 0.68, adjusted: 0.68 },
     ];
     const kept = filterRanksByAppearanceFamily(ranked, "white");
     assert.deepEqual(
       kept.map((row) => row.celeb.id),
       ["wendy-mericle"],
     );
+  });
+
+  it("keeps a tight identity match even when glance family disagrees", () => {
+    applyAppearanceFamilyManifest({
+      zendaya: "black",
+      "wendy-mericle": "white",
+    });
+    const ranked = [
+      { celeb: { id: "zendaya" }, dist: 0.43, adjusted: 0.43 },
+      { celeb: { id: "wendy-mericle" }, dist: 0.81, adjusted: 0.81 },
+    ];
+    const kept = filterRanksByAppearanceFamily(ranked, "white");
+    assert.equal(kept[0]?.celeb.id, "zendaya");
+    assert.ok(kept.some((row) => row.celeb.id === "wendy-mericle"));
   });
 
   it("classifies a probe from family centroids and re-ranks past a cross-family nearest neighbor", () => {
@@ -106,7 +120,7 @@ describe("appearance glance families", () => {
     }
     labels["sandra-oh"] = "east_asian";
     labels["wendy-mericle"] = "white";
-    gallery.push(celeb("sandra-oh", mix(axis(0), axis(1), 0.92)));
+    gallery.push(celeb("sandra-oh", mix(axis(0), axis(1), 0.85)));
     gallery.push(celeb("wendy-mericle", mix(axis(0), axis(2), 0.82)));
 
     applyAppearanceFamilyManifest(labels);

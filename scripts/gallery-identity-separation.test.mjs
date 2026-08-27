@@ -29,6 +29,10 @@ describe("shipped primaries of different people are not near-clones", () => {
     ["cha-eun-woo", "chris-pine"],
     ["neymar", "kylian-mbappe"],
     ["lebron-james", "halle-bailey"],
+    ["rafael-nadal", "bruce-macvittie"],
+    ["rafael-nadal", "rami-malek"],
+    ["colin-salmon", "samuel-l-jackson"],
+    ["son-ye-jin", "rose-blackpink"],
   ];
 
   for (const [a, b] of pairs) {

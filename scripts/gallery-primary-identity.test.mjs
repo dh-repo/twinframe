@@ -13,7 +13,19 @@ function sha(filePath) {
 }
 
 describe("gallery primary portraits are not the mislabeled 192-px thumbs", () => {
-  for (const id of ["jack-black", "anne-hathaway", "bella-ramsey", "robert-downey-jr", "jamie-dornan"]) {
+  for (const id of [
+    "jack-black",
+    "anne-hathaway",
+    "bella-ramsey",
+    "robert-downey-jr",
+    "jamie-dornan",
+    "rafael-nadal",
+    "harrison-ford",
+    "taraji-p-henson",
+    "emilia-clarke",
+    "novak-djokovic",
+    "colin-salmon",
+  ]) {
     it(`${id}.jpg exists and differs from thumbs/192/${id}.webp`, () => {
       const jpg = path.join(CELEBS, `${id}.jpg`);
       const thumb = path.join(CELEBS, "thumbs/192", `${id}.webp`);

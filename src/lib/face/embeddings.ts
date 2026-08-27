@@ -145,8 +145,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.3.0: AdaFace extra templates for held-out miss identities.
  * 6.4.1: re-enroll every on-disk jpg primary; fetch replacements for remaining
  *        mislabeled thumbs (xiao-zhan was Federer; samuel-l-jackson was Reynolds).
+ * 6.5.0: Wikipedia primaries for remaining household thumb-only slots (Nadal
+ *        was a near-clone of a character actor; Rosalía/Son Ye-jin eval misses).
  */
-const GALLERY_VERSION = "6.4.1";
+const GALLERY_VERSION = "6.5.0";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

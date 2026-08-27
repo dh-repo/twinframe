@@ -24,6 +24,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyAppearanceFamilyManifest } from "../src/lib/celebrities/appearance-family.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
 import { l2Normalize, cosineDistance } from "../src/lib/face/embeddings.ts";
 
@@ -303,6 +304,10 @@ function main() {
   const floorArg = process.argv.indexOf("--floor");
   const rankFloor = floorArg >= 0 ? Number(process.argv[floorArg + 1]) : null;
 
+  const familiesPath = path.join(CELEBS, "appearance-families.json");
+  if (fs.existsSync(familiesPath)) {
+    applyAppearanceFamilyManifest(JSON.parse(fs.readFileSync(familiesPath, "utf8")));
+  }
   const gallery = mergeExtraTemplates(loadGallery());
 
   const descIdx = process.argv.indexOf("--descriptors");

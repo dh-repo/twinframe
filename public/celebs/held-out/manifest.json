@@ -1,7 +1,7 @@
 {
   "version": "2.0.0",
   "description": "Held-out photos on disk. Slot 001 is the eval-only query photo; 002+ are enrolled as extra views.",
-  "generatedAt": "2026-08-27T04:08:38.161Z",
+  "generatedAt": "2026-08-27T04:32:08.792Z",
   "count": 843,
   "identities": 306,
   "evalSlotCount": 306,
@@ -5997,10 +5997,10 @@
       "name": "Rosalia",
       "slot": "001",
       "imagePath": "/celebs/held-out/rosalia/001.jpg",
-      "bytes": 155648,
+      "bytes": 230256,
       "evalSlot": true,
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Rosalia%2C_Pull%26Bear_stage_2.jpg/960px-Rosalia%2C_Pull%26Bear_stage_2.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-      "wikiTitle": "Rosalía"
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Rosalia%202019-portrait.jpg",
+      "wikiTitle": "File:Rosalia 2019-portrait.jpg"
     },
     {
       "id": "rose-blackpink",
