@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 348,
+  "count": 349,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2541,6 +2541,14 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kim_Ji-soo_at_the_Golden_Disc_Awards_on_January_5%2C_2019_(7).png",
         "fetchedAt": "2026-08-27T20:49:56.090Z",
         "note": "Golden Disc 2019 gold sequin smile; not 2017 floral concert eval"
+    }    ,
+    {
+        "id": "song-kang",
+        "file": "003.jpg",
+        "commonsTitle": "File:Song Kang in November 2025.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Song_Kang_in_November_2025.jpg",
+        "fetchedAt": "2026-08-27T21:04:00.000Z",
+        "note": "November 2025 high-collar press; not wet-look denim eval"
     }
   ]
 }

@@ -390,8 +390,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         sequin smile; not 2017 floral concert eval). Holland 003 is the
  *         same Far From Home sitting as 002; Eddie 003 is a near-dup of
  *         primary.
+ * 6.5.56: Commons extra that beat pack dTrue for Song Kang (November 2025
+ *         high-collar press; not wet-look denim hand-on-head eval). Marie
+ *         Claire 230224 is the eval sitting; 231124 / November 2023 My Demon
+ *         is the enrolled primary; unused red-sweater 002 did not beat pack.
  */
-const GALLERY_VERSION = "6.5.55";
+const GALLERY_VERSION = "6.5.56";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

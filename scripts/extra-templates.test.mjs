@@ -562,6 +562,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "eddie-redmayne" && t.source === "held-out/eddie-redmayne/002.jpg"),
       "Eddie Redmayne Montclair extra missing",
     );
+    assert.ok((byId.get("song-kang") ?? 0) >= 1, "Song Kang extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "song-kang" && t.source === "extra-photos/song-kang/003.jpg"),
+      "Song Kang November 2025 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
