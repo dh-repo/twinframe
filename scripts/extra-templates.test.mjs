@@ -457,6 +457,31 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "andrew-garfield" && t.source === "extra-photos/andrew-garfield/001.jpg"),
       "Andrew Garfield 2011 extra missing",
     );
+    assert.ok((byId.get("hyun-bin") ?? 0) >= 1, "Hyun Bin extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "hyun-bin" && t.source === "extra-photos/hyun-bin/002.jpg"),
+      "Hyun Bin 2024 extra missing",
+    );
+    assert.ok((byId.get("gary-oldman") ?? 0) >= 2, "Gary Oldman extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "gary-oldman" && t.source === "extra-photos/gary-oldman/001.jpg"),
+      "Gary Oldman Tinker Tailor extra missing",
+    );
+    assert.ok((byId.get("uma-thurman") ?? 0) >= 1, "Uma Thurman extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "uma-thurman" && t.source === "extra-photos/uma-thurman/001.jpg"),
+      "Uma Thurman 2014 extra missing",
+    );
+    assert.ok((byId.get("chris-pine") ?? 0) >= 1, "Chris Pine extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "chris-pine" && t.source === "extra-photos/chris-pine/001.jpg"),
+      "Chris Pine peach-linen extra missing",
+    );
+    assert.ok((byId.get("oscar-isaac") ?? 0) >= 2, "Oscar Isaac extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "oscar-isaac" && t.source === "extra-photos/oscar-isaac/001.jpg"),
+      "Oscar Isaac 2025 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

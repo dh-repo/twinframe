@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 315,
+  "count": 322,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2277,6 +2277,62 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Andrew_Garfield_2011.jpg/1920px-Andrew_Garfield_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-27T18:35:09.881Z",
       "note": "2011 Comic-Con orange striped sweater; not navy-suit black-shirt slim-tie eval"
+    },
+    {
+      "id": "hyun-bin",
+      "file": "002.jpg",
+      "commonsTitle": "File:20240620 Hyun Bin (\ud604\ube48) 03.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/20240620_Hyun_Bin_%28%ED%98%84%EB%B9%88%29_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:49:59.626Z",
+      "note": "2024 white double-breasted red backdrop; not PiFan tuxedo eval"
+    },
+    {
+      "id": "gary-oldman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Gary Oldman at the London premiere of Tinker Tailor Soldier Spy (cropped).png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Gary_Oldman_at_the_London_premiere_of_Tinker_Tailor_Soldier_Spy_%28cropped%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:49:59.897Z",
+      "note": "Tinker Tailor purple shirt translucent glasses; not Comic-Con striped-blazer eval"
+    },
+    {
+      "id": "gary-oldman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Gary Oldman 2019 TIFF.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Gary_Oldman_2019_TIFF.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:00.185Z",
+      "note": "TIFF 2019 navy blazer white shirt round glasses; not Comic-Con striped-blazer eval"
+    },
+    {
+      "id": "uma-thurman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Uma Thurman 2014 (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/be/Uma_Thurman_2014_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:00.464Z",
+      "note": "2014 grey wool coat chandelier earrings; not Cannes 2000 bead-necklace eval"
+    },
+    {
+      "id": "chris-pine",
+      "file": "001.jpg",
+      "commonsTitle": "File:Chris Pine (43043463084) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Chris_Pine_%2843043463084%29_%28cropped%29.jpg/1920px-Chris_Pine_%2843043463084%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:50:00.809Z",
+      "note": "peach linen open collar gold chain; not blue v-neck beard eval"
+    },
+    {
+      "id": "oscar-isaac",
+      "file": "001.jpg",
+      "commonsTitle": "File:Oscar Isaac 2025.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Oscar_Isaac_2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:01.078Z",
+      "note": "2025 black neck-wrap wave; not Comic-Con dark-shirt mic eval"
+    },
+    {
+      "id": "oscar-isaac",
+      "file": "002.jpg",
+      "commonsTitle": "File:Oscar Isaac 2013.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Oscar_Isaac_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:01.332Z",
+      "note": "2013 navy suit slim tie pocket square; not Comic-Con dark-shirt mic eval"
     }
   ]
 }

@@ -326,8 +326,17 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         and Andrew Garfield (2011 Comic-Con sweater; not navy-suit
  *         slim-tie eval). Hemsworth 2017 Gage and Garfield TIFF 09 stay
  *         out as eval-sitting clones.
+ * 6.5.48: Commons extras that beat pack dTrue for Hyun Bin (2024 white
+ *         double-breasted; not PiFan 2014 tuxedo eval), Gary Oldman
+ *         (Tinker Tailor + TIFF 2019; not Comic-Con striped-blazer eval),
+ *         Uma Thurman (2014 grey coat; not Cannes 2000 bead-necklace
+ *         eval), Chris Pine (peach linen; not blue v-neck eval), and
+ *         Oscar Isaac (2025 neck-wrap + 2013 suit; not Comic-Con
+ *         dark-shirt eval). Hyun 2011 crop failed the enroll
+ *         detection-score gate. Uma Cannes 2000 and Oscar Venice stay
+ *         out as eval-sitting clones.
  */
-const GALLERY_VERSION = "6.5.47";
+const GALLERY_VERSION = "6.5.48";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
