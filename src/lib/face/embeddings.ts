@@ -220,8 +220,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.31: Product-crops of Childish Gambino concert stills that beat
  *         pack dTrue for Donald Glover (wide group frames fail
  *         acceptPrimaryEmbed; TIFF 2015 is a primary near-dup).
+ * 6.5.32: Product-crops of Julia Roberts 2010/2011 event portraits
+ *         that beat the 80s B&W eval pack dTrue. Florence Comic-Con
+ *         extra 003 is the same sitting as eval 001 and was not enrolled.
  */
-const GALLERY_VERSION = "6.5.31";
+const GALLERY_VERSION = "6.5.32";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

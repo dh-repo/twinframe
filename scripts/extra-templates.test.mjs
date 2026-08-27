@@ -122,6 +122,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "donald-glover" && t.source === "extra-photos/donald-glover/001.jpg"),
       "Glover concert product-crop extra missing",
     );
+    assert.ok((byId.get("julia-roberts") ?? 0) >= 4, "Julia Roberts extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "julia-roberts" && t.source === "extra-photos/julia-roberts/001.jpg"),
+      "Julia Roberts 2011 Shankbone extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 247,
+  "count": 249,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1733,6 +1733,22 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Donald_Glover.jpeg",
       "fetchedAt": "2026-08-27T13:21:00.000Z",
       "note": "product-crop of full-body concert frame; whole-image embed was too far from primary"
+    },
+    {
+      "id": "julia-roberts",
+      "file": "001.jpg",
+      "commonsTitle": "File:Julia Roberts 2011 Shankbone.JPG",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Julia_Roberts_2011_Shankbone.JPG",
+      "fetchedAt": "2026-08-27T13:40:00.000Z",
+      "note": "product-crop of 2011 event portrait; not the 80s B&W eval sitting"
+    },
+    {
+      "id": "julia-roberts",
+      "file": "002.jpg",
+      "commonsTitle": "File:Julia Roberts 2010.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Julia_Roberts_2010.jpg",
+      "fetchedAt": "2026-08-27T13:40:00.000Z",
+      "note": "product-crop of 2010 event portrait"
     }
   ]
 }
