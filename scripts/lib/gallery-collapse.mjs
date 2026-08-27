@@ -44,10 +44,24 @@ export const SMOKING_GUN_PAIRS = [
 
 export const COLLAPSE_CONTROLS = ["adele", "zendaya"];
 
-/** Filled after `diagnose-gallery-collapse.mjs` measures live AdaFace pairs. */
+/**
+ * Live AdaFace+BGR (2026-08-27) vs the shipped AFv4 binary.
+ * Controls match the 192-px enroll thumbs; cluster slots do not match their portraits.
+ */
 export const MEASURED_CAUSE = {
-  kind: "pending-live-measurement",
-  note: "Shipped cluster is pinned; live AdaFace cause is written after the diagnose run.",
+  kind: "poisoned-shipped-slots",
+  sameQ8Fingerprint: false,
+  smokingGuns: [
+    { a: "alec-burden", b: "ralph-fiennes", shipped: 0.0009, liveFar: 1.0228, liveKind: "thumb192" },
+    { a: "bad-bunny", b: "lily-gladstone", shipped: 0.0027, liveFar: 1.076, liveKind: "thumb96" },
+    { a: "ed-sheeran", b: "oprah-winfrey", shipped: 0.0047, liveFar: 1.0225, liveKind: "fullres" },
+  ],
+  controls: [
+    { id: "adele", source: "thumb192", shippedDistance: 0.00066 },
+    { id: "zendaya", source: "thumb192", shippedDistance: 0.00064 },
+  ],
+  rebuildRule:
+    "Re-enroll the 14 ids from 192-px thumbs or fallback jpg via AdaFace+BGR with pad+retry; refuse whole-crop primaries. Do not approve-drop household names. Do not rewrite embeddings.v4.q8.bin in this increment.",
 };
 
 export function q8Fingerprint(bytes) {

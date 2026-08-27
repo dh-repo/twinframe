@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { adafaceModelReady, swapRgbToBgr } from "./enroll-gallery-onnx.mjs";
+import { acceptPrimaryEmbed, adafaceModelReady, swapRgbToBgr } from "./enroll-gallery-onnx.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ADAFACE = path.join(ROOT, "public/models/adaface_ir101_webface12m.onnx");
@@ -31,5 +31,11 @@ describe("AdaFace enroll path", () => {
     assert.deepEqual(Array.from(bgr), [7, 8, 9, 6, 10, 20, 30, 40, 1, 2, 3, 4]);
     assert.deepEqual(Array.from(swapRgbToBgr(bgr, size)), Array.from(rgb));
     assert.deepEqual(Array.from(rgb), [1, 2, 3, 4, 10, 20, 30, 40, 7, 8, 9, 6]);
+  });
+
+  it("refuses a whole-crop primary so a rebuild cannot re-poison a slot", () => {
+    assert.equal(acceptPrimaryEmbed({ usedDetection: true }), true);
+    assert.equal(acceptPrimaryEmbed({ usedDetection: false }), false);
+    assert.equal(acceptPrimaryEmbed({}), false);
   });
 });

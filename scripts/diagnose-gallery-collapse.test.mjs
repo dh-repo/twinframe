@@ -83,11 +83,18 @@ describe("shipped AdaFace collapse cluster", () => {
     }
   });
 
-  it("records a measured cause only after live diagnosis — not a guessed one", () => {
-    assert.ok(MEASURED_CAUSE.kind);
-    assert.notEqual(MEASURED_CAUSE.kind, "guessed");
-    if (MEASURED_CAUSE.kind === "pending-live-measurement") {
-      assert.match(MEASURED_CAUSE.note, /live AdaFace/);
+  it("pins the measured cause: poisoned shipped slots, live AdaFace recovers", () => {
+    assert.equal(MEASURED_CAUSE.kind, "poisoned-shipped-slots");
+    assert.equal(MEASURED_CAUSE.sameQ8Fingerprint, false);
+    assert.match(MEASURED_CAUSE.rebuildRule, /refuse whole-crop primaries/);
+    assert.match(MEASURED_CAUSE.rebuildRule, /Do not approve-drop household names/);
+    assert.match(MEASURED_CAUSE.rebuildRule, /Do not rewrite embeddings\.v4\.q8\.bin/);
+    for (const pair of MEASURED_CAUSE.smokingGuns) {
+      assert.equal(classifyPair(pair.shipped, pair.liveFar), "shipped-collapsed-live-recovers");
+      assert.ok(pair.liveFar > 0.4, `${pair.a} ↔ ${pair.b} liveFar ${pair.liveFar}`);
+    }
+    for (const control of MEASURED_CAUSE.controls) {
+      assert.ok(control.shippedDistance < 0.01, `${control.id} should match its 192-px enroll thumb`);
     }
   });
 });

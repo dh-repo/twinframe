@@ -1,5 +1,5 @@
 /**
- * Process-pool worker: detect → align → EdgeFace embed for one JPEG.
+ * Process-pool worker: detect → align → AdaFace embed for one JPEG.
  * Loads ONNX in this process only (parent stays model-free).
  */
 import { embedImageFile } from "../enroll-gallery-onnx.mjs";

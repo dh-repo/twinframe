@@ -193,6 +193,11 @@ function l2(v) {
   return Array.from(v, (x) => x / n);
 }
 
+/** Whole-crop primaries are how the 14-id AdaFace cluster got poisoned. */
+export function acceptPrimaryEmbed(result) {
+  return Boolean(result?.usedDetection);
+}
+
 export function swapRgbToBgr(tensorData, size = 112) {
   const out = new Float32Array(tensorData);
   const ch = size * size;
@@ -378,7 +383,7 @@ async function main() {
   const rows = [];
   const extraCandidates = [];
   let detected = 0;
-  let fallback = 0;
+  let refusedWholeCrop = 0;
   let missing = allJobs.filter((j) => j.kind === "missing").length;
   if (!EXTRAS_ONLY) {
     for (const b of allJobs) {
@@ -398,8 +403,13 @@ async function main() {
     }
     const r = result.value;
     if (job.kind === "primary") {
-      if (r.usedDetection) detected++;
-      else fallback++;
+      if (!acceptPrimaryEmbed(r)) {
+        refusedWholeCrop++;
+        missing++;
+        console.error("primary detection failed — refusing whole-crop", job.id);
+        continue;
+      }
+      detected++;
       rows.push({
         id: job.id,
         source: job.source,
@@ -443,7 +453,7 @@ async function main() {
   const extras = gate.accepted.map(({ descriptor: _drop, ...keep }) => keep);
 
   console.log(
-    `\ndetected=${detected} fallback=${fallback} missing=${missing} elapsed=${Math.round((Date.now() - t0) / 1000)}s`,
+    `\ndetected=${detected} refusedWholeCrop=${refusedWholeCrop} missing=${missing} elapsed=${Math.round((Date.now() - t0) / 1000)}s`,
   );
   console.log(
     `extras gate: accepted=${gate.stats.accepted} rejected=${gate.stats.rejected} ` +
