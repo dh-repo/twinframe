@@ -5013,7 +5013,7 @@
     "name": "Alexander Koch",
     "path": "/celebs/thumbs/96/alexander-koch.webp",
     "path192": "/celebs/thumbs/192/alexander-koch.webp",
-    "fallbackPath": "/celebs/thumbs/96/alexander-koch.webp",
+    "fallbackPath": "/celebs/alexander-koch.jpg",
     "gender": "male",
     "genderProb": 0.9316948652267456,
     "ageBuckets": [
@@ -5028,7 +5028,7 @@
     "name": "Eddie Cahill",
     "path": "/celebs/thumbs/96/eddie-cahill.webp",
     "path192": "/celebs/thumbs/192/eddie-cahill.webp",
-    "fallbackPath": "/celebs/thumbs/96/eddie-cahill.webp",
+    "fallbackPath": "/celebs/eddie-cahill.jpg",
     "gender": "male",
     "genderProb": 0.9666306376457214,
     "ageBuckets": [
@@ -7589,7 +7589,7 @@
     "name": "Natalie Brown",
     "path": "/celebs/thumbs/96/natalie-brown.webp",
     "path192": "/celebs/thumbs/192/natalie-brown.webp",
-    "fallbackPath": "/celebs/thumbs/96/natalie-brown.webp",
+    "fallbackPath": "/celebs/natalie-brown.jpg",
     "gender": "female",
     "genderProb": 0.9579062536358833,
     "ageBuckets": [
@@ -11903,7 +11903,7 @@
     "name": "Dylan Bruce",
     "path": "/celebs/thumbs/96/dylan-bruce.webp",
     "path192": "/celebs/thumbs/192/dylan-bruce.webp",
-    "fallbackPath": "/celebs/thumbs/96/dylan-bruce.webp",
+    "fallbackPath": "/celebs/dylan-bruce.jpg",
     "gender": "male",
     "genderProb": 0.9507544040679932,
     "ageBuckets": [
@@ -12158,7 +12158,7 @@
     "name": "Keto Shimizu",
     "path": "/celebs/thumbs/96/keto-shimizu.webp",
     "path192": "/celebs/thumbs/192/keto-shimizu.webp",
-    "fallbackPath": "/celebs/thumbs/96/keto-shimizu.webp",
+    "fallbackPath": "/celebs/keto-shimizu.jpg",
     "gender": "female",
     "genderProb": 0.9932695301249623,
     "ageBuckets": [
@@ -12563,7 +12563,7 @@
     "name": "Cynthia Addai Robinson",
     "path": "/celebs/thumbs/96/cynthia-addai-robinson.webp",
     "path192": "/celebs/thumbs/192/cynthia-addai-robinson.webp",
-    "fallbackPath": "/celebs/thumbs/96/cynthia-addai-robinson.webp",
+    "fallbackPath": "/celebs/cynthia-addai-robinson.jpg",
     "gender": "female",
     "genderProb": 0.985721031203866,
     "ageBuckets": [
@@ -13372,7 +13372,7 @@
     "name": "Lochlyn Munro",
     "path": "/celebs/thumbs/96/lochlyn-munro.webp",
     "path192": "/celebs/thumbs/192/lochlyn-munro.webp",
-    "fallbackPath": "/celebs/thumbs/96/lochlyn-munro.webp",
+    "fallbackPath": "/celebs/lochlyn-munro.jpg",
     "gender": "male",
     "genderProb": 0.995415449142456,
     "ageBuckets": [
@@ -14315,7 +14315,7 @@
     "name": "Clarke Peters",
     "path": "/celebs/thumbs/96/clarke-peters.webp",
     "path192": "/celebs/thumbs/192/clarke-peters.webp",
-    "fallbackPath": "/celebs/thumbs/96/clarke-peters.webp",
+    "fallbackPath": "/celebs/clarke-peters.jpg",
     "gender": "male",
     "genderProb": 0.9998158812522888,
     "ageBuckets": [

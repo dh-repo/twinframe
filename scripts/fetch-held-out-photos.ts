@@ -152,6 +152,8 @@ export const WIKI_SEARCH_NAME: Record<string, string> = {
   "j-j-abrams": "J. J. Abrams",
   "carlos-vald-s": "Carlos Valdés",
   "cynthia-addai-robinson": "Cynthia Addai-Robinson",
+  // The novelist is Wikipedia's default; the catalog slot is the TV director.
+  "david-grossman": "David Grossman (director)",
 };
 
 export function wikiSearchName(entry: { id: string; name: string }): string {
@@ -227,22 +229,107 @@ export function heldOutSamePersonRejectReason(
 }
 
 /**
+ * Event/date tokens that follow a surname in Commons filenames
+ * ("Cahill SDCC 2014", "Munro September 2025") — not a second person.
+ */
+const PAIR_PLACE_STOP = new Set([
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "sept",
+  "oct",
+  "nov",
+  "dec",
+  "sdcc",
+  "nycc",
+  "comic",
+  "con",
+  "comiccon",
+  "wondercon",
+  "festival",
+  "awards",
+  "award",
+  "premiere",
+  "conference",
+  "edinburgh",
+  "saturn",
+  "sundance",
+  "cannes",
+  "oscars",
+  "oscar",
+  "emmy",
+  "emmys",
+  "golden",
+  "globe",
+  "globes",
+  "cropped",
+  "headshot",
+  "headshots",
+  "portrait",
+  "photocall",
+]);
+
+function nameTokens(raw: string): [string, string] | null {
+  const parts = raw
+    .replace(/[^a-z]+/gi, " ")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (parts.length < 2) return null;
+  return [parts[0], parts[1]];
+}
+
+function isCelebrityName(first: string, last: string, celeb: string): boolean {
+  return celeb.includes(first) && celeb.includes(last);
+}
+
+function isPlaceOrDateToken(first: string, last: string): boolean {
+  return PAIR_PLACE_STOP.has(first) || PAIR_PLACE_STOP.has(last);
+}
+
+/**
  * "Gong Li Andie MacDowell 1998" is a pair even though it mentions Gong Li.
  * A First Last + year that is not the celebrity is a second person in frame.
+ * Last-name + event/month + year ("Eddie Cahill SDCC 2014") is still solo.
  */
 export function heldOutSecondPersonRejectReason(title: string, name: string): "pair" | null {
   const celeb = String(name).replace(/[^a-z ]/gi, " ").toLowerCase();
   const withYear = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}[^\d]{0,3}\d{4}/g) ?? [];
   for (const raw of withYear) {
-    const who = raw.replace(/\s*\d{4}$/, "").trim().toLowerCase();
-    const [first, last] = who.split(/\s+/);
-    if (first && last && !(celeb.includes(first) && celeb.includes(last))) return "pair";
+    const tokens = nameTokens(raw.replace(/\s*\d{4}$/, ""));
+    if (!tokens) continue;
+    const [first, last] = tokens;
+    if (isPlaceOrDateToken(first, last)) continue;
+    // Celebrity last name + venue/month ("Cahill SDCC") still mentions them.
+    if (celeb.includes(first) || celeb.includes(last)) continue;
+    return "pair";
   }
   const named = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}/g) ?? [];
   let extra = 0;
   for (const raw of named) {
-    const [first, last] = raw.toLowerCase().split(/\s+/);
-    if (first && last && !(celeb.includes(first) && celeb.includes(last))) extra++;
+    const tokens = nameTokens(raw);
+    if (!tokens) continue;
+    const [first, last] = tokens;
+    if (isPlaceOrDateToken(first, last)) continue;
+    if (!isCelebrityName(first, last, celeb)) extra++;
   }
   return extra >= 2 ? "pair" : null;
 }
@@ -444,11 +531,17 @@ async function resolveTitle(name: string): Promise<string | null> {
     action: "query",
     list: "search",
     srsearch: name,
-    srlimit: "3",
+    srlimit: "5",
     srnamespace: "0",
   });
-  const hit = j.query?.search?.[0];
-  return hit?.title ?? null;
+  const hits = j.query?.search ?? [];
+  for (const hit of hits) {
+    const title = hit?.title;
+    if (!title) continue;
+    if (heldOutIdentityRejectReason(title, name)) continue;
+    return title;
+  }
+  return hits[0]?.title ?? null;
 }
 
 async function pageImageTitle(title: string): Promise<string | null> {

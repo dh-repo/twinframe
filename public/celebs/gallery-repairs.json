@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T06:16:38.740Z",
+  "generatedAt": "2026-08-27T06:38:31.647Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6463,6 +6463,110 @@
       "shippedToLive": 1.0355490408276982,
       "beforeFingerprint": "4e3db768cedf2418970476c5bc22ba90cfcad56da83056d89d2d65b9900c62f3",
       "afterFingerprint": "78a9b52388b171f8c17bfeff753654ea6974a9a078a335fc1e2ebd3caf2f5025"
+    },
+    {
+      "id": "natalie-brown",
+      "index": 507,
+      "household": false,
+      "source": "public/celebs/natalie-brown.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8597004413604736,
+      "shippedToLive": 0.3530723718132339,
+      "beforeFingerprint": "608725b3a9fada90f8f36ed28dc2986a085058ecdc2663bc7ca274027e42bee5",
+      "afterFingerprint": "44926ec7c85d530aae4c4e7f47d2a41bbc7f6f3709c44aabc433a6d2cd4e7c07"
+    },
+    {
+      "id": "eddie-cahill",
+      "index": 336,
+      "household": false,
+      "source": "public/celebs/eddie-cahill.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8701512217521667,
+      "shippedToLive": 0.4120570619802295,
+      "beforeFingerprint": "22f592c05a59c2d6df0371e7f04d5fcb3febb61e88af69f845cd43e54ca3102c",
+      "afterFingerprint": "bd1bc72ff3e4ff58a970f7480c41986e8674a77919af241a2bed7d33d7c0a1b4"
+    },
+    {
+      "id": "clarke-peters",
+      "index": 956,
+      "household": false,
+      "source": "public/celebs/clarke-peters.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7116376161575317,
+      "shippedToLive": 0.9719882442000765,
+      "beforeFingerprint": "af8fd83db2c27de0eea8f36c3577c31551ee0b0009eb8e33f63a24d013be892a",
+      "afterFingerprint": "282e445a87f98a7e97e74f1729cf190bdfe0d0c91e39fec12e1d366a7c3f902a"
+    },
+    {
+      "id": "lochlyn-munro",
+      "index": 893,
+      "household": false,
+      "source": "public/celebs/lochlyn-munro.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8579078912734985,
+      "shippedToLive": 0.9134531705382397,
+      "beforeFingerprint": "7e48417317772878f3282b627ae4090350017559cb3b4ebbeaba71e2c141450c",
+      "afterFingerprint": "a645448ccf2839eb8845d74cefbaed36e442ddf8e84d7c99fc25541d3bb54254"
+    },
+    {
+      "id": "cynthia-addai-robinson",
+      "index": 839,
+      "household": false,
+      "source": "public/celebs/cynthia-addai-robinson.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7965942025184631,
+      "shippedToLive": 0.5287119827137587,
+      "beforeFingerprint": "82f97cb7271144cda23f4337a62f93bc23694e296a53f1d6ac7e87c41f0acf82",
+      "afterFingerprint": "0487dd45c3506b44052c26f665f37d16e1d52faeabeadf6077a1113c66ea5f02"
+    },
+    {
+      "id": "dylan-bruce",
+      "index": 795,
+      "household": false,
+      "source": "public/celebs/dylan-bruce.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.824036717414856,
+      "shippedToLive": 0.2613487472815291,
+      "beforeFingerprint": "4325cf68131157efcbc62d09f786b194ae5f7ed11b21c21b30bd43ffd522a066",
+      "afterFingerprint": "26345caf4275cafa68c13ebccbf670e1e02cd07c31186f731670edef6b13a4e5"
+    },
+    {
+      "id": "keto-shimizu",
+      "index": 812,
+      "household": false,
+      "source": "public/celebs/keto-shimizu.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8391337394714355,
+      "shippedToLive": 0.06216245374229923,
+      "beforeFingerprint": "42ab96aff5ffd7265c862c41bb4ccdf27a3dd7907b4875ef2ff8d00077387134",
+      "afterFingerprint": "cd9dfb5ac27a75b6ffac1373edcc834840c6647eeaccc44e07c3916b2e7cd16f"
+    },
+    {
+      "id": "alexander-koch",
+      "index": 335,
+      "household": false,
+      "source": "public/celebs/alexander-koch.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8796267509460449,
+      "shippedToLive": 0.3839827875783308,
+      "beforeFingerprint": "e3770c7534751ed890eb89fb194ccc92555d05c5cd95264eb877fa3c3dad38e5",
+      "afterFingerprint": "a8d204c11598645b89536a28008956d723b04747717d5eabd7342cf5bf4c77de"
     }
   ]
 }

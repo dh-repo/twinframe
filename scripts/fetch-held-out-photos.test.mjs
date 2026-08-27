@@ -75,6 +75,13 @@ describe("wikiSearchName", () => {
     assert.equal(wikiSearchName({ id: "emma-darcy", name: "Emma DArcy" }), "Emma D'Arcy");
     assert.equal(wikiSearchName({ id: "adele", name: "Adele" }), "Adele");
   });
+
+  it("disambiguates the TV director from the novelist Wikipedia default", () => {
+    assert.equal(
+      wikiSearchName({ id: "david-grossman", name: "David Grossman" }),
+      "David Grossman (director)",
+    );
+  });
 });
 
 describe("resolveFetchIds", () => {
@@ -187,6 +194,17 @@ describe("heldOutIdentityRejectReason", () => {
     assert.equal(heldOutIdentityRejectReason("File:Lee Jung-mi 2019.jpg", "Lee Jung-mi"), null);
   });
 
+  it("does not enroll the novelist Wikipedia default under the TV-director slot", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("David Grossman", "David Grossman (director)"),
+      "wrong-person",
+    );
+    assert.equal(
+      heldOutIdentityRejectReason("David Grossman (director)", "David Grossman (director)"),
+      null,
+    );
+  });
+
   it("does not guess on opaque camera-dump filenames", () => {
     assert.equal(
       heldOutIdentityRejectReason("File:170217-D-GO396-0147 (32577063650).jpg", "Bill Gates"),
@@ -214,6 +232,40 @@ describe("heldOutSecondPersonRejectReason", () => {
     );
     assert.equal(
       heldOutSecondPersonRejectReason("File:Amy Berg by Gage Skidmore.jpg", "Amy Berg"),
+      null,
+    );
+  });
+
+  it("keeps a solo convention or dated portrait whose surname sits next to the event", () => {
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Eddie Cahill SDCC 2014 (cropped).jpg", "Eddie Cahill"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Clarke Peters Edinburgh 2010.jpg", "Clarke Peters"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Lochlyn Munro September 2025.jpg", "Lochlyn Munro"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason(
+        "File:Cynthia Addai-Robinson at 53rd Saturn Awards 2026.jpg",
+        "Cynthia Addai-Robinson",
+      ),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Dylan Bruce March 2015.jpg", "Dylan Bruce"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Keto Shimizu, 2011.png", "Keto Shimizu"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Alexander Koch SDCC 2014 (cropped).jpg", "Alexander Koch"),
       null,
     );
   });

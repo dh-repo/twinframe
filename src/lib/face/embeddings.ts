@@ -160,8 +160,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        Curtis Lewis is not Richard J. Lewis) and USAF roster shots.
  * 6.5.6: Wikidata P18 portraits for Kingston, Chalk, Eklund, and others;
  *        skip author/athlete namesakes and childhood stills.
+ * 6.5.7: Natalie Brown Wikipedia primary; keep solo convention portraits
+ *        that the year-pair heuristic had treated as second-person shots.
  */
-const GALLERY_VERSION = "6.5.6";
+const GALLERY_VERSION = "6.5.7";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
