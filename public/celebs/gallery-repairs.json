@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T06:38:31.647Z",
+  "generatedAt": "2026-08-27T06:49:52.877Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6567,6 +6567,19 @@
       "shippedToLive": 0.3839827875783308,
       "beforeFingerprint": "e3770c7534751ed890eb89fb194ccc92555d05c5cd95264eb877fa3c3dad38e5",
       "afterFingerprint": "a8d204c11598645b89536a28008956d723b04747717d5eabd7342cf5bf4c77de"
+    },
+    {
+      "id": "carlos-vald-s",
+      "index": 904,
+      "household": false,
+      "source": "public/celebs/carlos-vald-s.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8151118755340576,
+      "shippedToLive": 0.508158277013128,
+      "beforeFingerprint": "05f4f46e390f94808624d79330062b2a0663f7601be1affe9ec5e4796662bc37",
+      "afterFingerprint": "95b6ec1e04861f77b646fe0583de1c8813a9298574561e0306888af52dfcc381"
     }
   ]
 }

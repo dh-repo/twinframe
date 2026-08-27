@@ -150,7 +150,7 @@ export function filenameLooksLikeNamedSubject(title: string): boolean {
 export const WIKI_SEARCH_NAME: Record<string, string> = {
   "emma-darcy": "Emma D'Arcy",
   "j-j-abrams": "J. J. Abrams",
-  "carlos-vald-s": "Carlos Valdés",
+  "carlos-vald-s": "Carlos Valdes (actor)",
   "cynthia-addai-robinson": "Cynthia Addai-Robinson",
   // The novelist is Wikipedia's default; the catalog slot is the TV director.
   "david-grossman": "David Grossman (director)",
@@ -160,6 +160,23 @@ export function wikiSearchName(entry: { id: string; name: string }): string {
   return WIKI_SEARCH_NAME[entry.id] ?? entry.name;
 }
 
+/** Filenames never include Wikipedia disambiguators like "(actor)". */
+export function wikiFileIdentityName(searchName: string): string {
+  return searchName.replace(/\s*\([^)]+\)\s*$/, "").trim();
+}
+
+const WIKI_NON_PERSON =
+  /\((film|album|song|single|novel|book|novella|TV series|television series|video game|game|magazine|newspaper|play|opera|comics|franchise|character)\)/i;
+
+/** Wikipedia search often lands on a film or album instead of the person. */
+export function heldOutWikiTitleRejectReason(title: string): "non-person" | null {
+  return WIKI_NON_PERSON.test(title) ? "non-person" : null;
+}
+
+function foldLatin(s: string): string {
+  return s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+}
+
 /**
  * Reject a named file that does not mention the celebrity. Opaque dumps
  * (DoD hashes, "171027-F-DC888008") are allowed through so infobox photos
@@ -167,10 +184,10 @@ export function wikiSearchName(entry: { id: string; name: string }): string {
  */
 export function heldOutIdentityRejectReason(title: string, name: string): "wrong-person" | null {
   if (!filenameLooksLikeNamedSubject(title)) return null;
-  const hay = title.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  const hay = foldLatin(title).replace(/[^a-z0-9]/g, "");
   const parts = String(name)
     .split(/[\s-]+/)
-    .map((t) => t.replace(/[^a-z0-9]/gi, "").toLowerCase())
+    .map((t) => foldLatin(t).replace(/[^a-z0-9]/g, ""))
     .filter(Boolean);
   const tokens3 = parts.filter((t) => t.length >= 3);
   const last = parts[parts.length - 1];
@@ -284,6 +301,15 @@ const PAIR_PLACE_STOP = new Set([
   "headshots",
   "portrait",
   "photocall",
+  "des",
+  "moines",
+  "galaxycon",
+  "photo",
+  "photos",
+  "op",
+  "ops",
+  "convention",
+  "expo",
 ]);
 
 function nameTokens(raw: string): [string, string] | null {
@@ -526,22 +552,48 @@ export function blockedEvalHashes(entry: IndexEntry, celebsDir = path.join(ROOT,
   return out;
 }
 
-async function resolveTitle(name: string): Promise<string | null> {
+async function searchTitles(query: string): Promise<string[]> {
   const j = await wiki({
     action: "query",
     list: "search",
-    srsearch: name,
+    srsearch: query,
     srlimit: "5",
     srnamespace: "0",
   });
-  const hits = j.query?.search ?? [];
-  for (const hit of hits) {
-    const title = hit?.title;
-    if (!title) continue;
-    if (heldOutIdentityRejectReason(title, name)) continue;
-    return title;
+  return (j.query?.search ?? []).map((h: { title?: string }) => h?.title).filter(Boolean) as string[];
+}
+
+function wikiTitleFitsIdentity(title: string, identityName: string): boolean {
+  return !heldOutWikiTitleRejectReason(title) && !heldOutIdentityRejectReason(title, identityName);
+}
+
+async function isDisambiguationPage(title: string): Promise<boolean> {
+  const j = await wiki({
+    action: "query",
+    titles: title,
+    prop: "pageprops",
+    ppprop: "disambiguation",
+  });
+  const page = Object.values(j.query?.pages ?? {})[0] as { pageprops?: { disambiguation?: string } };
+  return page?.pageprops?.disambiguation !== undefined;
+}
+
+async function resolveTitle(searchName: string, identityName = searchName): Promise<string | null> {
+  const queries = [searchName];
+  if (!/\(.*\)/.test(searchName)) {
+    queries.push(`${searchName} (actor)`, `${searchName} (actress)`);
   }
-  return hits[0]?.title ?? null;
+  let first: string | null = null;
+  for (const query of queries) {
+    const titles = await searchTitles(query);
+    for (const title of titles) {
+      if (!first) first = title;
+      if (!wikiTitleFitsIdentity(title, identityName)) continue;
+      if (await isDisambiguationPage(title)) continue;
+      return title;
+    }
+  }
+  return first;
 }
 
 async function pageImageTitle(title: string): Promise<string | null> {
@@ -724,7 +776,7 @@ async function main() {
         await sleep(DELAY_MS);
         continue;
       }
-      if (heldOutIdentityRejectReason(title, searchName)) {
+      if (heldOutWikiTitleRejectReason(title) || heldOutIdentityRejectReason(title, searchName)) {
         console.log(`- wiki title mismatch  ${entry.id} (${title})`);
         fail++;
         await sleep(DELAY_MS);
@@ -746,9 +798,10 @@ async function main() {
 
       let saved = false;
       for (const cand of ordered) {
+        const fileIdentity = wikiFileIdentityName(searchName);
         const identityReject =
-          heldOutIdentityRejectReason(cand.title, searchName) ||
-          heldOutSecondPersonRejectReason(cand.title, searchName);
+          heldOutIdentityRejectReason(cand.title, fileIdentity) ||
+          heldOutSecondPersonRejectReason(cand.title, fileIdentity);
         if (identityReject) {
           console.log(`  skip ${cand.title}: ${identityReject}`);
           continue;

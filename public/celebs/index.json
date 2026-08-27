@@ -13537,7 +13537,7 @@
     "name": "Carlos Valdés",
     "path": "/celebs/thumbs/96/carlos-vald-s.webp",
     "path192": "/celebs/thumbs/192/carlos-vald-s.webp",
-    "fallbackPath": "/celebs/thumbs/96/carlos-vald-s.webp",
+    "fallbackPath": "/celebs/carlos-vald-s.jpg",
     "gender": "male",
     "genderProb": 0.9777832627296448,
     "ageBuckets": [

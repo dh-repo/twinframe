@@ -15,6 +15,7 @@ import {
   heldOutSamePersonRejectReason,
   heldOutSceneRejectReason,
   heldOutSecondPersonRejectReason,
+  heldOutWikiTitleRejectReason,
   blockedEvalHashes,
   listHeldOutSlots,
   parseFetchMode,
@@ -23,6 +24,7 @@ import {
   resolveFetchIds,
   resolveLimit,
   wikiSearchName,
+  wikiFileIdentityName,
 } from "./fetch-held-out-photos.ts";
 
 function tempHeldOut() {
@@ -81,6 +83,24 @@ describe("wikiSearchName", () => {
       wikiSearchName({ id: "david-grossman", name: "David Grossman" }),
       "David Grossman (director)",
     );
+  });
+
+  it("points Carlos Valdes at the Flash actor, not the Spanish disambiguation page", () => {
+    assert.equal(
+      wikiSearchName({ id: "carlos-vald-s", name: "Carlos Valdés" }),
+      "Carlos Valdes (actor)",
+    );
+    assert.equal(wikiFileIdentityName("Carlos Valdes (actor)"), "Carlos Valdes");
+    assert.equal(wikiFileIdentityName("David Grossman (director)"), "David Grossman");
+  });
+});
+
+describe("heldOutWikiTitleRejectReason", () => {
+  it("rejects a film or album page that Wikipedia ranked above the person", () => {
+    assert.equal(heldOutWikiTitleRejectReason("Slumber (film)"), "non-person");
+    assert.equal(heldOutWikiTitleRejectReason("Spinning Out"), null);
+    assert.equal(heldOutWikiTitleRejectReason("Kaitlyn Leeb"), null);
+    assert.equal(heldOutWikiTitleRejectReason("Grand Theft Auto: Liberty City Stories"), null);
   });
 });
 
@@ -194,6 +214,20 @@ describe("heldOutIdentityRejectReason", () => {
     assert.equal(heldOutIdentityRejectReason("File:Lee Jung-mi 2019.jpg", "Lee Jung-mi"), null);
   });
 
+  it("treats accented catalog names as the unaccented Wikipedia spelling", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("Carlos Valdes (actor)", "Carlos Valdés"),
+      null,
+    );
+    assert.equal(
+      heldOutIdentityRejectReason(
+        "File:Carlos Valdes Photo Op GalaxyCon Des Moines 2025.jpg",
+        "Carlos Valdes",
+      ),
+      null,
+    );
+  });
+
   it("does not enroll the novelist Wikipedia default under the TV-director slot", () => {
     assert.equal(
       heldOutIdentityRejectReason("David Grossman", "David Grossman (director)"),
@@ -266,6 +300,13 @@ describe("heldOutSecondPersonRejectReason", () => {
     );
     assert.equal(
       heldOutSecondPersonRejectReason("File:Alexander Koch SDCC 2014 (cropped).jpg", "Alexander Koch"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason(
+        "File:Carlos Valdes Photo Op GalaxyCon Des Moines 2025.jpg",
+        "Carlos Valdes",
+      ),
       null,
     );
   });
