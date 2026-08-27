@@ -188,8 +188,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Gerwig, Carell, Efron, Mbappé) plus a verified adult Bieber extra.
  * 6.5.22: Replace Pacino beanie primary with a verified Serpico solo so
  *         era extras can pass the same-person gate; add Adele/Naomi extras.
+ * 6.5.23: 19-era Adele extras (Live 2009 turtleneck views, not Seattle
+ *         2011 / Live 2009 (4) which is the held-out 001 probe) plus a
+ *         Doja Cat Hot Pink solo closer to the yellow-latex eval look.
  */
-const GALLERY_VERSION = "6.5.22";
+const GALLERY_VERSION = "6.5.23";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -27,7 +27,12 @@ describe("shipped extra templates", () => {
     for (const t of pack.templates) {
       byId.set(t.id, (byId.get(t.id) ?? 0) + 1);
     }
-    assert.ok((byId.get("adele") ?? 0) >= 2, "Adele extras missing");
+    assert.ok((byId.get("adele") ?? 0) >= 5, "Adele 19-era extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "adele" && t.source === "extra-photos/adele/003.jpg"),
+      "Adele Live 2009 turtleneck extra missing",
+    );
+    assert.ok((byId.get("doja-cat") ?? 0) >= 4, "Doja extras missing");
     assert.ok((byId.get("zendaya") ?? 0) >= 3, "Zendaya extras missing");
     assert.ok((byId.get("justin-bieber") ?? 0) >= 1, "Bieber extras missing");
     assert.ok((byId.get("lady-gaga") ?? 0) >= 1, "Gaga extras missing");

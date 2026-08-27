@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 213,
+  "count": 217,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1493,6 +1493,34 @@
       "commonsTitle": "File:Vin diesel.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Vin_diesel.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T05:01:15.060Z"
+    },
+    {
+      "id": "adele",
+      "file": "003.jpg",
+      "commonsTitle": "File:Adele - Live 2009 (1).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adele_-_Live_2009_%281%29.jpg/960px-Adele_-_Live_2009_%281%29.jpg",
+      "fetchedAt": "2026-08-27T09:36:00.000Z"
+    },
+    {
+      "id": "adele",
+      "file": "004.jpg",
+      "commonsTitle": "File:Adele - Live 2009 (2).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Adele_-_Live_2009_%282%29.jpg/960px-Adele_-_Live_2009_%282%29.jpg",
+      "fetchedAt": "2026-08-27T09:36:00.000Z"
+    },
+    {
+      "id": "adele",
+      "file": "005.jpg",
+      "commonsTitle": "File:Adele 2009.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Adele_2009.jpg/960px-Adele_2009.jpg",
+      "fetchedAt": "2026-08-27T09:36:00.000Z"
+    },
+    {
+      "id": "doja-cat",
+      "file": "002.jpg",
+      "commonsTitle": "File:Doja Cat Hot Pink Party1.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Doja_Cat_Hot_Pink_Party1.png",
+      "fetchedAt": "2026-08-27T09:41:00.000Z"
     }
   ]
 }
