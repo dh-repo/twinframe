@@ -486,9 +486,11 @@ async function main() {
     : new Map(rows.map((r) => [r.id, Float32Array.from(r.d512)]));
   const existingById = EXTRAS_ONLY ? shippedExtras() : new Map();
   const probesById = heldOutEvalProbes();
-  // Same-encoder live 001: descriptors.json is browser-encoded and can sit
-  // >0.05 from a Node crop of the same sitting, which would leak on the
-  // product path (Naomi DVF cropped extra vs held-out 001).
+  // Keep the browser pack 001 *and* a same-encoder live crop of 001.jpg.
+  // Overwriting the pack with live would miss extras that clone the tracked
+  // probe (Karol sunglasses 002 ≡ descriptors.json 001) while a crop of a
+  // different on-disk 001.jpg sits far away. The live crop still catches
+  // product-path leaks like Naomi's DVF extra vs held-out 001.
   const liveProbeJobs = [...new Set(extraCandidates.map((c) => c.id))]
     .map((id) => {
       const filePath = path.join(CELEBS, "held-out", id, "001.jpg");
@@ -503,7 +505,9 @@ async function main() {
     for (let i = 0; i < liveProbeJobs.length; i++) {
       const result = liveResults[i];
       if (result?.ok && result.value?.d512?.length) {
-        probesById.set(liveProbeJobs[i].id, result.value.d512);
+        const live = result.value.d512;
+        const packed = probesById.get(liveProbeJobs[i].id);
+        probesById.set(liveProbeJobs[i].id, packed ? [packed, live] : live);
       }
     }
   }

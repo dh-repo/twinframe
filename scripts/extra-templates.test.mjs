@@ -43,7 +43,7 @@ describe("shipped extra templates", () => {
     assert.ok((byId.get("selena-gomez") ?? 0) >= 1, "Selena extras missing");
     assert.ok((byId.get("alia-bhatt") ?? 0) >= 2, "Alia extras missing");
     assert.ok((byId.get("don-cheadle") ?? 0) >= 1, "Cheadle extras missing");
-    assert.ok((byId.get("karol-g") ?? 0) >= 4, "Karol G 2018-era extras missing");
+    assert.ok((byId.get("karol-g") ?? 0) >= 3, "Karol G 2018-era extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "karol-g" && t.source === "extra-photos/karol-g/003.jpg"),
       "Karol G 2018 NTN interview extra missing",

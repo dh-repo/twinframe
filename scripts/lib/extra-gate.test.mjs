@@ -114,6 +114,13 @@ describe("gateExtraCandidates", () => {
       { primaries, probesById: new Map([["adele", unit(5)]]) },
     );
     assert.equal(distinct.accepted.length, 1);
+
+    const packAndLive = gateExtraCandidates(
+      [{ id: "adele", source: "held-out/adele/002.jpg", descriptor: atDistance(0.4), score: 0.9 }],
+      { primaries, probesById: new Map([["adele", [unit(5), atDistance(0.401)]]]) },
+    );
+    assert.equal(packAndLive.accepted.length, 0);
+    assert.equal(packAndLive.rejected[0].reason, "eval-near-clone");
   });
 
   it("honours per-id caps and a custom distance threshold", () => {

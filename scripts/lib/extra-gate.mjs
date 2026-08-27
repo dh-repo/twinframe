@@ -52,6 +52,15 @@ function normalized(descriptor) {
   return l2Normalize(Float32Array.from(descriptor));
 }
 
+/** One vector, or several (browser pack 001 plus a live Node crop of 001.jpg). */
+function probeList(entry) {
+  if (!entry) return [];
+  if (ArrayBuffer.isView(entry)) return [entry];
+  if (Array.isArray(entry) && entry.length > 0 && typeof entry[0] === "number") return [entry];
+  if (Array.isArray(entry)) return entry.filter((v) => v && (ArrayBuffer.isView(v) || Array.isArray(v)));
+  return [entry];
+}
+
 /**
  * Decide which candidate extra views may join the gallery.
  *
@@ -60,7 +69,7 @@ function normalized(descriptor) {
  * @param {{
  *   primaries: Map<string, ArrayLike<number>>,
  *   existingById?: Map<string, ArrayLike<number>[]>,
- *   probesById?: Map<string, ArrayLike<number>>,
+ *   probesById?: Map<string, ArrayLike<number> | ArrayLike<number>[]>,
  *   maxDistance?: number,
  *   minDetScore?: number,
  *   nearDuplicateEps?: number,
@@ -170,13 +179,20 @@ export function gateExtraCandidates(candidates, options) {
       reject(c, "near-duplicate", distance);
       continue;
     }
-    const probe = probesById.get(c.id);
-    if (probe) {
+    const probes = probeList(probesById.get(c.id));
+    let evalClone = false;
+    let evalCloneDistance;
+    for (const probe of probes) {
       const dProbe = cosineDistance(vec, normalized(probe));
       if (dProbe < evalNearCloneEps) {
-        reject(c, "eval-near-clone", dProbe);
-        continue;
+        evalClone = true;
+        evalCloneDistance = dProbe;
+        break;
       }
+    }
+    if (evalClone) {
+      reject(c, "eval-near-clone", evalCloneDistance);
+      continue;
     }
     const kept = keptById.get(c.id) ?? [];
     if (kept.some((k) => cosineDistance(vec, k) < nearDuplicateEps)) {
