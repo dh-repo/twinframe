@@ -1,5 +1,5 @@
 {
- "at": "2026-08-27T05:55:42.385Z",
+ "at": "2026-08-27T06:03:48.785Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
  "gallerySize": 1005,
@@ -435,7 +435,7 @@
    "dTrue": 0.5767260184664074,
    "dTop1": 0.5767260184664074,
    "dMinSameId": 0.5767260184664074,
-   "dBestWrong": 0.8046269160074211,
+   "dBestWrong": 0.7972422797654951,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2175,7 +2175,7 @@
    "dTrue": 0.002540524033456837,
    "dTop1": 0.002540524033456837,
    "dMinSameId": 0.002540524033456837,
-   "dBestWrong": 0.723296507290923,
+   "dBestWrong": 0.7913641898453532,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -3555,7 +3555,7 @@
    "dTrue": 0.0036152703897596172,
    "dTop1": 0.0036152703897596172,
    "dMinSameId": 0.0036152703897596172,
-   "dBestWrong": 0.8050045258881928,
+   "dBestWrong": 0.7840832075004811,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
