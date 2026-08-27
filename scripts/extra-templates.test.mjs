@@ -647,6 +647,16 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "keira-knightley" && t.source === "extra-photos/keira-knightley/003.jpg"),
       "Keira Knightley 2005 extra missing",
     );
+    assert.ok((byId.get("glen-powell") ?? 0) >= 2, "Glen Powell extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "glen-powell" && t.source === "extra-photos/glen-powell/001.jpg"),
+      "Glen Powell 2016 Golden Globes extra missing",
+    );
+    assert.ok((byId.get("colman-domingo") ?? 0) >= 1, "Colman Domingo extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "colman-domingo" && t.source === "extra-photos/colman-domingo/004.jpg"),
+      "Colman Domingo 2018 Comic-Con extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

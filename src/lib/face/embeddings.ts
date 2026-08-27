@@ -423,8 +423,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Disney+ leather + Omniscient Reader Jun 2025 blazer; not autumnal
  *         floral eval) and Keira Knightley (2005 honey-blonde plaid; not
  *         brunette updo champagne-lace eval).
+ * 6.5.62: Commons extras that beat pack dTrue for Glen Powell (2016 Golden
+ *         Globes tuxedo NASA pin + Top Gun Maverick premiere tuxedo bowtie;
+ *         not outdoor-night navy-suit necktie eval) and Colman Domingo
+ *         (2018 Comic-Con painterly shirt; not gold-embroidered mandarin
+ *         eval). Denzel 2024 TIFF couple is the eval sitting.
  */
-const GALLERY_VERSION = "6.5.61";
+const GALLERY_VERSION = "6.5.62";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 359,
+  "count": 362,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2629,6 +2629,30 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Keira_Knightley_2005_(cropped).jpg",
         "fetchedAt": "2026-08-27T22:25:00.000Z",
         "note": "2005 honey-blonde half-up plaid; not brunette updo champagne-lace eval"
+    }    ,
+    {
+        "id": "glen-powell",
+        "file": "001.jpg",
+        "commonsTitle": "File:Glen Powell in 2016.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Glen_Powell_in_2016.jpg",
+        "fetchedAt": "2026-08-27T22:45:00.000Z",
+        "note": "2016 Golden Globes tuxedo NASA pin; not outdoor-night navy-suit necktie eval"
+    }    ,
+    {
+        "id": "glen-powell",
+        "file": "002.jpg",
+        "commonsTitle": "File:Glen Powell at Top Gun- Maverick premiere.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Glen_Powell_at_Top_Gun-_Maverick_premiere.jpg",
+        "fetchedAt": "2026-08-27T22:45:00.000Z",
+        "note": "Top Gun Maverick premiere tuxedo bowtie interview; not outdoor-night navy-suit necktie eval"
+    }    ,
+    {
+        "id": "colman-domingo",
+        "file": "004.jpg",
+        "commonsTitle": "File:Colman Domingo, 2018 (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colman_Domingo,_2018_(cropped).jpg",
+        "fetchedAt": "2026-08-27T22:45:00.000Z",
+        "note": "2018 Comic-Con colorful painterly shirt; not gold-embroidered mandarin eval"
     }
   ]
 }
