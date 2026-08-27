@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppHomeRouteImport } from './routes/app-home'
 import { Route as HeldOutEncodeRouteImport } from './routes/held-out-encode'
+import { Route as LookalikeHonestyVerifyRouteImport } from './routes/lookalike-honesty-verify'
 import { Route as ReEncodeRouteImport } from './routes/re-encode'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const HeldOutEncodeRoute = HeldOutEncodeRouteImport.update({
   path: '/held-out-encode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LookalikeHonestyVerifyRoute = LookalikeHonestyVerifyRouteImport.update({
+  id: '/lookalike-honesty-verify',
+  path: '/lookalike-honesty-verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReEncodeRoute = ReEncodeRouteImport.update({
   id: '/re-encode',
   path: '/re-encode',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app-home': typeof AppHomeRoute
   '/held-out-encode': typeof HeldOutEncodeRoute
+  '/lookalike-honesty-verify': typeof LookalikeHonestyVerifyRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app-home': typeof AppHomeRoute
   '/held-out-encode': typeof HeldOutEncodeRoute
+  '/lookalike-honesty-verify': typeof LookalikeHonestyVerifyRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app-home': typeof AppHomeRoute
   '/held-out-encode': typeof HeldOutEncodeRoute
+  '/lookalike-honesty-verify': typeof LookalikeHonestyVerifyRoute
   '/re-encode': typeof ReEncodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app-home' | '/held-out-encode' | '/re-encode'
+  fullPaths: '/' | '/app-home' | '/held-out-encode' | '/lookalike-honesty-verify' | '/re-encode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app-home' | '/held-out-encode' | '/re-encode'
-  id: '__root__' | '/' | '/app-home' | '/held-out-encode' | '/re-encode'
+  to: '/' | '/app-home' | '/held-out-encode' | '/lookalike-honesty-verify' | '/re-encode'
+  id: '__root__' | '/' | '/app-home' | '/held-out-encode' | '/lookalike-honesty-verify' | '/re-encode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppHomeRoute: typeof AppHomeRoute
   HeldOutEncodeRoute: typeof HeldOutEncodeRoute
+  LookalikeHonestyVerifyRoute: typeof LookalikeHonestyVerifyRoute
   ReEncodeRoute: typeof ReEncodeRoute
 }
 
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HeldOutEncodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lookalike-honesty-verify': {
+      id: '/lookalike-honesty-verify'
+      path: '/lookalike-honesty-verify'
+      fullPath: '/lookalike-honesty-verify'
+      preLoaderRoute: typeof LookalikeHonestyVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/re-encode': {
       id: '/re-encode'
       path: '/re-encode'
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppHomeRoute: AppHomeRoute,
   HeldOutEncodeRoute: HeldOutEncodeRoute,
+  LookalikeHonestyVerifyRoute: LookalikeHonestyVerifyRoute,
   ReEncodeRoute: ReEncodeRoute,
 }
 export const routeTree = rootRouteImport

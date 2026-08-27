@@ -20,6 +20,8 @@
     "test:heldout": "node --experimental-strip-types scripts/evaluate-held-out-v2.ts",
     "test:swing": "node scripts/swing-probe-tour.mjs --mode solo",
     "test:swing:all": "node scripts/swing-probe-tours.mjs",
+    "test:honesty": "node scripts/lookalike-honesty-smoke.mjs",
+    "test:product-path": "node scripts/product-path-smoke.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test:parity": "node --experimental-strip-types scripts/evaluate-tier-parity.ts --descriptors public/celebs/tier-descriptors-full.json"

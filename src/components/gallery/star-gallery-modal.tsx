@@ -4,6 +4,7 @@ import { loadCelebrityEmbeddings, type CelebrityEmbedding } from "@/lib/face/emb
 import { catalogFor } from "@/lib/celebrities/catalog";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
+import { galleryLoadingCopy } from "@/lib/ux/engine-copy";
 
 interface StarGalleryModalProps {
   open: boolean;
@@ -163,7 +164,7 @@ export function StarGalleryModal({ open, onClose }: StarGalleryModalProps) {
             {loading ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-3 text-white/50">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-400 border-t-transparent" />
-                <p className="text-sm">Loading 1,000+ EdgeFace 512-d embeddings...</p>
+                <p className="text-sm">{galleryLoadingCopy()}</p>
               </div>
             ) : filteredCelebs.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-2 text-white/50">

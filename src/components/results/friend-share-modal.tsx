@@ -5,6 +5,7 @@ import { verdictLabel } from "@/lib/face/verdict";
 import { Button } from "@/components/ui/button";
 import { CelebrityPortrait } from "@/components/celebrity-portrait";
 import { useLockBodyScroll } from "@/lib/ux/lock-body-scroll";
+import { SHARE_ENGINE_STAMP } from "@/lib/ux/engine-copy";
 import {
   closerTwin,
   closerTwinLabel,
@@ -233,7 +234,7 @@ export function FriendShareModal({
               {headline}
             </p>
             <p className="mt-2 font-mono text-[8px] tracking-wider text-white/45">
-              MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS
+              {SHARE_ENGINE_STAMP}
             </p>
           </div>
         </div>

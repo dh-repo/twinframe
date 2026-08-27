@@ -11,6 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { engineCopyFailures } from "./lib/engine-copy-guard.mjs";
 
 const require = createRequire(import.meta.url);
 const axeSource = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
@@ -18,7 +19,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const url = process.argv[2] || "http://127.0.0.1:8080/";
 
-const ROUTES = ["/", "/held-out-encode"];
+const ROUTES = ["/", "/held-out-encode", "/lookalike-honesty-verify"];
 // A committed portrait doubles as the upload fixture for the interactive flow.
 const UPLOAD_FIXTURE = path.join(ROOT, "public/celebs/adam-driver.jpg");
 
@@ -72,6 +73,13 @@ try {
     await page.goto(new URL(route, url).href, { waitUntil: "networkidle", timeout: 45_000 });
     await page.waitForTimeout(800);
     await axeRun(page, route);
+    if (route === "/") {
+      const landing = await page.locator("body").innerText();
+      for (const msg of engineCopyFailures("landing", landing, { requireAdaFace: true })) {
+        failures++;
+        console.log(`[a11y] FAIL: ${msg}`);
+      }
+    }
   }
 
   // ---- Interactive core: upload -> crop review -> results ----

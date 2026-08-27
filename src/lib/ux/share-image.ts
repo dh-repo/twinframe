@@ -7,6 +7,7 @@ import {
   sharePercentCaption,
 } from "./share-copy.ts";
 import { scoreDisplay } from "./score-display.ts";
+import { SHARE_ENGINE_STAMP } from "./engine-copy.ts";
 
 /** Square Instagram / meme card. Preview DOM is 1:1 to match. */
 export const SHARE_CARD_WIDTH = 1080;
@@ -313,7 +314,7 @@ export async function composeShareImage(input: ShareImageInput): Promise<Blob> {
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
   ctx.font = "500 20px ui-monospace, SF Mono, monospace";
-  ctx.fillText("MATCHED ON-DEVICE WITH ADAFACE IR-101 512-D", width / 2, 1024);
+  ctx.fillText(SHARE_ENGINE_STAMP, width / 2, 1024);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

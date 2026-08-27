@@ -16,6 +16,7 @@ import {
   resolveShareVerdict,
 } from "@/lib/ux/share-copy";
 import { scoreDisplay } from "@/lib/ux/score-display";
+import { SHARE_ENGINE_STAMP } from "@/lib/ux/engine-copy";
 import {
   composeShareImage,
   copyShareText,
@@ -222,7 +223,7 @@ export function ShareCardModal({
             <p className="mt-3 line-clamp-1 text-[11px] leading-snug text-white/70">{blurb}</p>
             <p className="mt-1 truncate text-sm font-bold text-white">{topMatch.name}</p>
             <p className="mt-2 font-mono text-[8px] tracking-wider text-white/45">
-              MATCHED ON-DEVICE WITH ADAFACE IR-101 512-D
+              {SHARE_ENGINE_STAMP}
             </p>
           </div>
         </div>

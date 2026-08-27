@@ -57,7 +57,7 @@ while (Date.now() - t0 < MAX_MS) {
   await page.waitForTimeout(1000);
   const text = await page.locator("body").innerText();
   const pct = (text.match(/(\d+)%/) || [])[1] ?? "?";
-  const step = (text.match(/Detecting & aligning face|Extracting EdgeFace|Ranking celebrity|Initializing AccuFace/i) || [])[0] ?? "?";
+  const step = (text.match(/Detecting & aligning face|Extracting AdaFace|Ranking celebrity|Initializing AccuFace/i) || [])[0] ?? "?";
   const elapsed = Math.round((Date.now() - t0) / 1000);
   if (`${pct}|${step}` !== lastPct) {
     console.log(`t=${elapsed}s pct=${pct} step=${step}`);
