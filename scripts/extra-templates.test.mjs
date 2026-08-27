@@ -4,6 +4,8 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 
+import { cosineDistance, l2Normalize } from "./lib/gallery-binary.mjs";
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const EXTRAS = path.join(ROOT, "public/celebs/extra-templates.json");
 
@@ -13,7 +15,7 @@ describe("shipped extra templates", () => {
   it("is AdaFace-512 and no longer an empty EdgeFace stub", () => {
     assert.match(String(pack.model), /AdaFace/i);
     assert.equal(pack.dim, 512);
-    assert.ok(pack.templates.length >= 140, `expected extras, got ${pack.templates.length}`);
+    assert.ok(pack.templates.length >= 130, `expected extras, got ${pack.templates.length}`);
     for (const t of pack.templates) {
       assert.equal(t.descriptor.length, 512, t.id);
       assert.ok(t.source && !t.source.includes("held-out/001"), `eval probe enrolled as extra: ${t.source}`);
@@ -41,5 +43,26 @@ describe("shipped extra templates", () => {
       if (a.equals(b)) leaks.push(`${t.id}:${t.source}`);
     }
     assert.deepEqual(leaks, [], `eval probe leaked into extras: ${leaks.join(", ")}`);
+  });
+
+  it("does not enroll a near-clone of held-out 001", () => {
+    const probes = JSON.parse(
+      fs.readFileSync(path.join(ROOT, "public/celebs/held-out/descriptors.json"), "utf8"),
+    );
+    const byId = new Map();
+    for (const c of probes.cases ?? []) {
+      if (!c.descriptor?.length || c.ok === false) continue;
+      const src = String(c.source ?? "");
+      if (!src.includes("/001.")) continue;
+      byId.set(c.id, l2Normalize(c.descriptor));
+    }
+    const close = [];
+    for (const t of pack.templates) {
+      const probe = byId.get(t.id);
+      if (!probe) continue;
+      const d = cosineDistance(l2Normalize(t.descriptor), probe);
+      if (d < 0.05) close.push(`${t.id}:${t.source} d=${d.toFixed(4)}`);
+    }
+    assert.deepEqual(close, [], `eval near-clone extra: ${close.join("; ")}`);
   });
 });

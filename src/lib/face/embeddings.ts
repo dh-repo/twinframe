@@ -182,8 +182,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         index.json for browse but cannot win a look-alike.
  * 6.5.20: AdaFace extra views for weak Rank-1 identities (Adele, Zendaya,
  *         and other household names with unused held-out 002+ / extra-photos).
- *         Same-person gate rejected impostor extras; thumb-only slots still
- *         do not rank. Wikipedia remaining TV-crew names still have no solo.
+ *         Same-person gate rejected impostor extras; extras within d<0.05 of
+ *         held-out 001 are dropped so eval stays unseen. Thumb-only slots
+ *         still do not rank. Wikipedia remaining TV-crew names still have no solo.
  */
 const GALLERY_VERSION = "6.5.20";
 
