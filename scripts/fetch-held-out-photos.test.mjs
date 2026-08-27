@@ -9,6 +9,8 @@ import {
   PHOTO_MIN_BYTES_PER_PIXEL,
   PHOTO_MIN_DIMENSION,
   heldOutFileNameRejectReason,
+  heldOutIdentityRejectReason,
+  heldOutSecondPersonRejectReason,
   listHeldOutSlots,
   photoRejectReason,
   rebuildManifestFromDisk,
@@ -119,6 +121,24 @@ describe("heldOutFileNameRejectReason", () => {
       "pair",
     );
     assert.equal(heldOutFileNameRejectReason("File:AdamSandlerwithdaughtersFeb11.jpg"), "pair");
+    assert.equal(heldOutFileNameRejectReason("File:Aish N Madhuri.jpg"), "pair");
+    assert.equal(heldOutFileNameRejectReason("File:ColinFirth LiviaGiuggioli Jan2011.jpg"), "pair");
+  });
+
+  it("keeps a solo two-word name that is not a pair token", () => {
+    assert.equal(heldOutFileNameRejectReason("File:Adam Sandler.jpg"), null);
+    assert.equal(heldOutFileNameRejectReason("File:Christian Bale-7837.jpg"), null);
+  });
+
+  it("rejects a vinyl scan that is not a face", () => {
+    assert.equal(heldOutFileNameRejectReason("File:45 record.png"), "non-photo");
+  });
+
+  it("rejects a Broadway entrance that is not a face", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:Broadway Theatre NYC entrance.jpg"),
+      "non-photo",
+    );
   });
 
   it("rejects murals and crowd files that are not a face probe", () => {
@@ -127,6 +147,40 @@ describe("heldOutFileNameRejectReason", () => {
       "non-photo",
     );
     assert.equal(heldOutFileNameRejectReason("File:Cast of Toy Story 2019.jpg"), "non-photo");
+  });
+});
+
+describe("heldOutIdentityRejectReason", () => {
+  it("keeps a filename that mentions the celebrity", () => {
+    assert.equal(heldOutIdentityRejectReason("File:Adam Sandler.jpg", "Adam Sandler"), null);
+    assert.equal(heldOutIdentityRejectReason("File:HoYeon Jung.jpg", "Jung Ho-yeon"), null);
+  });
+
+  it("rejects a named photo of a different person", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("File:Elizabeth Hurley08.jpg", "Hugh Grant"),
+      "wrong-person",
+    );
+  });
+
+  it("does not guess on opaque camera-dump filenames", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("File:170217-D-GO396-0147 (32577063650).jpg", "Bill Gates"),
+      null,
+    );
+  });
+});
+
+describe("heldOutSecondPersonRejectReason", () => {
+  it("rejects a second named person with a year", () => {
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Gong Li Andie MacDowell 1998 (cropped).jpg", "Gong Li"),
+      "pair",
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Dakota Johnson (2014).jpg", "Dakota Johnson"),
+      null,
+    );
   });
 });
 

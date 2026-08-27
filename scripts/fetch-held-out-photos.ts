@@ -75,10 +75,14 @@ export interface Manifest {
 }
 
 const SKIP_NAME =
-  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]/i;
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph/i;
 
 /** Two people in the frame — largest-face still embeds the wrong subject. */
 const SKIP_PAIR = /(^|[ _(])(and|with|&|feat\.?|vs\.?)[ _]|withdaughters|withfamily/i;
+/** "Aish N Madhuri" — N as a pair token, case-sensitive so "in 2006" still passes. */
+const SKIP_PAIR_N = /[ _]N[ _]/;
+/** "ColinFirth LiviaGiuggioli" — glued surname then a second TitleCase name. */
+const SKIP_CAMEL_PAIR = /[a-z]{2}[A-Z][a-z]+ [A-Z][a-z]{3,}/;
 
 /**
  * Shortest side a usable held-out portrait must have. Interface chrome is small
@@ -120,8 +124,52 @@ export function photoRejectReason(candidate: {
  */
 export function heldOutFileNameRejectReason(title: string): "non-photo" | "pair" | null {
   const bare = title.replace(/^File:/i, "");
-  if (SKIP_PAIR.test(bare)) return "pair";
+  if (SKIP_PAIR.test(bare) || SKIP_PAIR_N.test(bare) || SKIP_CAMEL_PAIR.test(bare)) return "pair";
   if (SKIP_NAME.test(bare)) return "non-photo";
+  return null;
+}
+
+/** True when the filename contains English-like words, not just a camera dump id. */
+export function filenameLooksLikeNamedSubject(title: string): boolean {
+  const bare = title.replace(/^File:/i, "").replace(/\.[a-z0-9]+$/i, "");
+  return bare.split(/[\s_\-()]+/).some((w) => /[a-z]{4,}/i.test(w));
+}
+
+/**
+ * Reject a named file that does not mention the celebrity. Opaque dumps
+ * (DoD hashes, "171027-F-DC888008") are allowed through so infobox photos
+ * still land; "Elizabeth Hurley08.jpg" for Hugh Grant is not.
+ */
+export function heldOutIdentityRejectReason(title: string, name: string): "wrong-person" | null {
+  if (!filenameLooksLikeNamedSubject(title)) return null;
+  const hay = title.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  const tokens = String(name)
+    .split(/[\s-]+/)
+    .map((t) => t.replace(/[^a-z0-9]/gi, "").toLowerCase())
+    .filter((t) => t.length >= 4);
+  if (tokens.length === 0) {
+    tokens.push(
+      ...String(name)
+        .split(/[\s-]+/)
+        .map((t) => t.replace(/[^a-z0-9]/gi, "").toLowerCase())
+        .filter((t) => t.length >= 3),
+    );
+  }
+  return tokens.some((t) => hay.includes(t)) ? null : "wrong-person";
+}
+
+/**
+ * "Gong Li Andie MacDowell 1998" is a pair even though it mentions Gong Li.
+ * A First Last + year that is not the celebrity is a second person in frame.
+ */
+export function heldOutSecondPersonRejectReason(title: string, name: string): "pair" | null {
+  const matches = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}[^\d]{0,3}\d{4}/g) ?? [];
+  const celeb = String(name).replace(/[^a-z ]/gi, " ").toLowerCase();
+  for (const raw of matches) {
+    const who = raw.replace(/\s*\d{4}$/, "").trim().toLowerCase();
+    const [first, last] = who.split(/\s+/);
+    if (first && last && !(celeb.includes(first) && celeb.includes(last))) return "pair";
+  }
   return null;
 }
 
@@ -451,6 +499,13 @@ async function main() {
 
       let saved = false;
       for (const cand of ordered) {
+        const identityReject =
+          heldOutIdentityRejectReason(cand.title, entry.name) ||
+          heldOutSecondPersonRejectReason(cand.title, entry.name);
+        if (identityReject) {
+          console.log(`  skip ${cand.title}: ${identityReject}`);
+          continue;
+        }
         const result = await download(cand.url);
         if (!result) continue;
         if ("reject" in result) {

@@ -7,14 +7,15 @@
  * Usage:
  *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs
  *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs --limit 8
- *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs --ids kim-kardashian,meryl-streep --out reports/held-out-adaface-probes.json --merge --skip-missing
+ *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs --ids kim-kardashian,meryl-streep --out reports/held-out-adaface-probes.json --merge --skip-missing --concurrency 4
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
-import { adafaceModelReady, embedImageFile, ensureSessions } from "./enroll-gallery-onnx.mjs";
+import { adafaceModelReady, embedImageFile } from "./enroll-gallery-onnx.mjs";
+import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PACK = path.join(ROOT, "public/celebs/held-out/descriptors.json");
@@ -31,6 +32,7 @@ export function parseEncodeArgs(argv) {
     out: null,
     skipMissing: argv.includes("--skip-missing"),
     merge: argv.includes("--merge"),
+    concurrency: parseConcurrencyArg(argv),
     ids: /** @type {string[] | null} */ (null),
   };
   const idx = argv.indexOf("--limit");
@@ -73,16 +75,11 @@ async function materializeForEmbed(srcPath) {
   return dest;
 }
 
-async function encodeCase(c) {
-  const imagePath = resolveProbePath(c.source);
-  if (!fs.existsSync(imagePath)) {
-    return { ...c, ok: false, descriptor: [], error: `missing ${c.source}` };
-  }
-  const embedPath = await materializeForEmbed(imagePath);
-  const emb = await embedImageFile(embedPath);
-  const descriptor = emb.d512 ?? emb.d256;
+export function caseFromEmbed(c, emb, error) {
+  if (error) return { ...c, ok: false, descriptor: [], error };
+  const descriptor = emb?.d512 ?? emb?.d256;
   if (!descriptor || descriptor.length !== 512 || emb.embedKind !== "adaface") {
-    return { ...c, ok: false, descriptor: [], error: `embedKind=${emb.embedKind} dim=${descriptor?.length}` };
+    return { ...c, ok: false, descriptor: [], error: `embedKind=${emb?.embedKind} dim=${descriptor?.length}` };
   }
   if (!emb.usedDetection) {
     return { ...c, ok: false, descriptor: [], error: "no-detection" };
@@ -95,6 +92,62 @@ async function encodeCase(c) {
   };
 }
 
+async function encodeCase(c) {
+  const imagePath = resolveProbePath(c.source);
+  if (!fs.existsSync(imagePath)) {
+    return { ...c, ok: false, descriptor: [], error: `missing ${c.source}` };
+  }
+  const embedPath = await materializeForEmbed(imagePath);
+  const emb = await embedImageFile(embedPath);
+  return caseFromEmbed(c, emb);
+}
+
+const EMBED_WORKER = path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/embed-worker.mjs");
+
+async function encodeCasesPooled(cases, concurrency) {
+  const jobs = [];
+  /** @type {Array<{ index: number, encoded: object }>} */
+  const immediate = [];
+  for (let i = 0; i < cases.length; i++) {
+    const c = cases[i];
+    const imagePath = resolveProbePath(c.source);
+    if (!fs.existsSync(imagePath)) {
+      immediate.push({ index: i, encoded: { ...c, ok: false, descriptor: [], error: `missing ${c.source}` } });
+      continue;
+    }
+    const embedPath = await materializeForEmbed(imagePath);
+    jobs.push({ index: i, case: c, filePath: embedPath });
+  }
+  const t0 = Date.now();
+  const poolResults = await mapProcessPool(
+    jobs.map((j) => ({ filePath: j.filePath })),
+    {
+      workerPath: EMBED_WORKER,
+      concurrency,
+      onProgress(done, total) {
+        if (done % 10 !== 0 && done !== total) return;
+        const rate = done / Math.max(0.001, (Date.now() - t0) / 1000);
+        process.stdout.write(
+          `\r${done}/${total} encode (${rate.toFixed(2)}/s, eta ${(Math.max(0, total - done) / rate).toFixed(0)}s)`,
+        );
+      },
+    },
+  );
+  if (jobs.length) process.stdout.write("\n");
+  const out = new Array(cases.length);
+  for (const row of immediate) out[row.index] = row.encoded;
+  for (let i = 0; i < jobs.length; i++) {
+    const job = jobs[i];
+    const result = poolResults[i];
+    out[job.index] = result?.ok
+      ? caseFromEmbed(job.case, result.value)
+      : caseFromEmbed(job.case, null, String(result?.error ?? "embed failed"));
+    const flag = out[job.index].ok ? "OK" : `MISS ${out[job.index].error}`;
+    process.stdout.write(`${job.case.id} ${flag}\n`);
+  }
+  return out;
+}
+
 async function main() {
   const args = parseEncodeArgs(process.argv.slice(2));
   if (!adafaceModelReady()) {
@@ -102,15 +155,7 @@ async function main() {
   }
   const pack = JSON.parse(fs.readFileSync(PACK, "utf8"));
   const cases = filterEncodeCases(pack.cases ?? [], args);
-  await ensureSessions();
-  const out = [];
-  for (let i = 0; i < cases.length; i++) {
-    const c = cases[i];
-    const encoded = await encodeCase(c);
-    out.push(encoded);
-    const flag = encoded.ok ? "OK" : `MISS ${encoded.error}`;
-    process.stdout.write(`${i + 1}/${cases.length} ${c.id} ${flag}\n`);
-  }
+  const out = await encodeCasesPooled(cases, args.concurrency);
   const dest = args.out ? path.resolve(ROOT, args.out) : PACK;
   let kept = args.skipMissing ? out.filter((c) => c.ok) : out;
   if (args.merge && fs.existsSync(dest)) {

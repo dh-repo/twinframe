@@ -20,6 +20,8 @@ describe("encode-held-out-onnx harness", () => {
       "meryl-streep",
     ]);
     assert.equal(parseEncodeArgs(["--merge"]).merge, true);
+    assert.ok(parseEncodeArgs(["--concurrency", "4"]).concurrency >= 1);
+    assert.equal(parseEncodeArgs(["--concurrency", "4"]).concurrency, 4);
     assert.throws(() => parseEncodeArgs(["--ids"]), /Missing --ids value/);
   });
 
@@ -41,5 +43,20 @@ describe("encode-held-out-onnx harness", () => {
       merged.find((c) => c.id === "meryl-streep"),
       { id: "meryl-streep", source: "/celebs/held-out/meryl-streep/001.jpg", ok: true, descriptor: [1] },
     );
+  });
+
+  it("accepts a 512-d AdaFace embed and rejects a missed detection", async () => {
+    const { caseFromEmbed } = await import("./encode-held-out-onnx.mjs");
+    const c = { id: "adele", source: "/celebs/held-out/adele/001.jpg" };
+    const ok = caseFromEmbed(c, {
+      d512: Array(512).fill(0.01),
+      embedKind: "adaface",
+      usedDetection: true,
+    });
+    assert.equal(ok.ok, true);
+    assert.equal(ok.descriptor.length, 512);
+    const miss = caseFromEmbed(c, { d512: Array(512).fill(0.01), embedKind: "adaface", usedDetection: false });
+    assert.equal(miss.ok, false);
+    assert.equal(miss.error, "no-detection");
   });
 });
