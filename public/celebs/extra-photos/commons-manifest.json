@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 349,
+  "count": 353,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2549,6 +2549,38 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Song_Kang_in_November_2025.jpg",
         "fetchedAt": "2026-08-27T21:04:00.000Z",
         "note": "November 2025 high-collar press; not wet-look denim eval"
+    }    ,
+    {
+        "id": "austin-butler",
+        "file": "001.jpg",
+        "commonsTitle": "File:Austin Butler at Caught stealing premiere London 2025.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Austin_Butler_at_Caught_stealing_premiere_London_2025.jpg",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "Caught Stealing London premiere stubble quiff; not dark-pompadour studio eval"
+    }    ,
+    {
+        "id": "tom-hiddleston",
+        "file": "001.jpg",
+        "commonsTitle": "File:Tom Hiddleston Comic Con 2016.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tom_Hiddleston_Comic_Con_2016.jpg",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "Comic-Con 2016 grey polo smile; not navy-sweater Comic-Con eval"
+    }    ,
+    {
+        "id": "tom-hiddleston",
+        "file": "002.jpg",
+        "commonsTitle": "File:Tom Hiddleston by Gage Skidmore 2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tom_Hiddleston_by_Gage_Skidmore_2.jpg",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "Gage Skidmore linen blazer panel; not navy-sweater Comic-Con eval"
+    }    ,
+    {
+        "id": "robert-de-niro",
+        "file": "008.jpg",
+        "commonsTitle": "File:Robert De Niro 2011 1.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Robert_De_Niro_2011_1.JPG",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "2011 bowtie glasses; not salt-pepper patterned-tie eval"
     }
   ]
 }

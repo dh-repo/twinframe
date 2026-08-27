@@ -408,8 +408,14 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         not red iHeartRADIO jersey eval), and Kit Harington (GoT WesterosVIP
  *         three-piece; not Comic-Con henley eval). Sadie Sink extras are the
  *         same Comic-Con sitting as eval.
+ * 6.5.59: Commons extras that beat pack dTrue for Austin Butler (Caught
+ *         Stealing London premiere stubble quiff; not dark-pompadour studio
+ *         eval), Tom Hiddleston (Comic-Con 2016 grey polo + Gage Skidmore
+ *         linen blazer; not navy-sweater Comic-Con eval), and Robert De Niro
+ *         (2011 bowtie glasses; not salt-pepper patterned-tie eval). De Niro
+ *         KVIFF portrait is the eval sitting.
  */
-const GALLERY_VERSION = "6.5.58";
+const GALLERY_VERSION = "6.5.59";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
