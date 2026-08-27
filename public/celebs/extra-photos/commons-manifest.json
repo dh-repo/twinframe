@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 255,
+  "count": 258,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1797,6 +1797,30 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kendrick_Lamar_3_F.I.B._2016_(cropped_3).jpg",
       "fetchedAt": "2026-08-27T14:44:00.000Z",
       "note": "product-crop of FIB 2016 B&W concert still; not the FEQ July 2016 eval sitting"
+    },
+    {
+      "id": "martin-scorsese",
+      "file": "001.jpg",
+      "commonsTitle": "(pre-existing extra-photos/martin-scorsese/001.jpg)",
+      "sourceUrl": "",
+      "fetchedAt": "2026-08-27T15:12:00.000Z",
+      "note": "product-crop of on-disk glasses studio portrait; not 65th Peabody Awards eval sitting"
+    },
+    {
+      "id": "martin-scorsese",
+      "file": "002.jpg",
+      "commonsTitle": "(pre-existing extra-photos/martin-scorsese/002.jpg)",
+      "sourceUrl": "",
+      "fetchedAt": "2026-08-27T15:12:00.000Z",
+      "note": "product-crop isolating Scorsese from an awards-stage frame with DiCaprio; not Peabody eval"
+    },
+    {
+      "id": "florence-pugh",
+      "file": "005.jpg",
+      "commonsTitle": "File:Florence Pugh at the 2024 Toronto International Film Festival 4.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Florence_Pugh_at_the_2024_Toronto_International_Film_Festival_4.jpg",
+      "fetchedAt": "2026-08-27T15:12:00.000Z",
+      "note": "product-crop of 2024 TIFF van 3/4; Comic-Con extra 003 is the eval sitting and was not enrolled. BFI LFF enrolls via held-out/003.jpg"
     }
   ]
 }

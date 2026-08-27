@@ -155,6 +155,20 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "kendrick-lamar" && t.source === "extra-photos/kendrick-lamar/003.jpg"),
       "Kendrick FIB 2016 extra missing",
     );
+    assert.ok((byId.get("martin-scorsese") ?? 0) >= 2, "Scorsese extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "martin-scorsese" && t.source === "extra-photos/martin-scorsese/001.jpg"),
+      "Scorsese glasses studio extra missing",
+    );
+    assert.ok((byId.get("florence-pugh") ?? 0) >= 3, "Florence extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "florence-pugh" && t.source === "held-out/florence-pugh/003.jpg"),
+      "Florence BFI LFF held-out extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "florence-pugh" && t.source === "extra-photos/florence-pugh/005.jpg"),
+      "Florence 2024 TIFF extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

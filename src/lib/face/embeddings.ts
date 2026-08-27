@@ -236,8 +236,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         (Pitchfork 2012 gingham; FIB 2016 B&W). FEQ July 2016 eval
  *         sitting was not enrolled. Naomi amfAR bangs, Ranveer NBA,
  *         and Dresden grimace stills are eval sittings or do not beat.
+ * 6.5.36: Product-crops that beat pack dTrue for Martin Scorsese
+ *         (glasses studio portrait + awards-stage crop; not 65th
+ *         Peabody eval) and Florence Pugh (held-out BFI LFF 003;
+ *         2024 TIFF van 3/4 extra 005). Comic-Con extra 003 is the
+ *         eval sitting and was not enrolled.
  */
-const GALLERY_VERSION = "6.5.35";
+const GALLERY_VERSION = "6.5.36";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
