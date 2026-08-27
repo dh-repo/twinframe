@@ -265,8 +265,20 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.40: Inter Miami 2025 product-crop that beats the 2011-12
  *         Barcelona action pack dTrue for Lionel Messi. Argentina
  *         2022 World Cup stills did not beat.
+ * 6.5.41: Commons extras that beat pack dTrue for Kate Winslet
+ *         (2023 white blazer + TIFF 2015; not Venice 2011 updo eval),
+ *         The Weeknd (Cannes 2023 tuxedo; not red/blue concert eval),
+ *         Vanessa Kirby (2018 leopard + Paris strapless; not black-
+ *         blazer studio eval), Awkwafina (2018 studio + BAFTA 2026;
+ *         not Golden Globes ruffled collar eval), Adriana Lima (2011
+ *         sequin interview; not 2010 Fantasy Bra eval), Tom Hanks
+ *         (2016 suede + Elvis 2022; not Kennedy Center Honors eval),
+ *         Hrithik Roshan (2019 orange tee + 2016 pinstripe + Cannes
+ *         Homebound; not Netflix HRX-cap eval), Steve Carell
+ *         (Montclair 2014; not Despicable Me 2 glasses eval), and
+ *         Lady Gaga (JWT Toronto Joanne-guitar; not leather A-Yo eval).
  */
-const GALLERY_VERSION = "6.5.40";
+const GALLERY_VERSION = "6.5.41";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

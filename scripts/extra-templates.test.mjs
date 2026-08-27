@@ -242,6 +242,51 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "kate-middleton" && t.source === "extra-photos/kate-middleton/001.jpg"),
       "Kate 2023 portrait extra missing",
     );
+    assert.ok((byId.get("kate-winslet") ?? 0) >= 2, "Kate Winslet extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "kate-winslet" && t.source === "extra-photos/kate-winslet/001.jpg"),
+      "Kate Winslet 2023 extra missing",
+    );
+    assert.ok((byId.get("the-weeknd") ?? 0) >= 1, "The Weeknd extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "the-weeknd" && t.source === "extra-photos/the-weeknd/006.jpg"),
+      "The Weeknd Cannes 2023 extra missing",
+    );
+    assert.ok((byId.get("vanessa-kirby") ?? 0) >= 2, "Vanessa Kirby extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "vanessa-kirby" && t.source === "extra-photos/vanessa-kirby/001.jpg"),
+      "Vanessa Kirby 2018 extra missing",
+    );
+    assert.ok((byId.get("awkwafina") ?? 0) >= 2, "Awkwafina extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "awkwafina" && t.source === "extra-photos/awkwafina/001.jpg"),
+      "Awkwafina 2018 extra missing",
+    );
+    assert.ok((byId.get("adriana-lima") ?? 0) >= 1, "Adriana Lima extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "adriana-lima" && t.source === "extra-photos/adriana-lima/004.jpg"),
+      "Adriana Lima 2011 extra missing",
+    );
+    assert.ok((byId.get("tom-hanks") ?? 0) >= 2, "Tom Hanks extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "tom-hanks" && t.source === "extra-photos/tom-hanks/001.jpg"),
+      "Tom Hanks 2016 extra missing",
+    );
+    assert.ok((byId.get("hrithik-roshan") ?? 0) >= 3, "Hrithik extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "hrithik-roshan" && t.source === "extra-photos/hrithik-roshan/001.jpg"),
+      "Hrithik 2019 extra missing",
+    );
+    assert.ok((byId.get("steve-carell") ?? 0) >= 4, "Steve Carell extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "steve-carell" && t.source === "extra-photos/steve-carell/005.jpg"),
+      "Steve Carell 2014 extra missing",
+    );
+    assert.ok((byId.get("lady-gaga") ?? 0) >= 2, "Gaga extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "lady-gaga" && t.source === "extra-photos/lady-gaga/006.jpg"),
+      "Lady Gaga JWT Toronto extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 258,
+  "count": 273,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1821,6 +1821,126 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Florence_Pugh_at_the_2024_Toronto_International_Film_Festival_4.jpg",
       "fetchedAt": "2026-08-27T15:12:00.000Z",
       "note": "product-crop of 2024 TIFF van 3/4; Comic-Con extra 003 is the eval sitting and was not enrolled. BFI LFF enrolls via held-out/003.jpg"
+    },
+    {
+      "id": "kate-winslet",
+      "file": "001.jpg",
+      "commonsTitle": "File:Kate Winslet in 2023 (1) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Kate_Winslet_in_2023_%281%29_%28cropped%29.jpg/1920px-Kate_Winslet_in_2023_%281%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:33.563Z",
+      "note": "2023 white blazer waves; not 2011 Venice updo/navy-gown eval"
+    },
+    {
+      "id": "kate-winslet",
+      "file": "003.jpg",
+      "commonsTitle": "File:Kate Winslet TIFF 2015.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Kate_Winslet_TIFF_2015.jpg/1920px-Kate_Winslet_TIFF_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:33.871Z",
+      "note": "TIFF 2015 autograph navy sequin; not Venice 2011 eval"
+    },
+    {
+      "id": "the-weeknd",
+      "file": "006.jpg",
+      "commonsTitle": "File:The Weeknd Cannes 2023.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/The_Weeknd_Cannes_2023.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:34.128Z",
+      "note": "Cannes 2023 tuxedo; not red/blue concert jacket eval"
+    },
+    {
+      "id": "vanessa-kirby",
+      "file": "001.jpg",
+      "commonsTitle": "File:Vanessa Kirby 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Vanessa_Kirby_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:34.427Z",
+      "note": "2018 leopard turtleneck interview; not black-blazer studio eval"
+    },
+    {
+      "id": "vanessa-kirby",
+      "file": "002.jpg",
+      "commonsTitle": "File:Vanessa Kirby in Paris, 2018.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Vanessa_Kirby_in_Paris%2C_2018.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:34.695Z",
+      "note": "strapless red-carpet updo; not black-blazer studio eval"
+    },
+    {
+      "id": "awkwafina",
+      "file": "001.jpg",
+      "commonsTitle": "File:Awkwafina, 2018 (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Awkwafina%2C_2018_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:35.058Z",
+      "note": "2018 studio turtleneck/nose-ring; not Golden Globes ruffled collar eval"
+    },
+    {
+      "id": "awkwafina",
+      "file": "002.jpg",
+      "commonsTitle": "File:Awkwafina at BAFTA 2026.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Awkwafina_at_BAFTA_2026.jpg/1920px-Awkwafina_at_BAFTA_2026.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:35.333Z",
+      "note": "BAFTA TV 2026 orange dress; not Golden Globes ruffled collar eval"
+    },
+    {
+      "id": "adriana-lima",
+      "file": "004.jpg",
+      "commonsTitle": "File:Adriana Lima in 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Adriana_Lima_in_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:35.591Z",
+      "note": "2011 outdoor sequin interview; not 2010 Fantasy Bra red-dress eval"
+    },
+    {
+      "id": "tom-hanks",
+      "file": "001.jpg",
+      "commonsTitle": "File:Tom Hanks 2016.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Tom_Hanks_2016.jpg/1920px-Tom_Hanks_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:36.213Z",
+      "note": "2016 blue-backdrop suede; not Kennedy Center Honors eval"
+    },
+    {
+      "id": "tom-hanks",
+      "file": "003.jpg",
+      "commonsTitle": "File:Tom Hanks at the Elvis Premiere 2022.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Tom_Hanks_at_the_Elvis_Premiere_2022.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:36.461Z",
+      "note": "Elvis premiere 2022 overcoat; not Kennedy Center Honors eval"
+    },
+    {
+      "id": "hrithik-roshan",
+      "file": "001.jpg",
+      "commonsTitle": "File:Hrithik Roshan in 2019.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Hrithik_Roshan_in_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:36.709Z",
+      "note": "2019 orange tee microphone; not Netflix HRX-cap eval"
+    },
+    {
+      "id": "hrithik-roshan",
+      "file": "004.jpg",
+      "commonsTitle": "File:Hrithik Roshan in 2016.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Hrithik_Roshan_in_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:36.952Z",
+      "note": "2016 pinstripe blazer pink cubes; not Netflix HRX-cap eval"
+    },
+    {
+      "id": "hrithik-roshan",
+      "file": "005.jpg",
+      "commonsTitle": "File:Hrithik Roshan at Homebound screening (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Hrithik_Roshan_at_Homebound_screening_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:37.192Z",
+      "note": "Cannes 2025 Homebound leather; not Netflix HRX-cap eval"
+    },
+    {
+      "id": "steve-carell",
+      "file": "005.jpg",
+      "commonsTitle": "File:Steve Carell November 2014.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Steve_Carell_November_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:37.453Z",
+      "note": "Montclair Film 2014 no-glasses; not Despicable Me 2 glasses eval"
+    },
+    {
+      "id": "lady-gaga",
+      "file": "006.jpg",
+      "commonsTitle": "File:Lady Gaga JWT Toronto, 2017-09-06 (cropped 2).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Lady_Gaga_JWT_Toronto%2C_2017-09-06_%28cropped_2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:37.716Z",
+      "note": "JWT Toronto Joanne-guitar look; not leather A-Yo orange-backdrop eval"
     }
   ]
 }
