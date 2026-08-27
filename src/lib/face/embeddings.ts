@@ -203,8 +203,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Armas (2017 Comic-Con plus held-out 003/004), and Lisa (2024
  *         cropped solo plus held-out 002). Metallica-concert Bieber crop
  *         of eval 001 is not enrolled (dCrop 0.071, same sitting).
+ * 6.5.28: Gated on-disk extras that beat held-out pack distance for
+ *         Dakota, Miles, Dev, Bella, Hugh, and Nicki. Dakota extra 004
+ *         was a byte-clone of eval 001 and was dropped. Glover 2012
+ *         Commons views fail the eval look or the 0.7 gate.
  */
-const GALLERY_VERSION = "6.5.27";
+const GALLERY_VERSION = "6.5.28";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

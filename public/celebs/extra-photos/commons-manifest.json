@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 224,
+  "count": 223,
   "photos": [
     {
       "id": "sandra-oh",
@@ -793,13 +793,6 @@
       "commonsTitle": "File:Dakota Johnson at BAFTA 2016.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Dakota_Johnson_at_BAFTA_2016.jpg/960px-Dakota_Johnson_at_BAFTA_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:02.350Z"
-    },
-    {
-      "id": "dakota-johnson",
-      "file": "004.jpg",
-      "commonsTitle": "File:Dakota Johnson (2014).jpg",
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Dakota_Johnson_%282014%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-      "fetchedAt": "2026-08-18T04:45:02.641Z"
     },
     {
       "id": "gael-garcia-bernal",
