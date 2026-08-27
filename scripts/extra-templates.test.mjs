@@ -29,6 +29,8 @@ describe("shipped extra templates", () => {
     }
     assert.ok((byId.get("adele") ?? 0) >= 2, "Adele extras missing");
     assert.ok((byId.get("zendaya") ?? 0) >= 3, "Zendaya extras missing");
+    assert.ok((byId.get("justin-bieber") ?? 0) >= 1, "Bieber extras missing");
+    assert.ok((byId.get("lady-gaga") ?? 0) >= 1, "Gaga extras missing");
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

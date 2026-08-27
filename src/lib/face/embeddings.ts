@@ -184,9 +184,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         and other household names with unused held-out 002+ / extra-photos).
  *         Same-person gate rejected impostor extras; extras within d<0.05 of
  *         held-out 001 are dropped so eval stays unseen. Thumb-only slots
- *         still do not rank. Wikipedia remaining TV-crew names still have no solo.
+ * 6.5.21: Extra views for remaining weak Rank-1 names (Gaga, Rogen, Jennie,
+ *         Gerwig, Carell, Efron, Mbappé) plus a verified adult Bieber extra.
+ *         Eval near-clones and namesake/art dumps still stay out.
  */
-const GALLERY_VERSION = "6.5.20";
+const GALLERY_VERSION = "6.5.21";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
