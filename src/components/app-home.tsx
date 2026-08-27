@@ -19,6 +19,8 @@ import { playMatchChime } from "@/lib/utils/feedback";
 import { DEFAULT_PACK, type PackId } from "@/lib/celebrities/packs";
 import { loadCuratedPacks, readStoredPack } from "@/lib/celebrities/load-packs";
 import { loadGalleryFeatures } from "@/lib/celebrities/load-gallery-features";
+import { captureEngineBlurb } from "@/lib/ux/engine-copy";
+import { REFUSE_HEADING } from "@/lib/ux/lookalike-honesty-fixtures";
 
 type Phase = "capture" | "review" | "analyzing" | "results" | "error" | "quality-blocked";
 type PlayMode = "solo" | "friend";
@@ -57,7 +59,7 @@ function captureHeadline(mode: PlayMode, slot: FriendSlot): string {
 function captureSubcopy(mode: PlayMode, slot: FriendSlot): string {
   switch (mode) {
     case "solo":
-      return "Upload a selfie or use your camera. Instant, on-device matching with EdgeFace 512-d & SCRFD-2.5G against";
+      return captureEngineBlurb();
     case "friend":
       switch (slot) {
         case "a":
@@ -606,7 +608,7 @@ export function AppHome() {
                   <h2 className="text-sm font-medium leading-tight text-white">
                     {result.matches.length === 0 &&
                     result.quality.issues.some((i) => i.includes("look-alike"))
-                      ? "No close look-alike found"
+                      ? REFUSE_HEADING
                       : result.quality.issues.some((i) => i.includes("Hold the phone"))
                         ? "Hold the phone a bit further"
                       : result.quality.issues.some((i) => i.includes("angle") || i.includes("extreme"))

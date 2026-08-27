@@ -61,8 +61,9 @@ jobs:
             sleep 2
           done
           node scripts/a11y-smoke.mjs http://127.0.0.1:8080; A11Y=$?
+          node scripts/lookalike-honesty-smoke.mjs http://127.0.0.1:8080; HONESTY=$?
           node scripts/perf-throttle.mjs http://127.0.0.1:8080 1; PERF=$?
-          test "$A11Y" -eq 0 -a "$PERF" -eq 0
+          test "$A11Y" -eq 0 -a "$HONESTY" -eq 0 -a "$PERF" -eq 0
 
       - name: Production build
         run: npm run build

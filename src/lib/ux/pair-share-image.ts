@@ -11,6 +11,7 @@ import {
   verdictStampStyle,
   type VerdictStampStyle,
 } from "./share-image.ts";
+import { SHARE_ENGINE_STAMP } from "./engine-copy.ts";
 
 export const PAIR_SHARE_WIDTH = SHARE_CARD_WIDTH;
 export const PAIR_SHARE_HEIGHT = SHARE_CARD_HEIGHT;
@@ -421,7 +422,7 @@ export async function composePairShareImage(input: PairShareInput): Promise<Blob
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
   ctx.font = "500 20px ui-monospace, SF Mono, monospace";
-  ctx.fillText("MATCHED WITH ON-DEVICE EDGEFACE 512-D BIOMETRICS", width / 2, 1024);
+  ctx.fillText(SHARE_ENGINE_STAMP, width / 2, 1024);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

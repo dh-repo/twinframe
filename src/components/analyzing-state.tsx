@@ -1,6 +1,7 @@
 import { Progress } from "@/components/ui/progress";
 import { FaceScanningHud } from "@/components/scanning/face-scanning-hud";
 import type { FaceTelemetry } from "@/lib/face/types";
+import { analyzingSteps } from "@/lib/ux/engine-copy";
 
 export interface AnalyzingStateProps {
   stepIndex: number;
@@ -37,12 +38,7 @@ export function AnalyzingState({
   gallerySize = 1000,
   telemetry,
 }: AnalyzingStateProps) {
-  const STEPS = [
-    { label: "Initializing AccuFace engine", detail: "ONNX WebGPU / WASM SIMD execution" },
-    { label: "Detecting & aligning face", detail: "Picking your sharpest frames · SCRFD-2.5G" },
-    { label: "Extracting EdgeFace-S embedding", detail: "512-d Float16 & Anti-GAN Biohash" },
-    { label: "Ranking celebrity gallery", detail: `${gallerySize.toLocaleString()} stars · WASM Biohash & Cosine matching` },
-  ];
+  const STEPS = analyzingSteps(gallerySize);
 
   const pct = Math.min(100, Math.max(0, Math.round(progress ?? Math.min(92, 18 + stepIndex * 24))));
   const active = STEPS[Math.min(stepIndex, STEPS.length - 1)]!;

@@ -5,6 +5,7 @@ import {
   transformNormalizedBoxToHud,
 } from "@/lib/face/hud-transform";
 import type { FaceTelemetry } from "@/lib/face/types";
+import { HUD_IDLE_TELEMETRY, hudEmbeddingLine, hudRankingLine } from "@/lib/ux/engine-copy";
 
 export interface FaceScanningHudProps {
   previewUrl?: string | null;
@@ -26,12 +27,7 @@ export interface FaceScanningHudProps {
   className?: string;
 }
 
-const TELEMETRY_MESSAGES = [
-  "SCRFD-2.5G FEATURE PYRAMID DETECT",
-  "EXPNORM 3D UV WGSL FRONTALIZATION",
-  "EXTRACTING 256-D EDGEFACE EMBEDDINGS",
-  "512-BIT BIOHASH & POPCOUNT MATCHING",
-];
+const TELEMETRY_MESSAGES = HUD_IDLE_TELEMETRY;
 
 // Fallback search nodes when model hasn't detected face yet
 const FALLBACK_LANDMARK_NODES = [
@@ -104,8 +100,8 @@ export function FaceScanningHud({
         `CANVAS: ${telemetry.originalWidth}x${telemetry.originalHeight} -> ${telemetry.downscaledWidth}x${telemetry.downscaledHeight} (${telemetry.latencies.downscaleMs}ms)`,
         `SCRFD-2.5G: ${telemetry.latencies.scrfdPassMs ?? telemetry.latencies.ssdPassMs ?? 0}ms (${telemetry.faceCount} FACE${telemetry.faceCount === 1 ? "" : "s"}, ${Math.round(telemetry.primaryConfidence * 100)}% CONF)`,
         `FRONTAL: ${telemetry.latencies.frontalizationMs ?? 0}ms (${(telemetry.frontalizationMethod ?? "5pt-similarity").toUpperCase()}, YAW:${telemetry.estimatedYaw ?? 0}°)`,
-        `EDGEFACE-M: ${telemetry.latencies.embeddingPassMs ?? telemetry.latencies.embeddingMs}ms (256-D FLOAT16)`,
-        `BIOHASH: ${telemetry.latencies.biohashMs ?? 0}ms (512-BIT POPCOUNT XOR)`,
+        hudEmbeddingLine(telemetry.latencies.embeddingPassMs ?? telemetry.latencies.embeddingMs),
+        hudRankingLine(),
         `TOTAL LATENCY: ${telemetry.latencies.totalMs}ms`,
       ]
     : TELEMETRY_MESSAGES;

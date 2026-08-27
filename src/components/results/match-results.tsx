@@ -7,6 +7,7 @@ import { NumberCounter } from "@/components/ui/number-counter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 import { restListHeading, shouldShowContenders } from "@/lib/ux/honesty";
+import { engineFooter } from "@/lib/ux/engine-copy";
 import { MatchFeedback } from "@/components/results/match-feedback";
 
 interface MatchResultsProps {
@@ -227,7 +228,7 @@ export function MatchResults({ result, previewUrl, onReset }: MatchResultsProps)
       </Button>
 
       <p className="pb-1 text-center text-[11px] leading-relaxed text-fg-subtle">
-        EdgeFace 512-d · SCRFD-2.5G · On-device engine v{result.engineVersion}
+        {engineFooter(result.engineVersion)}
       </p>
     </section>
   );
