@@ -7,6 +7,14 @@ import {
 
 /** Near-zero ensemble distance treats gallery vectors as clones. */
 export const GALLERY_CLONE_EPS = 1e-4;
+/**
+ * Thumb-only enrollments that share one poisoned face sit at AdaFace d≈0.02–0.08
+ * across dozens of different names. Exact-clone eps (1e-4) misses them, and
+ * ranking then returns a random extra as a "look-alike". A connected component
+ * of this many distinct ids at this distance is not a celebrity neighborhood.
+ */
+export const POISONED_CLUSTER_MAX_DISTANCE = 0.08;
+export const POISONED_CLUSTER_MIN_IDS = 8;
 
 function fingerprint(d: ArrayLike<number>): string {
   let a = 0;
@@ -101,13 +109,68 @@ export function dropCrossIdExactCollisions(
   };
 }
 
+function findRoot(parent: number[], i: number): number {
+  return parent[i] === i ? i : (parent[i] = findRoot(parent, parent[i]!));
+}
+
+/**
+ * Drop every identity in a large near-clone component. Two similar celebrities
+ * at d≈0.08 stay; a 100-id thumb cluster of the same poisoned face does not.
+ */
+export function dropPoisonedNearCloneClusters<T extends { id: string; descriptor: ArrayLike<number> }>(
+  gallery: T[],
+  maxDistance = POISONED_CLUSTER_MAX_DISTANCE,
+  minIds = POISONED_CLUSTER_MIN_IDS,
+): { gallery: T[]; droppedIds: string[] } {
+  const primary = new Map<string, ArrayLike<number>>();
+  const order: string[] = [];
+  for (const row of gallery) {
+    if (primary.has(row.id)) continue;
+    primary.set(row.id, row.descriptor);
+    order.push(row.id);
+  }
+  const n = order.length;
+  if (n < minIds) return { gallery, droppedIds: [] };
+  const parent = Array.from({ length: n }, (_, i) => i);
+  for (let i = 0; i < n; i++) {
+    const vi = primary.get(order[i]!)!;
+    for (let j = i + 1; j < n; j++) {
+      if (cosineDistance256(vi, primary.get(order[j]!)!) < maxDistance) {
+        const a = findRoot(parent, i);
+        const b = findRoot(parent, j);
+        if (a !== b) parent[a] = b;
+      }
+    }
+  }
+  const groups = new Map<number, string[]>();
+  for (let i = 0; i < n; i++) {
+    const r = findRoot(parent, i);
+    const g = groups.get(r) ?? [];
+    g.push(order[i]!);
+    groups.set(r, g);
+  }
+  const drop = new Set<string>();
+  for (const g of groups.values()) {
+    if (g.length >= minIds) for (const id of g) drop.add(id);
+  }
+  if (drop.size === 0) return { gallery, droppedIds: [] };
+  return {
+    gallery: gallery.filter((e) => !drop.has(e.id)),
+    droppedIds: [...drop],
+  };
+}
+
 /** Full production hygiene: same-id clone collapse + cross-id collision drop. */
 export function sanitizeGalleryEmbeddings(
   gallery: CelebrityEmbedding[],
 ): { gallery: CelebrityEmbedding[]; droppedCrossId: string[] } {
   const collapsed = collapseSameIdDescriptorClones(gallery);
-  const { gallery: cleaned, droppedIds } = dropCrossIdExactCollisions(collapsed);
-  return { gallery: cleaned, droppedCrossId: droppedIds };
+  const exact = dropCrossIdExactCollisions(collapsed);
+  const poisoned = dropPoisonedNearCloneClusters(exact.gallery);
+  return {
+    gallery: poisoned.gallery,
+    droppedCrossId: [...new Set([...exact.droppedIds, ...poisoned.droppedIds])],
+  };
 }
 
 /**
@@ -188,7 +251,7 @@ export function buildMultiShotCentroidGallery(
       });
     }
   }
-  return result;
+  return dropPoisonedNearCloneClusters(result).gallery;
 }
 export function galleryCloneStats(gallery: CelebrityEmbedding[], eps = GALLERY_CLONE_EPS) {
   const byId = new Map<string, CelebrityEmbedding[]>();

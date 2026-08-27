@@ -27,6 +27,7 @@ import { fileURLToPath } from "node:url";
 import { applyAppearanceFamilyManifest } from "../src/lib/celebrities/appearance-family.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
 import { l2Normalize, cosineDistance } from "../src/lib/face/embeddings.ts";
+import { dropPoisonedNearCloneClusters } from "../src/lib/face/gallery-dedupe.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -134,19 +135,23 @@ export function loadGallery(): GalleryEntry[] {
 
 function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
   const file = path.join(CELEBS, "extra-templates.json");
-  if (!fs.existsSync(file)) return base;
-  const data = JSON.parse(fs.readFileSync(file, "utf8")) as {
-    templates?: Array<{ id: string; descriptor: number[]; source?: string }>;
-  };
-  if (!data.templates?.length) return base;
-  const byId = new Map(base.map((b) => [b.id, b]));
-  const extras: GalleryEntry[] = [];
-  for (const t of data.templates) {
-    const proto = byId.get(t.id);
-    if (!proto || !t.descriptor?.length) continue;
-    extras.push({ ...proto, descriptor: l2Normalize(t.descriptor) });
+  let merged = base;
+  if (fs.existsSync(file)) {
+    const data = JSON.parse(fs.readFileSync(file, "utf8")) as {
+      templates?: Array<{ id: string; descriptor: number[]; source?: string }>;
+    };
+    if (data.templates?.length) {
+      const byId = new Map(base.map((b) => [b.id, b]));
+      const extras: GalleryEntry[] = [];
+      for (const t of data.templates) {
+        const proto = byId.get(t.id);
+        if (!proto || !t.descriptor?.length) continue;
+        extras.push({ ...proto, descriptor: l2Normalize(t.descriptor) });
+      }
+      if (extras.length) merged = base.concat(extras);
+    }
   }
-  return extras.length ? base.concat(extras) : base;
+  return dropPoisonedNearCloneClusters(merged).gallery;
 }
 
 /** Every image file that contributed to any shipped gallery artifact. */

@@ -3,7 +3,9 @@ import { describe, it } from "node:test";
 import {
   buildMultiShotCentroidGallery,
   computeCentroidEmbedding,
+  dropPoisonedNearCloneClusters,
   isPaddedFaceNetDescriptor,
+  POISONED_CLUSTER_MIN_IDS,
 } from "./gallery-dedupe.ts";
 import { cosineDistance256, l2Normalize, type CelebrityEmbedding } from "./embeddings.ts";
 
@@ -50,5 +52,26 @@ describe("multi-shot prototypes", () => {
     assert.ok(xs.some((e) => cosineDistance256(e.descriptor, a) < 1e-6));
     const centroid = computeCentroidEmbedding([a, b, c]);
     assert.ok(xs.some((e) => cosineDistance256(e.descriptor, centroid) < 1e-5));
+  });
+});
+
+describe("poisoned near-clone clusters", () => {
+  it("keeps two similar people and drops an 8-id identical-face pile", () => {
+    const face = Array.from(l2Normalize(Float32Array.from({ length: 32 }, (_, i) => (i === 0 ? 1 : 0.01 * i))));
+    const other = Array.from(l2Normalize(Float32Array.from({ length: 32 }, (_, i) => (i === 1 ? 1 : 0))));
+    const pile = Array.from({ length: POISONED_CLUSTER_MIN_IDS }, (_, i) => emb(`clone-${i}`, face));
+    const kept = dropPoisonedNearCloneClusters([...pile, emb("adele", other)]);
+    assert.equal(kept.droppedIds.length, POISONED_CLUSTER_MIN_IDS);
+    assert.ok(!kept.droppedIds.includes("adele"));
+    assert.equal(kept.gallery.some((e) => e.id === "adele"), true);
+    assert.equal(kept.gallery.some((e) => e.id.startsWith("clone-")), false);
+  });
+
+  it("does not drop a pair of distinct look-alikes", () => {
+    const a = Array.from(l2Normalize(Float32Array.from({ length: 32 }, (_, i) => (i === 0 ? 1 : 0))));
+    const b = Array.from(l2Normalize(Float32Array.from({ length: 32 }, (_, i) => (i === 0 ? 0.96 : i === 1 ? 0.28 : 0))));
+    const out = dropPoisonedNearCloneClusters([emb("one", a), emb("two", b)]);
+    assert.deepEqual(out.droppedIds, []);
+    assert.equal(out.gallery.length, 2);
   });
 });

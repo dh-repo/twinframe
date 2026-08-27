@@ -4164,7 +4164,7 @@
     "name": "Jim Caviezel",
     "path": "/celebs/thumbs/96/jim-caviezel.webp",
     "path192": "/celebs/thumbs/192/jim-caviezel.webp",
-    "fallbackPath": "/celebs/thumbs/96/jim-caviezel.webp",
+    "fallbackPath": "/celebs/jim-caviezel.jpg",
     "age": 38,
     "gender": "male",
     "genderProb": 0.9060206413269043
@@ -4394,7 +4394,7 @@
     "name": "William Sadler",
     "path": "/celebs/thumbs/96/william-sadler.webp",
     "path192": "/celebs/thumbs/192/william-sadler.webp",
-    "fallbackPath": "/celebs/thumbs/96/william-sadler.webp",
+    "fallbackPath": "/celebs/william-sadler.jpg",
     "age": 55,
     "gender": "male",
     "genderProb": 0.9785312414169312
@@ -4894,7 +4894,7 @@
     "name": "Laura Vandervoort",
     "path": "/celebs/thumbs/96/laura-vandervoort.webp",
     "path192": "/celebs/thumbs/192/laura-vandervoort.webp",
-    "fallbackPath": "/celebs/thumbs/96/laura-vandervoort.webp",
+    "fallbackPath": "/celebs/laura-vandervoort.jpg",
     "age": 26,
     "gender": "female",
     "genderProb": 0.9397944919764996
@@ -5734,7 +5734,7 @@
     "name": "Willa Holland",
     "path": "/celebs/thumbs/96/willa-holland.webp",
     "path192": "/celebs/thumbs/192/willa-holland.webp",
-    "fallbackPath": "/celebs/thumbs/96/willa-holland.webp",
+    "fallbackPath": "/celebs/willa-holland.jpg",
     "age": 26,
     "gender": "female",
     "genderProb": 0.9763544276356697
@@ -7094,7 +7094,7 @@
     "name": "Janina Gavankar",
     "path": "/celebs/thumbs/96/janina-gavankar.webp",
     "path192": "/celebs/thumbs/192/janina-gavankar.webp",
-    "fallbackPath": "/celebs/thumbs/96/janina-gavankar.webp",
+    "fallbackPath": "/celebs/janina-gavankar.jpg",
     "age": 26,
     "gender": "female",
     "genderProb": 0.9678173288702965
@@ -8034,7 +8034,7 @@
     "name": "Kevin Alejandro",
     "path": "/celebs/thumbs/96/kevin-alejandro.webp",
     "path192": "/celebs/thumbs/192/kevin-alejandro.webp",
-    "fallbackPath": "/celebs/thumbs/96/kevin-alejandro.webp",
+    "fallbackPath": "/celebs/kevin-alejandro.jpg",
     "age": 27,
     "gender": "male",
     "genderProb": 0.9396486282348633
@@ -8364,7 +8364,7 @@
     "name": "Navid Negahban",
     "path": "/celebs/thumbs/96/navid-negahban.webp",
     "path192": "/celebs/thumbs/192/navid-negahban.webp",
-    "fallbackPath": "/celebs/thumbs/96/navid-negahban.webp",
+    "fallbackPath": "/celebs/navid-negahban.jpg",
     "age": 41,
     "gender": "male",
     "genderProb": 0.9807018637657166
@@ -9314,7 +9314,7 @@
     "name": "Peter Stormare",
     "path": "/celebs/thumbs/96/peter-stormare.webp",
     "path192": "/celebs/thumbs/192/peter-stormare.webp",
-    "fallbackPath": "/celebs/thumbs/96/peter-stormare.webp",
+    "fallbackPath": "/celebs/peter-stormare.jpg",
     "age": 49,
     "gender": "male",
     "genderProb": 0.991621732711792

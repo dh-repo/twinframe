@@ -147,8 +147,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        mislabeled thumbs (xiao-zhan was Federer; samuel-l-jackson was Reynolds).
  * 6.5.0: Wikipedia primaries for remaining household thumb-only slots (Nadal
  *        was a near-clone of a character actor; Rosalía/Son Ye-jin eval misses).
+ * 6.5.1: drop the 100-id poisoned thumb cluster from ranking; enroll Stormare,
+ *        Caviezel, and other remaining household names.
  */
-const GALLERY_VERSION = "6.5.0";
+const GALLERY_VERSION = "6.5.1";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -1,8 +1,8 @@
 {
- "at": "2026-08-27T04:49:42.294Z",
+ "at": "2026-08-27T04:58:21.620Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
- "gallerySize": 1105,
+ "gallerySize": 1005,
  "probesTotal": 296,
  "skipped": 0,
  "notEnrolled": 0,
@@ -327,7 +327,7 @@
    "dTrue": 0.6404768491705076,
    "dTop1": 0.6404768491705076,
    "dMinSameId": 0.6404768491705076,
-   "dBestWrong": 0.7443934302835642,
+   "dBestWrong": 0.7630426218289801,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -735,7 +735,7 @@
    "dTrue": 0.002555907945833935,
    "dTop1": 0.002555907945833935,
    "dMinSameId": 0.002555907945833935,
-   "dBestWrong": 0.7972485868898789,
+   "dBestWrong": 0.8180455937292248,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1107,7 +1107,7 @@
    "dTrue": 0.46003341034928147,
    "dTop1": 0.46003341034928147,
    "dMinSameId": 0.46003341034928147,
-   "dBestWrong": 0.8268880303564988,
+   "dBestWrong": 0.7978145517783818,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1215,7 +1215,7 @@
    "dTrue": 0.388727499323002,
    "dTop1": 0.388727499323002,
    "dMinSameId": 0.388727499323002,
-   "dBestWrong": 0.7580415104203604,
+   "dBestWrong": 0.7639954465124683,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1539,7 +1539,7 @@
    "dTrue": 0.009376286195797223,
    "dTop1": 0.009376286195797223,
    "dMinSameId": 0.009376286195797223,
-   "dBestWrong": 0.7558438693731542,
+   "dBestWrong": 0.7977988158565165,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false

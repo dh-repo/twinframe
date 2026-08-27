@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T04:49:13.564Z",
+  "generatedAt": "2026-08-27T04:58:11.546Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -4825,6 +4825,110 @@
       "shippedToLive": 0.32839852181916085,
       "beforeFingerprint": "90af32d5c9d1250b0da23f232df17a412b2276eea421ea5986ca1f95e4ad4fd6",
       "afterFingerprint": "f412d03deed167951a11d343baf1c0c6550593207f9e0cd034cc3e4e61fec622"
+    },
+    {
+      "id": "peter-stormare",
+      "index": 931,
+      "household": false,
+      "source": "public/celebs/peter-stormare.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8640972375869751,
+      "shippedToLive": 0.9767952690790832,
+      "beforeFingerprint": "111f07a3953a5fd523c2b4e0503775f0e0381c661f77d33169cc30d2342dbe0f",
+      "afterFingerprint": "827c6b9172f2841a6d2b2054239eab324760720962506ba825fc55f64909c6d6"
+    },
+    {
+      "id": "jim-caviezel",
+      "index": 416,
+      "household": false,
+      "source": "public/celebs/jim-caviezel.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8610880374908447,
+      "shippedToLive": 0.3809552149734696,
+      "beforeFingerprint": "2065e1c9cf1e78bc98c4e85d3aa3ecbfb49e59bfc17e2bf956299833d92de1ff",
+      "afterFingerprint": "2f182734ce17cd9de8715c754a2eb49ce0fd0b75916f6c3104a65bdbb15865b5"
+    },
+    {
+      "id": "willa-holland",
+      "index": 573,
+      "household": false,
+      "source": "public/celebs/willa-holland.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8506078720092773,
+      "shippedToLive": 0.3287886695902297,
+      "beforeFingerprint": "413d1b29ce59ff61e01efb42083ade184bb9c25d9a0f075894a3415c32afc18b",
+      "afterFingerprint": "ed7aa9794b597880ea3ae30ce02ad89d2ff3e55aa9f0917a68af7a3f7d74f572"
+    },
+    {
+      "id": "kevin-alejandro",
+      "index": 803,
+      "household": false,
+      "source": "public/celebs/kevin-alejandro.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8890888690948486,
+      "shippedToLive": 0.42456984556868305,
+      "beforeFingerprint": "a96c49c866f3cc592071c70c603198e6285cb8712ddd39ff53e28989ff9a6556",
+      "afterFingerprint": "25818aaea8bf9a62438324f73af53a604b8ec9cd87e05dd0628a17bc5429aec9"
+    },
+    {
+      "id": "navid-negahban",
+      "index": 836,
+      "household": false,
+      "source": "public/celebs/navid-negahban.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.876091480255127,
+      "shippedToLive": 0.379210877585469,
+      "beforeFingerprint": "b6a97d4e1271e60c7ebc4f47b5711eac4efd55b1c689e6d997e4ad2145ec25e1",
+      "afterFingerprint": "d64fc9980a3b685f95412a0e2e7ceb192342ce0340f658eab980343080d6ef8b"
+    },
+    {
+      "id": "william-sadler",
+      "index": 439,
+      "household": false,
+      "source": "public/celebs/william-sadler.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8507535457611084,
+      "shippedToLive": 0.2830368575931631,
+      "beforeFingerprint": "7b4878cc7a6e0a4fd43c377fe71db0fe8be8dfe9425059b125371c46aa13d1fb",
+      "afterFingerprint": "c673b464fa23ad6ac6c3e46f30ed9019de787c60d2c2ed9c8ef3adf0d2168561"
+    },
+    {
+      "id": "laura-vandervoort",
+      "index": 489,
+      "household": false,
+      "source": "public/celebs/laura-vandervoort.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8142201900482178,
+      "shippedToLive": 0.3316316560171033,
+      "beforeFingerprint": "ba37bc79c9135d2cd901d1c2a25dba0303c4b8e1868510deffe688ecfa765621",
+      "afterFingerprint": "8d75530417c22a1b67c8000e64452f4fe52a756512bda7291b35d2dbf214d6bc"
+    },
+    {
+      "id": "janina-gavankar",
+      "index": 709,
+      "household": false,
+      "source": "public/celebs/janina-gavankar.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7869620323181152,
+      "shippedToLive": 0.36217517489027884,
+      "beforeFingerprint": "4ac7ffe0bb8f8821658c2141f3d74c1644c7db87d2b472a95ca85f7797e90c8d",
+      "afterFingerprint": "6f6fbb2733f0a4034c0f0423d245e0cbab9d53dfb11c303a8d1054f96082358b"
     }
   ]
 }
