@@ -191,8 +191,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.23: 19-era Adele extras (Live 2009 turtleneck views, not Seattle
  *         2011 / Live 2009 (4) which is the held-out 001 probe) plus a
  *         Doja Cat Hot Pink solo closer to the yellow-latex eval look.
+ * 6.5.24: Gated extras for remaining weak Rank-1 names (Bezos, Comer,
+ *         Dua Lipa, Selena, Alia, Cheadle) plus a Naomi DVF runway crop
+ *         and Messi 2008–09 views that pass the 0.7 same-person gate.
  */
-const GALLERY_VERSION = "6.5.23";
+const GALLERY_VERSION = "6.5.24";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

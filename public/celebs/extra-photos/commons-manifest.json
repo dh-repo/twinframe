@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 217,
+  "count": 221,
   "photos": [
     {
       "id": "sandra-oh",
@@ -216,7 +216,7 @@
     {
       "id": "bill-skarsgard",
       "file": "002.jpg",
-      "commonsTitle": "File:Bill Skarsgård.jpg",
+      "commonsTitle": "File:Bill Skarsg\u00e5rd.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Bill_Skarsg%C3%A5rd.jpg/960px-Bill_Skarsg%C3%A5rd.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:09:11.646Z"
     },
@@ -265,7 +265,7 @@
     {
       "id": "bruno-mars",
       "file": "004.jpg",
-      "commonsTitle": "File:Johnny Matos - Cantor - Youtuber e Intéprete de Bruno Mars no Brasil.jpg",
+      "commonsTitle": "File:Johnny Matos - Cantor - Youtuber e Int\u00e9prete de Bruno Mars no Brasil.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Johnny_Matos_-_Cantor_-_Youtuber_e_Int%C3%A9prete_de_Bruno_Mars_no_Brasil.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-18T04:09:51.861Z"
     },
@@ -307,7 +307,7 @@
     {
       "id": "david-beckham",
       "file": "002.jpg",
-      "commonsTitle": "File:MAL131 David Beckham 40 x 30 mm. Artysta malarz Paweł Brodzisz olej - alkid na płótnie 2025. Eksponat Muzeum Miniaturowej Sztuki Profesjonalnej Henryk Jan Dominiak w Tychach.jpg",
+      "commonsTitle": "File:MAL131 David Beckham 40 x 30 mm. Artysta malarz Pawe\u0142 Brodzisz olej - alkid na p\u0142\u00f3tnie 2025. Eksponat Muzeum Miniaturowej Sztuki Profesjonalnej Henryk Jan Dominiak w Tychach.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/MAL131_David_Beckham_40_x_30_mm._Artysta_malarz_Pawe%C5%82_Brodzisz_olej_-_alkid_na_p%C5%82%C3%B3tnie_2025._Eksponat_Muzeum_Miniaturowej_Sztuki_Profesjonalnej_Henryk_Jan_Dominiak_w_Tychach.jpg/960px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:10:49.860Z"
     },
@@ -545,7 +545,7 @@
     {
       "id": "jennifer-lopez",
       "file": "005.jpg",
-      "commonsTitle": "File:Jennifer López- Como ama una mujer.png",
+      "commonsTitle": "File:Jennifer L\u00f3pez- Como ama una mujer.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Jennifer_L%C3%B3pez-_Como_ama_una_mujer.png/960px-Jennifer_L%C3%B3pez-_Como_ama_una_mujer.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:17:54.106Z"
     },
@@ -559,14 +559,14 @@
     {
       "id": "justin-bieber",
       "file": "002.jpg",
-      "commonsTitle": "File:Es el álbum de Justin Bieber cuya canción fue Boyfriend 2014-04-14 19-27.jpg",
+      "commonsTitle": "File:Es el \u00e1lbum de Justin Bieber cuya canci\u00f3n fue Boyfriend 2014-04-14 19-27.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Es_el_%C3%A1lbum_de_Justin_Bieber_cuya_canci%C3%B3n_fue_Boyfriend_2014-04-14_19-27.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-18T04:18:04.437Z"
     },
     {
       "id": "justin-bieber",
       "file": "003.jpg",
-      "commonsTitle": "File:Mistletoe (canción de Justin Bieber).jpg",
+      "commonsTitle": "File:Mistletoe (canci\u00f3n de Justin Bieber).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Mistletoe_%28canci%C3%B3n_de_Justin_Bieber%29.jpg/960px-Mistletoe_%28canci%C3%B3n_de_Justin_Bieber%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:18:10.982Z"
     },
@@ -657,7 +657,7 @@
     {
       "id": "zoe-kravitz",
       "file": "002.jpg",
-      "commonsTitle": "File:Zoë Kravitz (Berlin Film Festival 2011).jpg",
+      "commonsTitle": "File:Zo\u00eb Kravitz (Berlin Film Festival 2011).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Zo%C3%AB_Kravitz_%28Berlin_Film_Festival_2011%29.jpg/960px-Zo%C3%AB_Kravitz_%28Berlin_Film_Festival_2011%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:42:42.876Z"
     },
@@ -804,7 +804,7 @@
     {
       "id": "gael-garcia-bernal",
       "file": "002.jpg",
-      "commonsTitle": "File:Gael García Bernal.jpg",
+      "commonsTitle": "File:Gael Garc\u00eda Bernal.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Gael_Garc%C3%ADa_Bernal.jpg/960px-Gael_Garc%C3%ADa_Bernal.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:08.900Z"
     },
@@ -818,14 +818,14 @@
     {
       "id": "gael-garcia-bernal",
       "file": "004.jpg",
-      "commonsTitle": "File:Gael García Bernal (Guadalajara Film Festival) 2.jpg",
+      "commonsTitle": "File:Gael Garc\u00eda Bernal (Guadalajara Film Festival) 2.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_2.jpg/960px-Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:13.953Z"
     },
     {
       "id": "gael-garcia-bernal",
       "file": "005.jpg",
-      "commonsTitle": "File:Gael García Bernal (Guadalajara Film Festival) 4.jpg",
+      "commonsTitle": "File:Gael Garc\u00eda Bernal (Guadalajara Film Festival) 4.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_4.jpg/960px-Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:21.053Z"
     },
@@ -1077,7 +1077,7 @@
     {
       "id": "anna-sawai",
       "file": "002.jpg",
-      "commonsTitle": "File:Anna Sawai at “Shogun” event at Zojoji 20240220 (cropped).jpg",
+      "commonsTitle": "File:Anna Sawai at \u201cShogun\u201d event at Zojoji 20240220 (cropped).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Anna_Sawai_at_%E2%80%9CShogun%E2%80%9D_event_at_Zojoji_20240220_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T04:56:31.060Z"
     },
@@ -1098,7 +1098,7 @@
     {
       "id": "beyonce",
       "file": "002.jpg",
-      "commonsTitle": "File:Beyoncé Knowles GMA Run the World cropped.jpg",
+      "commonsTitle": "File:Beyonc\u00e9 Knowles GMA Run the World cropped.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Beyonc%C3%A9_Knowles_GMA_Run_the_World_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T04:56:43.787Z"
     },
@@ -1182,7 +1182,7 @@
     {
       "id": "florence-pugh",
       "file": "002.jpg",
-      "commonsTitle": "File:Florence Pugh at the 2024 Toronto International Film Festival 13 (cropped 2 – color adjusted).jpg",
+      "commonsTitle": "File:Florence Pugh at the 2024 Toronto International Film Festival 13 (cropped 2 \u2013 color adjusted).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Florence_Pugh_at_the_2024_Toronto_International_Film_Festival_13_%28cropped_2_%E2%80%93_color_adjusted%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T04:57:02.504Z"
     },
@@ -1521,6 +1521,34 @@
       "commonsTitle": "File:Doja Cat Hot Pink Party1.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Doja_Cat_Hot_Pink_Party1.png",
       "fetchedAt": "2026-08-27T09:41:00.000Z"
+    },
+    {
+      "id": "naomi-campbell",
+      "file": "002.jpg",
+      "commonsTitle": "File:Diane von F\u00fcrstenberg Spring-Summer 2014 07 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Diane von F\u00fcrstenberg Spring-Summer 2014 07 (cropped).jpg",
+      "fetchedAt": "2026-08-27T10:00:00.000Z"
+    },
+    {
+      "id": "lionel-messi",
+      "file": "002.jpg",
+      "commonsTitle": "File:Lionel Messi close-up.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Lionel Messi close-up.jpg",
+      "fetchedAt": "2026-08-27T10:00:00.000Z"
+    },
+    {
+      "id": "lionel-messi",
+      "file": "003.jpg",
+      "commonsTitle": "File:Lionel Messi 2009.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Lionel Messi 2009.jpg",
+      "fetchedAt": "2026-08-27T10:00:00.000Z"
+    },
+    {
+      "id": "lionel-messi",
+      "file": "005.jpg",
+      "commonsTitle": "File:Messi 2008.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Messi 2008.jpg",
+      "fetchedAt": "2026-08-27T10:00:00.000Z"
     }
   ]
 }
