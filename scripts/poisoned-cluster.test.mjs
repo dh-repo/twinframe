@@ -15,9 +15,19 @@ describe("shipped gallery poisoned thumb cluster", () => {
   const rows = buckets.map((b, i) => ({ id: b.id, descriptor: vectors[i] }));
   const { gallery, droppedIds } = dropPoisonedNearCloneClusters(rows);
 
-  it("drops the 100-id near-clone pile and keeps repaired household names", () => {
-    assert.ok(droppedIds.length >= 80, `expected a large cluster, dropped ${droppedIds.length}`);
-    for (const id of ["adele", "zendaya", "ke-huy-quan", "rafael-nadal", "harrison-ford", "rosalia"]) {
+  it("drops the remaining near-clone pile and keeps repaired identities", () => {
+    assert.ok(droppedIds.length >= 70, `expected a large cluster, dropped ${droppedIds.length}`);
+    for (const id of [
+      "adele",
+      "zendaya",
+      "ke-huy-quan",
+      "rafael-nadal",
+      "harrison-ford",
+      "rosalia",
+      "lee-majdoub",
+      "michael-xavier",
+      "adam-stein",
+    ]) {
       assert.equal(droppedIds.includes(id), false, `${id} was dropped with the poisoned pile`);
       assert.ok(gallery.some((r) => r.id === id), `${id} missing after cluster drop`);
     }
