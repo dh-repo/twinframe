@@ -169,6 +169,35 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "florence-pugh" && t.source === "extra-photos/florence-pugh/005.jpg"),
       "Florence 2024 TIFF extra missing",
     );
+    assert.ok((byId.get("priyanka-chopra") ?? 0) >= 2, "Priyanka extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "priyanka-chopra" && t.source === "held-out/priyanka-chopra/002.jpg"),
+      "Priyanka teal strapless extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "priyanka-chopra" && t.source === "extra-photos/priyanka-chopra/002.jpg"),
+      "Priyanka interview extra missing",
+    );
+    assert.ok((byId.get("anne-hathaway") ?? 0) >= 1, "Anne Hathaway extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "anne-hathaway" && t.source === "extra-photos/anne-hathaway/003.jpg"),
+      "Anne Hathaway long-hair extra missing",
+    );
+    assert.ok((byId.get("ryan-gosling") ?? 0) >= 3, "Ryan Gosling extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ryan-gosling" && t.source === "held-out/ryan-gosling/002.jpg"),
+      "Ryan Gosling denim Comic-Con extra missing",
+    );
+    assert.ok((byId.get("leonardo-dicaprio") ?? 0) >= 2, "Leonardo extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "leonardo-dicaprio" && t.source === "held-out/leonardo-dicaprio/002.jpg"),
+      "Leonardo held-out 002 extra missing",
+    );
+    assert.ok((byId.get("sydney-sweeney") ?? 0) >= 1, "Sydney Sweeney extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "sydney-sweeney" && t.source === "extra-photos/sydney-sweeney/002.jpg"),
+      "Sydney Sweeney TIFF 2024 floral extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

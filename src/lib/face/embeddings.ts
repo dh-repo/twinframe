@@ -241,8 +241,16 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Peabody eval) and Florence Pugh (held-out BFI LFF 003;
  *         2024 TIFF van 3/4 extra 005). Comic-Con extra 003 is the
  *         eval sitting and was not enrolled.
+ * 6.5.37: Gated extras that beat pack dTrue for Priyanka Chopra
+ *         (held-out teal strapless 002 + cropped interview extra 002;
+ *         not 2006 Don promo eval), Anne Hathaway (long-hair red
+ *         extra 003; not pixie NO-SMOKING eval), Ryan Gosling
+ *         (denim Comic-Con, glasses striped, outdoor denim; not
+ *         peacoat eval), Leonardo DiCaprio (held-out 002/004; not
+ *         White House Kerry hallway eval), and Sydney Sweeney
+ *         (TIFF 2024 floral extra 002; not 2022 Reality corset eval).
  */
-const GALLERY_VERSION = "6.5.36";
+const GALLERY_VERSION = "6.5.37";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
