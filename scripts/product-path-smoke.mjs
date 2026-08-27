@@ -60,13 +60,14 @@ async function uploadAndApprove(page, filePath) {
     (t) => /Choose a face|Approve & Match|Use this crop|Finding face|Scanning for faces/i.test(t),
     { timeoutMs: 45000, label: "crop-review" },
   );
-  const matchBtn = page.getByRole("button", { name: /Approve & Match|Use this crop|Match /i }).last();
+  const matchBtn = page.getByRole("button", { name: /Approve & Match|Use this crop|Match /i }).first();
   await matchBtn.waitFor({ state: "visible", timeout: 45000 });
-  for (let i = 0; i < 40; i++) {
-    if (await matchBtn.isEnabled()) break;
+  for (let i = 0; i < 90; i++) {
+    const label = (await matchBtn.innerText().catch(() => "")).trim();
+    if ((await matchBtn.isEnabled()) && !/Finding face|Preparing/i.test(label)) break;
     await sleep(500);
   }
-  await matchBtn.click({ force: true });
+  await matchBtn.evaluate((el) => el.click());
 }
 
 if (!existsSync(MATCH_IMAGE)) throw new Error(`Missing ${MATCH_IMAGE}`);
@@ -86,7 +87,7 @@ const browser = await chromium.launch({
 });
 
 try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 1100 } });
   const consoleErrors = [];
   page.on("console", (msg) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());
@@ -112,7 +113,16 @@ try {
     await sleep(800);
     const galleryText = await page.locator("body").innerText();
     for (const msg of engineCopyFailures("gallery-modal", galleryText)) fail(msg);
-    await page.keyboard.press("Escape").catch(() => {});
+    const closeGallery = page.getByRole("button", { name: "Close gallery" });
+    if ((await closeGallery.count()) > 0) {
+      await closeGallery.evaluate((el) => el.click());
+    } else {
+      await page.keyboard.press("Escape");
+    }
+    await page.getByRole("heading", { name: "Twinframe Star Gallery" }).waitFor({
+      state: "hidden",
+      timeout: 5000,
+    }).catch(() => {});
     await sleep(300);
   }
 
@@ -150,14 +160,8 @@ try {
     if (!report.steps.match.verdict) fail("Adam Driver results missing a named verdict");
   }
 
-  const reset = page.getByRole("button", { name: /Try another photo|New photo|Start over/i }).first();
-  if ((await reset.count()) > 0 && (await reset.isVisible().catch(() => false))) {
-    await reset.click();
-    await sleep(600);
-  } else {
-    await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 45000 });
-    await sleep(800);
-  }
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 45000 });
+  await sleep(800);
 
   await uploadAndApprove(page, REFUSE_IMAGE);
   const refuseText = await waitForBody(page, verdictPresent, {
