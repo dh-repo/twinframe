@@ -314,8 +314,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Sherlock 2009 updo eval), plus unused extra-photos for Kerry
  *         Washington (taupe coat) and Kristen Stewart (Cannes 2014
  *         copper; not Breaking Dawn 2012 lace eval).
+ * 6.5.46: Unused extra-photos that beat pack dTrue for Mia Goth
+ *         (Suspiria MTV interview; not Berlinale wrap eval), Jennifer
+ *         Lopez (GLAAD + Versace jungle; not blonde-bob yellow eval),
+ *         and Aishwarya Rai (Kalyan peach sari; not white ruffle-collar
+ *         eval). Hemsworth CCMA crop stayed a group shot (n=11).
  */
-const GALLERY_VERSION = "6.5.45";
+const GALLERY_VERSION = "6.5.46";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
