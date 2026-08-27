@@ -277,8 +277,19 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Homebound; not Netflix HRX-cap eval), Steve Carell
  *         (Montclair 2014; not Despicable Me 2 glasses eval), and
  *         Lady Gaga (JWT Toronto Joanne-guitar; not leather A-Yo eval).
+ * 6.5.42: Commons extras that beat pack dTrue for Heidi Klum (AGT 2014;
+ *         not 2001 Heavenly Star Bra eval), Gwyneth Paltrow (2010 +
+ *         Iron Man 3 Paris + 2012; not Venice 2011 Contagion eval),
+ *         Bill Skarsgård (2017 IT floral Comic-Con; not cable-knit
+ *         Mark Verheiden panel eval), Ian Somerhalder (Team Stefan
+ *         fedora; not grey-fedora V-neck eval), Taylor Swift (AMAs
+ *         2019 bangs; not TIME 100 2010 curly eval), Daniel Radcliffe
+ *         (2009 pink shirt; not 2006 Empire Awards eval), Joaquin
+ *         Phoenix (Berlinale 2018; not sunglasses eval), and Sandra
+ *         Bullock (July 2013 + The Heat London; not layered-pearls
+ *         eval).
  */
-const GALLERY_VERSION = "6.5.41";
+const GALLERY_VERSION = "6.5.42";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 273,
+  "count": 284,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1941,6 +1941,94 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Lady_Gaga_JWT_Toronto%2C_2017-09-06_%28cropped_2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T16:38:37.716Z",
       "note": "JWT Toronto Joanne-guitar look; not leather A-Yo orange-backdrop eval"
+    },
+    {
+      "id": "heidi-klum",
+      "file": "001.jpg",
+      "commonsTitle": "File:Heidi Klum Judges Red Carpet event April 2014 (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/60/Heidi_Klum_Judges_Red_Carpet_event_April_2014_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:01.760Z",
+      "note": "AGT 2014 black V-neck; not 2001 Heavenly Star Bra eval"
+    },
+    {
+      "id": "gwyneth-paltrow",
+      "file": "006.jpg",
+      "commonsTitle": "File:Gwyneth Paltrow 2010.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Gwyneth_Paltrow_2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:02.015Z",
+      "note": "2010 striped shirt studio smile; not Venice 2011 Contagion eval"
+    },
+    {
+      "id": "gwyneth-paltrow",
+      "file": "007.jpg",
+      "commonsTitle": "File:Gwyneth Paltrow avp Iron Man 3 Paris.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Gwyneth_Paltrow_avp_Iron_Man_3_Paris.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:02.281Z",
+      "note": "Iron Man 3 Paris AVP; not Venice 2011 Contagion eval"
+    },
+    {
+      "id": "gwyneth-paltrow",
+      "file": "008.jpg",
+      "commonsTitle": "File:Gwyneth Paltrow 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Gwyneth_Paltrow_2012.jpg/1920px-Gwyneth_Paltrow_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:59:02.623Z",
+      "note": "2012 white-neckline red carpet; not Venice 2011 Contagion eval"
+    },
+    {
+      "id": "bill-skarsgard",
+      "file": "001.jpg",
+      "commonsTitle": "File:Bill Skarsgård (42717006345) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Bill_Skarsg%C3%A5rd_%2842717006345%29_%28cropped%29.jpg/1920px-Bill_Skarsg%C3%A5rd_%2842717006345%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:59:02.969Z",
+      "note": "2017 IT Comic-Con floral shirt; not cable-knit Mark Verheiden panel eval"
+    },
+    {
+      "id": "ian-somerhalder",
+      "file": "001.jpg",
+      "commonsTitle": "File:Ian Somerhalder by Gage Skidmore 2.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Ian_Somerhalder_by_Gage_Skidmore_2.jpg/1920px-Ian_Somerhalder_by_Gage_Skidmore_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:59:03.245Z",
+      "note": "Comic-Con Team Stefan checkered fedora; not grey-fedora dark V-neck eval"
+    },
+    {
+      "id": "taylor-swift",
+      "file": "001.jpg",
+      "commonsTitle": "File:Taylor Swift AMAs 2019.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Taylor_Swift_AMAs_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:03.514Z",
+      "note": "AMAs 2019 bangs green sequin; not TIME 100 2010 curly black-strapless eval"
+    },
+    {
+      "id": "daniel-radcliffe",
+      "file": "006.jpg",
+      "commonsTitle": "File:Daniel Radcliffe 2009.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Daniel_Radcliffe_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:03.764Z",
+      "note": "2009 pink shirt grey blazer; not 2006 Empire Awards graphic-tee eval"
+    },
+    {
+      "id": "joaquin-phoenix",
+      "file": "001.jpg",
+      "commonsTitle": "File:Joaquin Phoenix at the 2018 Berlin Film Festival.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Joaquin_Phoenix_at_the_2018_Berlin_Film_Festival.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:04.370Z",
+      "note": "Berlinale 2018 no sunglasses; not outdoor tortoiseshell-sunglasses eval"
+    },
+    {
+      "id": "sandra-bullock",
+      "file": "001.jpg",
+      "commonsTitle": "File:Sandra Bullock in July 2013.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Sandra_Bullock_in_July_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:04.655Z",
+      "note": "July 2013 teal embroidered blouse updo; not layered-pearls eval"
+    },
+    {
+      "id": "sandra-bullock",
+      "file": "002.jpg",
+      "commonsTitle": "File:Sandra Bullock, The Heat, London, 2013 (crop).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Sandra_Bullock%2C_The_Heat%2C_London%2C_2013_%28crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:04.904Z",
+      "note": "The Heat London 2013 waves black lace; not layered-pearls eval"
     }
   ]
 }

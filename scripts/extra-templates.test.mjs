@@ -287,6 +287,46 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "lady-gaga" && t.source === "extra-photos/lady-gaga/006.jpg"),
       "Lady Gaga JWT Toronto extra missing",
     );
+    assert.ok((byId.get("heidi-klum") ?? 0) >= 1, "Heidi Klum extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "heidi-klum" && t.source === "extra-photos/heidi-klum/001.jpg"),
+      "Heidi Klum AGT 2014 extra missing",
+    );
+    assert.ok((byId.get("gwyneth-paltrow") ?? 0) >= 3, "Gwyneth extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "gwyneth-paltrow" && t.source === "extra-photos/gwyneth-paltrow/006.jpg"),
+      "Gwyneth 2010 extra missing",
+    );
+    assert.ok((byId.get("bill-skarsgard") ?? 0) >= 1, "Bill Skarsgård extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "bill-skarsgard" && t.source === "extra-photos/bill-skarsgard/001.jpg"),
+      "Bill Skarsgård 2017 floral extra missing",
+    );
+    assert.ok((byId.get("ian-somerhalder") ?? 0) >= 1, "Ian Somerhalder extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ian-somerhalder" && t.source === "extra-photos/ian-somerhalder/001.jpg"),
+      "Ian Somerhalder Team Stefan extra missing",
+    );
+    assert.ok((byId.get("taylor-swift") ?? 0) >= 1, "Taylor Swift extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "taylor-swift" && t.source === "extra-photos/taylor-swift/001.jpg"),
+      "Taylor Swift AMAs 2019 extra missing",
+    );
+    assert.ok((byId.get("daniel-radcliffe") ?? 0) >= 1, "Daniel Radcliffe extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "daniel-radcliffe" && t.source === "extra-photos/daniel-radcliffe/006.jpg"),
+      "Daniel Radcliffe 2009 extra missing",
+    );
+    assert.ok((byId.get("joaquin-phoenix") ?? 0) >= 1, "Joaquin Phoenix extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "joaquin-phoenix" && t.source === "extra-photos/joaquin-phoenix/001.jpg"),
+      "Joaquin Phoenix Berlinale 2018 extra missing",
+    );
+    assert.ok((byId.get("sandra-bullock") ?? 0) >= 2, "Sandra Bullock extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "sandra-bullock" && t.source === "extra-photos/sandra-bullock/001.jpg"),
+      "Sandra Bullock July 2013 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
