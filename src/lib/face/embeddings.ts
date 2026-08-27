@@ -373,8 +373,16 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         (WonderCon blazer; not v-neck sweater eval). Tom Holland
  *         SDCC flickr and Lupita 2018 TIME crop stay out as eval
  *         sittings.
+ * 6.5.54: Commons extras that beat pack dTrue for Britney Spears (Toronto
+ *         Femme Fatale silver sequin + purple Hold It Against Me; not gold
+ *         metallic jacket eval), Mark Ruffalo (Berlin 2010 wave + outdoor
+ *         parka, NYFF 2010 grey blazer, Avengers 2012 navy; not Kids Are
+ *         All Right peace-sign eval), and Jonathan Bailey (Testament of
+ *         Youth 2014; not Independent Filmmakers Ball glasses eval).
+ *         Bailey 2015 gala, Miley Today-show crop, and the second Avengers
+ *         Toronto frame stay out as eval clones or same-sitting dupes.
  */
-const GALLERY_VERSION = "6.5.53";
+const GALLERY_VERSION = "6.5.54";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

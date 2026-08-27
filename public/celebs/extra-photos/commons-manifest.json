@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 340,
+  "count": 347,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2477,6 +2477,62 @@
         "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Joseph_Gordon-Levitt_%286855057100%29.jpg/1280px-Joseph_Gordon-Levitt_%286855057100%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
         "fetchedAt": "2026-08-27T20:15:12.411Z",
         "note": "WonderCon navy blazer striped shirt; not v-neck sweater patterned-tie eval"
+    }    ,
+    {
+        "id": "britney-spears",
+        "file": "001.jpg",
+        "commonsTitle": "File:Britney Spears - Femme Fatale Tour (Toronto) (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Britney_Spears_-_Femme_Fatale_Tour_(Toronto)_(cropped).jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Toronto Femme Fatale silver sequin; not gold metallic jacket eval"
+    }    ,
+    {
+        "id": "britney-spears",
+        "file": "002.jpg",
+        "commonsTitle": "File:Britney Spears 2011.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Britney_Spears_2011.jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Purple studded Hold It Against Me costume; not gold jacket eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "003.jpg",
+        "commonsTitle": "File:Mark Ruffalo (Berlin Film Festival 2010).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_(Berlin_Film_Festival_2010).jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Berlin 2010 black suit wave; not Kids Are All Right peace-sign eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "004.jpg",
+        "commonsTitle": "File:Mark Ruffalo (Berlin Film Festival 2010) 2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_(Berlin_Film_Festival_2010)_2.jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Berlin 2010 outdoor parka; not Kids Are All Right peace-sign eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "005.jpg",
+        "commonsTitle": "File:Mark Ruffalo - 2010 New York Film Festival (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_-_2010_New_York_Film_Festival_(cropped).jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "NYFF 2010 grey blazer black shirt; not Kids Are All Right pinstripe eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "006.jpg",
+        "commonsTitle": "File:Mark Ruffalo 2012.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_2012.jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Avengers 2012 navy shirt Marvel backdrop; not Kids Are All Right eval"
+    }    ,
+    {
+        "id": "jonathan-bailey",
+        "file": "001.jpg",
+        "commonsTitle": "File:Jonathan Bailey at Testament of Youth Premiere in October 2014 2.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jonathan_Bailey_at_Testament_of_Youth_Premiere_in_October_2014_2.png",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Testament of Youth 2014 no glasses; not Independent Filmmakers Ball eval"
     }
   ]
 }

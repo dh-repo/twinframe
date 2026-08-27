@@ -527,6 +527,21 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "barry-keoghan" && t.source === "extra-photos/barry-keoghan/004.jpg"),
       "Barry Keoghan LV-vest extra missing",
     );
+    assert.ok((byId.get("britney-spears") ?? 0) >= 2, "Britney Spears extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "britney-spears" && t.source === "extra-photos/britney-spears/001.jpg"),
+      "Britney Spears Toronto silver extra missing",
+    );
+    assert.ok((byId.get("mark-ruffalo") ?? 0) >= 4, "Mark Ruffalo extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "mark-ruffalo" && t.source === "extra-photos/mark-ruffalo/006.jpg"),
+      "Mark Ruffalo Avengers 2012 extra missing",
+    );
+    assert.ok((byId.get("jonathan-bailey") ?? 0) >= 1, "Jonathan Bailey extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "jonathan-bailey" && t.source === "extra-photos/jonathan-bailey/001.jpg"),
+      "Jonathan Bailey Testament of Youth extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
