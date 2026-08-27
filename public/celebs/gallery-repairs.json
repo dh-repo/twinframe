@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T07:17:44.715Z",
+  "generatedAt": "2026-08-27T07:22:12.126Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -6827,6 +6827,32 @@
       "shippedToLive": 0.4268629719797541,
       "beforeFingerprint": "d056fd0acd3a0c22322dc83a8281135dc92bde5d6fdc3f7b482d43dfe5b21717",
       "afterFingerprint": "45afac39dc253829e76f1910156d72df26b2820d01faad08c3250829b17a3fa1"
+    },
+    {
+      "id": "brett-cullen",
+      "index": 453,
+      "household": false,
+      "source": "public/celebs/brett-cullen.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8905236721038818,
+      "shippedToLive": 0.9505556691743017,
+      "beforeFingerprint": "1ec49b7a593297739da27637af225af699260c0668dab1bf436a272cebdaf17a",
+      "afterFingerprint": "50c8e07505fac45810b25a880959333bd134683e2932f76211852faf442dfc84"
+    },
+    {
+      "id": "sage-brocklebank",
+      "index": 783,
+      "household": false,
+      "source": "public/celebs/sage-brocklebank.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8385443687438965,
+      "shippedToLive": 0.566113771262462,
+      "beforeFingerprint": "62df605ab74b7b92073eeecb0809173c7a755a633a8eed23fcc5c7ed2559b0a4",
+      "afterFingerprint": "f178ecfcee9e0b3c3184ee43178fcc0641ca88b32714c4445a99b55112c340ef"
     }
   ]
 }

@@ -4534,7 +4534,7 @@
     "name": "Brett Cullen",
     "path": "/celebs/thumbs/96/brett-cullen.webp",
     "path192": "/celebs/thumbs/192/brett-cullen.webp",
-    "fallbackPath": "/celebs/thumbs/96/brett-cullen.webp",
+    "fallbackPath": "/celebs/brett-cullen.jpg",
     "age": 49,
     "gender": "male",
     "genderProb": 0.9674189686775208
@@ -7834,7 +7834,7 @@
     "name": "Sage Brocklebank",
     "path": "/celebs/thumbs/96/sage-brocklebank.webp",
     "path192": "/celebs/thumbs/192/sage-brocklebank.webp",
-    "fallbackPath": "/celebs/thumbs/96/sage-brocklebank.webp",
+    "fallbackPath": "/celebs/sage-brocklebank.jpg",
     "age": 30,
     "gender": "male",
     "genderProb": 0.9585878252983093

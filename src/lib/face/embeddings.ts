@@ -170,8 +170,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Horsdal, Anderson, Maher, Lea, Whigham, Nykl, Sharma, Hudson,
  *         Pizzolatto).
  * 6.5.12: Dahl, Samuda, Redman, Golin, and Evans Wikipedia primaries.
+ * 6.5.13: Cullen and Brocklebank GalaxyCon Wikipedia infobox portraits.
  */
-const GALLERY_VERSION = "6.5.12";
+const GALLERY_VERSION = "6.5.13";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
