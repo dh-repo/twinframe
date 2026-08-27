@@ -4968,7 +4968,7 @@
     "name": "Milly Alcock",
     "path": "/celebs/thumbs/96/milly-alcock.webp",
     "path192": "/celebs/thumbs/192/milly-alcock.webp",
-    "fallbackPath": "/celebs/thumbs/96/milly-alcock.webp",
+    "fallbackPath": "/celebs/milly-alcock.jpg",
     "gender": "female",
     "genderProb": 0.98,
     "ageBuckets": [
@@ -4983,7 +4983,7 @@
     "name": "Mike Vogel",
     "path": "/celebs/thumbs/96/mike-vogel.webp",
     "path192": "/celebs/thumbs/192/mike-vogel.webp",
-    "fallbackPath": "/celebs/thumbs/96/mike-vogel.webp",
+    "fallbackPath": "/celebs/mike-vogel.jpg",
     "gender": "male",
     "genderProb": 0.9087667465209961,
     "ageBuckets": [
@@ -4998,7 +4998,7 @@
     "name": "Rachelle Lefevre",
     "path": "/celebs/thumbs/96/rachelle-lefevre.webp",
     "path192": "/celebs/thumbs/192/rachelle-lefevre.webp",
-    "fallbackPath": "/celebs/thumbs/96/rachelle-lefevre.webp",
+    "fallbackPath": "/celebs/rachelle-lefevre.jpg",
     "gender": "female",
     "genderProb": 0.9290002956986427,
     "ageBuckets": [
@@ -5117,7 +5117,7 @@
     "name": "Natalie Martinez",
     "path": "/celebs/thumbs/96/natalie-martinez.webp",
     "path192": "/celebs/thumbs/192/natalie-martinez.webp",
-    "fallbackPath": "/celebs/thumbs/96/natalie-martinez.webp",
+    "fallbackPath": "/celebs/natalie-martinez.jpg",
     "gender": "female",
     "genderProb": 0.973973847925663,
     "ageBuckets": [
@@ -5132,7 +5132,7 @@
     "name": "Britt Robertson",
     "path": "/celebs/thumbs/96/britt-robertson.webp",
     "path192": "/celebs/thumbs/192/britt-robertson.webp",
-    "fallbackPath": "/celebs/thumbs/96/britt-robertson.webp",
+    "fallbackPath": "/celebs/britt-robertson.jpg",
     "gender": "female",
     "genderProb": 0.9372234642505646,
     "ageBuckets": [
@@ -5177,7 +5177,7 @@
     "name": "Jeff Fahey",
     "path": "/celebs/thumbs/96/jeff-fahey.webp",
     "path192": "/celebs/thumbs/192/jeff-fahey.webp",
-    "fallbackPath": "/celebs/thumbs/96/jeff-fahey.webp",
+    "fallbackPath": "/celebs/jeff-fahey.jpg",
     "gender": "male",
     "genderProb": 0.9966248273849487,
     "ageBuckets": [
@@ -5446,7 +5446,7 @@
     "name": "Beth Broderick",
     "path": "/celebs/thumbs/96/beth-broderick.webp",
     "path192": "/celebs/thumbs/192/beth-broderick.webp",
-    "fallbackPath": "/celebs/thumbs/96/beth-broderick.webp",
+    "fallbackPath": "/celebs/beth-broderick.jpg",
     "gender": "female",
     "genderProb": 0.9630806781351566,
     "ageBuckets": [
@@ -5716,7 +5716,7 @@
     "name": "Zeeko Zaki",
     "path": "/celebs/thumbs/96/zeeko-zaki.webp",
     "path192": "/celebs/thumbs/192/zeeko-zaki.webp",
-    "fallbackPath": "/celebs/thumbs/96/zeeko-zaki.webp",
+    "fallbackPath": "/celebs/zeeko-zaki.jpg",
     "gender": "male",
     "genderProb": 0.9824967980384827,
     "ageBuckets": [
@@ -6254,7 +6254,7 @@
     "name": "Kevin Chapman",
     "path": "/celebs/thumbs/96/kevin-chapman.webp",
     "path192": "/celebs/thumbs/192/kevin-chapman.webp",
-    "fallbackPath": "/celebs/thumbs/96/kevin-chapman.webp",
+    "fallbackPath": "/celebs/kevin-chapman.jpg",
     "gender": "male",
     "genderProb": 0.9326163530349731,
     "ageBuckets": [
@@ -6284,7 +6284,7 @@
     "name": "Sarah Shahi",
     "path": "/celebs/thumbs/96/sarah-shahi.webp",
     "path192": "/celebs/thumbs/192/sarah-shahi.webp",
-    "fallbackPath": "/celebs/thumbs/96/sarah-shahi.webp",
+    "fallbackPath": "/celebs/sarah-shahi.jpg",
     "gender": "female",
     "genderProb": 0.9672646969556808,
     "ageBuckets": [
@@ -6494,7 +6494,7 @@
     "name": "Susan Misner",
     "path": "/celebs/thumbs/96/susan-misner.webp",
     "path192": "/celebs/thumbs/192/susan-misner.webp",
-    "fallbackPath": "/celebs/thumbs/96/susan-misner.webp",
+    "fallbackPath": "/celebs/susan-misner.jpg",
     "gender": "female",
     "genderProb": 0.9747953657060862,
     "ageBuckets": [
@@ -6524,7 +6524,7 @@
     "name": "Natalie Zea",
     "path": "/celebs/thumbs/96/natalie-zea.webp",
     "path192": "/celebs/thumbs/192/natalie-zea.webp",
-    "fallbackPath": "/celebs/thumbs/96/natalie-zea.webp",
+    "fallbackPath": "/celebs/natalie-zea.jpg",
     "gender": "female",
     "genderProb": 0.9512260220944881,
     "ageBuckets": [

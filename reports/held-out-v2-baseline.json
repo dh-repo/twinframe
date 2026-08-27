@@ -1,5 +1,5 @@
 {
- "at": "2026-08-27T04:58:21.620Z",
+ "at": "2026-08-27T05:04:58.299Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
  "gallerySize": 1005,
@@ -135,7 +135,7 @@
    "dTrue": 0.0079201616380844,
    "dTop1": 0.0079201616380844,
    "dMinSameId": 0.0079201616380844,
-   "dBestWrong": 0.17488301108458393,
+   "dBestWrong": 0.8051622459700821,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -279,7 +279,7 @@
    "dTrue": 0.5069607698693286,
    "dTop1": 0.5069607698693286,
    "dMinSameId": 0.5069607698693286,
-   "dBestWrong": 0.8356121631953759,
+   "dBestWrong": 0.8317046494070675,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -507,7 +507,7 @@
    "dTrue": 0.7153589389430659,
    "dTop1": 0.7153589389430659,
    "dMinSameId": 0.7153589389430659,
-   "dBestWrong": 0.8009146678589919,
+   "dBestWrong": 0.7609447973746359,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -567,7 +567,7 @@
    "dTrue": 0.44283865942204925,
    "dTop1": 0.44283865942204925,
    "dMinSameId": 0.44283865942204925,
-   "dBestWrong": 0.7393531094871231,
+   "dBestWrong": 0.760092537823889,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1107,7 +1107,7 @@
    "dTrue": 0.46003341034928147,
    "dTop1": 0.46003341034928147,
    "dMinSameId": 0.46003341034928147,
-   "dBestWrong": 0.7978145517783818,
+   "dBestWrong": 0.7947893717290857,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1575,7 +1575,7 @@
    "dTrue": 0.41997771119366656,
    "dTop1": 0.41997771119366656,
    "dMinSameId": 0.41997771119366656,
-   "dBestWrong": 0.7884055507460236,
+   "dBestWrong": 0.7847019450473831,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2247,7 +2247,7 @@
    "dTrue": 0.47547101971305117,
    "dTop1": 0.47547101971305117,
    "dMinSameId": 0.47547101971305117,
-   "dBestWrong": 0.8271298125649803,
+   "dBestWrong": 0.8053476596097189,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -3051,7 +3051,7 @@
    "dTrue": 0.6306012024000476,
    "dTop1": 0.6306012024000476,
    "dMinSameId": 0.6306012024000476,
-   "dBestWrong": 0.8149358271923655,
+   "dBestWrong": 0.7547047752870872,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false

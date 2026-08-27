@@ -149,8 +149,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        was a near-clone of a character actor; Rosalía/Son Ye-jin eval misses).
  * 6.5.1: drop the 100-id poisoned thumb cluster from ranking; enroll Stormare,
  *        Caviezel, and other remaining household names.
+ * 6.5.2: Wikipedia primaries for remaining recognizable thumb-only slots
+ *        (Alcock, Shahi, Vogel, and other TV/film names).
  */
-const GALLERY_VERSION = "6.5.1";
+const GALLERY_VERSION = "6.5.2";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
