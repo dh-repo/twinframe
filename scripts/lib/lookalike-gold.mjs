@@ -10,10 +10,13 @@ import fs from "node:fs";
  * @returns {GoldCaseKind}
  */
 export function classifyGoldCase(c) {
+  if (c?.expectRefuse) {
+    return "refuse-smoke";
+  }
   if (c?.kind === "civilian" || c?.fixture || c?.imagePath || /^civilian/i.test(String(c?.id ?? ""))) {
     return "civilian";
   }
-  if (c?.expectRefuse || (Array.isArray(c?.acceptableTopIds) && c.acceptableTopIds.length === 0)) {
+  if (Array.isArray(c?.acceptableTopIds) && c.acceptableTopIds.length === 0) {
     return "refuse-smoke";
   }
   if (/^identity-/i.test(String(c?.id ?? "")) || /self-vector|enrolled self/i.test(String(c?.notes ?? ""))) {

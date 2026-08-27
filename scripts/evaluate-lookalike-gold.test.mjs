@@ -9,6 +9,8 @@ import {
   formatGoldSummary,
   listCivilianGoldPhotos,
 } from "./lib/lookalike-gold.mjs";
+import { evaluateGoldSet } from "./evaluate-lookalike-gold.mjs";
+import { loadV4Gallery } from "./lib/v4-gallery.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const GOLD = path.join(ROOT, "public/celebs/lookalike-gold.json");
@@ -24,6 +26,18 @@ describe("lookalike gold classification", () => {
 
   it("labels synthetic refuses as floor smoke", () => {
     assert.equal(classifyGoldCase({ id: "no-match-random-1", expectRefuse: true, acceptableTopIds: [] }), "refuse-smoke");
+  });
+
+  it("treats a real photo with --refuse as refuse-smoke, not an invented civilian label", () => {
+    assert.equal(
+      classifyGoldCase({
+        id: "swing-standing-refuse",
+        imagePath: "fixtures/probes/1000067278.jpeg",
+        expectRefuse: true,
+        acceptableTopIds: [],
+      }),
+      "refuse-smoke",
+    );
   });
 
   it("labels civilian ids even before a fixture is attached", () => {
@@ -64,5 +78,15 @@ describe("shipped gold set stays honest", () => {
     assert.ok(lines.some((l) => l.includes("refuse-smoke")));
     assert.ok(lines.some((l) => /civilian acceptable@1=N\/A/.test(l)));
     assert.ok(!lines.some((l) => /civilian acceptable@1=\d/.test(l)));
+  });
+
+  it("identity seeds retrieve Top-1 on the verified ranking gallery", () => {
+    const { gallery } = loadV4Gallery(ROOT);
+    const { stats } = evaluateGoldSet(set, gallery);
+    assert.equal(stats.identityN, 8);
+    assert.equal(stats.identityTop1, 8, `identity regression missed ${stats.identityN - stats.identityTop1} seeds`);
+    assert.ok(stats.refuseN >= 8);
+    assert.equal(stats.refuseOk, stats.refuseN, "a refuse seed presented a look-alike");
+    assert.equal(stats.civilianN, 0);
   });
 });

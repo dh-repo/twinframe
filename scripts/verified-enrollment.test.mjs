@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 import { isThumbOnlyEnrollment } from "../src/lib/face/gallery-dedupe.ts";
+import { cosineDistance, decodeV4Gallery } from "./lib/gallery-binary.mjs";
 import { loadV4Gallery } from "./lib/v4-gallery.mjs";
 import { loadGallery, mergeExtraTemplates } from "./evaluate-held-out-v2.ts";
 
@@ -55,6 +56,30 @@ describe("ranking gallery is verified jpg primaries only", () => {
       catalogThumbs.every((b) => !rankingIds.has(b.id)),
       "a thumb-only catalog id leaked into ranking",
     );
+  });
+
+  it("verified jpg identities are not near-clones of a different person", () => {
+    const { vectors } = decodeV4Gallery(fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin")));
+    const aliases = {
+      "penelope-cruz-m": ["penelope-cruz"],
+      "penelope-cruz": ["penelope-cruz-m"],
+      lisa: ["lisa-blackpink"],
+      "lisa-blackpink": ["lisa"],
+    };
+    const rows = buckets
+      .map((b, i) => ({ id: b.id, v: vectors[i], thumb: isThumbOnlyEnrollment(b) }))
+      .filter((r) => !r.thumb);
+    const close = [];
+    for (let i = 0; i < rows.length; i++) {
+      for (let j = i + 1; j < rows.length; j++) {
+        const d = cosineDistance(rows[i].v, rows[j].v);
+        if (d < 0.4) {
+          const alias = (aliases[rows[i].id] ?? []).includes(rows[j].id);
+          if (!alias) close.push(`${rows[i].id}↔${rows[j].id} d=${d.toFixed(3)}`);
+        }
+      }
+    }
+    assert.deepEqual(close, [], `distinct jpg identities collapsed: ${close.slice(0, 8).join("; ")}`);
   });
 
   it("held-out eval ranking agrees with the live loader: no thumb-only ids", () => {
