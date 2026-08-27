@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 362,
+  "count": 366,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2653,6 +2653,38 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colman_Domingo,_2018_(cropped).jpg",
         "fetchedAt": "2026-08-27T22:45:00.000Z",
         "note": "2018 Comic-Con colorful painterly shirt; not gold-embroidered mandarin eval"
+    },
+    {
+        "id": "keanu-reeves",
+        "file": "005.jpg",
+        "commonsTitle": "File:Keanu Reeves 2014.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Keanu_Reeves_2014.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "2014 short/spiky messy hair charcoal collared shirt festival; not long-hair grey-blazer black-tee eval"
+    },
+    {
+        "id": "nicolas-cage",
+        "file": "005.jpg",
+        "commonsTitle": "File:Nicolas Cage cropped 2009.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicolas_Cage_cropped_2009.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "Venice 2009 Mostra charcoal jacket white open-collar gold chain; not black-tuxedo black-shirt necktie outdoor eval"
+    },
+    {
+        "id": "alexander-skarsgard",
+        "file": "001.jpg",
+        "commonsTitle": "File:Alexander Skarsgard by Gage Skidmore.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alexander_Skarsgard_by_Gage_Skidmore.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "Gage Skidmore Comic-Con charcoal blazer grey crew tee DEXTER lanyard; not black unbuttoned shirt silver-chain SDCC panel eval"
+    },
+    {
+        "id": "alexander-skarsgard",
+        "file": "002.jpg",
+        "commonsTitle": "File:Alexander Skarsgard 1 by David Shankbone.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alexander_Skarsgard_1_by_David_Shankbone.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "Tribeca dark blazer black shirt silver chain gold bead; not black unbuttoned shirt silver-chain SDCC panel eval"
     }
   ]
 }

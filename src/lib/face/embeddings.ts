@@ -428,8 +428,14 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         not outdoor-night navy-suit necktie eval) and Colman Domingo
  *         (2018 Comic-Con painterly shirt; not gold-embroidered mandarin
  *         eval). Denzel 2024 TIFF couple is the eval sitting.
+ * 6.5.63: Commons extras that beat pack dTrue for Keanu Reeves (2014 short
+ *         messy hair charcoal collared shirt; not long-hair grey-blazer
+ *         black-tee eval), Nicolas Cage (Venice 2009 charcoal jacket white
+ *         open-collar; not black-tuxedo necktie outdoor eval), and Alexander
+ *         Skarsgård (Gage Comic-Con blazer+DEXTER lanyard + Tribeca Shankbone
+ *         chain; not unbuttoned-shirt SDCC panel eval).
  */
-const GALLERY_VERSION = "6.5.62";
+const GALLERY_VERSION = "6.5.63";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
