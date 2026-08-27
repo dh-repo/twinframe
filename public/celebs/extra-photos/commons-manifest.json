@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 237,
+  "count": 245,
   "photos": [
     {
       "id": "sandra-oh",
@@ -1661,6 +1661,62 @@
       "commonsTitle": "File:Cardi B 2021 02.jpg",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cardi_B_2021_02.jpg",
       "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "maluma",
+      "file": "006.jpg",
+      "commonsTitle": "File:Maluma - Cuatro Babys - Festival de Vi\u00f1a del Mar 2017.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Maluma_-_Cuatro_Babys_-_Festival_de_Vi\u00f1a_del_Mar_2017.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "maluma",
+      "file": "007.jpg",
+      "commonsTitle": "File:Maluma - Espa\u00e7o das Am\u00e9ricas (37591053894).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Maluma_-_Espa\u00e7o_das_Am\u00e9ricas_(37591053894).jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "beyonce",
+      "file": "003.jpg",
+      "commonsTitle": "File:Beyonc\u00e9 Knowles 2009.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beyonc\u00e9_Knowles_2009.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "beyonce",
+      "file": "004.jpg",
+      "commonsTitle": "File:Flickr - smilesea - Beyonc\u00e9 Newcastle 2009 (17).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_smilesea_-_Beyonc\u00e9_Newcastle_2009_(17).jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "gemma-chan",
+      "file": "001.jpg",
+      "commonsTitle": "File:Gemma Chan at the Moet BIFA 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gemma_Chan_at_the_Moet_BIFA_2014.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "gemma-chan",
+      "file": "002.jpg",
+      "commonsTitle": "File:Gemma Chan Marvel 2019.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gemma_Chan_Marvel_2019.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "harry-styles",
+      "file": "003.jpg",
+      "commonsTitle": "File:Harry Styles November 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Harry_Styles_November_2014.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "serena-williams",
+      "file": "006.jpg",
+      "commonsTitle": "File:Serena Williams Doha 2013 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Serena_Williams_Doha_2013_(cropped).jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
     }
   ]
 }

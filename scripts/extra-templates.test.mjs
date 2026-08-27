@@ -92,6 +92,31 @@ describe("shipped extra templates", () => {
     assert.ok((byId.get("sofia-vergara") ?? 0) >= 1, "Sofia Vergara PaleyFest extra missing");
     assert.ok((byId.get("chris-evans") ?? 0) >= 2, "Chris Evans extras missing");
     assert.ok((byId.get("cardi-b") ?? 0) >= 1, "Cardi B 2021 extra missing");
+    assert.ok((byId.get("maluma") ?? 0) >= 2, "Maluma 2017 extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "maluma" && t.source === "extra-photos/maluma/006.jpg"),
+      "Maluma Viña 2017 extra missing",
+    );
+    assert.ok((byId.get("beyonce") ?? 0) >= 2, "Beyoncé extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "beyonce" && t.source === "extra-photos/beyonce/004.jpg"),
+      "Beyoncé Newcastle 2009 extra missing",
+    );
+    assert.ok((byId.get("gemma-chan") ?? 0) >= 2, "Gemma Chan extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "gemma-chan" && t.source === "extra-photos/gemma-chan/001.jpg"),
+      "Gemma Chan BIFA 2014 extra missing",
+    );
+    assert.ok((byId.get("harry-styles") ?? 0) >= 1, "Harry Styles extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "harry-styles" && t.source === "extra-photos/harry-styles/003.jpg"),
+      "Harry Styles November 2014 extra missing",
+    );
+    assert.ok((byId.get("serena-williams") ?? 0) >= 1, "Serena extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "serena-williams" && t.source === "extra-photos/serena-williams/006.jpg"),
+      "Serena Doha 2013 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

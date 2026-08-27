@@ -211,8 +211,14 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         tuxedo), Nicole, Elizabeth Olsen (not 2011 TIFF floral eval
  *         sitting), Sofia PaleyFest, Chris Evans, and Cardi 2021.
  *         Chris Evans 2014.jpg and Cardi WEHO crop are eval clones.
+ * 6.5.30: Commons extras that beat pack dTrue for Maluma (Viña 2017,
+ *         Espaço das Américas 2017), Beyoncé (2009 Newcastle plus
+ *         held-out 002/003), Gemma Chan (BIFA 2014, Marvel 2019),
+ *         Harry Styles (November 2014), and Serena (Doha 2013).
+ *         Beyoncé Knowles 2009 extra failed detection; Federer
+ *         Commons views did not beat pack.
  */
-const GALLERY_VERSION = "6.5.29";
+const GALLERY_VERSION = "6.5.30";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
