@@ -230,8 +230,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         and Doja Cat (Scarlet-era 2024 profile; Austin jumbotron
  *         is the same sitting). Naomi amfAR bangs stills did not
  *         beat DVF runway pack dTrue.
+ * 6.5.34: Product-crop of Messi PSG portrait that beats the 2011-12
+ *         Barcelona action pack dTrue. 2018 Argentina stills did not.
  */
-const GALLERY_VERSION = "6.5.33";
+const GALLERY_VERSION = "6.5.34";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

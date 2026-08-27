@@ -141,6 +141,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "sebastian-stan" && t.source === "extra-photos/sebastian-stan/001.jpg"),
       "Sebastian Stan 2026 Cannes extra missing",
     );
+    assert.ok((byId.get("lionel-messi") ?? 0) >= 3, "Messi PSG extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "lionel-messi" && t.source === "extra-photos/lionel-messi/001.jpg"),
+      "Messi PSG extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
