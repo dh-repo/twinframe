@@ -199,8 +199,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.26: Ben Affleck 1998 extra (young solo, closer to the Armageddon-era
  *         eval look than the 2024 bearded SXSW primary). Wrong-person
  *         files previously in extra-photos/ben-affleck were dropped.
+ * 6.5.27: Era extras for Steve Carell (2010 SAG/Oscars, unbearded), Ana de
+ *         Armas (2017 Comic-Con plus held-out 003/004), and Lisa (2024
+ *         cropped solo plus held-out 002). Metallica-concert Bieber crop
+ *         of eval 001 is not enrolled (dCrop 0.071, same sitting).
  */
-const GALLERY_VERSION = "6.5.26";
+const GALLERY_VERSION = "6.5.27";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
