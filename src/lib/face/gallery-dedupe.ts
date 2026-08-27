@@ -8,12 +8,14 @@ import {
 /** Near-zero ensemble distance treats gallery vectors as clones. */
 export const GALLERY_CLONE_EPS = 1e-4;
 /**
- * Thumb-only enrollments that share one poisoned face sit at AdaFace d≈0.02–0.08
+ * Thumb-only enrollments that share one poisoned face sit at AdaFace d≈0.02–0.10
  * across dozens of different names. Exact-clone eps (1e-4) misses them, and
  * ranking then returns a random extra as a "look-alike". A connected component
  * of this many distinct ids at this distance is not a celebrity neighborhood.
+ * 0.10 (not 0.08) also absorbs the halo of the same face that sat just outside
+ * the tighter cutoff; verified jpg primaries stay at d≈0.7 from the pile.
  */
-export const POISONED_CLUSTER_MAX_DISTANCE = 0.08;
+export const POISONED_CLUSTER_MAX_DISTANCE = 0.1;
 export const POISONED_CLUSTER_MIN_IDS = 8;
 
 function fingerprint(d: ArrayLike<number>): string {
@@ -115,7 +117,8 @@ function findRoot(parent: number[], i: number): number {
 
 /**
  * Drop every identity in a large near-clone component. Two similar celebrities
- * at d≈0.08 stay; a 100-id thumb cluster of the same poisoned face does not.
+ * at d≈0.10 stay (component size 2 < minIds); a 80-id+ thumb cluster of the
+ * same poisoned face does not.
  */
 export function dropPoisonedNearCloneClusters<T extends { id: string; descriptor: ArrayLike<number> }>(
   gallery: T[],

@@ -3,7 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { dropPoisonedNearCloneClusters } from "../src/lib/face/gallery-dedupe.ts";
+import {
+  dropPoisonedNearCloneClusters,
+  POISONED_CLUSTER_MAX_DISTANCE,
+} from "../src/lib/face/gallery-dedupe.ts";
 import { cosineDistance, decodeV4Gallery } from "./lib/gallery-binary.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -16,7 +19,7 @@ describe("shipped gallery poisoned thumb cluster", () => {
   const { gallery, droppedIds } = dropPoisonedNearCloneClusters(rows);
 
   it("drops the remaining near-clone pile and keeps repaired identities", () => {
-    assert.ok(droppedIds.length >= 70, `expected a large cluster, dropped ${droppedIds.length}`);
+    assert.ok(droppedIds.length >= 80, `expected a large cluster, dropped ${droppedIds.length}`);
     for (const id of [
       "adele",
       "zendaya",
@@ -31,6 +34,20 @@ describe("shipped gallery poisoned thumb cluster", () => {
       assert.equal(droppedIds.includes(id), false, `${id} was dropped with the poisoned pile`);
       assert.ok(gallery.some((r) => r.id === id), `${id} missing after cluster drop`);
     }
+    for (const id of [
+      "jacinto-taras-riddick",
+      "robert-beitzel",
+      "leon-rippy",
+      "silvio-pollio",
+      "rick-tae",
+      "jessica-schreier",
+      "glenn-ennis",
+      "frank-duffy",
+      "ritchie-montgomery",
+      "tre-styles",
+    ]) {
+      assert.equal(droppedIds.includes(id), true, `${id} halo thumb should drop with the pile`);
+    }
   });
 
   it("dropped ids really were near-clones of each other", () => {
@@ -39,7 +56,9 @@ describe("shipped gallery poisoned thumb cluster", () => {
     let near = 0;
     for (let i = 0; i < sample.length; i++) {
       for (let j = i + 1; j < sample.length; j++) {
-        if (cosineDistance(byId.get(sample[i]), byId.get(sample[j])) < 0.08) near++;
+        if (cosineDistance(byId.get(sample[i]), byId.get(sample[j])) < POISONED_CLUSTER_MAX_DISTANCE) {
+          near++;
+        }
       }
     }
     assert.ok(near >= 20, `dropped sample was not a cluster (near pairs ${near})`);

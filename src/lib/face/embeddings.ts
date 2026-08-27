@@ -174,8 +174,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.14: Wikipedia/Commons primaries for remaining thumb-only slots
  *         (Majdoub, Xavier, and Stein thumbs were impostors).
  * 6.5.15: Actor-disambiguation Wikipedia primaries (Rowe, Rogers, Berg, Quinn).
+ * 6.5.16: Absorb the d≈0.08–0.10 halo of the poisoned thumb pile (11 more
+ *         ranking extras were the same impostor face).
  */
-const GALLERY_VERSION = "6.5.15";
+const GALLERY_VERSION = "6.5.16";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
