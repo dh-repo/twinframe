@@ -1,5 +1,5 @@
 {
- "at": "2026-08-27T05:04:58.299Z",
+ "at": "2026-08-27T05:29:37.272Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
  "gallerySize": 1005,
@@ -123,7 +123,7 @@
    "dTrue": 0.3042814887192079,
    "dTop1": 0.3042814887192079,
    "dMinSameId": 0.3042814887192079,
-   "dBestWrong": 0.808641888878367,
+   "dBestWrong": 0.7800788639108351,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -147,7 +147,7 @@
    "dTrue": 0.5817264408259091,
    "dTop1": 0.5817264408259091,
    "dMinSameId": 0.5817264408259091,
-   "dBestWrong": 0.7704168276741914,
+   "dBestWrong": 0.767898208980353,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -183,7 +183,7 @@
    "dTrue": 0.5733650194203193,
    "dTop1": 0.5733650194203193,
    "dMinSameId": 0.5733650194203193,
-   "dBestWrong": 0.7865277786752982,
+   "dBestWrong": 0.8003391601734577,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -267,7 +267,7 @@
    "dTrue": 0.47547433685136253,
    "dTop1": 0.47547433685136253,
    "dMinSameId": 0.47547433685136253,
-   "dBestWrong": 0.8266020883056002,
+   "dBestWrong": 0.8232320222640598,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -423,7 +423,7 @@
    "dTrue": 0.5593210116916123,
    "dTop1": 0.5593210116916123,
    "dMinSameId": 0.5593210116916123,
-   "dBestWrong": 0.7684572843177849,
+   "dBestWrong": 0.7209119169880229,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -471,7 +471,7 @@
    "dTrue": 0.00987494779773701,
    "dTop1": 0.00987494779773701,
    "dMinSameId": 0.00987494779773701,
-   "dBestWrong": 0.17165789569133516,
+   "dBestWrong": 0.8065371377120807,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -543,7 +543,7 @@
    "dTrue": 0.3328889559852072,
    "dTop1": 0.3328889559852072,
    "dMinSameId": 0.3328889559852072,
-   "dBestWrong": 0.7664493374322664,
+   "dBestWrong": 0.7899791033852621,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -567,7 +567,7 @@
    "dTrue": 0.44283865942204925,
    "dTop1": 0.44283865942204925,
    "dMinSameId": 0.44283865942204925,
-   "dBestWrong": 0.760092537823889,
+   "dBestWrong": 0.7824936322453905,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -651,7 +651,7 @@
    "dTrue": 0.4005775391711519,
    "dTop1": 0.4005775391711519,
    "dMinSameId": 0.4005775391711519,
-   "dBestWrong": 0.7702714310303467,
+   "dBestWrong": 0.7896170230675054,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -735,7 +735,7 @@
    "dTrue": 0.002555907945833935,
    "dTop1": 0.002555907945833935,
    "dMinSameId": 0.002555907945833935,
-   "dBestWrong": 0.8180455937292248,
+   "dBestWrong": 0.8108231579959754,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -783,7 +783,7 @@
    "dTrue": 0.28910581928723167,
    "dTop1": 0.28910581928723167,
    "dMinSameId": 0.28910581928723167,
-   "dBestWrong": 0.8144589639553781,
+   "dBestWrong": 0.7538405987637593,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -867,7 +867,7 @@
    "dTrue": 0.0016968792376039765,
    "dTop1": 0.0016968792376039765,
    "dMinSameId": 0.0016968792376039765,
-   "dBestWrong": 0.8041462642598005,
+   "dBestWrong": 0.8244639631402553,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -879,7 +879,7 @@
    "dTrue": 0.2745024817067956,
    "dTop1": 0.2745024817067956,
    "dMinSameId": 0.2745024817067956,
-   "dBestWrong": 0.8124217125272771,
+   "dBestWrong": 0.8219536081348202,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1455,7 +1455,7 @@
    "dTrue": 0.019425727839803786,
    "dTop1": 0.019425727839803786,
    "dMinSameId": 0.019425727839803786,
-   "dBestWrong": 0.8086685055243552,
+   "dBestWrong": 0.7658291713182199,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1539,7 +1539,7 @@
    "dTrue": 0.009376286195797223,
    "dTop1": 0.009376286195797223,
    "dMinSameId": 0.009376286195797223,
-   "dBestWrong": 0.7977988158565165,
+   "dBestWrong": 0.7879870760394312,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1575,7 +1575,7 @@
    "dTrue": 0.41997771119366656,
    "dTop1": 0.41997771119366656,
    "dMinSameId": 0.41997771119366656,
-   "dBestWrong": 0.7847019450473831,
+   "dBestWrong": 0.7410997058980365,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1659,7 +1659,7 @@
    "dTrue": 0.485888477030352,
    "dTop1": 0.485888477030352,
    "dMinSameId": 0.485888477030352,
-   "dBestWrong": 0.7485548170156642,
+   "dBestWrong": 0.7737806040812252,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1839,7 +1839,7 @@
    "dTrue": 0.5175085936652128,
    "dTop1": 0.5175085936652128,
    "dMinSameId": 0.5175085936652128,
-   "dBestWrong": 0.7781873556659098,
+   "dBestWrong": 0.8113177959029529,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1911,7 +1911,7 @@
    "dTrue": 0.01026737166277436,
    "dTop1": 0.01026737166277436,
    "dMinSameId": 0.01026737166277436,
-   "dBestWrong": 0.7310960351379099,
+   "dBestWrong": 0.7634580098395647,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1971,7 +1971,7 @@
    "dTrue": 0.6059476541075886,
    "dTop1": 0.6059476541075886,
    "dMinSameId": 0.6059476541075886,
-   "dBestWrong": 0.8004809584666887,
+   "dBestWrong": 0.7644755859142731,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -1983,7 +1983,7 @@
    "dTrue": 0.0007898110597515107,
    "dTop1": 0.0007898110597515107,
    "dMinSameId": 0.0007898110597515107,
-   "dBestWrong": 0.7953447624455721,
+   "dBestWrong": 0.783458977677332,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2103,7 +2103,7 @@
    "dTrue": 0.0041654486600017915,
    "dTop1": 0.0041654486600017915,
    "dMinSameId": 0.0041654486600017915,
-   "dBestWrong": 0.7981490773878617,
+   "dBestWrong": 0.798284224808599,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2163,7 +2163,7 @@
    "dTrue": 0.45606817370584807,
    "dTop1": 0.45606817370584807,
    "dMinSameId": 0.45606817370584807,
-   "dBestWrong": 0.7164062910188786,
+   "dBestWrong": 0.7875452674003236,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2235,7 +2235,7 @@
    "dTrue": 0.5624669229418198,
    "dTop1": 0.5624669229418198,
    "dMinSameId": 0.5624669229418198,
-   "dBestWrong": 0.8257390320793631,
+   "dBestWrong": 0.8260415044669862,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2271,7 +2271,7 @@
    "dTrue": 0.44278801694598113,
    "dTop1": 0.44278801694598113,
    "dMinSameId": 0.44278801694598113,
-   "dBestWrong": 0.8041224848005526,
+   "dBestWrong": 0.8303678826495365,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2319,7 +2319,7 @@
    "dTrue": 0.40908656545682665,
    "dTop1": 0.40908656545682665,
    "dMinSameId": 0.40908656545682665,
-   "dBestWrong": 0.8123391304882748,
+   "dBestWrong": 0.8032567171857287,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2331,7 +2331,7 @@
    "dTrue": 0.004174156635156634,
    "dTop1": 0.004174156635156634,
    "dMinSameId": 0.004174156635156634,
-   "dBestWrong": 0.787827955375694,
+   "dBestWrong": 0.811317433881925,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2415,7 +2415,7 @@
    "dTrue": 0.5693173390385211,
    "dTop1": 0.5693173390385211,
    "dMinSameId": 0.5693173390385211,
-   "dBestWrong": 0.8460040305275068,
+   "dBestWrong": 0.8325879534487323,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2451,7 +2451,7 @@
    "dTrue": 0.6387049776627708,
    "dTop1": 0.6387049776627708,
    "dMinSameId": 0.6387049776627708,
-   "dBestWrong": 0.829617341711397,
+   "dBestWrong": 0.8143838569637019,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2487,7 +2487,7 @@
    "dTrue": 0.024833381950747913,
    "dTop1": 0.024833381950747913,
    "dMinSameId": 0.024833381950747913,
-   "dBestWrong": 0.7871758129300215,
+   "dBestWrong": 0.7247258118020878,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2595,7 +2595,7 @@
    "dTrue": 0.46007379514878277,
    "dTop1": 0.46007379514878277,
    "dMinSameId": 0.46007379514878277,
-   "dBestWrong": 0.6574823680903037,
+   "dBestWrong": 0.6673522334616994,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2679,7 +2679,7 @@
    "dTrue": 0.29034440251986693,
    "dTop1": 0.29034440251986693,
    "dMinSameId": 0.29034440251986693,
-   "dBestWrong": 0.8093393008085952,
+   "dBestWrong": 0.811491961647393,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2859,7 +2859,7 @@
    "dTrue": 0.4059022906009859,
    "dTop1": 0.4059022906009859,
    "dMinSameId": 0.4059022906009859,
-   "dBestWrong": 0.8031597156838388,
+   "dBestWrong": 0.7964214853957094,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2931,7 +2931,7 @@
    "dTrue": 0.4002134777437837,
    "dTop1": 0.4002134777437837,
    "dMinSameId": 0.4002134777437837,
-   "dBestWrong": 0.8298956871737653,
+   "dBestWrong": 0.7666051783453923,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2979,7 +2979,7 @@
    "dTrue": 0.006467660646118367,
    "dTop1": 0.006467660646118367,
    "dMinSameId": 0.006467660646118367,
-   "dBestWrong": 0.8312036936255743,
+   "dBestWrong": 0.8058279994924415,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -3147,7 +3147,7 @@
    "dTrue": 0.3939898603674714,
    "dTop1": 0.3939898603674714,
    "dMinSameId": 0.3939898603674714,
-   "dBestWrong": 0.8094982225110289,
+   "dBestWrong": 0.8146596713526968,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -3231,7 +3231,7 @@
    "dTrue": 0.314455142542042,
    "dTop1": 0.314455142542042,
    "dMinSameId": 0.314455142542042,
-   "dBestWrong": 0.833022728946423,
+   "dBestWrong": 0.8125080228897438,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -3423,7 +3423,7 @@
    "dTrue": 0.5091521378132035,
    "dTop1": 0.5091521378132035,
    "dMinSameId": 0.5091521378132035,
-   "dBestWrong": 0.8192942795174603,
+   "dBestWrong": 0.8132228108109458,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -3471,7 +3471,7 @@
    "dTrue": 0.007641534052068355,
    "dTop1": 0.007641534052068355,
    "dMinSameId": 0.007641534052068355,
-   "dBestWrong": 0.808271254145972,
+   "dBestWrong": 0.7875021111522457,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
