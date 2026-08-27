@@ -94,7 +94,7 @@ src/lib/face/
   gallery-dedupe.ts                 # multi-shot centroids, poisoned-cluster drop, thumb-only ranking filter
 public/celebs/
   embeddings.v4.q8.bin + gallery.buckets.json + index.json   # catalog 1024; ranking uses verified jpg primaries only
-  extra-templates.json                                       # +552 templates merged at runtime
+  extra-templates.json                                       # gated AdaFace extra views merged at runtime
   held-out/descriptors.json                                  # tracked eval probes (AdaFace-512d, Node enroll path)
 reports/                           # generated eval artifacts (tracked; restore after local runs)
 migrations/0001_auth.sql           # better-auth schema (do not edit)

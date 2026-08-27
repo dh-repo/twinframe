@@ -10,7 +10,7 @@ import {
   listCivilianGoldPhotos,
 } from "./lib/lookalike-gold.mjs";
 import { evaluateGoldSet } from "./evaluate-lookalike-gold.mjs";
-import { loadV4Gallery } from "./lib/v4-gallery.mjs";
+import { loadGallery, mergeExtraTemplates } from "./evaluate-held-out-v2.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const GOLD = path.join(ROOT, "public/celebs/lookalike-gold.json");
@@ -80,8 +80,12 @@ describe("shipped gold set stays honest", () => {
     assert.ok(!lines.some((l) => /civilian acceptable@1=\d/.test(l)));
   });
 
-  it("identity seeds retrieve Top-1 on the verified ranking gallery", () => {
-    const { gallery } = loadV4Gallery(ROOT);
+  it("identity seeds retrieve Top-1 on the live ranking gallery (jpg + extras)", () => {
+    const gallery = mergeExtraTemplates(loadGallery());
+    assert.ok(
+      gallery.length >= 600,
+      `gold eval must use extra-templates like the product path, got ${gallery.length}`,
+    );
     const { stats } = evaluateGoldSet(set, gallery);
     assert.equal(stats.identityN, 8);
     assert.equal(stats.identityTop1, 8, `identity regression missed ${stats.identityN - stats.identityTop1} seeds`);

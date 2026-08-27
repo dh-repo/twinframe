@@ -14,7 +14,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
-import { loadV4Gallery } from "./lib/v4-gallery.mjs";
+import { loadGallery, mergeExtraTemplates } from "./evaluate-held-out-v2.ts";
 import { classifyGoldCase, civilianGoldReady, formatGoldSummary } from "./lib/lookalike-gold.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -118,7 +118,7 @@ function main() {
   }
 
   const set = JSON.parse(fs.readFileSync(setPath, "utf8"));
-  const { gallery } = loadV4Gallery(ROOT);
+  const gallery = mergeExtraTemplates(loadGallery());
   const { stats, lines, summary } = evaluateGoldSet(set, gallery);
 
   console.log("================================================================================");
