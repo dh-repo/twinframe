@@ -298,8 +298,16 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Blended 2014; not profile updo eval), Zayn Malik (WWA Chile
  *         + Iron Maiden tank; not 2012 white-red concert eval), and
  *         Simu Liu (theater blazer; not Kim's Convenience eval).
+ * 6.5.44: Commons extras that beat pack dTrue for Lee Jung-jae (Squid
+ *         Game Netflix; not Typhoon 2005 white-suit eval), Park Seo-joon
+ *         (June 2019 blazer; not colorblock eval), Vin Diesel (2017
+ *         jacket + Comic-Con views; not early-2000s ribbed V-neck eval),
+ *         Orlando Bloom (SDCC 2014 + Cannes 2013; not dark-suit mic eval),
+ *         Cailee Spaeny (TIFF 2025; not pink crystal-cutout eval), and
+ *         Anthony Hopkins (Berlin 2001 turtleneck; not fedora polo eval).
+ *         Hopkins TIFF crop failed the enroll detection-score gate.
  */
-const GALLERY_VERSION = "6.5.43";
+const GALLERY_VERSION = "6.5.44";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

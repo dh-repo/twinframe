@@ -362,6 +362,36 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "simu-liu" && t.source === "extra-photos/simu-liu/001.jpg"),
       "Simu Liu theater extra missing",
     );
+    assert.ok((byId.get("lee-jung-jae") ?? 0) >= 1, "Lee Jung-jae extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "lee-jung-jae" && t.source === "extra-photos/lee-jung-jae/001.jpg"),
+      "Lee Jung-jae Squid Game extra missing",
+    );
+    assert.ok((byId.get("park-seo-joon") ?? 0) >= 1, "Park Seo-joon extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "park-seo-joon" && t.source === "extra-photos/park-seo-joon/001.jpg"),
+      "Park Seo-joon 2019 extra missing",
+    );
+    assert.ok((byId.get("vin-diesel") ?? 0) >= 3, "Vin Diesel extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "vin-diesel" && t.source === "extra-photos/vin-diesel/003.jpg"),
+      "Vin Diesel 2017 extra missing",
+    );
+    assert.ok((byId.get("orlando-bloom") ?? 0) >= 2, "Orlando Bloom extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "orlando-bloom" && t.source === "extra-photos/orlando-bloom/001.jpg"),
+      "Orlando Bloom SDCC 2014 extra missing",
+    );
+    assert.ok((byId.get("cailee-spaeny") ?? 0) >= 1, "Cailee Spaeny extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "cailee-spaeny" && t.source === "extra-photos/cailee-spaeny/001.jpg"),
+      "Cailee Spaeny TIFF 2025 extra missing",
+    );
+    assert.ok((byId.get("anthony-hopkins") ?? 0) >= 1, "Anthony Hopkins extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "anthony-hopkins" && t.source === "extra-photos/anthony-hopkins/002.jpg"),
+      "Anthony Hopkins Berlin 2001 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

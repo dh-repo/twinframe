@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 296,
+  "count": 302,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2125,6 +2125,54 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Simu_Liu_%28202%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T17:22:40.442Z",
       "note": "Theater dark blazer yellow collar; not Kim's Convenience blue-suit eval"
+    },
+    {
+      "id": "lee-jung-jae",
+      "file": "001.jpg",
+      "commonsTitle": "File:20210923—Lee Jung-jae 이정재, interview, ELLE Taiwan screenshot (02m06s).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1c/20210923%E2%80%94Lee_Jung-jae_%EC%9D%B4%EC%A0%95%EC%9E%AC%2C_interview%2C_ELLE_Taiwan_screenshot_%2802m06s%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:17.499Z",
+      "note": "Squid Game Netflix cutout jacket; not Typhoon 2005 white-suit eval"
+    },
+    {
+      "id": "park-seo-joon",
+      "file": "001.jpg",
+      "commonsTitle": "File:Park Seo-joon in June 2019.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Park_Seo-joon_in_June_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:17.765Z",
+      "note": "June 2019 black blazer wave; not green-black-white colorblock eval"
+    },
+    {
+      "id": "orlando-bloom",
+      "file": "001.jpg",
+      "commonsTitle": "File:Orlando Bloom 2014 Comic Con (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Orlando_Bloom_2014_Comic_Con_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:18.032Z",
+      "note": "SDCC 2014 man-bun striped shirt; not dark-suit white pocket-square eval"
+    },
+    {
+      "id": "orlando-bloom",
+      "file": "002.jpg",
+      "commonsTitle": "File:Orlando Bloom Cannes 2013.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Orlando_Bloom_Cannes_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:18.286Z",
+      "note": "Cannes 2013 navy jacket light-blue shirt; not dark-suit white pocket-square eval"
+    },
+    {
+      "id": "cailee-spaeny",
+      "file": "001.jpg",
+      "commonsTitle": "File:Cailee Spaeny TIFF 2025.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Cailee_Spaeny_TIFF_2025.jpg/1920px-Cailee_Spaeny_TIFF_2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:40:18.592Z",
+      "note": "TIFF 2025 white lace two-piece; not pink crystal-cutout bangs eval"
+    },
+    {
+      "id": "anthony-hopkins",
+      "file": "002.jpg",
+      "commonsTitle": "File:Oliver Mark - Anthony Hopkins, Berlin 2001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Oliver_Mark_-_Anthony_Hopkins%2C_Berlin_2001.jpg/1920px-Oliver_Mark_-_Anthony_Hopkins%2C_Berlin_2001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:40:19.205Z",
+      "note": "Berlin 2001 black turtleneck; not fedora popped-collar polo eval"
     }
   ]
 }
