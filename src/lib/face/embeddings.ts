@@ -158,8 +158,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        hits (Lee Jung-jae is not Lee Jung Mi).
  * 6.5.5: Enroll Ford and Mathis; reject multi-name group files (Nixon-era
  *        Curtis Lewis is not Richard J. Lewis) and USAF roster shots.
+ * 6.5.6: Wikidata P18 portraits for Kingston, Chalk, Eklund, and others;
+ *        skip author/athlete namesakes and childhood stills.
  */
-const GALLERY_VERSION = "6.5.5";
+const GALLERY_VERSION = "6.5.6";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
