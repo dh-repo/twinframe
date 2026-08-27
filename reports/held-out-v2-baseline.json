@@ -1,5 +1,5 @@
 {
- "at": "2026-08-27T04:44:54.146Z",
+ "at": "2026-08-27T04:49:42.294Z",
  "protocol": "held-out-v2.1-leak-excluded",
  "includeLeaked": false,
  "gallerySize": 1105,
@@ -483,7 +483,7 @@
    "dTrue": 0.49327692144609414,
    "dTop1": 0.49327692144609414,
    "dMinSameId": 0.49327692144609414,
-   "dBestWrong": 0.8340026455266061,
+   "dBestWrong": 0.8351341100342301,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -819,7 +819,7 @@
    "dTrue": 0.5668387140811767,
    "dTop1": 0.5668387140811767,
    "dMinSameId": 0.5668387140811767,
-   "dBestWrong": 0.6160055222634007,
+   "dBestWrong": 0.7896857553427785,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false
@@ -2135,11 +2135,11 @@
   {
    "id": "lisa-blackpink",
    "rank": 1,
-   "top1": "lisa-blackpink",
-   "dTrue": 0.5835457008625513,
-   "dTop1": 0.5835457008625513,
-   "dMinSameId": 0.5835457008625513,
-   "dBestWrong": 0.8177647494178323,
+   "top1": "lisa",
+   "dTrue": 0.5715474773490361,
+   "dTop1": 0.5715474773490361,
+   "dMinSameId": 0.5715474773490361,
+   "dBestWrong": 0.8151007352492797,
    "margin": 0,
    "priorFlipped": false,
    "leaked": false

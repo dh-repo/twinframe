@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T04:35:02.290Z",
+  "generatedAt": "2026-08-27T04:49:13.564Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -4773,6 +4773,58 @@
       "shippedToLive": 0.9755064779372747,
       "beforeFingerprint": "7852924f2cc769f62c1273bb1b2ac76eb793cdbb39b1f38a40651c77d73b0d1a",
       "afterFingerprint": "c6713723126c2dc526b60395b18d64081344e4bec9ca20017fa499a6764625c3"
+    },
+    {
+      "id": "ke-huy-quan",
+      "index": 274,
+      "household": false,
+      "source": "public/celebs/ke-huy-quan.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7870328426361084,
+      "shippedToLive": 1.029383806153212,
+      "beforeFingerprint": "ccb6ae61d7cfb51fe4edabe6aca02bc6adbd8302a84bac39c835b295552717c5",
+      "afterFingerprint": "c855073fd0abd5c49aa905dc38f2ba78cd00e0c0ff11ee0249b1c1742ea12c93"
+    },
+    {
+      "id": "lisa",
+      "index": 313,
+      "household": false,
+      "source": "public/celebs/lisa.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7331254482269287,
+      "shippedToLive": 1.107798078569347,
+      "beforeFingerprint": "4664441ca52aaf20fe495f41ffc1bafe0e4f491aaa2d032a08478112853c2738",
+      "afterFingerprint": "ba6c54b143982e81904c873dfde4043ea4ef01954e2bdc709f212745d4338f1f"
+    },
+    {
+      "id": "simone-biles",
+      "index": 319,
+      "household": false,
+      "source": "public/celebs/simone-biles.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8451220989227295,
+      "shippedToLive": 1.004670407407298,
+      "beforeFingerprint": "4b46c7416d63a5a91110e424500a0f9e133caba3207421993dcd7db128c42c0d",
+      "afterFingerprint": "8d6668711f0458bafd76d320ea9c148001f6cd5a552cddf17106a1cec3757db1"
+    },
+    {
+      "id": "vince-vaughn",
+      "index": 937,
+      "household": false,
+      "source": "public/celebs/vince-vaughn.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8453851938247681,
+      "shippedToLive": 0.32839852181916085,
+      "beforeFingerprint": "90af32d5c9d1250b0da23f232df17a412b2276eea421ea5986ca1f95e4ad4fd6",
+      "afterFingerprint": "f412d03deed167951a11d343baf1c0c6550593207f9e0cd034cc3e4e61fec622"
     }
   ]
 }

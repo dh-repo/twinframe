@@ -75,6 +75,8 @@ let GALLERY_DIM = 512;
 export const IDENTITY_ALIASES: Record<string, readonly string[]> = {
   "penelope-cruz-m": ["penelope-cruz"],
   "penelope-cruz": ["penelope-cruz-m"],
+  lisa: ["lisa-blackpink"],
+  "lisa-blackpink": ["lisa"],
 };
 
 export function idsMatchHeldOut(probeId: string, galleryId: string): boolean {

@@ -25,6 +25,10 @@ describe("gallery primary portraits are not the mislabeled 192-px thumbs", () =>
     "emilia-clarke",
     "novak-djokovic",
     "colin-salmon",
+    "ke-huy-quan",
+    "simone-biles",
+    "vince-vaughn",
+    "lisa",
   ]) {
     it(`${id}.jpg exists and differs from thumbs/192/${id}.webp`, () => {
       const jpg = path.join(CELEBS, `${id}.jpg`);

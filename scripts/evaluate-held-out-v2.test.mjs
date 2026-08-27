@@ -10,4 +10,10 @@ describe("held-out identity aliases", () => {
     assert.equal(idsMatchHeldOut("penelope-cruz-m", "salma-hayek"), false);
     assert.ok(IDENTITY_ALIASES["penelope-cruz-m"]?.includes("penelope-cruz"));
   });
+
+  it("treats lisa as the same person as lisa-blackpink", () => {
+    assert.equal(idsMatchHeldOut("lisa", "lisa-blackpink"), true);
+    assert.equal(idsMatchHeldOut("lisa-blackpink", "lisa"), true);
+    assert.equal(idsMatchHeldOut("lisa-blackpink", "jennie-blackpink"), false);
+  });
 });

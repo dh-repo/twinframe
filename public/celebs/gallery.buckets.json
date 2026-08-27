@@ -2744,7 +2744,7 @@
     "name": "Ke Huy Quan",
     "path": "/celebs/thumbs/96/ke-huy-quan.webp",
     "path192": "/celebs/thumbs/192/ke-huy-quan.webp",
-    "fallbackPath": "/celebs/thumbs/96/ke-huy-quan.webp",
+    "fallbackPath": "/celebs/ke-huy-quan.jpg",
     "age": 53,
     "gender": "male",
     "genderProb": 0.98
@@ -3134,7 +3134,7 @@
     "name": "Lisa",
     "path": "/celebs/thumbs/96/lisa.webp",
     "path192": "/celebs/thumbs/192/lisa.webp",
-    "fallbackPath": "/celebs/thumbs/96/lisa.webp",
+    "fallbackPath": "/celebs/lisa.jpg",
     "age": 27,
     "gender": "female",
     "genderProb": 0.98
@@ -3194,7 +3194,7 @@
     "name": "Simone Biles",
     "path": "/celebs/thumbs/96/simone-biles.webp",
     "path192": "/celebs/thumbs/192/simone-biles.webp",
-    "fallbackPath": "/celebs/thumbs/96/simone-biles.webp",
+    "fallbackPath": "/celebs/simone-biles.jpg",
     "age": 27,
     "gender": "female",
     "genderProb": 0.98
@@ -9374,7 +9374,7 @@
     "name": "Vince Vaughn",
     "path": "/celebs/thumbs/96/vince-vaughn.webp",
     "path192": "/celebs/thumbs/192/vince-vaughn.webp",
-    "fallbackPath": "/celebs/thumbs/96/vince-vaughn.webp",
+    "fallbackPath": "/celebs/vince-vaughn.jpg",
     "age": 38,
     "gender": "male",
     "genderProb": 0.9632949233055115
