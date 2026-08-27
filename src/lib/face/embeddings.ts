@@ -176,8 +176,9 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.15: Actor-disambiguation Wikipedia primaries (Rowe, Rogers, Berg, Quinn).
  * 6.5.16: Absorb the d≈0.08–0.10 halo of the poisoned thumb pile (11 more
  *         ranking extras were the same impostor face).
+ * 6.5.17: Wikidata P18 primaries (Garrow, Turner, Sugar); cluster drop d<0.12.
  */
-const GALLERY_VERSION = "6.5.16";
+const GALLERY_VERSION = "6.5.17";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

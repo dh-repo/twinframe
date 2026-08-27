@@ -1,7 +1,7 @@
 {
   "version": 1,
   "note": "Surgical AdaFace re-enroll of poisoned / mislabeled slots. Existing globalScale. Other q8 rows unchanged. Household names kept.",
-  "generatedAt": "2026-08-27T07:50:22.868Z",
+  "generatedAt": "2026-08-27T08:09:47.216Z",
   "repairs": [
     {
       "id": "alec-burden",
@@ -7022,6 +7022,45 @@
       "shippedToLive": 0.07178528730299949,
       "beforeFingerprint": "2c7fb6cee27c182ab2e2a676630e4b3c6ff23867c7cc9a96c3b8a91776a57b70",
       "afterFingerprint": "a887fcda2bceba2d4bf4e4c228dc5559ec2848583466c846527df97cd1ea7a30"
+    },
+    {
+      "id": "patrick-garrow",
+      "index": 538,
+      "household": false,
+      "source": "public/celebs/patrick-garrow.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8381258249282837,
+      "shippedToLive": 0.5393086925852495,
+      "beforeFingerprint": "f4e7e887db14eb1404a9671baaa436492a0bad5df9598d643bdbfe66ed89366b",
+      "afterFingerprint": "a979aaf58bc66bc7415c8d6801c9548433b73d938b451481cb3c8b083ff1be7f"
+    },
+    {
+      "id": "brad-turner",
+      "index": 500,
+      "household": false,
+      "source": "public/celebs/brad-turner.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.7657232284545898,
+      "shippedToLive": 0.9837883197157106,
+      "beforeFingerprint": "504bd4a492f1cdeaad420f62a520f188dc5d4eea96422229851e4c678b77b280",
+      "afterFingerprint": "5e6465ebbc864e9048c8d2fcf13374a88812a16bf0f1ea15c465f7e5e9803cb2"
+    },
+    {
+      "id": "j-b-sugar",
+      "index": 494,
+      "household": false,
+      "source": "public/celebs/j-b-sugar.jpg",
+      "sourceKind": "fullres",
+      "usedDetection": true,
+      "padded": false,
+      "score": 0.8405447006225586,
+      "shippedToLive": 0.37047923484631207,
+      "beforeFingerprint": "d9f6f5099d92e09ceb9eee06090ebc8ebcd52bca063ae5e453653d005d3968be",
+      "afterFingerprint": "fa89f6bfdbd68ea5c54655aeda9c5543f1b2d455254fea21342274e54ffc53b3"
     }
   ]
 }

@@ -7394,7 +7394,7 @@
     "name": "J.B. Sugar",
     "path": "/celebs/thumbs/96/j-b-sugar.webp",
     "path192": "/celebs/thumbs/192/j-b-sugar.webp",
-    "fallbackPath": "/celebs/thumbs/96/j-b-sugar.webp",
+    "fallbackPath": "/celebs/j-b-sugar.jpg",
     "gender": "male",
     "genderProb": 0.9778828024864197,
     "ageBuckets": [
@@ -7484,7 +7484,7 @@
     "name": "Brad Turner",
     "path": "/celebs/thumbs/96/brad-turner.webp",
     "path192": "/celebs/thumbs/192/brad-turner.webp",
-    "fallbackPath": "/celebs/thumbs/96/brad-turner.webp",
+    "fallbackPath": "/celebs/brad-turner.jpg",
     "gender": "male",
     "genderProb": 0.9691492319107056,
     "ageBuckets": [
@@ -8052,7 +8052,7 @@
     "name": "Patrick Garrow",
     "path": "/celebs/thumbs/96/patrick-garrow.webp",
     "path192": "/celebs/thumbs/192/patrick-garrow.webp",
-    "fallbackPath": "/celebs/thumbs/96/patrick-garrow.webp",
+    "fallbackPath": "/celebs/patrick-garrow.jpg",
     "gender": "male",
     "genderProb": 0.9697004556655884,
     "ageBuckets": [
