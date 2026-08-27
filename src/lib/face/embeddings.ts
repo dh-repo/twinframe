@@ -419,8 +419,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Cruz (TIFF 2012 blush off-shoulder + Goya 2018 white beaded; not
  *         burgundy strapless updo eval). Helen Mirren 2020 is the Berlinale
  *         70 eval sitting.
+ * 6.5.61: Commons extras that beat pack dTrue for Lee Min-ho (Dec 2025
+ *         Disney+ leather + Omniscient Reader Jun 2025 blazer; not autumnal
+ *         floral eval) and Keira Knightley (2005 honey-blonde plaid; not
+ *         brunette updo champagne-lace eval).
  */
-const GALLERY_VERSION = "6.5.60";
+const GALLERY_VERSION = "6.5.61";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

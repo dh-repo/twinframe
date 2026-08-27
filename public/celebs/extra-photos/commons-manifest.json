@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 356,
+  "count": 359,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2605,6 +2605,30 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Premios_Goya_2018_-_Pen%C3%A9lope_Cruz.jpg",
         "fetchedAt": "2026-08-27T22:05:00.000Z",
         "note": "Goya 2018 white beaded; not burgundy strapless updo eval"
+    }    ,
+    {
+        "id": "lee-min-ho",
+        "file": "001.jpg",
+        "commonsTitle": "File:Lee Min-ho in December 2025.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lee_Min-ho_in_December_2025.png",
+        "fetchedAt": "2026-08-27T22:25:00.000Z",
+        "note": "Dec 2025 Disney+ brown leather grey sweater; not autumnal floral eval"
+    }    ,
+    {
+        "id": "lee-min-ho",
+        "file": "002.jpg",
+        "commonsTitle": "File:Lee Min-ho at the press conference for 'Omniscient Reader - The Prophet', 18 June 2025.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lee_Min-ho_at_the_press_conference_for_%27Omniscient_Reader_-_The_Prophet%27,_18_June_2025.png",
+        "fetchedAt": "2026-08-27T22:25:00.000Z",
+        "note": "Omniscient Reader Jun 2025 black blazer pendant; not autumnal floral eval"
+    }    ,
+    {
+        "id": "keira-knightley",
+        "file": "003.jpg",
+        "commonsTitle": "File:Keira Knightley 2005 (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Keira_Knightley_2005_(cropped).jpg",
+        "fetchedAt": "2026-08-27T22:25:00.000Z",
+        "note": "2005 honey-blonde half-up plaid; not brunette updo champagne-lace eval"
     }
   ]
 }
