@@ -156,8 +156,10 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.4: Wikipedia primaries for Emerson, Rickards, Donnell, and other
  *        remaining recognizable thumb-only names; reject namesake Wikipedia
  *        hits (Lee Jung-jae is not Lee Jung Mi).
+ * 6.5.5: Enroll Ford and Mathis; reject multi-name group files (Nixon-era
+ *        Curtis Lewis is not Richard J. Lewis) and USAF roster shots.
  */
-const GALLERY_VERSION = "6.5.4";
+const GALLERY_VERSION = "6.5.5";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
