@@ -8,6 +8,7 @@ import {
   MANIFEST_VERSION,
   PHOTO_MIN_BYTES_PER_PIXEL,
   PHOTO_MIN_DIMENSION,
+  heldOutFileNameRejectReason,
   listHeldOutSlots,
   photoRejectReason,
   rebuildManifestFromDisk,
@@ -103,6 +104,29 @@ describe("photoRejectReason", () => {
   it("passes rather than guesses when the size is unknown", () => {
     assert.equal(photoRejectReason({ bytes: 7_162 }), null);
     assert.equal(photoRejectReason({ bytes: 7_162, width: 0, height: 0 }), null);
+  });
+});
+
+describe("heldOutFileNameRejectReason", () => {
+  it("keeps a solo portrait filename", () => {
+    assert.equal(heldOutFileNameRejectReason("File:Adam Sandler 2018.jpg"), null);
+    assert.equal(heldOutFileNameRejectReason("File:Al_Pacino_Cannes_2019.jpg"), null);
+  });
+
+  it("rejects the pair shots that landed as missing-001 restores", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:Abhishek and Aishwarya in Bengal.jpg"),
+      "pair",
+    );
+    assert.equal(heldOutFileNameRejectReason("File:AdamSandlerwithdaughtersFeb11.jpg"), "pair");
+  });
+
+  it("rejects murals and crowd files that are not a face probe", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:112 Mural al passeig de Circumval·lació (Barcelona), Al Pacino.jpg"),
+      "non-photo",
+    );
+    assert.equal(heldOutFileNameRejectReason("File:Cast of Toy Story 2019.jpg"), "non-photo");
   });
 });
 

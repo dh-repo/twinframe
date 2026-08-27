@@ -75,7 +75,10 @@ export interface Manifest {
 }
 
 const SKIP_NAME =
-  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow/i;
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]/i;
+
+/** Two people in the frame — largest-face still embeds the wrong subject. */
+const SKIP_PAIR = /(^|[ _(])(and|with|&|feat\.?|vs\.?)[ _]|withdaughters|withfamily/i;
 
 /**
  * Shortest side a usable held-out portrait must have. Interface chrome is small
@@ -107,6 +110,18 @@ export function photoRejectReason(candidate: {
   if (!width || !height || width <= 0 || height <= 0) return null;
   if (Math.min(width, height) < PHOTO_MIN_DIMENSION) return "too-small";
   if (bytes / (width * height) < PHOTO_MIN_BYTES_PER_PIXEL) return "flat-art";
+  return null;
+}
+
+/**
+ * Why a Wikipedia/Commons filename is not a usable solo portrait, or null when
+ * it looks like one. Pair shots (Aishwarya+Abhishek, Sandler+daughters) were
+ * landing as held-out 001s and then scoring as model misses.
+ */
+export function heldOutFileNameRejectReason(title: string): "non-photo" | "pair" | null {
+  const bare = title.replace(/^File:/i, "");
+  if (SKIP_PAIR.test(bare)) return "pair";
+  if (SKIP_NAME.test(bare)) return "non-photo";
   return null;
 }
 
@@ -228,12 +243,38 @@ function writeManifest(manifest: Manifest): void {
   fs.writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
+async function politeFetch(url: URL | string, attempt = 0): Promise<Response> {
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: { "User-Agent": UA, "Api-User-Agent": UA },
+      signal: AbortSignal.timeout(20_000),
+    });
+  } catch (err) {
+    if (attempt >= 2) throw err;
+    await sleep(Math.max(DELAY_MS, 1_000) * 2 ** attempt);
+    return politeFetch(url, attempt + 1);
+  }
+  if ((res.status === 429 || res.status >= 500) && attempt < 3) {
+    const retryAfter = Number(res.headers.get("retry-after")) * 1000;
+    const wait = Math.min(
+      30_000,
+      Number.isFinite(retryAfter) && retryAfter > 0
+        ? retryAfter
+        : Math.max(DELAY_MS, 2_000) * 2 ** (attempt + 1),
+    );
+    await sleep(wait);
+    return politeFetch(url, attempt + 1);
+  }
+  return res;
+}
+
 async function wiki(params: Record<string, string>): Promise<any> {
   const url = new URL("https://en.wikipedia.org/w/api.php");
   url.searchParams.set("format", "json");
   url.searchParams.set("origin", "*");
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const res = await fetch(url, { headers: { "User-Agent": UA, "Api-User-Agent": UA } });
+  const res = await politeFetch(url);
   if (!res.ok) throw new Error(`wiki ${res.status} ${url.searchParams.get("action")}`);
   return res.json();
 }
@@ -293,7 +334,9 @@ async function pageImages(
     if (!info) continue;
     const mime = String(info.mime || "");
     if (!mime.startsWith("image/") || mime.includes("svg")) continue;
-    if (SKIP_NAME.test(p.title || "") || SKIP_NAME.test(info.url || "")) continue;
+    if (heldOutFileNameRejectReason(p.title || "") || heldOutFileNameRejectReason(info.url || "")) {
+      continue;
+    }
     const w = Number(info.thumbwidth || info.width || 0);
     const h = Number(info.thumbheight || info.height || 0);
     if (Math.min(w, h) < 160) continue;
@@ -303,7 +346,7 @@ async function pageImages(
 }
 
 async function download(url: string): Promise<{ buffer: Buffer } | { reject: string } | null> {
-  const res = await fetch(url, { headers: { "User-Agent": UA } });
+  const res = await politeFetch(url);
   if (!res.ok) return null;
   const buffer = Buffer.from(await res.arrayBuffer());
   if (buffer.length < 4_000) return { reject: "too-small" };
