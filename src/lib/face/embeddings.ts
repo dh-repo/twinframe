@@ -381,8 +381,17 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         Youth 2014; not Independent Filmmakers Ball glasses eval).
  *         Bailey 2015 gala, Miley Today-show crop, and the second Avengers
  *         Toronto frame stay out as eval clones or same-sitting dupes.
+ * 6.5.55: Held-out 002+ extras that beat pack dTrue for Tom Holland (Far
+ *         From Home glasses polo; not SDCC black-jacket chain eval),
+ *         Ranbir Kapoor (bomber graphic tee + black mesh shirt; not
+ *         checkered-blazer eval), and Eddie Redmayne (Montclair 2022
+ *         pinstripe + checkered-sweater smile; not denim-jacket outdoor
+ *         eval), plus a Commons Golden Disc 2019 extra for Jisoo (gold
+ *         sequin smile; not 2017 floral concert eval). Holland 003 is the
+ *         same Far From Home sitting as 002; Eddie 003 is a near-dup of
+ *         primary.
  */
-const GALLERY_VERSION = "6.5.54";
+const GALLERY_VERSION = "6.5.55";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

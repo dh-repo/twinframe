@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 347,
+  "count": 348,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2533,6 +2533,14 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jonathan_Bailey_at_Testament_of_Youth_Premiere_in_October_2014_2.png",
         "fetchedAt": "2026-08-27T20:36:43.390Z",
         "note": "Testament of Youth 2014 no glasses; not Independent Filmmakers Ball eval"
+    }    ,
+    {
+        "id": "jisoo",
+        "file": "005.jpg",
+        "commonsTitle": "File:Kim Ji-soo at the Golden Disc Awards on January 5, 2019 (7).png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kim_Ji-soo_at_the_Golden_Disc_Awards_on_January_5%2C_2019_(7).png",
+        "fetchedAt": "2026-08-27T20:49:56.090Z",
+        "note": "Golden Disc 2019 gold sequin smile; not 2017 floral concert eval"
     }
   ]
 }

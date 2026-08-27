@@ -542,6 +542,26 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "jonathan-bailey" && t.source === "extra-photos/jonathan-bailey/001.jpg"),
       "Jonathan Bailey Testament of Youth extra missing",
     );
+    assert.ok((byId.get("jisoo") ?? 0) >= 1, "Jisoo extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "jisoo" && t.source === "extra-photos/jisoo/005.jpg"),
+      "Jisoo Golden Disc 2019 extra missing",
+    );
+    assert.ok((byId.get("tom-holland") ?? 0) >= 1, "Tom Holland extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "tom-holland" && t.source === "held-out/tom-holland/002.jpg"),
+      "Tom Holland Far From Home extra missing",
+    );
+    assert.ok((byId.get("ranbir-kapoor") ?? 0) >= 2, "Ranbir Kapoor extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ranbir-kapoor" && t.source === "held-out/ranbir-kapoor/003.jpg"),
+      "Ranbir Kapoor bomber extra missing",
+    );
+    assert.ok((byId.get("eddie-redmayne") ?? 0) >= 2, "Eddie Redmayne extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "eddie-redmayne" && t.source === "held-out/eddie-redmayne/002.jpg"),
+      "Eddie Redmayne Montclair extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
