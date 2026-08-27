@@ -363,6 +363,20 @@ function shippedExtras() {
   return byId;
 }
 
+/** Held-out `001` embeddings — extras this close are eval leaks even when bytes differ. */
+function heldOutEvalProbes() {
+  const p = path.join(CELEBS, "held-out/descriptors.json");
+  const byId = new Map();
+  if (!fs.existsSync(p)) return byId;
+  const data = JSON.parse(fs.readFileSync(p, "utf8"));
+  for (const c of data.cases ?? []) {
+    if (c.ok === false || !c.descriptor?.length) continue;
+    if (!String(c.source ?? "").includes("/001.")) continue;
+    if (!byId.has(c.id)) byId.set(c.id, c.descriptor);
+  }
+  return byId;
+}
+
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const buckets = JSON.parse(
@@ -447,7 +461,7 @@ async function main() {
       extraCandidates.push({
         id: job.id,
         source: job.source,
-        usedDetection: r.usedDetection,
+        usedDetection: Boolean(r.usedDetection) && acceptPrimaryEmbed(r),
         score: Math.round(r.score * 1000) / 1000,
         d256: r.d256,
         d512: r.d512,
@@ -471,6 +485,7 @@ async function main() {
   const gate = gateExtraCandidates(extraCandidates, {
     primaries,
     existingById,
+    probesById: heldOutEvalProbes(),
     maxPerId: extraViewCap,
   });
   const extras = gate.accepted.map(({ descriptor: _drop, ...keep }) => keep);

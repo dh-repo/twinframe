@@ -72,6 +72,8 @@ if (EXTRAS_ONLY) {
         primaries: shippedPrimaries(),
         maxDistance: REGATE_MAX_DISTANCE,
         nearDuplicateEps: 0, // keep every shipped view; only wrong-person rows go
+        primaryNearDuplicateEps: 0,
+        evalNearCloneEps: 0,
       },
     );
     const keep = new Set(regate.accepted.map((a) => `${a.id}\u0000${a.source}`));

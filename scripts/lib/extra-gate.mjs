@@ -25,6 +25,17 @@ export const EXTRA_MIN_CLUSTER = 3;
 export const EXTRA_MIN_DET_SCORE = 0.5;
 /** Views this close to one already kept add no information to the centroid. */
 export const EXTRA_NEAR_DUPLICATE_EPS = 0.02;
+/**
+ * A crop this close to the enrolled primary double-weights that look in the
+ * multi-shot centroid and can pull the prototype away from a different-era
+ * held-out probe. Distinct extra views sit well above this.
+ */
+export const EXTRA_PRIMARY_NEAR_DUPLICATE_EPS = 0.05;
+/**
+ * A crop this close to held-out `001` is an eval leak even when the bytes
+ * differ (alternate crop of the same sitting). Enrollment must not see it.
+ */
+export const EXTRA_EVAL_NEAR_CLONE_EPS = 0.05;
 
 export const EXTRA_REJECT_REASONS = /** @type {const} */ ([
   "no-detection",
@@ -33,6 +44,7 @@ export const EXTRA_REJECT_REASONS = /** @type {const} */ ([
   "no-primary",
   "too-far-from-primary",
   "near-duplicate",
+  "eval-near-clone",
   "cap-reached",
 ]);
 
@@ -48,9 +60,12 @@ function normalized(descriptor) {
  * @param {{
  *   primaries: Map<string, ArrayLike<number>>,
  *   existingById?: Map<string, ArrayLike<number>[]>,
+ *   probesById?: Map<string, ArrayLike<number>>,
  *   maxDistance?: number,
  *   minDetScore?: number,
  *   nearDuplicateEps?: number,
+ *   primaryNearDuplicateEps?: number,
+ *   evalNearCloneEps?: number,
  *   maxPerId?: number,
  *   clusterEps?: number,
  *   minCluster?: number,
@@ -60,9 +75,12 @@ export function gateExtraCandidates(candidates, options) {
   const {
     primaries,
     existingById = new Map(),
+    probesById = new Map(),
     maxDistance = EXTRA_MAX_DISTANCE,
     minDetScore = EXTRA_MIN_DET_SCORE,
     nearDuplicateEps = EXTRA_NEAR_DUPLICATE_EPS,
+    primaryNearDuplicateEps = EXTRA_PRIMARY_NEAR_DUPLICATE_EPS,
+    evalNearCloneEps = EXTRA_EVAL_NEAR_CLONE_EPS,
     maxPerId = Infinity,
     clusterEps = EXTRA_CLUSTER_EPS,
     minCluster = EXTRA_MIN_CLUSTER,
@@ -147,6 +165,18 @@ export function gateExtraCandidates(candidates, options) {
     if (!s.nearPrimary && !viaCluster) {
       reject(c, "too-far-from-primary", distance);
       continue;
+    }
+    if (distance < primaryNearDuplicateEps) {
+      reject(c, "near-duplicate", distance);
+      continue;
+    }
+    const probe = probesById.get(c.id);
+    if (probe) {
+      const dProbe = cosineDistance(vec, normalized(probe));
+      if (dProbe < evalNearCloneEps) {
+        reject(c, "eval-near-clone", dProbe);
+        continue;
+      }
     }
     const kept = keptById.get(c.id) ?? [];
     if (kept.some((k) => cosineDistance(vec, k) < nearDuplicateEps)) {

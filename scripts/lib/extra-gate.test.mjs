@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  EXTRA_EVAL_NEAR_CLONE_EPS,
   EXTRA_MAX_DISTANCE,
+  EXTRA_PRIMARY_NEAR_DUPLICATE_EPS,
   gateExtraCandidates,
   mergeExtraTemplates,
 } from "./extra-gate.mjs";
@@ -81,6 +83,37 @@ describe("gateExtraCandidates", () => {
     );
     assert.equal(withShipped.accepted.length, 0);
     assert.equal(withShipped.rejected[0].reason, "near-duplicate");
+  });
+
+  it("rejects a near-clone of the enrolled primary", () => {
+    const res = gateExtraCandidates(
+      [{ id: "adele", source: "clone.jpg", descriptor: atDistance(0.01), score: 0.9 }],
+      { primaries },
+    );
+    assert.equal(res.accepted.length, 0);
+    assert.equal(res.rejected[0].reason, "near-duplicate");
+    assert.ok(EXTRA_PRIMARY_NEAR_DUPLICATE_EPS > 0.01);
+    const distinct = gateExtraCandidates(
+      [{ id: "adele", source: "era.jpg", descriptor: atDistance(0.4), score: 0.9 }],
+      { primaries },
+    );
+    assert.equal(distinct.accepted.length, 1);
+  });
+
+  it("rejects a near-clone of the held-out eval probe", () => {
+    const probe = atDistance(0.4);
+    const res = gateExtraCandidates(
+      [{ id: "adele", source: "eval-crop.jpg", descriptor: atDistance(0.401), score: 0.9 }],
+      { primaries, probesById: new Map([["adele", probe]]) },
+    );
+    assert.equal(res.accepted.length, 0);
+    assert.equal(res.rejected[0].reason, "eval-near-clone");
+    assert.ok(EXTRA_EVAL_NEAR_CLONE_EPS > 0.01);
+    const distinct = gateExtraCandidates(
+      [{ id: "adele", source: "other-era.jpg", descriptor: atDistance(0.4), score: 0.9 }],
+      { primaries, probesById: new Map([["adele", unit(5)]]) },
+    );
+    assert.equal(distinct.accepted.length, 1);
   });
 
   it("honours per-id caps and a custom distance threshold", () => {
