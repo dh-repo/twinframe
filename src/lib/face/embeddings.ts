@@ -196,8 +196,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.25: Karol G 2018-era extras (NTN interview + Boca en Boca).
  *         Telemedellín braid frames of eval 001 stay unenrolled; held-out
  *         002 matches the tracked probe pack and is not enrolled.
+ * 6.5.26: Ben Affleck 1998 extra (young solo, closer to the Armageddon-era
+ *         eval look than the 2024 bearded SXSW primary). Wrong-person
+ *         files previously in extra-photos/ben-affleck were dropped.
  */
-const GALLERY_VERSION = "6.5.25";
+const GALLERY_VERSION = "6.5.26";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

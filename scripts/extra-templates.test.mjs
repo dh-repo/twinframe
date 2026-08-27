@@ -48,6 +48,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "karol-g" && t.source === "extra-photos/karol-g/003.jpg"),
       "Karol G 2018 NTN interview extra missing",
     );
+    assert.ok((byId.get("ben-affleck") ?? 0) >= 1, "Ben Affleck 1998 extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ben-affleck" && t.source === "extra-photos/ben-affleck/002.jpg"),
+      "Ben Affleck 1998 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
