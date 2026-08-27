@@ -4694,7 +4694,7 @@
     "name": "Ruben Santiago-Hudson",
     "path": "/celebs/thumbs/96/ruben-santiago-hudson.webp",
     "path192": "/celebs/thumbs/192/ruben-santiago-hudson.webp",
-    "fallbackPath": "/celebs/thumbs/96/ruben-santiago-hudson.webp",
+    "fallbackPath": "/celebs/ruben-santiago-hudson.jpg",
     "age": 43,
     "gender": "male",
     "genderProb": 0.993953287601471
@@ -5774,7 +5774,7 @@
     "name": "Susanna Thompson",
     "path": "/celebs/thumbs/96/susanna-thompson.webp",
     "path192": "/celebs/thumbs/192/susanna-thompson.webp",
-    "fallbackPath": "/celebs/thumbs/96/susanna-thompson.webp",
+    "fallbackPath": "/celebs/susanna-thompson.jpg",
     "age": 40,
     "gender": "female",
     "genderProb": 0.9472389072179794
@@ -5924,7 +5924,7 @@
     "name": "Roger Cross",
     "path": "/celebs/thumbs/96/roger-cross.webp",
     "path192": "/celebs/thumbs/192/roger-cross.webp",
-    "fallbackPath": "/celebs/thumbs/96/roger-cross.webp",
+    "fallbackPath": "/celebs/roger-cross.jpg",
     "age": 40,
     "gender": "male",
     "genderProb": 0.9913637638092041
@@ -6264,7 +6264,7 @@
     "name": "Christie Laing",
     "path": "/celebs/thumbs/96/christie-laing.webp",
     "path192": "/celebs/thumbs/192/christie-laing.webp",
-    "fallbackPath": "/celebs/thumbs/96/christie-laing.webp",
+    "fallbackPath": "/celebs/christie-laing.jpg",
     "age": 25,
     "gender": "female",
     "genderProb": 0.9867698205634952
@@ -6474,7 +6474,7 @@
     "name": "Chelah Horsdal",
     "path": "/celebs/thumbs/96/chelah-horsdal.webp",
     "path192": "/celebs/thumbs/192/chelah-horsdal.webp",
-    "fallbackPath": "/celebs/thumbs/96/chelah-horsdal.webp",
+    "fallbackPath": "/celebs/chelah-horsdal.jpg",
     "age": 31,
     "gender": "female",
     "genderProb": 0.9137149155139923
@@ -7264,7 +7264,7 @@
     "name": "Rekha Sharma",
     "path": "/celebs/thumbs/96/rekha-sharma.webp",
     "path192": "/celebs/thumbs/192/rekha-sharma.webp",
-    "fallbackPath": "/celebs/thumbs/96/rekha-sharma.webp",
+    "fallbackPath": "/celebs/rekha-sharma.jpg",
     "age": 23,
     "gender": "female",
     "genderProb": 0.9623484872281551
@@ -7524,7 +7524,7 @@
     "name": "Audrey Marie Anderson",
     "path": "/celebs/thumbs/96/audrey-marie-anderson.webp",
     "path192": "/celebs/thumbs/192/audrey-marie-anderson.webp",
-    "fallbackPath": "/celebs/thumbs/96/audrey-marie-anderson.webp",
+    "fallbackPath": "/celebs/audrey-marie-anderson.jpg",
     "age": 24,
     "gender": "female",
     "genderProb": 0.9356406256556511
@@ -8294,7 +8294,7 @@
     "name": "David Nykl",
     "path": "/celebs/thumbs/96/david-nykl.webp",
     "path192": "/celebs/thumbs/192/david-nykl.webp",
-    "fallbackPath": "/celebs/thumbs/96/david-nykl.webp",
+    "fallbackPath": "/celebs/david-nykl.jpg",
     "age": 54,
     "gender": "male",
     "genderProb": 0.9916792511940002
@@ -8614,7 +8614,7 @@
     "name": "Sean Maher",
     "path": "/celebs/thumbs/96/sean-maher.webp",
     "path192": "/celebs/thumbs/192/sean-maher.webp",
-    "fallbackPath": "/celebs/thumbs/96/sean-maher.webp",
+    "fallbackPath": "/celebs/sean-maher.jpg",
     "age": 34,
     "gender": "male",
     "genderProb": 0.9145152568817139
@@ -8714,7 +8714,7 @@
     "name": "Nicholas Lea",
     "path": "/celebs/thumbs/96/nicholas-lea.webp",
     "path192": "/celebs/thumbs/192/nicholas-lea.webp",
-    "fallbackPath": "/celebs/thumbs/96/nicholas-lea.webp",
+    "fallbackPath": "/celebs/nicholas-lea.jpg",
     "age": 39,
     "gender": "male",
     "genderProb": 0.9641799926757812
@@ -9434,7 +9434,7 @@
     "name": "Nic Pizzolatto",
     "path": "/celebs/thumbs/96/nic-pizzolatto.webp",
     "path192": "/celebs/thumbs/192/nic-pizzolatto.webp",
-    "fallbackPath": "/celebs/thumbs/96/nic-pizzolatto.webp",
+    "fallbackPath": "/celebs/nic-pizzolatto.jpg",
     "age": 36,
     "gender": "male",
     "genderProb": 0.9247702956199646
@@ -9734,7 +9734,7 @@
     "name": "Shea Whigham",
     "path": "/celebs/thumbs/96/shea-whigham.webp",
     "path192": "/celebs/thumbs/192/shea-whigham.webp",
-    "fallbackPath": "/celebs/thumbs/96/shea-whigham.webp",
+    "fallbackPath": "/celebs/shea-whigham.jpg",
     "age": 49,
     "gender": "male",
     "genderProb": 0.9825552701950073

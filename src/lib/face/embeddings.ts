@@ -166,8 +166,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *        and match accented catalog names to unaccented Commons filenames.
  * 6.5.9: Joshua Leonard Wikipedia primary (Blair Witch).
  * 6.5.10: James Hanlon Wikipedia primary (Peabody 2003).
+ * 6.5.11: Arrowverse and TV Wikipedia primaries (Thompson, Cross, Laing,
+ *         Horsdal, Anderson, Maher, Lea, Whigham, Nykl, Sharma, Hudson,
+ *         Pizzolatto).
  */
-const GALLERY_VERSION = "6.5.10";
+const GALLERY_VERSION = "6.5.11";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
