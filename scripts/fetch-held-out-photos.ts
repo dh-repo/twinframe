@@ -21,8 +21,9 @@
  *   node --experimental-strip-types scripts/fetch-held-out-photos.ts --manifest-only
  *
  * Usage:
- *   node --experimental-strip-types scripts/fetch-held-out-photos.ts [--limit N] [--manifest-only]
+ *   node --experimental-strip-types scripts/fetch-held-out-photos.ts [--limit N] [--ids a,b] [--manifest-only]
  *   HELD_OUT_LIMIT=50 node --experimental-strip-types scripts/fetch-held-out-photos.ts
+ *   HELD_OUT_DELAY_MS=2000 node --experimental-strip-types scripts/fetch-held-out-photos.ts --ids adam-sandler,al-pacino
  *
  * --audit re-checks every image already on disk against the same guard, which is
  * how you find probes an earlier run let through.
@@ -121,6 +122,23 @@ export function resolveLimit(
   const n = Number(raw);
   if (!Number.isFinite(n) || n < 1) throw new Error(`Invalid held-out limit "${raw}"`);
   return Math.min(catalogSize, Math.floor(n));
+}
+
+/** `--ids a,b` fetches those catalog rows only. Null when the flag is absent. */
+export function resolveFetchIds(
+  catalog: Array<{ id: string }>,
+  argv: string[] = process.argv,
+): string[] | null {
+  const idx = argv.indexOf("--ids");
+  if (idx < 0) return null;
+  const raw = argv[idx + 1];
+  if (!raw || raw.startsWith("--")) throw new Error("Missing --ids value (comma-separated catalog ids)");
+  const wanted = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  if (wanted.length === 0) throw new Error("Empty --ids list");
+  const known = new Set(catalog.map((c) => c.id));
+  const unknown = wanted.filter((id) => !known.has(id));
+  if (unknown.length) throw new Error(`Unknown catalog ids: ${unknown.join(",")}`);
+  return wanted;
 }
 
 /** Every image slot on disk: [{ id, slot, filePath }], sorted by id then slot. */
@@ -342,8 +360,10 @@ async function main() {
     return;
   }
 
-  const limit = resolveLimit(index.length);
-  const slice = index.slice(0, limit);
+  const wantedIds = resolveFetchIds(index);
+  const slice = wantedIds
+    ? wantedIds.map((id) => index.find((entry) => entry.id === id)!)
+    : index.slice(0, resolveLimit(index.length));
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   // Provenance is only used to avoid re-downloading; presence on disk decides.
