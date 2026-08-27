@@ -146,6 +146,15 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "lionel-messi" && t.source === "extra-photos/lionel-messi/001.jpg"),
       "Messi PSG extra missing",
     );
+    assert.ok((byId.get("kendrick-lamar") ?? 0) >= 4, "Kendrick concert extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "kendrick-lamar" && t.source === "extra-photos/kendrick-lamar/001.jpg"),
+      "Kendrick Pitchfork 2012 extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "kendrick-lamar" && t.source === "extra-photos/kendrick-lamar/003.jpg"),
+      "Kendrick FIB 2016 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

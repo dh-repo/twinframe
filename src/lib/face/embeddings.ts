@@ -232,8 +232,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         beat DVF runway pack dTrue.
  * 6.5.34: Product-crop of Messi PSG portrait that beats the 2011-12
  *         Barcelona action pack dTrue. 2018 Argentina stills did not.
+ * 6.5.35: Product-crops that beat pack dTrue for Kendrick Lamar
+ *         (Pitchfork 2012 gingham; FIB 2016 B&W). FEQ July 2016 eval
+ *         sitting was not enrolled. Naomi amfAR bangs, Ranveer NBA,
+ *         and Dresden grimace stills are eval sittings or do not beat.
  */
-const GALLERY_VERSION = "6.5.34";
+const GALLERY_VERSION = "6.5.35";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
