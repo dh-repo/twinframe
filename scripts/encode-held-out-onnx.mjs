@@ -7,6 +7,7 @@
  * Usage:
  *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs
  *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs --limit 8
+ *   node --experimental-strip-types scripts/encode-held-out-onnx.mjs --ids kim-kardashian,meryl-streep --out reports/held-out-adaface-probes.json --merge --skip-missing
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -24,12 +25,45 @@ export function resolveProbePath(source, root = ROOT) {
 }
 
 export function parseEncodeArgs(argv) {
-  const out = { limit: Infinity, write: !argv.includes("--dry-run"), out: null, skipMissing: argv.includes("--skip-missing") };
+  const out = {
+    limit: Infinity,
+    write: !argv.includes("--dry-run"),
+    out: null,
+    skipMissing: argv.includes("--skip-missing"),
+    merge: argv.includes("--merge"),
+    ids: /** @type {string[] | null} */ (null),
+  };
   const idx = argv.indexOf("--limit");
   if (idx >= 0) out.limit = Number(argv[idx + 1]);
   const outIdx = argv.indexOf("--out");
   if (outIdx >= 0) out.out = argv[outIdx + 1];
+  const idsIdx = argv.indexOf("--ids");
+  if (idsIdx >= 0) {
+    const raw = String(argv[idsIdx + 1] ?? "");
+    if (!raw || raw.startsWith("--")) throw new Error("Missing --ids value (comma-separated probe ids)");
+    out.ids = raw.split(",").map((s) => s.trim()).filter(Boolean);
+    if (out.ids.length === 0) throw new Error("Empty --ids list");
+  }
   return out;
+}
+
+export function filterEncodeCases(cases, args) {
+  let out = cases;
+  if (args.ids?.length) {
+    const want = new Set(args.ids);
+    out = out.filter((c) => want.has(c.id));
+  }
+  if (Number.isFinite(args.limit)) out = out.slice(0, args.limit);
+  return out;
+}
+
+export function mergeEncodedCases(previous, encoded) {
+  const bySource = new Map();
+  for (const row of previous) bySource.set(row.source, row);
+  for (const row of encoded) bySource.set(row.source, row);
+  return [...bySource.values()].sort(
+    (a, b) => a.id.localeCompare(b.id) || String(a.source).localeCompare(String(b.source)),
+  );
 }
 
 async function materializeForEmbed(srcPath) {
@@ -67,7 +101,7 @@ async function main() {
     throw new Error("AdaFace ONNX missing or too small. Run: node scripts/ensure-face-model.mjs");
   }
   const pack = JSON.parse(fs.readFileSync(PACK, "utf8"));
-  const cases = (pack.cases ?? []).slice(0, args.limit === Infinity ? undefined : args.limit);
+  const cases = filterEncodeCases(pack.cases ?? [], args);
   await ensureSessions();
   const out = [];
   for (let i = 0; i < cases.length; i++) {
@@ -77,7 +111,13 @@ async function main() {
     const flag = encoded.ok ? "OK" : `MISS ${encoded.error}`;
     process.stdout.write(`${i + 1}/${cases.length} ${c.id} ${flag}\n`);
   }
-  const kept = args.skipMissing ? out.filter((c) => c.ok) : out;
+  const dest = args.out ? path.resolve(ROOT, args.out) : PACK;
+  let kept = args.skipMissing ? out.filter((c) => c.ok) : out;
+  if (args.merge && fs.existsSync(dest)) {
+    const previous = JSON.parse(fs.readFileSync(dest, "utf8"));
+    kept = mergeEncodedCases(previous.cases ?? [], kept);
+    if (args.skipMissing) kept = kept.filter((c) => c.ok);
+  }
   const ok = kept.filter((c) => c.ok);
   const next = {
     version: "2.1.0-adaface512",
@@ -87,8 +127,7 @@ async function main() {
     count: ok.length,
     cases: kept,
   };
-  const dest = args.out ? path.resolve(ROOT, args.out) : PACK;
-  const canWrite = args.write && (args.limit === Infinity || args.out);
+  const canWrite = args.write && (args.limit === Infinity || args.out || args.ids || args.merge);
   if (canWrite) {
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.writeFileSync(dest, `${JSON.stringify(next, null, 2)}\n`);

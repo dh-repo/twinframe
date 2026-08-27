@@ -11,6 +11,7 @@ import {
   listHeldOutSlots,
   photoRejectReason,
   rebuildManifestFromDisk,
+  resolveFetchIds,
   resolveLimit,
 } from "./fetch-held-out-photos.ts";
 
@@ -56,6 +57,22 @@ describe("resolveLimit", () => {
   it("rejects nonsense limits instead of silently fetching everything", () => {
     assert.throws(() => resolveLimit(1000, { HELD_OUT_LIMIT: "zero" }, []), /Invalid held-out limit/);
     assert.throws(() => resolveLimit(1000, {}, ["--limit", "0"]), /Invalid held-out limit/);
+  });
+});
+
+describe("resolveFetchIds", () => {
+  const catalog = [{ id: "adele" }, { id: "brad-pitt" }, { id: "zendaya" }];
+
+  it("returns null when --ids is absent so the catalog slice still applies", () => {
+    assert.equal(resolveFetchIds(catalog, []), null);
+    assert.equal(resolveFetchIds(catalog, ["--limit", "12"]), null);
+  });
+
+  it("keeps the requested catalog order and rejects unknown ids", () => {
+    assert.deepEqual(resolveFetchIds(catalog, ["--ids", "zendaya,adele"]), ["zendaya", "adele"]);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids", "adele,not-a-celeb"]), /Unknown catalog ids/);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids"]), /Missing --ids value/);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids", "--limit"]), /Missing --ids value/);
   });
 });
 

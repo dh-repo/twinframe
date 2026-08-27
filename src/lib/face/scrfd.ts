@@ -158,6 +158,27 @@ export function nmsFaceBoxes(
   return selected;
 }
 
+/**
+ * Group shots often give a background extra a higher detector score than the
+ * subject. Rank-1 and the live query both want the largest remaining box.
+ */
+export function selectPrimaryFace<T extends { bbox: { width: number; height: number } }>(
+  faces: T[],
+): T | null {
+  if (faces.length === 0) return null;
+  let best = faces[0]!;
+  let bestArea = Math.max(0, best.bbox.width) * Math.max(0, best.bbox.height);
+  for (let i = 1; i < faces.length; i++) {
+    const face = faces[i]!;
+    const area = Math.max(0, face.bbox.width) * Math.max(0, face.bbox.height);
+    if (area > bestArea) {
+      best = face;
+      bestArea = area;
+    }
+  }
+  return best;
+}
+
 import { createSafeCanvas } from "./similarity-transform.ts";
 
 export interface DetectOptions {
@@ -381,7 +402,7 @@ export async function detectSCRFD(
 
   // Apply Non-Maximum Suppression (NMS)
   const detections = nmsFaceBoxes(rawDetections, iouThreshold);
-  const primary = detections.length > 0 ? detections[0] : null;
+  const primary = selectPrimaryFace(detections);
   const latencyMs = Math.round(performance.now() - t0);
 
   return {
