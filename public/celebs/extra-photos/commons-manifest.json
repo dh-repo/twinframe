@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 327,
+  "count": 335,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2373,6 +2373,70 @@
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Fan_Bingbing_attending_BIFAN_2026_11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-27T19:13:51.971Z",
       "note": "BIFAN 2026 silver gown black gloves; not X-Men Hugh Jackman eval"
+    },
+    {
+        "id": "matt-damon",
+        "file": "001.jpg",
+        "commonsTitle": "File:Matt Damon 2014 3.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Matt_Damon_2014_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Navy blazer 2014 close-up; not Bourne white-shirt eval"
+    },
+    {
+        "id": "matt-damon",
+        "file": "002.jpg",
+        "commonsTitle": "File:Matt Damon TIFF 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/Matt_Damon_TIFF_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "The Martian NASA pin TIFF 2015; not Bourne white-shirt eval"
+    },
+    {
+        "id": "channing-tatum",
+        "file": "001.jpg",
+        "commonsTitle": "File:Channing Tatum July 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Channing_Tatum_July_2015.jpg/1280px-Channing_Tatum_July_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Grey suit white shirt necktie; not leather-jacket henley eval"
+    },
+    {
+        "id": "deepika-padukone",
+        "file": "001.jpg",
+        "commonsTitle": "File:Deepika Padukone December 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/14/Deepika_Padukone_December_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Peter Pan collar pearl studs; not white off-shoulder eval"
+    },
+    {
+        "id": "deepika-padukone",
+        "file": "002.jpg",
+        "commonsTitle": "File:Deepika Padukone at Garnier event.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Deepika_Padukone_at_Garnier_event.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Floral halter Garnier; not white off-shoulder eval"
+    },
+    {
+        "id": "chadwick-boseman",
+        "file": "001.jpg",
+        "commonsTitle": "File:Chadwick Boseman by Sachyn Mital.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Chadwick_Boseman_by_Sachyn_Mital.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Gods of Egypt premiere olive shirt; not Comic-Con paisley eval"
+    },
+    {
+        "id": "martin-freeman",
+        "file": "001.jpg",
+        "commonsTitle": "File:Martin Freeman-5257.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Martin_Freeman-5257.jpg/1280px-Martin_Freeman-5257.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Berlinale green corduroy; not Folk Awards amber-glasses eval"
+    },
+    {
+        "id": "scarlett-johansson",
+        "file": "001.jpg",
+        "commonsTitle": "File:Scarlett Johansson 3.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Scarlett_Johansson_3.jpg/1280px-Scarlett_Johansson_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T19:52:17.390Z",
+        "note": "Pink cardigan Marines visit; not SDCC 2019 mesh-bun eval"
     }
   ]
 }

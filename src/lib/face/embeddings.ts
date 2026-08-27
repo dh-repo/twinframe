@@ -354,8 +354,18 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         vest; not cream-tee lion-pendant eval). Ryan Oscars extra
  *         and Harry 001/002 stay out as eval clones. Barry 002 is a
  *         near-dup of primary.
+ * 6.5.52: Commons extras that beat pack dTrue for Matt Damon (2014 navy
+ *         close-up + TIFF 2015 NASA pin; not Bourne white-shirt eval),
+ *         Channing Tatum (July 2015 grey suit; not leather-jacket
+ *         henley eval), Deepika Padukone (Peter Pan collar + Garnier
+ *         floral; not white off-shoulder eval), Chadwick Boseman
+ *         (Gods of Egypt premiere; not Comic-Con paisley eval), Martin
+ *         Freeman (Berlinale corduroy; not Folk Awards amber-glasses
+ *         eval), and Scarlett Johansson (pink cardigan Marines visit;
+ *         not SDCC 2019 mesh-bun eval). Song Kang 231124 My Demon and
+ *         Olsen TIFF 2011 floral stay out as eval-sitting clones.
  */
-const GALLERY_VERSION = "6.5.51";
+const GALLERY_VERSION = "6.5.52";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
