@@ -228,6 +228,16 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "jennie-kim" && t.source === "extra-photos/jennie-kim/001.jpg"),
       "Jennie 2018 fansign extra missing",
     );
+    assert.ok((byId.get("roger-federer") ?? 0) >= 1, "Federer extra missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "roger-federer" && t.source === "extra-photos/roger-federer/008.jpg"),
+      "Federer AO 2014 extra missing",
+    );
+    assert.ok((byId.get("kate-middleton") ?? 0) >= 3, "Kate extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "kate-middleton" && t.source === "extra-photos/kate-middleton/001.jpg"),
+      "Kate 2023 portrait extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

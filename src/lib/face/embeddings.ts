@@ -257,8 +257,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         panel; not grey-shirt eval), Bradley Cooper (NYFF 2023
  *         black tee; not 2010 A-Team navy suit), and Jennie Kim
  *         (2018 fansign + 2017 bomber; not concert black-dress eval).
+ * 6.5.39: Commons extras that beat pack dTrue for Roger Federer
+ *         (AO 2014 white polo / red headband on blue hard court; not
+ *         the green-court backhand eval) and Kate Middleton (2023
+ *         indoor cream portrait; not 2022 Wimbledon yellow-dress
+ *         trophy eval).
  */
-const GALLERY_VERSION = "6.5.38";
+const GALLERY_VERSION = "6.5.39";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
