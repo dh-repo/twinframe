@@ -12,10 +12,10 @@ export const GALLERY_CLONE_EPS = 1e-4;
  * across dozens of different names. Exact-clone eps (1e-4) misses them, and
  * ranking then returns a random extra as a "look-alike". A connected component
  * of this many distinct ids at this distance is not a celebrity neighborhood.
- * 0.12 (not 0.08) also absorbs the halo of the same face that sat just outside
+ * 0.15 (not 0.08) also absorbs the halo of the same face that sat just outside
  * the tighter cutoff; verified jpg primaries stay at d≈0.7 from the pile.
  */
-export const POISONED_CLUSTER_MAX_DISTANCE = 0.12;
+export const POISONED_CLUSTER_MAX_DISTANCE = 0.15;
 export const POISONED_CLUSTER_MIN_IDS = 8;
 
 function fingerprint(d: ArrayLike<number>): string {

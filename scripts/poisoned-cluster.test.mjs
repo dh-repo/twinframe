@@ -47,6 +47,13 @@ describe("shipped gallery poisoned thumb cluster", () => {
       "tre-styles",
       "moira-kirland",
       "graham-macdonald",
+      "mackenzie-gray",
+      "chris-ratz",
+      "peter-jorgensen",
+      "philip-prajoux",
+      "nathan-witte",
+      "russell-porter",
+      "douglas-m-griffin",
     ]) {
       assert.equal(droppedIds.includes(id), true, `${id} halo thumb should drop with the pile`);
     }
