@@ -1,8 +1,8 @@
 /**
  * Measured calibration of P(rank-1 is the true identity | geometry), fitted by
  * scripts/calibrate-edgeface.mjs successor logic against the leak-excluded
- * held-out protocol v2.1 in full 512-d geometry (n=296, 2026-08, gallery 1148
- * after 6.5.71 extras): refit via scripts/refit-calibration.ts, deterministic.
+ * held-out protocol v2.1 in full 512-d geometry (n=296, 2026-08, gallery 1150
+ * after 6.5.72 extras): refit via scripts/refit-calibration.ts, deterministic.
  * All-positive Rank-1 keeps prior slopes; mu/sd track current dTrue/gap.
  *
  * Features are raw AdaFace cosine distances:
