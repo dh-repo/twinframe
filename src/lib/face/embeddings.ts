@@ -473,8 +473,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         pink full-kit pitch portrait, XBTO sponsor; not Barcelona Qatar
  *         Foundation match-action eval). Extra 002 is a different Miami
  *         close-up (dExtra 0.40) and stays enrolled.
+ * 6.5.74: Held-out extra that beat pack dTrue for Simu Liu (Beaverton studio
+ *         pink tee grey bomber lapel-mic; not Kim's Convenience blue-suit eval
+ *         and not grey-tee panel primary). Extra-photos 004 is the same
+ *         Beaverton sitting and stays out.
  */
-const GALLERY_VERSION = "6.5.73";
+const GALLERY_VERSION = "6.5.74";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
