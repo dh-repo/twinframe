@@ -361,10 +361,14 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "zayn-malik" && t.source === "extra-photos/zayn-malik/001.jpg"),
       "Zayn Malik WWA Chile extra missing",
     );
-    assert.ok((byId.get("simu-liu") ?? 0) >= 1, "Simu Liu extras missing");
+    assert.ok((byId.get("simu-liu") ?? 0) >= 2, "Simu Liu extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "simu-liu" && t.source === "extra-photos/simu-liu/001.jpg"),
       "Simu Liu theater extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "simu-liu" && t.source === "held-out/simu-liu/004.jpg"),
+      "Simu Liu Beaverton studio extra missing",
     );
     assert.ok((byId.get("lee-jung-jae") ?? 0) >= 1, "Lee Jung-jae extras missing");
     assert.ok(
