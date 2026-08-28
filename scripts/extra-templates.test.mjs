@@ -697,6 +697,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "drake" && t.source === "extra-photos/drake/001.jpg"),
       "Drake Summer Sixteen 2016 extra missing",
     );
+    assert.ok((byId.get("gal-gadot") ?? 0) >= 1, "Gal Gadot extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "gal-gadot" && t.source === "extra-photos/gal-gadot/001.jpg"),
+      "Gal Gadot 2017 gold high-collar extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

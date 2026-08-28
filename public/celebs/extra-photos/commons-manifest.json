@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 371,
+  "count": 372,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2725,6 +2725,14 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Drake_and_Future_2016_Summer_Sixteen_Tour_(cropped_3x4).jpeg",
         "fetchedAt": "2026-08-27T23:50:00.000Z",
         "note": "Summer Sixteen Tour 2016 dark jacket gold curb chains low-angle; not OVO black-tee technical parka concert eval"
+    },
+    {
+        "id": "gal-gadot",
+        "file": "001.jpg",
+        "commonsTitle": "File:Gal Gadot 2017.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gal_Gadot_2017.jpg",
+        "fetchedAt": "2026-08-28T00:25:00.000Z",
+        "note": "2017 gold scalloped high-collar updo; not Comic-Con plunging black V-neck red lipstick eval"
     }
   ]
 }

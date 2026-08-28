@@ -447,8 +447,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.66: Commons extra that beat pack dTrue for Drake (Summer Sixteen 2016
  *         dark jacket gold curb chains low-angle; not OVO black-tee technical
  *         parka concert eval). Helen Commons still miss pack; ho 002 stays out.
+ * 6.5.67: Commons extra that beat pack dTrue for Gal Gadot (2017 gold scalloped
+ *         high-collar updo; not Comic-Con plunging black V-neck red lipstick
+ *         eval). Idris 5270 is the shearling eval sitting; ho 002 stays out.
  */
-const GALLERY_VERSION = "6.5.66";
+const GALLERY_VERSION = "6.5.67";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
