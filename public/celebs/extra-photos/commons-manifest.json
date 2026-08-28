@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 374,
+  "count": 376,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2749,6 +2749,22 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Idris_Elba-4822.jpg",
         "fetchedAt": "2026-08-28T01:50:00.000Z",
         "note": "waffle-knit crew-neck press smile; not shearling collar plus pink tee LIDO/AOD PALACE eval"
+    },
+    {
+        "id": "henry-cavill",
+        "file": "001.jpg",
+        "commonsTitle": "File:Henry Cavill (8463776101).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Henry_Cavill_(8463776101).jpg",
+        "fetchedAt": "2026-08-28T04:45:00.000Z",
+        "note": "Man of Steel premiere tuxedo; not Adidas V-neck SDCC 2015 eval"
+    },
+    {
+        "id": "jennifer-aniston",
+        "file": "006.jpg",
+        "commonsTitle": "File:JenniferAnistonFeb09.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:JenniferAnistonFeb09.jpg",
+        "fetchedAt": "2026-08-28T04:45:00.000Z",
+        "note": "2009 Crest Whitestrips updo black blazer; not outdoor black-tank eval. Padded before product-crop so SCRFD detScore cleared 0.5"
     }
   ]
 }

@@ -712,6 +712,16 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "idris-elba" && t.source === "extra-photos/idris-elba/001.jpg"),
       "Idris Elba waffle-knit 4822 extra missing",
     );
+    assert.ok((byId.get("henry-cavill") ?? 0) >= 1, "Henry Cavill extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "henry-cavill" && t.source === "extra-photos/henry-cavill/001.jpg"),
+      "Henry Cavill Man of Steel tuxedo extra missing",
+    );
+    assert.ok((byId.get("jennifer-aniston") ?? 0) >= 1, "Jennifer Aniston extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "jennifer-aniston" && t.source === "extra-photos/jennifer-aniston/006.jpg"),
+      "Jennifer Aniston 2009 Crest Whitestrips extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
