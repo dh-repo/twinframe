@@ -13,6 +13,19 @@ export const CROP_ZOOM_MAX = 6;
 export const STANDING_SHOT_HINT =
   "Standing photo — we zoomed in on your face. Drag if we framed the wrong person.";
 
+/** Group photos must not auto-match the detector's guessed primary. */
+export const GROUP_SHOT_PICK_HINT =
+  "Several faces in this photo — tap the person you want to match before continuing.";
+
+export function cropReviewNeedsExplicitPick(faceCount: number): boolean {
+  return faceCount >= 2;
+}
+
+export function initialCropReviewFaceId(faceIds: readonly number[]): number | null {
+  if (faceIds.length === 1) return faceIds[0]!;
+  return null;
+}
+
 export interface CropBox {
   x: number;
   y: number;
