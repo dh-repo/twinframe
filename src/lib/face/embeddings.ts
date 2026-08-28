@@ -461,8 +461,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         premiere tuxedo, File:Henry Cavill (8463776101); not Adidas V-neck
  *         SDCC 2015 eval) and Jennifer Aniston (2009 Crest Whitestrips updo
  *         black blazer, File:JenniferAnistonFeb09; not outdoor black-tank eval).
+ * 6.5.71: Commons extra that beat pack dTrue for Ranveer Singh (2025 studio
+ *         velvet double-breasted blazer, File:Ranveer Singh 2025; not NBA
+ *         Ruffles graffiti-jersey eval). Halle Berry-0343 is the ruffled-tweed
+ *         eval sitting; Osaka 15493791625 is the TORAY purple-strap eval sitting.
  */
-const GALLERY_VERSION = "6.5.70";
+const GALLERY_VERSION = "6.5.71";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

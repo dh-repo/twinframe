@@ -722,6 +722,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "jennifer-aniston" && t.source === "extra-photos/jennifer-aniston/006.jpg"),
       "Jennifer Aniston 2009 Crest Whitestrips extra missing",
     );
+    assert.ok((byId.get("ranveer-singh") ?? 0) >= 3, "Ranveer Singh extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "ranveer-singh" && t.source === "extra-photos/ranveer-singh/001.jpg"),
+      "Ranveer Singh 2025 studio velvet-blazer extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
