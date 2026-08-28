@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 372,
+  "count": 373,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2733,6 +2733,14 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gal_Gadot_2017.jpg",
         "fetchedAt": "2026-08-28T00:25:00.000Z",
         "note": "2017 gold scalloped high-collar updo; not Comic-Con plunging black V-neck red lipstick eval"
+    },
+    {
+        "id": "taylor-lautner",
+        "file": "001.jpg",
+        "commonsTitle": "File:Taylor Lautner Comic-Con 2011.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taylor_Lautner_Comic-Con_2011.jpg",
+        "fetchedAt": "2026-08-28T01:30:00.000Z",
+        "note": "2011 Comic-Con maroon leather-jacket panel; not Abduction pinstripe-suit premiere eval"
     }
   ]
 }

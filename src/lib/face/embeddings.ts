@@ -450,8 +450,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * 6.5.67: Commons extra that beat pack dTrue for Gal Gadot (2017 gold scalloped
  *         high-collar updo; not Comic-Con plunging black V-neck red lipstick
  *         eval). Idris 5270 is the shearling eval sitting; ho 002 stays out.
+ * 6.5.68: Commons extra that beat pack dTrue for Taylor Lautner (2011 Comic-Con
+ *         maroon leather-jacket panel; not Abduction pinstripe-suit premiere
+ *         eval). Helen 2208/2760 are the Berlinale studded-collar eval sitting
+ *         and stay out.
  */
-const GALLERY_VERSION = "6.5.67";
+const GALLERY_VERSION = "6.5.68";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

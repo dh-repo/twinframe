@@ -702,6 +702,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "gal-gadot" && t.source === "extra-photos/gal-gadot/001.jpg"),
       "Gal Gadot 2017 gold high-collar extra missing",
     );
+    assert.ok((byId.get("taylor-lautner") ?? 0) >= 1, "Taylor Lautner extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "taylor-lautner" && t.source === "extra-photos/taylor-lautner/001.jpg"),
+      "Taylor Lautner Comic-Con 2011 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 
