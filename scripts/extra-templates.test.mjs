@@ -707,6 +707,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "taylor-lautner" && t.source === "extra-photos/taylor-lautner/001.jpg"),
       "Taylor Lautner Comic-Con 2011 extra missing",
     );
+    assert.ok((byId.get("idris-elba") ?? 0) >= 1, "Idris Elba extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "idris-elba" && t.source === "extra-photos/idris-elba/001.jpg"),
+      "Idris Elba waffle-knit 4822 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

@@ -454,8 +454,11 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         maroon leather-jacket panel; not Abduction pinstripe-suit premiere
  *         eval). Helen 2208/2760 are the Berlinale studded-collar eval sitting
  *         and stay out.
+ * 6.5.69: Commons extra that beat pack dTrue for Idris Elba (waffle-knit
+ *         crew-neck press smile, File:Idris Elba-4822; not shearling collar
+ *         plus pink tee LIDO/AOD PALACE eval). 5270/5272 stay out.
  */
-const GALLERY_VERSION = "6.5.68";
+const GALLERY_VERSION = "6.5.69";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

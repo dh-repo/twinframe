@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 373,
+  "count": 374,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2741,6 +2741,14 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taylor_Lautner_Comic-Con_2011.jpg",
         "fetchedAt": "2026-08-28T01:30:00.000Z",
         "note": "2011 Comic-Con maroon leather-jacket panel; not Abduction pinstripe-suit premiere eval"
+    },
+    {
+        "id": "idris-elba",
+        "file": "001.jpg",
+        "commonsTitle": "File:Idris Elba-4822.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Idris_Elba-4822.jpg",
+        "fetchedAt": "2026-08-28T01:50:00.000Z",
+        "note": "waffle-knit crew-neck press smile; not shearling collar plus pink tee LIDO/AOD PALACE eval"
     }
   ]
 }
