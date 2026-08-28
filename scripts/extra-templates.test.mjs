@@ -727,6 +727,11 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "ranveer-singh" && t.source === "extra-photos/ranveer-singh/001.jpg"),
       "Ranveer Singh 2025 studio velvet-blazer extra missing",
     );
+    assert.ok((byId.get("michael-b-jordan") ?? 0) >= 1, "Michael B. Jordan extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "michael-b-jordan" && t.source === "extra-photos/michael-b-jordan/002.jpg"),
+      "Michael B. Jordan SDCC 2015 bomber extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

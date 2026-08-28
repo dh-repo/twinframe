@@ -465,8 +465,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         velvet double-breasted blazer, File:Ranveer Singh 2025; not NBA
  *         Ruffles graffiti-jersey eval). Halle Berry-0343 is the ruffled-tweed
  *         eval sitting; Osaka 15493791625 is the TORAY purple-strap eval sitting.
+ * 6.5.72: Commons extra that beat pack dTrue for Michael B. Jordan (SDCC 2015
+ *         tan/camel bomber orange-white ribbed collar, File:Michael B. Jordan
+ *         (36245564315); not Ferragamo-polo eval and not navy-blazer primary).
+ *         Held-out 003 is the same SDCC sitting and stays out.
  */
-const GALLERY_VERSION = "6.5.71";
+const GALLERY_VERSION = "6.5.72";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
