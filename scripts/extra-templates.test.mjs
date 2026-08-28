@@ -141,7 +141,7 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "sebastian-stan" && t.source === "extra-photos/sebastian-stan/001.jpg"),
       "Sebastian Stan 2026 Cannes extra missing",
     );
-    assert.ok((byId.get("lionel-messi") ?? 0) >= 4, "Messi extras missing");
+    assert.ok((byId.get("lionel-messi") ?? 0) >= 5, "Messi extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "lionel-messi" && t.source === "extra-photos/lionel-messi/001.jpg"),
       "Messi PSG extra missing",
@@ -149,6 +149,10 @@ describe("shipped extra templates", () => {
     assert.ok(
       pack.templates.some((t) => t.id === "lionel-messi" && t.source === "extra-photos/lionel-messi/002.jpg"),
       "Messi Inter Miami extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "lionel-messi" && t.source === "held-out/lionel-messi/003.jpg"),
+      "Messi Inter Miami full-kit pitch extra missing",
     );
     assert.ok((byId.get("kendrick-lamar") ?? 0) >= 4, "Kendrick concert extras missing");
     assert.ok(

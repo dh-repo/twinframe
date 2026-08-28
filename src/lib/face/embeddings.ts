@@ -469,8 +469,12 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         tan/camel bomber orange-white ribbed collar, File:Michael B. Jordan
  *         (36245564315); not Ferragamo-polo eval and not navy-blazer primary).
  *         Held-out 003 is the same SDCC sitting and stays out.
+ * 6.5.73: Held-out extra that beat pack dTrue for Lionel Messi (Inter Miami
+ *         pink full-kit pitch portrait, XBTO sponsor; not Barcelona Qatar
+ *         Foundation match-action eval). Extra 002 is a different Miami
+ *         close-up (dExtra 0.40) and stays enrolled.
  */
-const GALLERY_VERSION = "6.5.72";
+const GALLERY_VERSION = "6.5.73";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
