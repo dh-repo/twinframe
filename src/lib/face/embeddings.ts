@@ -482,8 +482,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         emily-blunt, denzel-washington, zoe-saldana, jacob-elordi, halle-berry).
  *         Eval-hash unique-sitting clones and d>0.7 / d<0.05 gate refusals
  *         were reported, not fabricated.
+ * 6.5.76: Gated Commons extras for remaining HIGH dTrue ids that already had
+ *         some extras (ranveer, sebastian, donald, julia, serena, adam, viola,
+ *         doja). Eval-sitting titles and 001 hashes skipped; d>0.7 / no-face
+ *         refusals reported, not fabricated. Binary embeddings.v4.q8.bin
+ *         untouched. 0-extra easy ids (dTrue ≲ 0.05) were not crawled.
  */
-const GALLERY_VERSION = "6.5.75";
+const GALLERY_VERSION = "6.5.76";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

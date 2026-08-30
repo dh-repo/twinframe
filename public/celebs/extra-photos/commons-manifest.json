@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 378,
+  "count": 393,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2781,6 +2781,111 @@
         "sourceUrl": "https://commons.wikimedia.org/wiki/File:Michael_B._Jordan_(36245564315).jpg",
         "fetchedAt": "2026-08-28T07:28:00.000Z",
         "note": "SDCC 2015 tan/camel bomber orange-white ribbed collar, panel mic + Smartwater; tighter crop of the Commons sitting. Not Ferragamo-polo eval and not navy-blazer primary."
+    },
+    {
+        "id": "viola-davis",
+        "file": "003.jpg",
+        "commonsTitle": "File:Viola Davis 2009.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Viola_Davis_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:57:39.274Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "002.jpg",
+        "commonsTitle": "File:Ranveer singh new look.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Ranveer_singh_new_look.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:57:46.597Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "003.jpg",
+        "commonsTitle": "File:Ranveer Singh at Esha Deol's sangeet ceremony 17.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/Ranveer_Singh_at_Esha_Deol%27s_sangeet_ceremony_17.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:57:59.335Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "004.jpg",
+        "commonsTitle": "File:Ranveer Singh promotes Men's Health magazine.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/Ranveer_Singh_promotes_Men%27s_Health_magazine.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:58:00.016Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "005.jpg",
+        "commonsTitle": "File:Ranveer Singh at Sahara Star New Year's bash press meet1.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Ranveer_Singh_at_Sahara_Star_New_Year%27s_bash_press_meet1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:58:05.085Z"
+    },
+    {
+        "id": "donald-glover",
+        "file": "003.jpg",
+        "commonsTitle": "File:Donald Glover at PaleyFest2010.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Donald_Glover_at_PaleyFest2010.jpg/960px-Donald_Glover_at_PaleyFest2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:58:38.882Z"
+    },
+    {
+        "id": "donald-glover",
+        "file": "004.jpg",
+        "commonsTitle": "File:Donald Glover 2011 Vancouver (6623121867).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Donald_Glover_2011_Vancouver_%286623121867%29.jpg/960px-Donald_Glover_2011_Vancouver_%286623121867%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:58:39.466Z"
+    },
+    {
+        "id": "sebastian-stan",
+        "file": "003.jpg",
+        "commonsTitle": "File:WW Chicago 2014 - Sebastian Stan 01 (15035666116).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/WW_Chicago_2014_-_Sebastian_Stan_01_%2815035666116%29.jpg/960px-WW_Chicago_2014_-_Sebastian_Stan_01_%2815035666116%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:59:43.659Z"
+    },
+    {
+        "id": "sebastian-stan",
+        "file": "004.jpg",
+        "commonsTitle": "File:Sebastian Stan 2007 Drama League Awards.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Sebastian_Stan_2007_Drama_League_Awards.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:59:48.713Z"
+    },
+    {
+        "id": "sebastian-stan",
+        "file": "005.jpg",
+        "commonsTitle": "File:WW Chicago 2014 - Sebastian Stan 04 (14872088118).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/WW_Chicago_2014_-_Sebastian_Stan_04_%2814872088118%29.jpg/960px-WW_Chicago_2014_-_Sebastian_Stan_04_%2814872088118%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:59:53.832Z"
+    },
+    {
+        "id": "julia-roberts",
+        "file": "003.jpg",
+        "commonsTitle": "File:Julia Roberts 2001.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Julia_Roberts_2001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:00:02.789Z"
+    },
+    {
+        "id": "julia-roberts",
+        "file": "004.jpg",
+        "commonsTitle": "File:Julia Roberts in May 2002.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Julia_Roberts_in_May_2002.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:00:03.216Z"
+    },
+    {
+        "id": "adam-driver",
+        "file": "002.jpg",
+        "commonsTitle": "File:Adam Driver 2013.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/Adam_Driver_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:00:48.208Z"
+    },
+    {
+        "id": "serena-williams",
+        "file": "008.jpg",
+        "commonsTitle": "File:Serena Williams 2004.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Serena_Williams_2004.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:01:14.301Z"
+    },
+    {
+        "id": "doja-cat",
+        "file": "005.jpg",
+        "commonsTitle": "File:Doja Cat August 2019.png",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Doja_Cat_August_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:01:29.664Z"
     }
   ]
 }

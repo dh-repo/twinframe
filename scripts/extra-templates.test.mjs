@@ -32,10 +32,14 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "adele" && t.source === "extra-photos/adele/003.jpg"),
       "Adele Live 2009 turtleneck extra missing",
     );
-    assert.ok((byId.get("doja-cat") ?? 0) >= 5, "Doja extras missing");
+    assert.ok((byId.get("doja-cat") ?? 0) >= 6, "Doja extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "doja-cat" && t.source === "extra-photos/doja-cat/003.jpg"),
       "Doja Scarlet-era 2024 extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "doja-cat" && t.source === "extra-photos/doja-cat/005.jpg"),
+      "Doja August 2019 extra missing",
     );
     assert.ok((byId.get("zendaya") ?? 0) >= 3, "Zendaya extras missing");
     assert.ok((byId.get("justin-bieber") ?? 0) >= 1, "Bieber extras missing");
@@ -116,30 +120,46 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "harry-styles" && t.source === "extra-photos/harry-styles/003.jpg"),
       "Harry Styles November 2014 extra missing",
     );
-    assert.ok((byId.get("serena-williams") ?? 0) >= 1, "Serena extras missing");
+    assert.ok((byId.get("serena-williams") ?? 0) >= 3, "Serena extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "serena-williams" && t.source === "extra-photos/serena-williams/006.jpg"),
       "Serena Doha 2013 extra missing",
     );
-    assert.ok((byId.get("donald-glover") ?? 0) >= 4, "Glover concert extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "serena-williams" && t.source === "extra-photos/serena-williams/008.jpg"),
+      "Serena 2004 extra missing",
+    );
+    assert.ok((byId.get("donald-glover") ?? 0) >= 6, "Glover concert extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "donald-glover" && t.source === "extra-photos/donald-glover/001.jpg"),
       "Glover concert product-crop extra missing",
     );
-    assert.ok((byId.get("julia-roberts") ?? 0) >= 4, "Julia Roberts extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "donald-glover" && t.source === "extra-photos/donald-glover/003.jpg"),
+      "Glover PaleyFest 2010 extra missing",
+    );
+    assert.ok((byId.get("julia-roberts") ?? 0) >= 6, "Julia Roberts extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "julia-roberts" && t.source === "extra-photos/julia-roberts/001.jpg"),
       "Julia Roberts 2011 Shankbone extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "julia-roberts" && t.source === "extra-photos/julia-roberts/003.jpg"),
+      "Julia Roberts 2001 extra missing",
     );
     assert.ok((byId.get("ariana-grande") ?? 0) >= 3, "Ariana Jakarta extra missing");
     assert.ok(
       pack.templates.some((t) => t.id === "ariana-grande" && t.source === "extra-photos/ariana-grande/001.jpg"),
       "Ariana Honeymoon Tour Jakarta extra missing",
     );
-    assert.ok((byId.get("sebastian-stan") ?? 0) >= 4, "Sebastian Stan extras missing");
+    assert.ok((byId.get("sebastian-stan") ?? 0) >= 7, "Sebastian Stan extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "sebastian-stan" && t.source === "extra-photos/sebastian-stan/001.jpg"),
       "Sebastian Stan 2026 Cannes extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "sebastian-stan" && t.source === "extra-photos/sebastian-stan/003.jpg"),
+      "Sebastian Stan WW Chicago 2014 extra missing",
     );
     assert.ok((byId.get("lionel-messi") ?? 0) >= 5, "Messi extras missing");
     assert.ok(
@@ -730,10 +750,24 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "jennifer-aniston" && t.source === "extra-photos/jennifer-aniston/006.jpg"),
       "Jennifer Aniston 2009 Crest Whitestrips extra missing",
     );
-    assert.ok((byId.get("ranveer-singh") ?? 0) >= 3, "Ranveer Singh extras missing");
+    assert.ok((byId.get("ranveer-singh") ?? 0) >= 7, "Ranveer Singh extras missing");
     assert.ok(
       pack.templates.some((t) => t.id === "ranveer-singh" && t.source === "extra-photos/ranveer-singh/001.jpg"),
       "Ranveer Singh 2025 studio velvet-blazer extra missing",
+    );
+    assert.ok(
+      pack.templates.some((t) => t.id === "ranveer-singh" && t.source === "extra-photos/ranveer-singh/005.jpg"),
+      "Ranveer Singh Sahara Star extra missing",
+    );
+    assert.ok((byId.get("viola-davis") ?? 0) >= 5, "Viola Davis extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "viola-davis" && t.source === "extra-photos/viola-davis/003.jpg"),
+      "Viola Davis 2009 extra missing",
+    );
+    assert.ok((byId.get("adam-driver") ?? 0) >= 3, "Adam Driver extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "adam-driver" && t.source === "extra-photos/adam-driver/002.jpg"),
+      "Adam Driver 2013 extra missing",
     );
     assert.ok((byId.get("michael-b-jordan") ?? 0) >= 1, "Michael B. Jordan extras missing");
     assert.ok(
