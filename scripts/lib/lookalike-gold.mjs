@@ -10,13 +10,10 @@ import fs from "node:fs";
  * @returns {GoldCaseKind}
  */
 export function classifyGoldCase(c) {
-  if (c?.expectRefuse) {
-    return "refuse-smoke";
-  }
   if (c?.kind === "civilian" || c?.fixture || c?.imagePath || /^civilian/i.test(String(c?.id ?? ""))) {
     return "civilian";
   }
-  if (Array.isArray(c?.acceptableTopIds) && c.acceptableTopIds.length === 0) {
+  if (c?.expectRefuse || (Array.isArray(c?.acceptableTopIds) && c.acceptableTopIds.length === 0)) {
     return "refuse-smoke";
   }
   if (/^identity-/i.test(String(c?.id ?? "")) || /self-vector|enrolled self/i.test(String(c?.notes ?? ""))) {
@@ -35,7 +32,7 @@ export function civilianGoldReady(fixturesGoldDir) {
 }
 
 /**
- * @param {{ identityN: number, identityTop1: number, refuseN: number, refuseOk: number, civilianN: number, civilianTop1: number, civilianReady: boolean }} stats
+ * @param {{ identityN: number, identityTop1: number, refuseN: number, refuseOk: number, civilianN: number, civilianTop1: number, civilianRefuseN?: number, civilianRefuseOk?: number, civilianReady: boolean }} stats
  */
 export function formatGoldSummary(stats) {
   const lines = [];
@@ -49,11 +46,21 @@ export function formatGoldSummary(stats) {
     const pct = ((stats.refuseOk / stats.refuseN) * 100).toFixed(1);
     lines.push(`refuse-smoke (synthetic) refuse_ok=${pct}% (${stats.refuseOk}/${stats.refuseN})`);
   }
-  if (!stats.civilianReady || stats.civilianN === 0) {
-    lines.push("civilian acceptable@1=N/A  (no fixtures/gold photos — do not invent labels)");
-  } else {
+  if (stats.civilianN > 0) {
     const pct = ((stats.civilianTop1 / stats.civilianN) * 100).toFixed(1);
     lines.push(`civilian acceptable@1=${pct}% (${stats.civilianTop1}/${stats.civilianN})`);
+  } else {
+    lines.push(
+      stats.civilianReady
+        ? "civilian acceptable@1=N/A  (photos exist, but no accept-labeled civilians — do not invent look-alike names)"
+        : "civilian acceptable@1=N/A  (no fixtures/gold photos — do not invent labels)",
+    );
+  }
+  if ((stats.civilianRefuseN ?? 0) > 0) {
+    const pct = ((stats.civilianRefuseOk / stats.civilianRefuseN) * 100).toFixed(1);
+    lines.push(
+      `civilian refuse_ok=${pct}% (${stats.civilianRefuseOk}/${stats.civilianRefuseN})  — labeled no doppelgänger`,
+    );
   }
   return lines;
 }

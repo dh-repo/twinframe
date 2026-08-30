@@ -33,4 +33,24 @@ describe("encode-gold-probe harness", () => {
     assert.equal(res.status, 1);
     assert.match(res.stderr, /Missing image/);
   });
+
+  it("refuses a missing --dir without inventing descriptors", () => {
+    const res = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", SCRIPT, "--dir", path.join(ROOT, "fixtures/gold/no-such-dir"), "--refuse"],
+      { encoding: "utf8" },
+    );
+    assert.equal(res.status, 1);
+    assert.match(res.stderr, /Missing gold dir/);
+  });
+
+  it("refuses batch --dir without --refuse so it cannot invent accept lists", () => {
+    const res = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", SCRIPT, "--dir", path.join(ROOT, "fixtures/gold")],
+      { encoding: "utf8" },
+    );
+    assert.equal(res.status, 1);
+    assert.match(res.stderr, /refuse-only/);
+  });
 });

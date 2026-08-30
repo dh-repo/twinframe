@@ -35,6 +35,9 @@ tmp/
 # enroll helper (dev only)
 public/enroll.html
 
+# sha256 embed + Wikimedia fetch caches (local only)
+.cache/
+
 # raw held-out probe photos stay local-only (~200MB); the tracked
 # public/celebs/held-out/descriptors.json is the eval input CI uses.
 public/celebs/held-out/*/

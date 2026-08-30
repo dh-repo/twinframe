@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
 import { loadGallery, mergeExtraTemplates } from "./evaluate-held-out-v2.ts";
 import { classifyGoldCase, civilianGoldReady, formatGoldSummary } from "./lib/lookalike-gold.mjs";
+import { decodeV4Header } from "./lib/gallery-binary.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -23,6 +24,7 @@ const FIXTURES_GOLD = path.join(ROOT, "fixtures/gold");
 
 export function evaluateGoldSet(set, gallery, opts = {}) {
   const civilianReady = opts.civilianReady ?? civilianGoldReady(FIXTURES_GOLD);
+  const expectedDim = opts.expectedDim ?? 512;
   let skipped = 0;
   let identityN = 0;
   let identityTop1 = 0;
@@ -30,16 +32,15 @@ export function evaluateGoldSet(set, gallery, opts = {}) {
   let refuseOk = 0;
   let civilianN = 0;
   let civilianTop1 = 0;
+  let civilianRefuseN = 0;
+  let civilianRefuseOk = 0;
   const lines = [];
 
   for (const c of set.cases ?? []) {
     const kind = classifyGoldCase(c);
     const k = c.acceptableTopK ?? 5;
-    if (
-      !c.queryDescriptor ||
-      (c.queryDescriptor.length !== 256 && c.queryDescriptor.length !== 512)
-    ) {
-      lines.push(`SKIP ${c.id} — needs queryDescriptor[256|512]`);
+    if (!c.queryDescriptor || c.queryDescriptor.length !== expectedDim) {
+      lines.push(`SKIP ${c.id} — needs queryDescriptor[${expectedDim}] matching gallery header`);
       skipped++;
       continue;
     }
@@ -85,6 +86,18 @@ export function evaluateGoldSet(set, gallery, opts = {}) {
       skipped++;
       continue;
     }
+    if (c.expectRefuse || accept.size === 0) {
+      civilianRefuseN++;
+      if (matches.length === 0) {
+        civilianRefuseOk++;
+        lines.push(`PASS civilian-refuse ${c.id}`);
+      } else {
+        lines.push(
+          `FAIL civilian-refuse ${c.id} — got ${matches[0]?.celebrityId} @ ${matches[0]?.matchPercent}%`,
+        );
+      }
+      continue;
+    }
     civilianN++;
     if (hit1) civilianTop1++;
     lines.push(
@@ -99,6 +112,8 @@ export function evaluateGoldSet(set, gallery, opts = {}) {
     refuseOk,
     civilianN,
     civilianTop1,
+    civilianRefuseN,
+    civilianRefuseOk,
     civilianReady,
     skipped,
   };
@@ -119,7 +134,8 @@ function main() {
 
   const set = JSON.parse(fs.readFileSync(setPath, "utf8"));
   const gallery = mergeExtraTemplates(loadGallery());
-  const { stats, lines, summary } = evaluateGoldSet(set, gallery);
+  const header = decodeV4Header(fs.readFileSync(path.join(CELEBS, "embeddings.v4.q8.bin")));
+  const { stats, lines, summary } = evaluateGoldSet(set, gallery, { expectedDim: header.dimension });
 
   console.log("================================================================================");
   console.log("     TWINFRAME OPEN-SET LOOK-ALIKE GOLD (AdaFace-512)                           ");

@@ -236,9 +236,21 @@ async function api(endpoint: string, params: Record<string, string>): Promise<an
   url.searchParams.set("format", "json");
   url.searchParams.set("formatversion", "2");
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const cacheDir = path.join(ROOT, ".cache", "wikimedia");
+  const cacheFile = path.join(cacheDir, sha(Buffer.from(url.toString())) + ".json");
+  if (fs.existsSync(cacheFile)) {
+    try {
+      return JSON.parse(fs.readFileSync(cacheFile, "utf8"));
+    } catch {
+      /* fall through */
+    }
+  }
   const res = await politeFetch(url);
   if (!res.ok) throw new Error(`${new URL(endpoint).hostname} ${res.status}`);
-  return res.json();
+  const json = await res.json();
+  fs.mkdirSync(cacheDir, { recursive: true });
+  fs.writeFileSync(cacheFile, JSON.stringify(json));
+  return json;
 }
 
 /** Commons category for the person, via the Wikipedia article's Commons link. */

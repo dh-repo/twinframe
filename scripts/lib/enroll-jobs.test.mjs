@@ -7,6 +7,7 @@ import {
   DEFAULT_EXTRA_VIEW_CAP,
   collectEnrollJobs,
   extraImagePaths,
+  filterEmbedJobs,
   preferRepairSource,
   primaryPhotoPath,
   resolveExtraViewCap,
@@ -17,11 +18,11 @@ function makeCelebDir(id, { heldOut = [], extraPhotos = [] }) {
   fs.writeFileSync(path.join(root, `${id}.jpg`), "x");
   if (heldOut.length > 0) {
     fs.mkdirSync(path.join(root, "held-out", id), { recursive: true });
-    for (const f of heldOut) fs.writeFileSync(path.join(root, "held-out", id, f), "h");
+    for (const f of heldOut) fs.writeFileSync(path.join(root, "held-out", id, f), `ho:${f}`);
   }
   if (extraPhotos.length > 0) {
     fs.mkdirSync(path.join(root, "extra-photos", id), { recursive: true });
-    for (const f of extraPhotos) fs.writeFileSync(path.join(root, "extra-photos", id, f), "e");
+    for (const f of extraPhotos) fs.writeFileSync(path.join(root, "extra-photos", id, f), `ex:${f}`);
   }
   return root;
 }
@@ -135,6 +136,37 @@ describe("extra view cap", () => {
       ["002.jpg"],
     );
     fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it("skips extras that are byte-identical to held-out 001 (unique-sitting trap)", () => {
+    const root = makeCelebDir("adele", { heldOut: ["001.jpg"], extraPhotos: ["002.jpg", "003.jpg"] });
+    fs.writeFileSync(path.join(root, "extra-photos", "adele", "002.jpg"), "ho:001.jpg");
+    const extras = extraImagePaths("adele", root, 8);
+    assert.deepEqual(
+      extras.map((p) => path.basename(p)),
+      ["003.jpg"],
+    );
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it("extras-only embeds new views and skips already-shipped sources", () => {
+    const jobs = [
+      { kind: "primary", id: "adele", source: "adele.jpg" },
+      { kind: "extra", id: "adele", source: "held-out/adele/002.jpg" },
+      { kind: "extra", id: "adele", source: "extra-photos/adele/003.jpg" },
+      { kind: "missing", id: "nobody", source: null },
+    ];
+    const shipped = new Set(["adele\u0000held-out/adele/002.jpg"]);
+    const extrasOnly = filterEmbedJobs(jobs, { extrasOnly: true, shippedSources: shipped });
+    assert.deepEqual(
+      extrasOnly.map((j) => j.source),
+      ["extra-photos/adele/003.jpg"],
+    );
+    const full = filterEmbedJobs(jobs, { extrasOnly: false });
+    assert.deepEqual(
+      full.map((j) => j.kind),
+      ["primary", "extra", "extra"],
+    );
   });
 
   it("honours an explicit cap and the env override", () => {

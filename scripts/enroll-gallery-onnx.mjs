@@ -28,7 +28,8 @@ import { fileURLToPath } from "node:url";
 import { compute5PointSimilarityMatrix } from "../src/lib/face/similarity-transform.ts";
 import { generateAnchors, nmsFaceBoxes, selectPrimaryFace } from "../src/lib/face/scrfd.ts";
 import { estimateSmileMetrics } from "../src/lib/face/types.ts";
-import { collectEnrollJobs, resolveExtraViewCap } from "./lib/enroll-jobs.mjs";
+import { collectEnrollJobs, filterEmbedJobs, resolveExtraViewCap } from "./lib/enroll-jobs.mjs";
+import { embedCacheKey, embedCachePath, fileSha256, loadEmbedCache, partitionCachedJobs, saveEmbedCache } from "./lib/embed-cache.mjs";
 import { gateExtraCandidates } from "./lib/extra-gate.mjs";
 import { decodeV4Gallery } from "./lib/gallery-binary.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
@@ -352,6 +353,16 @@ function shippedPrimaries() {
   return byId;
 }
 
+/** Already-shipped extra (id, source) keys so extras-only can skip re-embeds. */
+function shippedExtraSources() {
+  const p = path.join(CELEBS, "extra-templates.json");
+  const sources = new Set();
+  if (!fs.existsSync(p)) return sources;
+  const data = JSON.parse(fs.readFileSync(p, "utf8"));
+  for (const t of data.templates ?? []) sources.add(`${t.id}\u0000${t.source}`);
+  return sources;
+}
+
 /** Already-shipped extra templates, so a re-fetched duplicate view is rejected. */
 function shippedExtras() {
   const p = path.join(CELEBS, "extra-templates.json");
@@ -393,22 +404,26 @@ async function main() {
     thumbDir: THUMB_PNG,
     extraViewCap,
   });
-  const embedJobs = allJobs.filter((j) =>
-    EXTRAS_ONLY ? j.kind === "extra" : j.kind !== "missing",
-  );
+  const embedJobs = filterEmbedJobs(allJobs, {
+    extrasOnly: EXTRAS_ONLY,
+    shippedSources: EXTRAS_ONLY ? shippedExtraSources() : new Set(),
+  });
   const concurrency = parseConcurrencyArg();
   const t0 = Date.now();
+  const cachePath = embedCachePath(ROOT);
+  const cache = loadEmbedCache(cachePath);
+  const { hits, misses, missIndex } = partitionCachedJobs(embedJobs, cache);
 
   console.log(
-    `enroll jobs=${embedJobs.length} mode=${EXTRAS_ONLY ? "extras-only" : "full"} ` +
-      `extraViewCap=${extraViewCap} concurrency=${concurrency}`,
+    `enroll jobs=${embedJobs.length} cached=${hits.length} embed=${misses.length} ` +
+      `mode=${EXTRAS_ONLY ? "extras-only" : "full"} extraViewCap=${extraViewCap} concurrency=${concurrency}`,
   );
   if (embedJobs.length === 0) {
     console.log("nothing to enroll");
     return;
   }
 
-  const poolResults = await mapProcessPool(embedJobs, {
+  const poolResults = await mapProcessPool(misses, {
     workerPath: EMBED_WORKER,
     concurrency,
     onProgress(done, total) {
@@ -419,6 +434,19 @@ async function main() {
       );
     },
   });
+  const results = new Array(embedJobs.length);
+  for (const hit of hits) {
+    results[hit.index] = { ok: true, value: hit.value };
+  }
+  for (let i = 0; i < misses.length; i++) {
+    const result = poolResults[i];
+    const job = misses[i];
+    results[missIndex[i]] = result;
+    if (result?.ok && result.value?.d512?.length && typeof job.filePath === "string" && fs.existsSync(job.filePath)) {
+      cache.entries[embedCacheKey(fileSha256(job.filePath))] = result.value;
+    }
+  }
+  if (misses.length > 0) saveEmbedCache(cache, cachePath);
 
   const rows = [];
   const extraCandidates = [];
@@ -433,7 +461,7 @@ async function main() {
 
   for (let i = 0; i < embedJobs.length; i++) {
     const job = embedJobs[i];
-    const result = poolResults[i];
+    const result = results[i];
     if (!result?.ok) {
       if (job.kind === "primary") {
         missing++;
@@ -498,10 +526,22 @@ async function main() {
     })
     .filter(Boolean);
   if (liveProbeJobs.length > 0) {
-    const liveResults = await mapProcessPool(liveProbeJobs, {
+    const liveSplit = partitionCachedJobs(liveProbeJobs, cache);
+    const livePool = await mapProcessPool(liveSplit.misses, {
       workerPath: EMBED_WORKER,
       concurrency,
     });
+    const liveResults = new Array(liveProbeJobs.length);
+    for (const hit of liveSplit.hits) liveResults[hit.index] = { ok: true, value: hit.value };
+    for (let i = 0; i < liveSplit.misses.length; i++) {
+      const result = livePool[i];
+      const job = liveSplit.misses[i];
+      liveResults[liveSplit.missIndex[i]] = result;
+      if (result?.ok && result.value?.d512?.length && typeof job.filePath === "string") {
+        cache.entries[embedCacheKey(fileSha256(job.filePath))] = result.value;
+      }
+    }
+    if (liveSplit.misses.length > 0) saveEmbedCache(cache, cachePath);
     for (let i = 0; i < liveProbeJobs.length; i++) {
       const result = liveResults[i];
       if (result?.ok && result.value?.d512?.length) {
