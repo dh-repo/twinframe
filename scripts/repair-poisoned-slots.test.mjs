@@ -22,6 +22,10 @@ describe("repair-poisoned-slots harness", () => {
     const wet = parseRepairArgs(["--write", "--ids", "ed-sheeran,oprah-winfrey"]);
     assert.equal(wet.write, true);
     assert.deepEqual(wet.ids, ["ed-sheeran", "oprah-winfrey"]);
+    const allJpgs = parseRepairArgs(["--all-jpgs"]);
+    assert.equal(allJpgs.allJpgs, true);
+    assert.ok(allJpgs.ids.includes("adele"));
+    assert.ok(allJpgs.ids.length > 14);
     for (const id of HOUSEHOLD_COLLAPSE_IDS) {
       assert.ok(COLLAPSE_IDS.includes(id));
     }

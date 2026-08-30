@@ -4,6 +4,8 @@ import {
   MAX_EXTRA_PHOTOS,
   baseKey,
   eraKey,
+  evalSittingKeyFromSource,
+  isEvalSittingTitle,
   isLikelyPortraitFileName,
   matchesSubject,
   nextPhotoIndex,
@@ -113,5 +115,30 @@ describe("photo numbering", () => {
     assert.equal(nextPhotoIndex(["002.jpg", "003.jpg"]), 4);
     assert.equal(nextPhotoIndex(["side.png"]), 2);
     assert.equal(MAX_EXTRA_PHOTOS, 8);
+  });
+});
+
+describe("eval sitting skip", () => {
+  it("collapses thumb URLs and crops to the same Commons sitting", () => {
+    assert.equal(
+      evalSittingKeyFromSource(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg/960px-Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg",
+      ),
+      baseKey("Diane von Fürstenberg Spring-Summer 2014 07"),
+    );
+    assert.ok(
+      isEvalSittingTitle("File:Diane von Fürstenberg Spring-Summer 2014 07 (cropped).jpg", [
+        evalSittingKeyFromSource(
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg/960px-Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg",
+        ),
+      ]),
+    );
+    assert.ok(
+      !isEvalSittingTitle("File:Naomi Campbell 2019.jpg", [
+        evalSittingKeyFromSource(
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg/960px-Diane_von_F%C3%BCrstenberg_Spring-Summer_2014_07.jpg",
+        ),
+      ]),
+    );
   });
 });

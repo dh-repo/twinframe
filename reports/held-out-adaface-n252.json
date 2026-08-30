@@ -1,0 +1,15 @@
+{
+  "at": "2026-08-27T02:26:30.000Z",
+  "protocol": "held-out-v2.1-leak-excluded",
+  "descriptors": "reports/held-out-adaface-probes.json",
+  "model": "adaface-ir101-512d",
+  "note": "Same-space AdaFace IR-101 probes vs shipped AFv4 gallery + extras. n=252 of 305 tracked sources (remaining 52 are mostly missing 002 eval slots). Not the CI headline until n>=300.",
+  "gallerySize": 1105,
+  "gateRefusals": 21,
+  "clean": {
+    "n": 252,
+    "rank1Pct": 89.68253968253968,
+    "rank5Pct": 90.07936507936508,
+    "mrr": 0.898
+  }
+}

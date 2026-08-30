@@ -26,12 +26,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compute5PointSimilarityMatrix } from "../src/lib/face/similarity-transform.ts";
-import { generateAnchors, nmsFaceBoxes } from "../src/lib/face/scrfd.ts";
+import { generateAnchors, nmsFaceBoxes, selectPrimaryFace } from "../src/lib/face/scrfd.ts";
 import { estimateSmileMetrics } from "../src/lib/face/types.ts";
-import { collectEnrollJobs, resolveExtraViewCap } from "./lib/enroll-jobs.mjs";
+import { collectEnrollJobs, filterEmbedJobs, resolveExtraViewCap } from "./lib/enroll-jobs.mjs";
+import { embedCacheKey, embedCachePath, fileSha256, loadEmbedCache, partitionCachedJobs, saveEmbedCache } from "./lib/embed-cache.mjs";
 import { gateExtraCandidates } from "./lib/extra-gate.mjs";
 import { decodeV4Gallery } from "./lib/gallery-binary.mjs";
 import { mapProcessPool, parseConcurrencyArg } from "./lib/photo-pool.mjs";
+
+export { selectPrimaryFace };
 
 const ROOT = process.cwd();
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -193,9 +196,22 @@ function l2(v) {
   return Array.from(v, (x) => x / n);
 }
 
-/** Whole-crop primaries are how the 14-id AdaFace cluster got poisoned. */
+/**
+ * Whole-crop primaries poisoned the 14-id AdaFace cluster. True pair shots
+ * (second face ≥ half the primary) enroll the wrong person when the named
+ * celebrity is not the largest box. Tiny background heads on a stadium or
+ * red-carpet photo are not a pair — those still enroll the dominant face.
+ */
 export function acceptPrimaryEmbed(result) {
-  return Boolean(result?.usedDetection);
+  if (!result?.usedDetection) return false;
+  if (typeof result.faceCount !== "number") return true;
+  const n = result.faceCount;
+  if (n === 0) return false;
+  if (n >= 8) return false;
+  const primary = Number(result.primaryArea) || 0;
+  const second = Number(result.secondArea) || 0;
+  if (n >= 2 && primary > 0 && second / primary >= 0.5) return false;
+  return true;
 }
 
 export function swapRgbToBgr(tensorData, size = 112) {
@@ -242,16 +258,18 @@ function padImage(img, marginRatio = 0.6) {
 export async function productCropImageFile(filePath, outPath) {
   const img = await loadImage(filePath);
   let faces = await detectFaces(img);
-  let box = faces[0]?.bbox;
+  let primary = selectPrimaryFace(faces, { width: img.width, height: img.height });
+  let box = primary?.bbox;
   if (!box) {
     const padded = padImage(img);
     faces = await detectFaces(padded.canvas);
-    if (faces[0]) {
+    primary = selectPrimaryFace(faces, { width: padded.canvas.width, height: padded.canvas.height });
+    if (primary) {
       box = {
-        x: faces[0].bbox.x - padded.margin,
-        y: faces[0].bbox.y - padded.margin,
-        width: faces[0].bbox.width,
-        height: faces[0].bbox.height,
+        x: primary.bbox.x - padded.margin,
+        y: primary.bbox.y - padded.margin,
+        width: primary.bbox.width,
+        height: primary.bbox.height,
       };
     }
   }
@@ -278,7 +296,7 @@ export async function productCropImageFile(filePath, outPath) {
     path: dest,
     cropped: true,
     faceCount: faces.length,
-    score: faces[0]?.score ?? 0,
+    score: primary?.score ?? 0,
     box,
   };
 }
@@ -297,17 +315,26 @@ export async function embedImageFile(filePath) {
     offset = margin;
   }
 
-  const usedDetection = faces.length > 0;
+  const primary = selectPrimaryFace(faces, {
+    width: alignSource.width,
+    height: alignSource.height,
+  });
+  const usedDetection = Boolean(primary);
   const tensor = usedDetection
-    ? alignTensor(alignSource, faces[0].landmarks)
+    ? alignTensor(alignSource, primary.landmarks)
     : wholeCropTensor(img);
   const emb = await embed(tensor);
+  const areas = faces
+    .map((f) => Math.max(0, f.bbox.width) * Math.max(0, f.bbox.height))
+    .sort((a, b) => b - a);
   return {
     ...emb,
     usedDetection,
     padded: offset > 0 && usedDetection,
     faceCount: faces.length,
-    score: faces[0]?.score ?? 0,
+    primaryArea: areas[0] ?? 0,
+    secondArea: areas[1] ?? 0,
+    score: primary?.score ?? 0,
   };
 }
 
@@ -326,6 +353,16 @@ function shippedPrimaries() {
   return byId;
 }
 
+/** Already-shipped extra (id, source) keys so extras-only can skip re-embeds. */
+function shippedExtraSources() {
+  const p = path.join(CELEBS, "extra-templates.json");
+  const sources = new Set();
+  if (!fs.existsSync(p)) return sources;
+  const data = JSON.parse(fs.readFileSync(p, "utf8"));
+  for (const t of data.templates ?? []) sources.add(`${t.id}\u0000${t.source}`);
+  return sources;
+}
+
 /** Already-shipped extra templates, so a re-fetched duplicate view is rejected. */
 function shippedExtras() {
   const p = path.join(CELEBS, "extra-templates.json");
@@ -336,6 +373,20 @@ function shippedExtras() {
     const list = byId.get(t.id) ?? [];
     list.push(t.descriptor);
     byId.set(t.id, list);
+  }
+  return byId;
+}
+
+/** Held-out `001` embeddings — extras this close are eval leaks even when bytes differ. */
+function heldOutEvalProbes() {
+  const p = path.join(CELEBS, "held-out/descriptors.json");
+  const byId = new Map();
+  if (!fs.existsSync(p)) return byId;
+  const data = JSON.parse(fs.readFileSync(p, "utf8"));
+  for (const c of data.cases ?? []) {
+    if (c.ok === false || !c.descriptor?.length) continue;
+    if (!String(c.source ?? "").includes("/001.")) continue;
+    if (!byId.has(c.id)) byId.set(c.id, c.descriptor);
   }
   return byId;
 }
@@ -353,22 +404,26 @@ async function main() {
     thumbDir: THUMB_PNG,
     extraViewCap,
   });
-  const embedJobs = allJobs.filter((j) =>
-    EXTRAS_ONLY ? j.kind === "extra" : j.kind !== "missing",
-  );
+  const embedJobs = filterEmbedJobs(allJobs, {
+    extrasOnly: EXTRAS_ONLY,
+    shippedSources: EXTRAS_ONLY ? shippedExtraSources() : new Set(),
+  });
   const concurrency = parseConcurrencyArg();
   const t0 = Date.now();
+  const cachePath = embedCachePath(ROOT);
+  const cache = loadEmbedCache(cachePath);
+  const { hits, misses, missIndex } = partitionCachedJobs(embedJobs, cache);
 
   console.log(
-    `enroll jobs=${embedJobs.length} mode=${EXTRAS_ONLY ? "extras-only" : "full"} ` +
-      `extraViewCap=${extraViewCap} concurrency=${concurrency}`,
+    `enroll jobs=${embedJobs.length} cached=${hits.length} embed=${misses.length} ` +
+      `mode=${EXTRAS_ONLY ? "extras-only" : "full"} extraViewCap=${extraViewCap} concurrency=${concurrency}`,
   );
   if (embedJobs.length === 0) {
     console.log("nothing to enroll");
     return;
   }
 
-  const poolResults = await mapProcessPool(embedJobs, {
+  const poolResults = await mapProcessPool(misses, {
     workerPath: EMBED_WORKER,
     concurrency,
     onProgress(done, total) {
@@ -379,6 +434,19 @@ async function main() {
       );
     },
   });
+  const results = new Array(embedJobs.length);
+  for (const hit of hits) {
+    results[hit.index] = { ok: true, value: hit.value };
+  }
+  for (let i = 0; i < misses.length; i++) {
+    const result = poolResults[i];
+    const job = misses[i];
+    results[missIndex[i]] = result;
+    if (result?.ok && result.value?.d512?.length && typeof job.filePath === "string" && fs.existsSync(job.filePath)) {
+      cache.entries[embedCacheKey(fileSha256(job.filePath))] = result.value;
+    }
+  }
+  if (misses.length > 0) saveEmbedCache(cache, cachePath);
 
   const rows = [];
   const extraCandidates = [];
@@ -393,7 +461,7 @@ async function main() {
 
   for (let i = 0; i < embedJobs.length; i++) {
     const job = embedJobs[i];
-    const result = poolResults[i];
+    const result = results[i];
     if (!result?.ok) {
       if (job.kind === "primary") {
         missing++;
@@ -424,7 +492,7 @@ async function main() {
       extraCandidates.push({
         id: job.id,
         source: job.source,
-        usedDetection: r.usedDetection,
+        usedDetection: Boolean(r.usedDetection) && acceptPrimaryEmbed(r),
         score: Math.round(r.score * 1000) / 1000,
         d256: r.d256,
         d512: r.d512,
@@ -445,9 +513,48 @@ async function main() {
     ? shippedPrimaries()
     : new Map(rows.map((r) => [r.id, Float32Array.from(r.d512)]));
   const existingById = EXTRAS_ONLY ? shippedExtras() : new Map();
+  const probesById = heldOutEvalProbes();
+  // Keep the browser pack 001 *and* a same-encoder live crop of 001.jpg.
+  // Overwriting the pack with live would miss extras that clone the tracked
+  // probe (Karol sunglasses 002 ≡ descriptors.json 001) while a crop of a
+  // different on-disk 001.jpg sits far away. The live crop still catches
+  // product-path leaks like Naomi's DVF extra vs held-out 001.
+  const liveProbeJobs = [...new Set(extraCandidates.map((c) => c.id))]
+    .map((id) => {
+      const filePath = path.join(CELEBS, "held-out", id, "001.jpg");
+      return fs.existsSync(filePath) ? { id, filePath } : null;
+    })
+    .filter(Boolean);
+  if (liveProbeJobs.length > 0) {
+    const liveSplit = partitionCachedJobs(liveProbeJobs, cache);
+    const livePool = await mapProcessPool(liveSplit.misses, {
+      workerPath: EMBED_WORKER,
+      concurrency,
+    });
+    const liveResults = new Array(liveProbeJobs.length);
+    for (const hit of liveSplit.hits) liveResults[hit.index] = { ok: true, value: hit.value };
+    for (let i = 0; i < liveSplit.misses.length; i++) {
+      const result = livePool[i];
+      const job = liveSplit.misses[i];
+      liveResults[liveSplit.missIndex[i]] = result;
+      if (result?.ok && result.value?.d512?.length && typeof job.filePath === "string") {
+        cache.entries[embedCacheKey(fileSha256(job.filePath))] = result.value;
+      }
+    }
+    if (liveSplit.misses.length > 0) saveEmbedCache(cache, cachePath);
+    for (let i = 0; i < liveProbeJobs.length; i++) {
+      const result = liveResults[i];
+      if (result?.ok && result.value?.d512?.length) {
+        const live = result.value.d512;
+        const packed = probesById.get(liveProbeJobs[i].id);
+        probesById.set(liveProbeJobs[i].id, packed ? [packed, live] : live);
+      }
+    }
+  }
   const gate = gateExtraCandidates(extraCandidates, {
     primaries,
     existingById,
+    probesById,
     maxPerId: extraViewCap,
   });
   const extras = gate.accepted.map(({ descriptor: _drop, ...keep }) => keep);

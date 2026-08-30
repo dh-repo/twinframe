@@ -123,6 +123,33 @@ export function baseKey(title: string): string {
     .toLowerCase();
 }
 
+/** Commons filename from a held-out `001` sourceUrl or File: title. */
+export function evalSittingKeyFromSource(source: string): string {
+  if (!source) return "";
+  let decoded = source;
+  try {
+    decoded = decodeURIComponent(source);
+  } catch {
+    /* keep raw */
+  }
+  const file = decoded
+    .split("?")[0]
+    .replace(/^.*\//, "")
+    .replace(/^File:/i, "")
+    .replace(/^\d+px-/, "");
+  return baseKey(file);
+}
+
+/** Same Commons sitting as held-out `001` (including crops) — never fetch that leak. */
+export function isEvalSittingTitle(title: string, evalKeys: Iterable<string>): boolean {
+  const key = baseKey(title.replace(/^File:/i, ""));
+  if (!key) return false;
+  for (const evalKey of evalKeys) {
+    if (evalKey && key === evalKey) return true;
+  }
+  return false;
+}
+
 /**
  * Round-robin across eras, one file per base name, so N picks are N different
  * photos rather than N crops of the same press shot.
@@ -236,9 +263,21 @@ async function api(endpoint: string, params: Record<string, string>): Promise<an
   url.searchParams.set("format", "json");
   url.searchParams.set("formatversion", "2");
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const cacheDir = path.join(ROOT, ".cache", "wikimedia");
+  const cacheFile = path.join(cacheDir, sha(Buffer.from(url.toString())) + ".json");
+  if (fs.existsSync(cacheFile)) {
+    try {
+      return JSON.parse(fs.readFileSync(cacheFile, "utf8"));
+    } catch {
+      /* fall through */
+    }
+  }
   const res = await politeFetch(url);
   if (!res.ok) throw new Error(`${new URL(endpoint).hostname} ${res.status}`);
-  return res.json();
+  const json = await res.json();
+  fs.mkdirSync(cacheDir, { recursive: true });
+  fs.writeFileSync(cacheFile, JSON.stringify(json));
+  return json;
 }
 
 /** Commons category for the person, via the Wikipedia article's Commons link. */
@@ -362,6 +401,35 @@ function existingViewCount(id: string): number {
   return heldOut.length + listPhotos(path.join(OUT_ROOT, id)).length;
 }
 
+let heldOutManifest: { cases?: Array<{ id: string; slot?: string; evalSlot?: boolean; sourceUrl?: string }> } | null | undefined;
+
+function loadHeldOutManifest() {
+  if (heldOutManifest !== undefined) return heldOutManifest;
+  const p = path.join(CELEBS, "held-out", "manifest.json");
+  if (!fs.existsSync(p)) {
+    heldOutManifest = null;
+    return heldOutManifest;
+  }
+  try {
+    heldOutManifest = JSON.parse(fs.readFileSync(p, "utf8"));
+  } catch {
+    heldOutManifest = null;
+  }
+  return heldOutManifest;
+}
+
+function evalSittingKeysForId(id: string): Set<string> {
+  const keys = new Set<string>();
+  const manifest = loadHeldOutManifest();
+  for (const c of manifest?.cases ?? []) {
+    if (c.id !== id) continue;
+    if (c.evalSlot !== true && String(c.slot ?? "") !== "001") continue;
+    const key = evalSittingKeyFromSource(c.sourceUrl || "");
+    if (key) keys.add(key);
+  }
+  return keys;
+}
+
 /** Written after every celebrity: an interrupted crawl must not lose provenance. */
 function saveManifest(rows: ManifestRow[]): void {
   const seen = new Set<string>();
@@ -472,7 +540,9 @@ async function main(): Promise<void> {
     const destDir = path.join(OUT_ROOT, entry.id);
     const have = listPhotos(destDir);
     const existing = existingViewCount(entry.id);
-    const want = Math.min(TARGET, MAX_EXTRA_PHOTOS) - have.length;
+    // Remaining enrollable slots, not extra-photos-on-disk: failed-gate files
+    // still occupy a folder slot but held-out 002+ already fill the cap first.
+    const want = Math.min(TARGET, MAX_EXTRA_PHOTOS) - existing;
     if (want <= 0 || existing > MAX_EXISTING || (SKIP_EXISTING && existing >= TARGET)) {
       skipped++;
       continue;
@@ -525,8 +595,10 @@ async function fetchForCeleb(
     return 0;
   }
   const infos = await imageInfo(titles.slice(0, 80));
-  // Over-select: some picks fail download or land as a SHA dupe.
-  const picks = selectDiverseCandidates(infos, want * 3);
+  const evalKeys = evalSittingKeysForId(entry.id);
+  const usable = infos.filter((c) => !isEvalSittingTitle(c.title, evalKeys));
+  // Over-select: some picks fail download, land as a SHA dupe, or are eval sittings.
+  const picks = selectDiverseCandidates(usable, want * 5);
   const blocked = knownShas(entry.id);
 
   let nextIndex = nextPhotoIndex(have);

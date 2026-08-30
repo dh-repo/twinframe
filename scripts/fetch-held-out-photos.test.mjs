@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -8,10 +9,22 @@ import {
   MANIFEST_VERSION,
   PHOTO_MIN_BYTES_PER_PIXEL,
   PHOTO_MIN_DIMENSION,
+  HELD_OUT_MAX_SAME_PERSON_DISTANCE,
+  heldOutFileNameRejectReason,
+  heldOutIdentityRejectReason,
+  heldOutSamePersonRejectReason,
+  heldOutSceneRejectReason,
+  heldOutSecondPersonRejectReason,
+  heldOutWikiTitleRejectReason,
+  blockedEvalHashes,
   listHeldOutSlots,
+  parseFetchMode,
   photoRejectReason,
   rebuildManifestFromDisk,
+  resolveFetchIds,
   resolveLimit,
+  wikiSearchName,
+  wikiFileIdentityName,
 } from "./fetch-held-out-photos.ts";
 
 function tempHeldOut() {
@@ -59,6 +72,54 @@ describe("resolveLimit", () => {
   });
 });
 
+describe("wikiSearchName", () => {
+  it("restores apostrophes Wikipedia search needs", () => {
+    assert.equal(wikiSearchName({ id: "emma-darcy", name: "Emma DArcy" }), "Emma D'Arcy");
+    assert.equal(wikiSearchName({ id: "adele", name: "Adele" }), "Adele");
+  });
+
+  it("disambiguates the TV director from the novelist Wikipedia default", () => {
+    assert.equal(
+      wikiSearchName({ id: "david-grossman", name: "David Grossman" }),
+      "David Grossman (director)",
+    );
+  });
+
+  it("points Carlos Valdes at the Flash actor, not the Spanish disambiguation page", () => {
+    assert.equal(
+      wikiSearchName({ id: "carlos-vald-s", name: "Carlos Valdés" }),
+      "Carlos Valdes (actor)",
+    );
+    assert.equal(wikiFileIdentityName("Carlos Valdes (actor)"), "Carlos Valdes");
+    assert.equal(wikiFileIdentityName("David Grossman (director)"), "David Grossman");
+  });
+});
+
+describe("heldOutWikiTitleRejectReason", () => {
+  it("rejects a film or album page that Wikipedia ranked above the person", () => {
+    assert.equal(heldOutWikiTitleRejectReason("Slumber (film)"), "non-person");
+    assert.equal(heldOutWikiTitleRejectReason("Spinning Out"), null);
+    assert.equal(heldOutWikiTitleRejectReason("Kaitlyn Leeb"), null);
+    assert.equal(heldOutWikiTitleRejectReason("Grand Theft Auto: Liberty City Stories"), null);
+  });
+});
+
+describe("resolveFetchIds", () => {
+  const catalog = [{ id: "adele" }, { id: "brad-pitt" }, { id: "zendaya" }];
+
+  it("returns null when --ids is absent so the catalog slice still applies", () => {
+    assert.equal(resolveFetchIds(catalog, []), null);
+    assert.equal(resolveFetchIds(catalog, ["--limit", "12"]), null);
+  });
+
+  it("keeps the requested catalog order and rejects unknown ids", () => {
+    assert.deepEqual(resolveFetchIds(catalog, ["--ids", "zendaya,adele"]), ["zendaya", "adele"]);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids", "adele,not-a-celeb"]), /Unknown catalog ids/);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids"]), /Missing --ids value/);
+    assert.throws(() => resolveFetchIds(catalog, ["--ids", "--limit"]), /Missing --ids value/);
+  });
+});
+
 describe("photoRejectReason", () => {
   it("accepts a normal Commons portrait", () => {
     assert.equal(photoRejectReason({ bytes: 132_300, width: 960, height: 838 }), null);
@@ -86,6 +147,168 @@ describe("photoRejectReason", () => {
   it("passes rather than guesses when the size is unknown", () => {
     assert.equal(photoRejectReason({ bytes: 7_162 }), null);
     assert.equal(photoRejectReason({ bytes: 7_162, width: 0, height: 0 }), null);
+  });
+});
+
+describe("heldOutFileNameRejectReason", () => {
+  it("keeps a solo portrait filename", () => {
+    assert.equal(heldOutFileNameRejectReason("File:Adam Sandler 2018.jpg"), null);
+    assert.equal(heldOutFileNameRejectReason("File:Al_Pacino_Cannes_2019.jpg"), null);
+  });
+
+  it("rejects the pair shots that landed as missing-001 restores", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:Abhishek and Aishwarya in Bengal.jpg"),
+      "pair",
+    );
+    assert.equal(heldOutFileNameRejectReason("File:AdamSandlerwithdaughtersFeb11.jpg"), "pair");
+    assert.equal(heldOutFileNameRejectReason("File:Aish N Madhuri.jpg"), "pair");
+    assert.equal(heldOutFileNameRejectReason("File:ColinFirth LiviaGiuggioli Jan2011.jpg"), "pair");
+  });
+
+  it("keeps a solo two-word name that is not a pair token", () => {
+    assert.equal(heldOutFileNameRejectReason("File:Adam Sandler.jpg"), null);
+    assert.equal(heldOutFileNameRejectReason("File:Christian Bale-7837.jpg"), null);
+  });
+
+  it("rejects a vinyl scan that is not a face", () => {
+    assert.equal(heldOutFileNameRejectReason("File:45 record.png"), "non-photo");
+  });
+
+  it("rejects a Broadway entrance that is not a face", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:Martin Scorsese Walk of Fame.jpg"),
+      "non-photo",
+    );
+  });
+
+  it("rejects murals and crowd files that are not a face probe", () => {
+    assert.equal(
+      heldOutFileNameRejectReason("File:112 Mural al passeig de Circumval·lació (Barcelona), Al Pacino.jpg"),
+      "non-photo",
+    );
+    assert.equal(heldOutFileNameRejectReason("File:Cast of Toy Story 2019.jpg"), "non-photo");
+    assert.equal(heldOutFileNameRejectReason("File:Cahill, Eddie (USAF).jpg"), "non-photo");
+  });
+});
+
+describe("heldOutIdentityRejectReason", () => {
+  it("keeps a filename that mentions the celebrity", () => {
+    assert.equal(heldOutIdentityRejectReason("File:Adam Sandler.jpg", "Adam Sandler"), null);
+    assert.equal(heldOutIdentityRejectReason("File:HoYeon Jung.jpg", "Jung Ho-yeon"), null);
+  });
+
+  it("rejects a named photo of a different person", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("File:Elizabeth Hurley08.jpg", "Hugh Grant"),
+      "wrong-person",
+    );
+  });
+
+  it("does not enroll Lee Jung-jae under Lee Jung Mi", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("File:240305 Lee Jung-jae (cropped).jpg", "Lee Jung-mi"),
+      "wrong-person",
+    );
+    assert.equal(heldOutIdentityRejectReason("Lee Jung-jae", "Lee Jung-mi"), "wrong-person");
+    assert.equal(heldOutIdentityRejectReason("File:Lee Jung-mi 2019.jpg", "Lee Jung-mi"), null);
+  });
+
+  it("treats accented catalog names as the unaccented Wikipedia spelling", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("Carlos Valdes (actor)", "Carlos Valdés"),
+      null,
+    );
+    assert.equal(
+      heldOutIdentityRejectReason(
+        "File:Carlos Valdes Photo Op GalaxyCon Des Moines 2025.jpg",
+        "Carlos Valdes",
+      ),
+      null,
+    );
+  });
+
+  it("does not enroll the novelist Wikipedia default under the TV-director slot", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("David Grossman", "David Grossman (director)"),
+      "wrong-person",
+    );
+    assert.equal(
+      heldOutIdentityRejectReason("David Grossman (director)", "David Grossman (director)"),
+      null,
+    );
+  });
+
+  it("does not guess on opaque camera-dump filenames", () => {
+    assert.equal(
+      heldOutIdentityRejectReason("File:170217-D-GO396-0147 (32577063650).jpg", "Bill Gates"),
+      null,
+    );
+  });
+});
+
+describe("heldOutSecondPersonRejectReason", () => {
+  it("rejects a second named person with a year", () => {
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Gong Li Andie MacDowell 1998 (cropped).jpg", "Gong Li"),
+      "pair",
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Dakota Johnson (2014).jpg", "Dakota Johnson"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason(
+        "File:J Curtis Lewis, Richard Nixon, Spiro Agnew.JPG",
+        "Richard J. Lewis",
+      ),
+      "pair",
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Amy Berg by Gage Skidmore.jpg", "Amy Berg"),
+      null,
+    );
+  });
+
+  it("keeps a solo convention or dated portrait whose surname sits next to the event", () => {
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Eddie Cahill SDCC 2014 (cropped).jpg", "Eddie Cahill"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Clarke Peters Edinburgh 2010.jpg", "Clarke Peters"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Lochlyn Munro September 2025.jpg", "Lochlyn Munro"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason(
+        "File:Cynthia Addai-Robinson at 53rd Saturn Awards 2026.jpg",
+        "Cynthia Addai-Robinson",
+      ),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Dylan Bruce March 2015.jpg", "Dylan Bruce"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Keto Shimizu, 2011.png", "Keto Shimizu"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason("File:Alexander Koch SDCC 2014 (cropped).jpg", "Alexander Koch"),
+      null,
+    );
+    assert.equal(
+      heldOutSecondPersonRejectReason(
+        "File:Carlos Valdes Photo Op GalaxyCon Des Moines 2025.jpg",
+        "Carlos Valdes",
+      ),
+      null,
+    );
   });
 });
 
@@ -170,5 +393,80 @@ describe("rebuildManifestFromDisk", () => {
     const root = tempHeldOut();
     const manifest = rebuildManifestFromDisk({ heldOutDir: root, index: [] });
     assert.equal(manifest.cases[0].name, "adele");
+  });
+});
+
+describe("parseFetchMode", () => {
+  it("defaults to a fill-missing held-out fetch", () => {
+    assert.deepEqual(parseFetchMode([]), {
+      replace: false,
+      primaries: false,
+      audit: false,
+      manifestOnly: false,
+    });
+  });
+
+  it("recognises replace, primaries, and maintenance flags", () => {
+    assert.equal(parseFetchMode(["--replace", "--primaries"]).replace, true);
+    assert.equal(parseFetchMode(["--replace", "--primaries"]).primaries, true);
+    assert.equal(parseFetchMode(["--audit"]).audit, true);
+    assert.equal(parseFetchMode(["--manifest-only"]).manifestOnly, true);
+  });
+});
+
+describe("heldOutSceneRejectReason", () => {
+  it("rejects a plaque or empty frame with no face", () => {
+    assert.equal(heldOutSceneRejectReason({ faceCount: 0, primaryArea: 0, secondArea: 0 }), "no-face");
+  });
+
+  it("rejects a pair whose second face is a real rival crop", () => {
+    assert.equal(
+      heldOutSceneRejectReason({ faceCount: 2, primaryArea: 1000, secondArea: 400 }),
+      "multi-face",
+    );
+  });
+
+  it("keeps a tiny background extra behind a dominant subject", () => {
+    assert.equal(
+      heldOutSceneRejectReason({ faceCount: 2, primaryArea: 1000, secondArea: 100 }),
+      null,
+    );
+  });
+
+  it("rejects crowds and three-person groups with a real second crop", () => {
+    assert.equal(heldOutSceneRejectReason({ faceCount: 8, primaryArea: 900, secondArea: 800 }), "crowd");
+    assert.equal(heldOutSceneRejectReason({ faceCount: 3, primaryArea: 900, secondArea: 200 }), "group");
+  });
+
+  it("keeps a stadium/red-carpet primary with tiny background heads", () => {
+    assert.equal(
+      heldOutSceneRejectReason({ faceCount: 3, primaryArea: 1000, secondArea: 80 }),
+      null,
+    );
+  });
+});
+
+describe("blockedEvalHashes", () => {
+  it("blocks enrolled extras so 001 cannot reuse a 002 view", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "twinframe-blocked-"));
+    fs.mkdirSync(path.join(root, "held-out", "adele"), { recursive: true });
+    fs.writeFileSync(path.join(root, "adele.jpg"), "primary");
+    fs.writeFileSync(path.join(root, "held-out", "adele", "002.jpg"), "extra-view");
+    fs.writeFileSync(path.join(root, "held-out", "adele", "001.jpg"), "eval-slot");
+    const blocked = blockedEvalHashes({ id: "adele", name: "Adele" }, root);
+    const sha = (s) => crypto.createHash("sha256").update(s).digest("hex");
+    assert.equal(blocked.has(sha("primary")), true);
+    assert.equal(blocked.has(sha("extra-view")), true);
+    assert.equal(blocked.has(sha("eval-slot")), false);
+  });
+});
+
+describe("heldOutSamePersonRejectReason", () => {
+  it("keeps genuine AdaFace pairs and rejects impostor-range candidates", () => {
+    assert.equal(heldOutSamePersonRejectReason(0.36), null);
+    assert.equal(heldOutSamePersonRejectReason(0.8), null);
+    assert.equal(heldOutSamePersonRejectReason(0.801), "different-person");
+    assert.equal(HELD_OUT_MAX_SAME_PERSON_DISTANCE, 0.8);
+    assert.equal(heldOutSamePersonRejectReason(Number.NaN), null);
   });
 });

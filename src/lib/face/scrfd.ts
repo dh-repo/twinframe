@@ -158,6 +158,55 @@ export function nmsFaceBoxes(
   return selected;
 }
 
+/**
+ * Group shots often give a background extra a higher detector score than the
+ * subject. Rank-1 and the live query both want the largest remaining box.
+ * When two boxes are a near-tie (action shots, overlapping players), largest
+ * is a coin flip — prefer the face closer to the frame centre so a famous
+ * central subject is not displaced by a foreground shoulder.
+ */
+export const PRIMARY_AREA_TIE_RATIO = 0.9;
+
+export function selectPrimaryFace<T extends { bbox: { x: number; y: number; width: number; height: number } }>(
+  faces: T[],
+  imageSize?: { width: number; height: number } | null,
+): T | null {
+  if (faces.length === 0) return null;
+  const areaOf = (f: T) => Math.max(0, f.bbox.width) * Math.max(0, f.bbox.height);
+  let best = faces[0]!;
+  let bestArea = areaOf(best);
+  for (let i = 1; i < faces.length; i++) {
+    const face = faces[i]!;
+    const area = areaOf(face);
+    if (area > bestArea) {
+      best = face;
+      bestArea = area;
+    }
+  }
+  if (!imageSize || imageSize.width <= 0 || imageSize.height <= 0) return best;
+  const tied: T[] = [];
+  for (const face of faces) {
+    if (areaOf(face) >= bestArea * PRIMARY_AREA_TIE_RATIO) tied.push(face);
+  }
+  if (tied.length < 2) return best;
+  const cx = imageSize.width / 2;
+  const cy = imageSize.height / 2;
+  let pick = tied[0]!;
+  let bestDist = Infinity;
+  for (const face of tied) {
+    const fx = face.bbox.x + face.bbox.width / 2;
+    const fy = face.bbox.y + face.bbox.height / 2;
+    const dx = (fx - cx) / imageSize.width;
+    const dy = (fy - cy) / imageSize.height;
+    const dist = dx * dx + dy * dy;
+    if (dist < bestDist) {
+      pick = face;
+      bestDist = dist;
+    }
+  }
+  return pick;
+}
+
 import { createSafeCanvas } from "./similarity-transform.ts";
 
 export interface DetectOptions {
@@ -381,7 +430,7 @@ export async function detectSCRFD(
 
   // Apply Non-Maximum Suppression (NMS)
   const detections = nmsFaceBoxes(rawDetections, iouThreshold);
-  const primary = detections.length > 0 ? detections[0] : null;
+  const primary = selectPrimaryFace(detections, { width: origW, height: origH });
   const latencyMs = Math.round(performance.now() - t0);
 
   return {

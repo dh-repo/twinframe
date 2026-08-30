@@ -24,8 +24,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyAppearanceFamilyManifest } from "../src/lib/celebrities/appearance-family.ts";
 import { rankByDescriptor } from "../src/lib/face/match.ts";
-import { l2Normalize, cosineDistance } from "../src/lib/face/embeddings.ts";
+import { l2Normalize, cosineDistance, type CelebrityEmbedding } from "../src/lib/face/embeddings.ts";
+import { buildMultiShotCentroidGallery, isPaddedFaceNetDescriptor } from "../src/lib/face/gallery-dedupe.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CELEBS = path.join(ROOT, "public/celebs");
@@ -48,6 +50,8 @@ interface GalleryEntry {
   id: string;
   name: string;
   path: string;
+  path192?: string;
+  fallbackPath?: string;
   descriptor: Float32Array;
   age: number;
   gender: "male" | "female";
@@ -67,6 +71,22 @@ export interface HeldOutCase {
 
 let GALLERY_DIM = 512;
 
+/**
+ * Catalog ids that are the same person. Rank-1 is valid if the matcher returns
+ * either spelling — `penelope-cruz-m` is a duplicate slot of Penélope Cruz.
+ */
+export const IDENTITY_ALIASES: Record<string, readonly string[]> = {
+  "penelope-cruz-m": ["penelope-cruz"],
+  "penelope-cruz": ["penelope-cruz-m"],
+  lisa: ["lisa-blackpink"],
+  "lisa-blackpink": ["lisa"],
+};
+
+export function idsMatchHeldOut(probeId: string, galleryId: string): boolean {
+  if (probeId === galleryId) return true;
+  return (IDENTITY_ALIASES[probeId] ?? []).includes(galleryId);
+}
+
 export function loadGallery(): GalleryEntry[] {
   const buckets = JSON.parse(
     fs.readFileSync(path.join(CELEBS, "gallery.buckets.json"), "utf8"),
@@ -74,6 +94,8 @@ export function loadGallery(): GalleryEntry[] {
     id: string;
     name: string;
     path: string;
+    path192?: string;
+    fallbackPath?: string;
     age: number;
     gender: "male" | "female";
     genderProb: number;
@@ -106,6 +128,8 @@ export function loadGallery(): GalleryEntry[] {
       id: b.id,
       name: b.name,
       path: b.path,
+      path192: b.path192,
+      fallbackPath: b.fallbackPath,
       descriptor: l2Normalize(raw),
       age: b.age,
       gender: b.gender,
@@ -115,21 +139,26 @@ export function loadGallery(): GalleryEntry[] {
   return out;
 }
 
-function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
+export function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
   const file = path.join(CELEBS, "extra-templates.json");
-  if (!fs.existsSync(file)) return base;
-  const data = JSON.parse(fs.readFileSync(file, "utf8")) as {
-    templates?: Array<{ id: string; descriptor: number[]; source?: string }>;
-  };
-  if (!data.templates?.length) return base;
-  const byId = new Map(base.map((b) => [b.id, b]));
-  const extras: GalleryEntry[] = [];
-  for (const t of data.templates) {
-    const proto = byId.get(t.id);
-    if (!proto || !t.descriptor?.length) continue;
-    extras.push({ ...proto, descriptor: l2Normalize(t.descriptor) });
+  let merged = base;
+  if (fs.existsSync(file)) {
+    const data = JSON.parse(fs.readFileSync(file, "utf8")) as {
+      templates?: Array<{ id: string; descriptor: number[]; source?: string }>;
+    };
+    if (data.templates?.length) {
+      const byId = new Map(base.map((b) => [b.id, b]));
+      const extras: GalleryEntry[] = [];
+      for (const t of data.templates) {
+        const proto = byId.get(t.id);
+        if (!proto || !t.descriptor?.length) continue;
+        if (isPaddedFaceNetDescriptor(t.descriptor)) continue;
+        extras.push({ ...proto, descriptor: l2Normalize(t.descriptor) });
+      }
+      if (extras.length) merged = base.concat(extras);
+    }
   }
-  return extras.length ? base.concat(extras) : base;
+  return buildMultiShotCentroidGallery(merged as CelebrityEmbedding[]) as GalleryEntry[];
 }
 
 /** Every image file that contributed to any shipped gallery artifact. */
@@ -227,14 +256,14 @@ export function evaluateHeldOutCases(
       gallery as GalleryEntry[],
       5,
     );
-    const rank = matches.findIndex((m) => m.celebrityId === c.id) + 1;
+    const rank = matches.findIndex((m) => idsMatchHeldOut(c.id, m.celebrityId)) + 1;
     // raw cosine distances (no priors) for calibration stats
     const q = l2Normalize(c.descriptor);
     let dMinSameId = Infinity;
     let dBestWrong = Infinity;
     for (const g of gallery) {
       const d = cosineDistance(q, g.descriptor);
-      if (g.id === c.id) dMinSameId = Math.min(dMinSameId, d);
+      if (idsMatchHeldOut(c.id, g.id)) dMinSameId = Math.min(dMinSameId, d);
       else dBestWrong = Math.min(dBestWrong, d);
     }
     if (!Number.isFinite(matches[0]?.distance)) {
@@ -289,9 +318,17 @@ function main() {
   const floorArg = process.argv.indexOf("--floor");
   const rankFloor = floorArg >= 0 ? Number(process.argv[floorArg + 1]) : null;
 
+  const familiesPath = path.join(CELEBS, "appearance-families.json");
+  if (fs.existsSync(familiesPath)) {
+    applyAppearanceFamilyManifest(JSON.parse(fs.readFileSync(familiesPath, "utf8")));
+  }
   const gallery = mergeExtraTemplates(loadGallery());
 
-  const packPath = path.join(CELEBS, "held-out/descriptors.json");
+  const descIdx = process.argv.indexOf("--descriptors");
+  const packPath =
+    descIdx >= 0 && process.argv[descIdx + 1]
+      ? path.resolve(ROOT, process.argv[descIdx + 1])
+      : path.join(CELEBS, "held-out/descriptors.json");
   const pack = JSON.parse(fs.readFileSync(packPath, "utf8")) as { cases: HeldOutCase[] };
 
   assertDimensionsCompatible(pack.cases, GALLERY_DIM);

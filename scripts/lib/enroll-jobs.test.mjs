@@ -6,7 +6,9 @@ import { describe, it } from "node:test";
 import {
   DEFAULT_EXTRA_VIEW_CAP,
   collectEnrollJobs,
+  evalSittingKeyFromSource,
   extraImagePaths,
+  filterEmbedJobs,
   preferRepairSource,
   primaryPhotoPath,
   resolveExtraViewCap,
@@ -17,11 +19,11 @@ function makeCelebDir(id, { heldOut = [], extraPhotos = [] }) {
   fs.writeFileSync(path.join(root, `${id}.jpg`), "x");
   if (heldOut.length > 0) {
     fs.mkdirSync(path.join(root, "held-out", id), { recursive: true });
-    for (const f of heldOut) fs.writeFileSync(path.join(root, "held-out", id, f), "h");
+    for (const f of heldOut) fs.writeFileSync(path.join(root, "held-out", id, f), `ho:${f}`);
   }
   if (extraPhotos.length > 0) {
     fs.mkdirSync(path.join(root, "extra-photos", id), { recursive: true });
-    for (const f of extraPhotos) fs.writeFileSync(path.join(root, "extra-photos", id, f), "e");
+    for (const f of extraPhotos) fs.writeFileSync(path.join(root, "extra-photos", id, f), `ex:${f}`);
   }
   return root;
 }
@@ -135,6 +137,73 @@ describe("extra view cap", () => {
       ["002.jpg"],
     );
     fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it("skips extras that are byte-identical to held-out 001 (unique-sitting trap)", () => {
+    const root = makeCelebDir("adele", { heldOut: ["001.jpg"], extraPhotos: ["002.jpg", "003.jpg"] });
+    fs.writeFileSync(path.join(root, "extra-photos", "adele", "002.jpg"), "ho:001.jpg");
+    const extras = extraImagePaths("adele", root, 8);
+    assert.deepEqual(
+      extras.map((p) => path.basename(p)),
+      ["003.jpg"],
+    );
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it("skips extra-photos of the same Commons sitting as held-out 001", () => {
+    const root = makeCelebDir("adele", { heldOut: ["001.jpg"], extraPhotos: ["002.jpg", "003.jpg"] });
+    fs.mkdirSync(path.join(root, "held-out"), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, "held-out", "manifest.json"),
+      JSON.stringify({
+        cases: [
+          {
+            id: "adele",
+            slot: "001",
+            evalSlot: true,
+            sourceUrl:
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Adele_Live_2016.jpg/960px-Adele_Live_2016.jpg",
+          },
+        ],
+      }),
+    );
+    fs.writeFileSync(
+      path.join(root, "extra-photos", "commons-manifest.json"),
+      JSON.stringify({
+        photos: [
+          { id: "adele", file: "002.jpg", commonsTitle: "File:Adele Live 2016 (cropped).jpg" },
+          { id: "adele", file: "003.jpg", commonsTitle: "File:Adele Brits 2008.jpg" },
+        ],
+      }),
+    );
+    const extras = extraImagePaths("adele", root, 8);
+    assert.equal(
+      evalSittingKeyFromSource(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Adele_Live_2016.jpg/960px-Adele_Live_2016.jpg",
+      ),
+      evalSittingKeyFromSource("File:Adele Live 2016 (cropped).jpg"),
+    );
+    assert.deepEqual(
+      extras.map((p) => path.basename(p)),
+      ["003.jpg"],
+    );
+    const jobs = [
+      { kind: "primary", id: "adele", source: "adele.jpg" },
+      { kind: "extra", id: "adele", source: "held-out/adele/002.jpg" },
+      { kind: "extra", id: "adele", source: "extra-photos/adele/003.jpg" },
+      { kind: "missing", id: "nobody", source: null },
+    ];
+    const shipped = new Set(["adele\u0000held-out/adele/002.jpg"]);
+    const extrasOnly = filterEmbedJobs(jobs, { extrasOnly: true, shippedSources: shipped });
+    assert.deepEqual(
+      extrasOnly.map((j) => j.source),
+      ["extra-photos/adele/003.jpg"],
+    );
+    const full = filterEmbedJobs(jobs, { extrasOnly: false });
+    assert.deepEqual(
+      full.map((j) => j.kind),
+      ["primary", "extra", "extra"],
+    );
   });
 
   it("honours an explicit cap and the env override", () => {

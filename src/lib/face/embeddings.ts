@@ -142,8 +142,359 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  * returning visitors to stale artifacts indefinitely (cycle-22 review P1).
  * 5.5.0: multi-shot repair + mislabeled-portrait fix + reconciled demographics.
  * 6.2.0: surgical AdaFace re-enroll of 14 poisoned collapse slots (household names kept).
+ * 6.3.0: AdaFace extra templates for held-out miss identities.
+ * 6.4.1: re-enroll every on-disk jpg primary; fetch replacements for remaining
+ *        mislabeled thumbs (xiao-zhan was Federer; samuel-l-jackson was Reynolds).
+ * 6.5.0: Wikipedia primaries for remaining household thumb-only slots (Nadal
+ *        was a near-clone of a character actor; Rosalía/Son Ye-jin eval misses).
+ * 6.5.1: drop the 100-id poisoned thumb cluster from ranking; enroll Stormare,
+ *        Caviezel, and other remaining household names.
+ * 6.5.2: Wikipedia primaries for remaining recognizable thumb-only slots
+ *        (Alcock, Shahi, Vogel, and other TV/film names).
+ * 6.5.3: Wikipedia primaries for McConaughey, Harrelson, Cardellini, Gustin,
+ *        Emma D'Arcy, and other household thumb-only names.
+ * 6.5.4: Wikipedia primaries for Emerson, Rickards, Donnell, and other
+ *        remaining recognizable thumb-only names; reject namesake Wikipedia
+ *        hits (Lee Jung-jae is not Lee Jung Mi).
+ * 6.5.5: Enroll Ford and Mathis; reject multi-name group files (Nixon-era
+ *        Curtis Lewis is not Richard J. Lewis) and USAF roster shots.
+ * 6.5.6: Wikidata P18 portraits for Kingston, Chalk, Eklund, and others;
+ *        skip author/athlete namesakes and childhood stills.
+ * 6.5.7: Natalie Brown Wikipedia primary; keep solo convention portraits
+ *        that the year-pair heuristic had treated as second-person shots.
+ * 6.5.8: Carlos Valdes (Flash) Wikipedia primary; skip disambiguation pages
+ *        and match accented catalog names to unaccented Commons filenames.
+ * 6.5.9: Joshua Leonard Wikipedia primary (Blair Witch).
+ * 6.5.10: James Hanlon Wikipedia primary (Peabody 2003).
+ * 6.5.11: Arrowverse and TV Wikipedia primaries (Thompson, Cross, Laing,
+ *         Horsdal, Anderson, Maher, Lea, Whigham, Nykl, Sharma, Hudson,
+ *         Pizzolatto).
+ * 6.5.12: Dahl, Samuda, Redman, Golin, and Evans Wikipedia primaries.
+ * 6.5.13: Cullen and Brocklebank GalaxyCon Wikipedia infobox portraits.
+ * 6.5.14: Wikipedia/Commons primaries for remaining thumb-only slots
+ *         (Majdoub, Xavier, and Stein thumbs were impostors).
+ * 6.5.15: Actor-disambiguation Wikipedia primaries (Rowe, Rogers, Berg, Quinn).
+ * 6.5.16: Absorb the d≈0.08–0.10 halo of the poisoned thumb pile (11 more
+ *         ranking extras were the same impostor face).
+ * 6.5.17: Wikidata P18 primaries (Garrow, Turner, Sugar); cluster drop d<0.12.
+ * 6.5.18: Absorb the remaining d<0.15 halo of the poisoned thumb pile.
+ * 6.5.19: Rank verified jpg primaries only; thumb-only slots stay in
+ *         index.json for browse but cannot win a look-alike.
+ * 6.5.20: AdaFace extra views for weak Rank-1 identities (Adele, Zendaya,
+ *         and other household names with unused held-out 002+ / extra-photos).
+ *         Same-person gate rejected impostor extras; extras within d<0.05 of
+ *         held-out 001 are dropped so eval stays unseen. Thumb-only slots
+ * 6.5.21: Extra views for remaining weak Rank-1 names (Gaga, Rogen, Jennie,
+ *         Gerwig, Carell, Efron, Mbappé) plus a verified adult Bieber extra.
+ * 6.5.22: Replace Pacino beanie primary with a verified Serpico solo so
+ *         era extras can pass the same-person gate; add Adele/Naomi extras.
+ * 6.5.23: 19-era Adele extras (Live 2009 turtleneck views, not Seattle
+ *         2011 / Live 2009 (4) which is the held-out 001 probe) plus a
+ *         Doja Cat Hot Pink solo closer to the yellow-latex eval look.
+ * 6.5.24: Gated extras for remaining weak Rank-1 names (Bezos, Comer,
+ *         Dua Lipa, Selena, Alia, Cheadle).
+ * 6.5.25: Karol G 2018-era extras (NTN interview + Boca en Boca).
+ *         Telemedellín braid frames of eval 001 stay unenrolled; held-out
+ *         002 matches the tracked probe pack and is not enrolled.
+ * 6.5.26: Ben Affleck 1998 extra (young solo, closer to the Armageddon-era
+ *         eval look than the 2024 bearded SXSW primary). Wrong-person
+ *         files previously in extra-photos/ben-affleck were dropped.
+ * 6.5.27: Era extras for Steve Carell (2010 SAG/Oscars, unbearded), Ana de
+ *         Armas (2017 Comic-Con plus held-out 003/004), and Lisa (2024
+ *         cropped solo plus held-out 002). Metallica-concert Bieber crop
+ *         of eval 001 is not enrolled (dCrop 0.071, same sitting).
+ * 6.5.28: Gated on-disk extras that beat held-out pack distance for
+ *         Dakota, Miles, Dev, Bella, Hugh, and Nicki. Dakota extra 004
+ *         was a byte-clone of eval 001 and was dropped. Glover 2012
+ *         Commons views fail the eval look or the 0.7 gate.
+ * 6.5.29: Commons extras that beat pack dTrue for Antonio (2020 Goya
+ *         tuxedo), Nicole, Elizabeth Olsen (not 2011 TIFF floral eval
+ *         sitting), Sofia PaleyFest, Chris Evans, and Cardi 2021.
+ *         Chris Evans 2014.jpg and Cardi WEHO crop are eval clones.
+ * 6.5.30: Commons extras that beat pack dTrue for Maluma (Viña 2017,
+ *         Espaço das Américas 2017), Beyoncé (2009 Newcastle plus
+ *         held-out 002/003), Gemma Chan (BIFA 2014, Marvel 2019),
+ *         Harry Styles (November 2014), and Serena (Doha 2013).
+ *         Beyoncé Knowles 2009 extra failed detection; Federer
+ *         Commons views did not beat pack.
+ * 6.5.31: Product-crops of Childish Gambino concert stills that beat
+ *         pack dTrue for Donald Glover (wide group frames fail
+ *         acceptPrimaryEmbed; TIFF 2015 is a primary near-dup).
+ * 6.5.32: Product-crops of Julia Roberts 2010/2011 event portraits
+ *         that beat the 80s B&W eval pack dTrue. Florence Comic-Con
+ *         extra 003 is the same sitting as eval 001 and was not enrolled.
+ * 6.5.33: Product-crops that beat pack dTrue for Sebastian Stan
+ *         (2026 Cannes buzz-cut tuxedo, not the 2024 beige-suit
+ *         eval sitting), Ariana Grande (Honeymoon Tour Jakarta 2015
+ *         cat-ears; 2013 Jingle Ball frames are the eval sitting),
+ *         and Doja Cat (Scarlet-era 2024 profile; Austin jumbotron
+ *         is the same sitting). Naomi amfAR bangs stills did not
+ *         beat DVF runway pack dTrue.
+ * 6.5.34: Product-crop of Messi PSG portrait that beats the 2011-12
+ *         Barcelona action pack dTrue. 2018 Argentina stills did not.
+ * 6.5.35: Product-crops that beat pack dTrue for Kendrick Lamar
+ *         (Pitchfork 2012 gingham; FIB 2016 B&W). FEQ July 2016 eval
+ *         sitting was not enrolled. Naomi amfAR bangs, Ranveer NBA,
+ *         and Dresden grimace stills are eval sittings or do not beat.
+ * 6.5.36: Product-crops that beat pack dTrue for Martin Scorsese
+ *         (glasses studio portrait + awards-stage crop; not 65th
+ *         Peabody eval) and Florence Pugh (held-out BFI LFF 003;
+ *         2024 TIFF van 3/4 extra 005). Comic-Con extra 003 is the
+ *         eval sitting and was not enrolled.
+ * 6.5.37: Gated extras that beat pack dTrue for Priyanka Chopra
+ *         (held-out teal strapless 002 + cropped interview extra 002;
+ *         not 2006 Don promo eval), Anne Hathaway (long-hair red
+ *         extra 003; not pixie NO-SMOKING eval), Ryan Gosling
+ *         (denim Comic-Con, glasses striped, outdoor denim; not
+ *         peacoat eval), Leonardo DiCaprio (held-out 002/004; not
+ *         White House Kerry hallway eval), and Sydney Sweeney
+ *         (TIFF 2024 floral extra 002; not 2022 Reality corset eval).
+ * 6.5.38: Commons extras that beat pack dTrue for Johnny Depp
+ *         (Cannes 2023; not Public Enemies aviators), LeBron James
+ *         (USA Olympics 2024 + Cavs 2018; not Lakers yellow 23),
+ *         Adam Sandler (2018 interview; not 2006 San Sebastián),
+ *         Cole Sprouse (Tribeca 2026 + Gage Skidmore white-shirt
+ *         panel; not grey-shirt eval), Bradley Cooper (NYFF 2023
+ *         black tee; not 2010 A-Team navy suit), and Jennie Kim
+ *         (2018 fansign + 2017 bomber; not concert black-dress eval).
+ * 6.5.39: Commons extras that beat pack dTrue for Roger Federer
+ *         (AO 2014 white polo / red headband on blue hard court; not
+ *         the green-court backhand eval) and Kate Middleton (2023
+ *         indoor cream portrait; not 2022 Wimbledon yellow-dress
+ *         trophy eval).
+ * 6.5.40: Inter Miami 2025 product-crop that beats the 2011-12
+ *         Barcelona action pack dTrue for Lionel Messi. Argentina
+ *         2022 World Cup stills did not beat.
+ * 6.5.41: Commons extras that beat pack dTrue for Kate Winslet
+ *         (2023 white blazer + TIFF 2015; not Venice 2011 updo eval),
+ *         The Weeknd (Cannes 2023 tuxedo; not red/blue concert eval),
+ *         Vanessa Kirby (2018 leopard + Paris strapless; not black-
+ *         blazer studio eval), Awkwafina (2018 studio + BAFTA 2026;
+ *         not Golden Globes ruffled collar eval), Adriana Lima (2011
+ *         sequin interview; not 2010 Fantasy Bra eval), Tom Hanks
+ *         (2016 suede + Elvis 2022; not Kennedy Center Honors eval),
+ *         Hrithik Roshan (2019 orange tee + 2016 pinstripe + Cannes
+ *         Homebound; not Netflix HRX-cap eval), Steve Carell
+ *         (Montclair 2014; not Despicable Me 2 glasses eval), and
+ *         Lady Gaga (JWT Toronto Joanne-guitar; not leather A-Yo eval).
+ * 6.5.42: Commons extras that beat pack dTrue for Heidi Klum (AGT 2014;
+ *         not 2001 Heavenly Star Bra eval), Gwyneth Paltrow (2010 +
+ *         Iron Man 3 Paris + 2012; not Venice 2011 Contagion eval),
+ *         Bill Skarsgård (2017 IT floral Comic-Con; not cable-knit
+ *         Mark Verheiden panel eval), Ian Somerhalder (Team Stefan
+ *         fedora; not grey-fedora V-neck eval), Taylor Swift (AMAs
+ *         2019 bangs; not TIME 100 2010 curly eval), Daniel Radcliffe
+ *         (2009 pink shirt; not 2006 Empire Awards eval), Joaquin
+ *         Phoenix (Berlinale 2018; not sunglasses eval), and Sandra
+ *         Bullock (July 2013 + The Heat London; not layered-pearls
+ *         eval).
+ * 6.5.43: Commons extras that beat pack dTrue for Ansel Elgort (Apple
+ *         Store 2014 + 2017 red jacket; not Divergent premiere eval),
+ *         Margot Robbie (I, Tonya + 2016 beaded collar + MTV 2018 +
+ *         WTF premiere; not Comic-Con tan clap eval), Penélope Cruz
+ *         (Cannes 2011 + Cannes 2018 + TIFF 2012; not LA City Hall
+ *         eval), Cristiano Ronaldo (Portugal WC 2018 white + red;
+ *         not Juventus 2019-20 Jeep eval), Drew Barrymore (Berlin
+ *         Blended 2014; not profile updo eval), Zayn Malik (WWA Chile
+ *         + Iron Maiden tank; not 2012 white-red concert eval), and
+ *         Simu Liu (theater blazer; not Kim's Convenience eval).
+ * 6.5.44: Commons extras that beat pack dTrue for Lee Jung-jae (Squid
+ *         Game Netflix; not Typhoon 2005 white-suit eval), Park Seo-joon
+ *         (June 2019 blazer; not colorblock eval), Vin Diesel (2017
+ *         jacket + Comic-Con views; not early-2000s ribbed V-neck eval),
+ *         Orlando Bloom (SDCC 2014 + Cannes 2013; not dark-suit mic eval),
+ *         Cailee Spaeny (TIFF 2025; not pink crystal-cutout eval), and
+ *         Anthony Hopkins (Berlin 2001 turtleneck; not fedora polo eval).
+ *         Hopkins TIFF crop failed the enroll detection-score gate.
+ * 6.5.45: Commons extras that beat pack dTrue for Eva Longoria (2012
+ *         black velvet + 2011 red origami; not cream sleeveless eval),
+ *         Logan Lerman (TIFF 2012 + Percy Jackson 2013; not Fury 2014
+ *         eval), Amy Adams (2016 cobalt + 2014 BAFTA velvet; not 2009
+ *         Oscars red eval), Rachel McAdams (2011 Cannes teal; not
+ *         Sherlock 2009 updo eval), plus unused extra-photos for Kerry
+ *         Washington (taupe coat) and Kristen Stewart (Cannes 2014
+ *         copper; not Breaking Dawn 2012 lace eval).
+ * 6.5.46: Unused extra-photos that beat pack dTrue for Mia Goth
+ *         (Suspiria MTV interview; not Berlinale wrap eval), Jennifer
+ *         Lopez (GLAAD + Versace jungle; not blonde-bob yellow eval),
+ *         and Aishwarya Rai (Kalyan peach sari; not white ruffle-collar
+ *         eval). Hemsworth CCMA crop stayed a group shot (n=11).
+ * 6.5.47: Commons extras that beat pack dTrue for Chris Hemsworth
+ *         (navy pinstripe + Bali 2019 vest; not Comic-Con blue-tie eval),
+ *         Hugh Jackman (charcoal blazer + SDCC 2013; not navy slim-tie
+ *         eval), Rosalía (2023 Latin Grammy lace; not Goya 2019 eval),
+ *         and Andrew Garfield (2011 Comic-Con sweater; not navy-suit
+ *         slim-tie eval). Hemsworth 2017 Gage and Garfield TIFF 09 stay
+ *         out as eval-sitting clones.
+ * 6.5.48: Commons extras that beat pack dTrue for Hyun Bin (2024 white
+ *         double-breasted; not PiFan 2014 tuxedo eval), Gary Oldman
+ *         (Tinker Tailor + TIFF 2019; not Comic-Con striped-blazer eval),
+ *         Uma Thurman (2014 grey coat; not Cannes 2000 bead-necklace
+ *         eval), Chris Pine (peach linen; not blue v-neck eval), and
+ *         Oscar Isaac (2025 neck-wrap + 2013 suit; not Comic-Con
+ *         dark-shirt eval). Hyun 2011 crop failed the enroll
+ *         detection-score gate. Uma Cannes 2000 and Oscar Venice stay
+ *         out as eval-sitting clones.
+ * 6.5.49: Commons extras that beat pack dTrue for Mahershala Ali (2007
+ *         Comic-Con cap; not denim white-collar eval) and Mark
+ *         Zuckerberg (TechCrunch Disrupt grey tee; not Harvard hoodie
+ *         iBook eval). Mahershala Commons cropped/299 stay out as eval
+ *         clones.
+ * 6.5.50: Commons extras that beat pack dTrue for Brie Larson (Comic-Con
+ *         panel + Kong Japan premiere; not SXSW 2013 Lacoste eval) and
+ *         Fan Bingbing (BIFAN 2026 silver gown; not X-Men Hugh Jackman
+ *         eval). Bad Bunny 2017-2 and Performs cropped 2 stay out as
+ *         eval clones. Song Kang Cartier missed the 0.005 beat margin.
+ * 6.5.51: Unused extra-photos that beat pack dTrue for Ryan Reynolds
+ *         (TIFF 2010 necktie looking down; not tuxedo bowtie eval),
+ *         Gael García Bernal (navy blazer watercolor shirt; not black
+ *         tuxedo bowtie eval), Josh Hutcherson (Journey 2 grey blazer;
+ *         not Fantastic Fest cardigan eval), Gigi Hadid (car mesh-top
+ *         solo; not B&W Bella group eval), and Barry Keoghan (pink LV
+ *         vest; not cream-tee lion-pendant eval). Ryan Oscars extra
+ *         and Harry 001/002 stay out as eval clones. Barry 002 is a
+ *         near-dup of primary.
+ * 6.5.52: Commons extras that beat pack dTrue for Matt Damon (2014 navy
+ *         close-up + TIFF 2015 NASA pin; not Bourne white-shirt eval),
+ *         Channing Tatum (July 2015 grey suit; not leather-jacket
+ *         henley eval), Deepika Padukone (Peter Pan collar + Garnier
+ *         floral; not white off-shoulder eval), Chadwick Boseman
+ *         (Gods of Egypt premiere; not Comic-Con paisley eval), Martin
+ *         Freeman (Berlinale corduroy; not Folk Awards amber-glasses
+ *         eval), and Scarlett Johansson (pink cardigan Marines visit;
+ *         not SDCC 2019 mesh-bun eval). Song Kang 231124 My Demon and
+ *         Olsen TIFF 2011 floral stay out as eval-sitting clones.
+ * 6.5.53: Commons extras that beat pack dTrue for Son Ye-jin (March 2024
+ *         studio floral; not Baeksang pearl-strap eval), Tony Leung
+ *         (black vest mic; not Intercontinental dark-shirt eval),
+ *         Lupita Nyong'o (Cannes 2015 emerald gown; not Tribeca TIME
+ *         blue-suit eval), Benedict Cumberbatch (SDCC navy cardigan;
+ *         not Sherlock overcoat eval), and Joseph Gordon-Levitt
+ *         (WonderCon blazer; not v-neck sweater eval). Tom Holland
+ *         SDCC flickr and Lupita 2018 TIME crop stay out as eval
+ *         sittings.
+ * 6.5.54: Commons extras that beat pack dTrue for Britney Spears (Toronto
+ *         Femme Fatale silver sequin + purple Hold It Against Me; not gold
+ *         metallic jacket eval), Mark Ruffalo (Berlin 2010 wave + outdoor
+ *         parka, NYFF 2010 grey blazer, Avengers 2012 navy; not Kids Are
+ *         All Right peace-sign eval), and Jonathan Bailey (Testament of
+ *         Youth 2014; not Independent Filmmakers Ball glasses eval).
+ *         Bailey 2015 gala, Miley Today-show crop, and the second Avengers
+ *         Toronto frame stay out as eval clones or same-sitting dupes.
+ * 6.5.55: Held-out 002+ extras that beat pack dTrue for Tom Holland (Far
+ *         From Home glasses polo; not SDCC black-jacket chain eval),
+ *         Ranbir Kapoor (bomber graphic tee + black mesh shirt; not
+ *         checkered-blazer eval), and Eddie Redmayne (Montclair 2022
+ *         pinstripe + checkered-sweater smile; not denim-jacket outdoor
+ *         eval), plus a Commons Golden Disc 2019 extra for Jisoo (gold
+ *         sequin smile; not 2017 floral concert eval). Holland 003 is the
+ *         same Far From Home sitting as 002; Eddie 003 is a near-dup of
+ *         primary.
+ * 6.5.56: Commons extra that beat pack dTrue for Song Kang (November 2025
+ *         high-collar press; not wet-look denim hand-on-head eval). Marie
+ *         Claire 230224 is the eval sitting; 231124 / November 2023 My Demon
+ *         is the enrolled primary; unused red-sweater 002 did not beat pack.
+ * 6.5.57: Held-out 002+ extras that beat pack dTrue for Olivia Colman (crystal
+ *         mesh red-carpet; not lime-green blouse eval), John Krasinski (navy
+ *         tie solo smile; not tuxedo-bowtie couple eval), and John Cho (plaid
+ *         western + Comic-Con E! + grey tweed scarf; not navy-jacket eval).
+ *         Lee Min-ho 002 is the MISE EN SCÈNE primary sitting.
+ * 6.5.58: Unused extra-photos that beat pack dTrue for Sterling K. Brown
+ *         (plaid backstage + Paley Media grey suit; not Comic-Con hoodie eval),
+ *         Brad Pitt (solo tuxedo goatee; not Jolie couple eval), Sandra Oh
+ *         (glasses striped top; skip 2011 Spirit Awards group), Diego Luna
+ *         (Berlinale polo + Spirit pinstripe + LED blazer; not Documentales
+ *         2020 chin-on-hand eval), Maitreyi Ramakrishnan (webcam turtleneck;
+ *         not red iHeartRADIO jersey eval), and Kit Harington (GoT WesterosVIP
+ *         three-piece; not Comic-Con henley eval). Sadie Sink extras are the
+ *         same Comic-Con sitting as eval.
+ * 6.5.59: Commons extras that beat pack dTrue for Austin Butler (Caught
+ *         Stealing London premiere stubble quiff; not dark-pompadour studio
+ *         eval), Tom Hiddleston (Comic-Con 2016 grey polo + Gage Skidmore
+ *         linen blazer; not navy-sweater Comic-Con eval), and Robert De Niro
+ *         (2011 bowtie glasses; not salt-pepper patterned-tie eval). De Niro
+ *         KVIFF portrait is the eval sitting.
+ * 6.5.60: Commons extras that beat pack dTrue for Cara Delevingne (September
+ *         2014 velvet blazer bun; not runway color-block eval) and Penélope
+ *         Cruz (TIFF 2012 blush off-shoulder + Goya 2018 white beaded; not
+ *         burgundy strapless updo eval). Helen Mirren 2020 is the Berlinale
+ *         70 eval sitting.
+ * 6.5.61: Commons extras that beat pack dTrue for Lee Min-ho (Dec 2025
+ *         Disney+ leather + Omniscient Reader Jun 2025 blazer; not autumnal
+ *         floral eval) and Keira Knightley (2005 honey-blonde plaid; not
+ *         brunette updo champagne-lace eval).
+ * 6.5.62: Commons extras that beat pack dTrue for Glen Powell (2016 Golden
+ *         Globes tuxedo NASA pin + Top Gun Maverick premiere tuxedo bowtie;
+ *         not outdoor-night navy-suit necktie eval) and Colman Domingo
+ *         (2018 Comic-Con painterly shirt; not gold-embroidered mandarin
+ *         eval). Denzel 2024 TIFF couple is the eval sitting.
+ * 6.5.63: Commons extras that beat pack dTrue for Keanu Reeves (2014 short
+ *         messy hair charcoal collared shirt; not long-hair grey-blazer
+ *         black-tee eval), Nicolas Cage (Venice 2009 charcoal jacket white
+ *         open-collar; not black-tuxedo necktie outdoor eval), and Alexander
+ *         Skarsgård (Gage Comic-Con blazer+DEXTER lanyard + Tribeca Shankbone
+ *         chain; not unbuttoned-shirt SDCC panel eval).
+ * 6.5.64: Commons extras that beat pack dTrue for Chris Pratt (gingham
+ *         burgundy-tie indoor; not grey windowpane geometric-tie studio eval)
+ *         and Sadie Sink (Paleyfest 2018 headband; not Comic-Con geometric
+ *         sleeveless panel eval). Pratt 3-face outdoor crop and Sadie floral
+ *         primary clone stay out.
+ * 6.5.65: Commons extras that beat pack dTrue for Prince Harry (2013 US navy
+ *         suit pink tie; not Blues and Royals beret medals waving eval) and
+ *         Paul Wesley (People's Choice charcoal suit; not Comic-Con grey
+ *         zip-hoodie panel eval). Harry 194px source and Comic-Con group
+ *         extra stay out.
+ * 6.5.66: Commons extra that beat pack dTrue for Drake (Summer Sixteen 2016
+ *         dark jacket gold curb chains low-angle; not OVO black-tee technical
+ *         parka concert eval). Helen Commons still miss pack; ho 002 stays out.
+ * 6.5.67: Commons extra that beat pack dTrue for Gal Gadot (2017 gold scalloped
+ *         high-collar updo; not Comic-Con plunging black V-neck red lipstick
+ *         eval). Idris 5270 is the shearling eval sitting; ho 002 stays out.
+ * 6.5.68: Commons extra that beat pack dTrue for Taylor Lautner (2011 Comic-Con
+ *         maroon leather-jacket panel; not Abduction pinstripe-suit premiere
+ *         eval). Helen 2208/2760 are the Berlinale studded-collar eval sitting
+ *         and stay out.
+ * 6.5.69: Commons extra that beat pack dTrue for Idris Elba (waffle-knit
+ *         crew-neck press smile, File:Idris Elba-4822; not shearling collar
+ *         plus pink tee LIDO/AOD PALACE eval). 5270/5272 stay out.
+ * 6.5.70: Commons extras that beat pack dTrue for Henry Cavill (Man of Steel
+ *         premiere tuxedo, File:Henry Cavill (8463776101); not Adidas V-neck
+ *         SDCC 2015 eval) and Jennifer Aniston (2009 Crest Whitestrips updo
+ *         black blazer, File:JenniferAnistonFeb09; not outdoor black-tank eval).
+ * 6.5.71: Commons extra that beat pack dTrue for Ranveer Singh (2025 studio
+ *         velvet double-breasted blazer, File:Ranveer Singh 2025; not NBA
+ *         Ruffles graffiti-jersey eval). Halle Berry-0343 is the ruffled-tweed
+ *         eval sitting; Osaka 15493791625 is the TORAY purple-strap eval sitting.
+ * 6.5.72: Commons extra that beat pack dTrue for Michael B. Jordan (SDCC 2015
+ *         tan/camel bomber orange-white ribbed collar, File:Michael B. Jordan
+ *         (36245564315); not Ferragamo-polo eval and not navy-blazer primary).
+ *         Held-out 003 is the same SDCC sitting and stays out.
+ * 6.5.73: Held-out extra that beat pack dTrue for Lionel Messi (Inter Miami
+ *         pink full-kit pitch portrait, XBTO sponsor; not Barcelona Qatar
+ *         Foundation match-action eval). Extra 002 is a different Miami
+ *         close-up (dExtra 0.40) and stays enrolled.
+ * 6.5.74: Held-out extra that beat pack dTrue for Simu Liu (Beaverton studio
+ *         pink tee grey bomber lapel-mic; not Kim's Convenience blue-suit eval
+ *         and not grey-tee panel primary). Extra-photos 004 is the same
+ *         Beaverton sitting and stays out.
+ * 6.5.75: Gated extras for the remaining 0-extra hard band (bad-bunny, miley,
+ *         emma-stone, brendan-fraser, helen-mirren, matt-bomer, naomi-osaka,
+ *         emily-blunt, denzel-washington, zoe-saldana, jacob-elordi, halle-berry).
+ *         Eval-hash unique-sitting clones and d>0.7 / d<0.05 gate refusals
+ *         were reported, not fabricated.
+ * 6.5.76: Gated Commons extras for remaining HIGH dTrue ids that already had
+ *         some extras (ranveer, sebastian, donald, julia, serena, adam, viola,
+ *         doja). Eval-sitting titles and 001 hashes skipped; d>0.7 / no-face
+ *         refusals reported, not fabricated. Binary embeddings.v4.q8.bin
+ *         untouched. 0-extra easy ids (dTrue ≲ 0.05) were not crawled.
+ * 6.5.77: Gated Commons extras for remaining HIGH dTrue ids with cap room
+ *         (kylian March 2018, lizzo, hugh-grant Dunhill/Cannes, harry 2012,
+ *         karol Viña 2023, gemma 2018/Berlin/Collider). Eval-near-clone
+ *         (karol ho 002), d>0.7, and no-face refusals reported, not
+ *         fabricated. Failed new files deleted so they do not fill the cap.
+ *         Binary untouched. 0-extra easy ids were not crawled.
  */
-const GALLERY_VERSION = "6.2.0";
+const GALLERY_VERSION = "6.5.77";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {

@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   CROP_ZOOM_MAX,
+  GROUP_SHOT_PICK_HINT,
   STANDING_SHOT_HINT,
   coverFitScale,
+  cropReviewNeedsExplicitPick,
+  initialCropReviewFaceId,
   isStandingFullBodyShot,
   maxCropPan,
   offsetToCenterBox,
@@ -45,5 +48,18 @@ describe("crop-view", () => {
     assert.equal(isStandingFullBodyShot(216, 1536, 2048), true);
     assert.equal(isStandingFullBodyShot(900, 1080, 1440), false);
     assert.ok(STANDING_SHOT_HINT.toLowerCase().includes("standing"));
+  });
+
+  it("auto-selects a solo face and requires a tap when two or more faces are present", () => {
+    assert.equal(cropReviewNeedsExplicitPick(0), false);
+    assert.equal(cropReviewNeedsExplicitPick(1), false);
+    assert.equal(cropReviewNeedsExplicitPick(2), true);
+    assert.equal(cropReviewNeedsExplicitPick(8), true);
+    assert.equal(initialCropReviewFaceId([]), null);
+    assert.equal(initialCropReviewFaceId([0]), 0);
+    assert.equal(initialCropReviewFaceId([3]), 3);
+    assert.equal(initialCropReviewFaceId([0, 1]), null);
+    assert.equal(initialCropReviewFaceId([2, 0, 1]), null);
+    assert.match(GROUP_SHOT_PICK_HINT, /tap the person/i);
   });
 });

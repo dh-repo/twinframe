@@ -30,6 +30,12 @@ export const APPEARANCE_CENTROID_MIN_N = 8;
  * Below this, we do not guess — ranking stays unfiltered.
  */
 export const APPEARANCE_CLASSIFY_MIN_MARGIN = 0.012;
+/**
+ * Glance families hide a *weak* cross-family nearest neighbor.
+ * A unique tight match (large gap to #2) is identity, not a glance guess —
+ * filtering it made Zendaya's own photo return nobody.
+ */
+export const APPEARANCE_FAMILY_IDENTITY_MARGIN = 0.07;
 
 const LABELED_FAMILIES = [
   "east_asian",
@@ -192,13 +198,29 @@ export function classifyProbeAppearance(
   };
 }
 
+function rowDistance(row: { dist?: number; adjusted?: number }): number {
+  const d = typeof row.dist === "number" && Number.isFinite(row.dist) ? row.dist : Infinity;
+  const adj =
+    typeof row.adjusted === "number" && Number.isFinite(row.adjusted) ? row.adjusted : Infinity;
+  return Math.min(d, adj);
+}
+
+function uniqueStrongNearest<T extends { dist?: number; adjusted?: number }>(ranked: readonly T[]): boolean {
+  if (ranked.length === 0) return false;
+  const d0 = rowDistance(ranked[0]!);
+  const d1 = ranked.length > 1 ? rowDistance(ranked[1]!) : Number.POSITIVE_INFINITY;
+  return Number.isFinite(d0) && d1 - d0 >= APPEARANCE_FAMILY_IDENTITY_MARGIN;
+}
+
 export function filterRanksByAppearanceFamily<
-  T extends { celeb: { id?: string } },
+  T extends { celeb: { id?: string }; dist?: number; adjusted?: number },
 >(ranked: readonly T[], probeFamily: AppearanceFamily): T[] {
   if (ranked.length === 0) return [];
   if (probeFamily === "unknown") return ranked.slice();
-  const kept = ranked.filter((row) =>
-    familiesCompatible(probeFamily, appearanceFamilyFor(row.celeb.id)),
+  const keepHead = uniqueStrongNearest(ranked);
+  const kept = ranked.filter(
+    (row, index) =>
+      (index === 0 && keepHead) || familiesCompatible(probeFamily, appearanceFamilyFor(row.celeb.id)),
   );
   return kept.length > 0 ? kept : ranked.slice();
 }

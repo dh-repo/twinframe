@@ -21,8 +21,11 @@
  *   node --experimental-strip-types scripts/fetch-held-out-photos.ts --manifest-only
  *
  * Usage:
- *   node --experimental-strip-types scripts/fetch-held-out-photos.ts [--limit N] [--manifest-only]
+ *   node --experimental-strip-types scripts/fetch-held-out-photos.ts [--limit N] [--ids a,b] [--manifest-only]
+ *   node --experimental-strip-types scripts/fetch-held-out-photos.ts --primaries --ids jack-black,anne-hathaway
+ *   node --experimental-strip-types scripts/fetch-held-out-photos.ts --replace --ids meryl-streep
  *   HELD_OUT_LIMIT=50 node --experimental-strip-types scripts/fetch-held-out-photos.ts
+ *   HELD_OUT_DELAY_MS=2000 node --experimental-strip-types scripts/fetch-held-out-photos.ts --ids adam-sandler,al-pacino
  *
  * --audit re-checks every image already on disk against the same guard, which is
  * how you find probes an earlier run let through.
@@ -74,7 +77,14 @@ export interface Manifest {
 }
 
 const SKIP_NAME =
-  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow/i;
+  /logo|icon|flag|coat|signature|wordmark|poster|soundtrack|\.svg|symbol|map of|diagram|audio-input|speaker|padlock|ambox|question_book|commons-|edit-|magnify|star_full|folder|arrow|mural|fresque|graffiti|waxwork|statue|crowd|audience|cast[ _]|group[ _]|vinyl|discography|album[ _-]?cover|45[ _-]?record|\brecord\.png\b|entrance|theatre|theater|geograph|walk of fame|hollywood.?star|\busaf\b|official portrait/i;
+
+/** Two people in the frame — largest-face still embeds the wrong subject. */
+const SKIP_PAIR = /(^|[ _(])(and|with|&|feat\.?|vs\.?)[ _]|withdaughters|withfamily/i;
+/** "Aish N Madhuri" — N as a pair token, case-sensitive so "in 2006" still passes. */
+const SKIP_PAIR_N = /[ _]N[ _]/;
+/** "ColinFirth LiviaGiuggioli" — glued surname then a second TitleCase name. */
+const SKIP_CAMEL_PAIR = /[a-z]{2}[A-Z][a-z]+ [A-Z][a-z]{3,}/;
 
 /**
  * Shortest side a usable held-out portrait must have. Interface chrome is small
@@ -87,6 +97,12 @@ export const PHOTO_MIN_DIMENSION = 200;
  * to the same size lands near 0.008.
  */
 export const PHOTO_MIN_BYTES_PER_PIXEL = 0.02;
+/**
+ * Cosine distance above this vs the enrolled primary means the candidate is a
+ * different person, not a hard same-identity view. Genuine AdaFace pairs sit
+ * well below 0.7; impostors cluster near 0.9–1.1.
+ */
+export const HELD_OUT_MAX_SAME_PERSON_DISTANCE = 0.8;
 
 /**
  * Why a candidate is not a usable portrait, or null when it looks like one.
@@ -109,6 +125,241 @@ export function photoRejectReason(candidate: {
   return null;
 }
 
+/**
+ * Why a Wikipedia/Commons filename is not a usable solo portrait, or null when
+ * it looks like one. Pair shots (Aishwarya+Abhishek, Sandler+daughters) were
+ * landing as held-out 001s and then scoring as model misses.
+ */
+export function heldOutFileNameRejectReason(title: string): "non-photo" | "pair" | null {
+  const bare = title.replace(/^File:/i, "");
+  if (SKIP_PAIR.test(bare) || SKIP_PAIR_N.test(bare) || SKIP_CAMEL_PAIR.test(bare)) return "pair";
+  if (SKIP_NAME.test(bare)) return "non-photo";
+  return null;
+}
+
+/** True when the filename contains English-like words, not just a camera dump id. */
+export function filenameLooksLikeNamedSubject(title: string): boolean {
+  const bare = title.replace(/^File:/i, "").replace(/\.[a-z0-9]+$/i, "");
+  return bare.split(/[\s_\-()]+/).some((w) => /[a-z]{4,}/i.test(w));
+}
+
+/**
+ * Catalog names strip apostrophes ("Emma DArcy"), which Wikipedia search
+ * then misses. Override the query string for those ids.
+ */
+export const WIKI_SEARCH_NAME: Record<string, string> = {
+  "emma-darcy": "Emma D'Arcy",
+  "j-j-abrams": "J. J. Abrams",
+  "carlos-vald-s": "Carlos Valdes (actor)",
+  "cynthia-addai-robinson": "Cynthia Addai-Robinson",
+  // The novelist is Wikipedia's default; the catalog slot is the TV director.
+  "david-grossman": "David Grossman (director)",
+};
+
+export function wikiSearchName(entry: { id: string; name: string }): string {
+  return WIKI_SEARCH_NAME[entry.id] ?? entry.name;
+}
+
+/** Filenames never include Wikipedia disambiguators like "(actor)". */
+export function wikiFileIdentityName(searchName: string): string {
+  return searchName.replace(/\s*\([^)]+\)\s*$/, "").trim();
+}
+
+const WIKI_NON_PERSON =
+  /\((film|album|song|single|novel|book|novella|TV series|television series|video game|game|magazine|newspaper|play|opera|comics|franchise|character)\)/i;
+
+/** Wikipedia search often lands on a film or album instead of the person. */
+export function heldOutWikiTitleRejectReason(title: string): "non-person" | null {
+  return WIKI_NON_PERSON.test(title) ? "non-person" : null;
+}
+
+function foldLatin(s: string): string {
+  return s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+}
+
+/**
+ * Reject a named file that does not mention the celebrity. Opaque dumps
+ * (DoD hashes, "171027-F-DC888008") are allowed through so infobox photos
+ * still land; "Elizabeth Hurley08.jpg" for Hugh Grant is not.
+ */
+export function heldOutIdentityRejectReason(title: string, name: string): "wrong-person" | null {
+  if (!filenameLooksLikeNamedSubject(title)) return null;
+  const hay = foldLatin(title).replace(/[^a-z0-9]/g, "");
+  const parts = String(name)
+    .split(/[\s-]+/)
+    .map((t) => foldLatin(t).replace(/[^a-z0-9]/g, ""))
+    .filter(Boolean);
+  const tokens3 = parts.filter((t) => t.length >= 3);
+  const last = parts[parts.length - 1];
+  // Two given-name tokens must all appear — "Jung" alone enrolled Lee Jung-jae
+  // under Lee Jung Mi. Short final syllables ("mi") still have to match.
+  if (tokens3.length >= 2) {
+    const need = last && last.length === 2 ? [...tokens3, last] : tokens3;
+    return need.every((t) => hay.includes(t)) ? null : "wrong-person";
+  }
+  const tokens = parts.filter((t) => t.length >= 4);
+  if (tokens.length === 0) tokens.push(...parts.filter((t) => t.length >= 3));
+  return tokens.some((t) => hay.includes(t)) ? null : "wrong-person";
+}
+
+/** `--replace` overwrites an existing dest; `--primaries` writes `public/celebs/<id>.jpg`. */
+export function parseFetchMode(argv: string[] = process.argv): {
+  replace: boolean;
+  primaries: boolean;
+  audit: boolean;
+  manifestOnly: boolean;
+} {
+  return {
+    replace: argv.includes("--replace"),
+    primaries: argv.includes("--primaries"),
+    audit: argv.includes("--audit"),
+    manifestOnly: argv.includes("--manifest-only"),
+  };
+}
+
+/**
+ * Why a detected face set is not a solo eval portrait. Pair shots and crowds
+ * make largest-face embed the wrong subject, which then scores as a model miss.
+ */
+export function heldOutSceneRejectReason(input: {
+  faceCount?: number;
+  primaryArea?: number;
+  secondArea?: number;
+}): "crowd" | "multi-face" | "group" | "no-face" | null {
+  const n = Number(input.faceCount) || 0;
+  if (n === 0) return "no-face";
+  if (n >= 8) return "crowd";
+  const primary = Number(input.primaryArea) || 0;
+  const second = Number(input.secondArea) || 0;
+  if (n >= 2 && primary > 0 && second / primary >= 0.35) return "multi-face";
+  if (n >= 3 && primary > 0 && second / primary >= 0.2) return "group";
+  return null;
+}
+
+/** Reject a candidate whose descriptor is in impostor range of the enrolled identity. */
+export function heldOutSamePersonRejectReason(
+  distance: number,
+  max = HELD_OUT_MAX_SAME_PERSON_DISTANCE,
+): "different-person" | null {
+  if (!Number.isFinite(distance)) return null;
+  return distance > max ? "different-person" : null;
+}
+
+/**
+ * Event/date tokens that follow a surname in Commons filenames
+ * ("Cahill SDCC 2014", "Munro September 2025") — not a second person.
+ */
+const PAIR_PLACE_STOP = new Set([
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "sept",
+  "oct",
+  "nov",
+  "dec",
+  "sdcc",
+  "nycc",
+  "comic",
+  "con",
+  "comiccon",
+  "wondercon",
+  "festival",
+  "awards",
+  "award",
+  "premiere",
+  "conference",
+  "edinburgh",
+  "saturn",
+  "sundance",
+  "cannes",
+  "oscars",
+  "oscar",
+  "emmy",
+  "emmys",
+  "golden",
+  "globe",
+  "globes",
+  "cropped",
+  "headshot",
+  "headshots",
+  "portrait",
+  "photocall",
+  "des",
+  "moines",
+  "galaxycon",
+  "photo",
+  "photos",
+  "op",
+  "ops",
+  "convention",
+  "expo",
+]);
+
+function nameTokens(raw: string): [string, string] | null {
+  const parts = raw
+    .replace(/[^a-z]+/gi, " ")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (parts.length < 2) return null;
+  return [parts[0], parts[1]];
+}
+
+function isCelebrityName(first: string, last: string, celeb: string): boolean {
+  return celeb.includes(first) && celeb.includes(last);
+}
+
+function isPlaceOrDateToken(first: string, last: string): boolean {
+  return PAIR_PLACE_STOP.has(first) || PAIR_PLACE_STOP.has(last);
+}
+
+/**
+ * "Gong Li Andie MacDowell 1998" is a pair even though it mentions Gong Li.
+ * A First Last + year that is not the celebrity is a second person in frame.
+ * Last-name + event/month + year ("Eddie Cahill SDCC 2014") is still solo.
+ */
+export function heldOutSecondPersonRejectReason(title: string, name: string): "pair" | null {
+  const celeb = String(name).replace(/[^a-z ]/gi, " ").toLowerCase();
+  const withYear = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}[^\d]{0,3}\d{4}/g) ?? [];
+  for (const raw of withYear) {
+    const tokens = nameTokens(raw.replace(/\s*\d{4}$/, ""));
+    if (!tokens) continue;
+    const [first, last] = tokens;
+    if (isPlaceOrDateToken(first, last)) continue;
+    // Celebrity last name + venue/month ("Cahill SDCC") still mentions them.
+    if (celeb.includes(first) || celeb.includes(last)) continue;
+    return "pair";
+  }
+  const named = String(title).match(/[A-Z][A-Za-z]{2,} [A-Z][A-Za-z]{3,}/g) ?? [];
+  let extra = 0;
+  for (const raw of named) {
+    const tokens = nameTokens(raw);
+    if (!tokens) continue;
+    const [first, last] = tokens;
+    if (isPlaceOrDateToken(first, last)) continue;
+    if (!isCelebrityName(first, last, celeb)) extra++;
+  }
+  return extra >= 2 ? "pair" : null;
+}
+
 /** Full catalog by default; HELD_OUT_LIMIT or --limit narrow it. */
 export function resolveLimit(
   catalogSize: number,
@@ -121,6 +372,23 @@ export function resolveLimit(
   const n = Number(raw);
   if (!Number.isFinite(n) || n < 1) throw new Error(`Invalid held-out limit "${raw}"`);
   return Math.min(catalogSize, Math.floor(n));
+}
+
+/** `--ids a,b` fetches those catalog rows only. Null when the flag is absent. */
+export function resolveFetchIds(
+  catalog: Array<{ id: string }>,
+  argv: string[] = process.argv,
+): string[] | null {
+  const idx = argv.indexOf("--ids");
+  if (idx < 0) return null;
+  const raw = argv[idx + 1];
+  if (!raw || raw.startsWith("--")) throw new Error("Missing --ids value (comma-separated catalog ids)");
+  const wanted = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  if (wanted.length === 0) throw new Error("Empty --ids list");
+  const known = new Set(catalog.map((c) => c.id));
+  const unknown = wanted.filter((id) => !known.has(id));
+  if (unknown.length) throw new Error(`Unknown catalog ids: ${unknown.join(",")}`);
+  return wanted;
 }
 
 /** Every image slot on disk: [{ id, slot, filePath }], sorted by id then slot. */
@@ -210,12 +478,38 @@ function writeManifest(manifest: Manifest): void {
   fs.writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
+async function politeFetch(url: URL | string, attempt = 0): Promise<Response> {
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: { "User-Agent": UA, "Api-User-Agent": UA },
+      signal: AbortSignal.timeout(20_000),
+    });
+  } catch (err) {
+    if (attempt >= 2) throw err;
+    await sleep(Math.max(DELAY_MS, 1_000) * 2 ** attempt);
+    return politeFetch(url, attempt + 1);
+  }
+  if ((res.status === 429 || res.status >= 500) && attempt < 3) {
+    const retryAfter = Number(res.headers.get("retry-after")) * 1000;
+    const wait = Math.min(
+      30_000,
+      Number.isFinite(retryAfter) && retryAfter > 0
+        ? retryAfter
+        : Math.max(DELAY_MS, 2_000) * 2 ** (attempt + 1),
+    );
+    await sleep(wait);
+    return politeFetch(url, attempt + 1);
+  }
+  return res;
+}
+
 async function wiki(params: Record<string, string>): Promise<any> {
   const url = new URL("https://en.wikipedia.org/w/api.php");
   url.searchParams.set("format", "json");
   url.searchParams.set("origin", "*");
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const res = await fetch(url, { headers: { "User-Agent": UA, "Api-User-Agent": UA } });
+  const res = await politeFetch(url);
   if (!res.ok) throw new Error(`wiki ${res.status} ${url.searchParams.get("action")}`);
   return res.json();
 }
@@ -232,16 +526,74 @@ function enrollPath(entry: IndexEntry): string | null {
   return fs.existsSync(abs) ? abs : null;
 }
 
-async function resolveTitle(name: string): Promise<string | null> {
+/** Hashes that must not become the eval 001: enrolled primary, extra views, extra-photos. */
+export function blockedEvalHashes(entry: IndexEntry, celebsDir = path.join(ROOT, "public/celebs")): Set<string> {
+  const out = new Set<string>();
+  const add = (p: string | null) => {
+    const s = p ? fileSha(p) : null;
+    if (s) out.add(s);
+  };
+  add(enrollPath(entry));
+  add(path.join(celebsDir, `${entry.id}.jpg`));
+  const extraDir = path.join(celebsDir, "extra-photos", entry.id);
+  if (fs.existsSync(extraDir)) {
+    for (const f of fs.readdirSync(extraDir)) {
+      if (IMAGE_RE.test(f)) add(path.join(extraDir, f));
+    }
+  }
+  const held = path.join(celebsDir, "held-out", entry.id);
+  if (fs.existsSync(held)) {
+    for (const f of fs.readdirSync(held)) {
+      if (!IMAGE_RE.test(f)) continue;
+      if (f.replace(IMAGE_RE, "") === EVAL_SLOT) continue;
+      add(path.join(held, f));
+    }
+  }
+  return out;
+}
+
+async function searchTitles(query: string): Promise<string[]> {
   const j = await wiki({
     action: "query",
     list: "search",
-    srsearch: name,
-    srlimit: "3",
+    srsearch: query,
+    srlimit: "5",
     srnamespace: "0",
   });
-  const hit = j.query?.search?.[0];
-  return hit?.title ?? null;
+  return (j.query?.search ?? []).map((h: { title?: string }) => h?.title).filter(Boolean) as string[];
+}
+
+function wikiTitleFitsIdentity(title: string, identityName: string): boolean {
+  return !heldOutWikiTitleRejectReason(title) && !heldOutIdentityRejectReason(title, identityName);
+}
+
+async function isDisambiguationPage(title: string): Promise<boolean> {
+  const j = await wiki({
+    action: "query",
+    titles: title,
+    prop: "pageprops",
+    ppprop: "disambiguation",
+  });
+  const page = Object.values(j.query?.pages ?? {})[0] as { pageprops?: { disambiguation?: string } };
+  return page?.pageprops?.disambiguation !== undefined;
+}
+
+async function resolveTitle(searchName: string, identityName = searchName): Promise<string | null> {
+  const queries = [searchName];
+  if (!/\(.*\)/.test(searchName)) {
+    queries.push(`${searchName} (actor)`, `${searchName} (actress)`);
+  }
+  let first: string | null = null;
+  for (const query of queries) {
+    const titles = await searchTitles(query);
+    for (const title of titles) {
+      if (!first) first = title;
+      if (!wikiTitleFitsIdentity(title, identityName)) continue;
+      if (await isDisambiguationPage(title)) continue;
+      return title;
+    }
+  }
+  return first;
 }
 
 async function pageImageTitle(title: string): Promise<string | null> {
@@ -263,7 +615,7 @@ async function pageImages(
     action: "query",
     titles: title,
     generator: "images",
-    gimlimit: "16",
+    gimlimit: "40",
     prop: "imageinfo",
     iiprop: "url|size|mime",
     iiurlwidth: "900",
@@ -275,7 +627,9 @@ async function pageImages(
     if (!info) continue;
     const mime = String(info.mime || "");
     if (!mime.startsWith("image/") || mime.includes("svg")) continue;
-    if (SKIP_NAME.test(p.title || "") || SKIP_NAME.test(info.url || "")) continue;
+    if (heldOutFileNameRejectReason(p.title || "") || heldOutFileNameRejectReason(info.url || "")) {
+      continue;
+    }
     const w = Number(info.thumbwidth || info.width || 0);
     const h = Number(info.thumbheight || info.height || 0);
     if (Math.min(w, h) < 160) continue;
@@ -285,7 +639,7 @@ async function pageImages(
 }
 
 async function download(url: string): Promise<{ buffer: Buffer } | { reject: string } | null> {
-  const res = await fetch(url, { headers: { "User-Agent": UA } });
+  const res = await politeFetch(url);
   if (!res.ok) return null;
   const buffer = Buffer.from(await res.arrayBuffer());
   if (buffer.length < 4_000) return { reject: "too-small" };
@@ -333,7 +687,8 @@ async function main() {
     return;
   }
 
-  if (process.argv.includes("--manifest-only")) {
+  const mode = parseFetchMode();
+  if (mode.manifestOnly) {
     const manifest = rebuildManifestFromDisk({ heldOutDir: OUT_DIR, index, previous });
     writeManifest(manifest);
     console.log(
@@ -342,11 +697,50 @@ async function main() {
     return;
   }
 
-  const limit = resolveLimit(index.length);
-  const slice = index.slice(0, limit);
+  const wantedIds = resolveFetchIds(index);
+  const slice = wantedIds
+    ? wantedIds.map((id) => index.find((entry) => entry.id === id)!)
+    : index.slice(0, resolveLimit(index.length));
   fs.mkdirSync(OUT_DIR, { recursive: true });
+  const celebsDir = path.join(ROOT, "public/celebs");
 
-  // Provenance is only used to avoid re-downloading; presence on disk decides.
+  let inspectPortrait:
+    | null
+    | ((filePath: string) => Promise<{
+        faceCount: number;
+        primaryArea: number;
+        secondArea: number;
+        d512?: number[];
+      }>) = null;
+  let galleryById: Map<string, Float32Array> | null = null;
+  try {
+    const enroll = await import("./enroll-gallery-onnx.mjs");
+    if (enroll.adafaceModelReady()) {
+      inspectPortrait = async (filePath: string) => {
+        const emb = await enroll.embedImageFile(filePath);
+        return {
+          faceCount: emb.faceCount ?? 0,
+          primaryArea: emb.primaryArea ?? 0,
+          secondArea: emb.secondArea ?? 0,
+          d512: emb.d512,
+        };
+      };
+      if (!mode.primaries) {
+        const { decodeV4Gallery, l2Normalize } = await import("./lib/gallery-binary.mjs");
+        const buckets = JSON.parse(fs.readFileSync(path.join(celebsDir, "gallery.buckets.json"), "utf8")) as Array<{
+          id: string;
+        }>;
+        const { vectors } = decodeV4Gallery(fs.readFileSync(path.join(celebsDir, "embeddings.v4.q8.bin")));
+        galleryById = new Map();
+        for (let i = 0; i < buckets.length; i++) {
+          if (!galleryById.has(buckets[i]!.id)) galleryById.set(buckets[i]!.id, l2Normalize(vectors[i]!));
+        }
+      }
+    }
+  } catch {
+    inspectPortrait = null;
+  }
+
   const fetched = new Map<string, { sourceUrl: string; wikiTitle: string }>();
   for (const row of previous.cases ?? []) {
     if (row?.imagePath && row.sourceUrl && row.wikiTitle) {
@@ -358,36 +752,60 @@ async function main() {
   let skip = 0;
   let fail = 0;
 
-  console.log(`held-out fetch: ${slice.length} of ${index.length} catalog ids`);
+  console.log(
+    `${mode.primaries ? "primary" : "held-out"} fetch: ${slice.length} of ${index.length} catalog ids` +
+      `${mode.replace ? " (replace)" : ""}`,
+  );
 
   for (const entry of slice) {
-    const destDir = path.join(OUT_DIR, entry.id);
-    const dest = path.join(destDir, `${EVAL_SLOT}.jpg`);
-    if (fs.existsSync(dest)) {
+    const destDir = mode.primaries ? celebsDir : path.join(OUT_DIR, entry.id);
+    const dest = mode.primaries
+      ? path.join(celebsDir, `${entry.id}.jpg`)
+      : path.join(destDir, `${EVAL_SLOT}.jpg`);
+    if (fs.existsSync(dest) && !mode.replace) {
       skip++;
       continue;
     }
 
     try {
-      const title = await resolveTitle(entry.name);
+      const searchName = wikiSearchName(entry);
+      const title = await resolveTitle(searchName);
       if (!title) {
         console.log(`- no wiki title  ${entry.id}`);
         fail++;
         await sleep(DELAY_MS);
         continue;
       }
+      if (heldOutWikiTitleRejectReason(title) || heldOutIdentityRejectReason(title, searchName)) {
+        console.log(`- wiki title mismatch  ${entry.id} (${title})`);
+        fail++;
+        await sleep(DELAY_MS);
+        continue;
+      }
       const infobox = await pageImageTitle(title);
       const imgs = await pageImages(title);
-      const enroll = enrollPath(entry);
-      const enrollSha = enroll ? fileSha(enroll) : null;
+      const blocked = mode.primaries ? new Set<string>() : blockedEvalHashes(entry, celebsDir);
 
-      const ordered = [
-        ...imgs.filter((i) => infobox && i.title !== infobox),
-        ...imgs.filter((i) => !infobox || i.title === infobox),
-      ];
+      const ordered = mode.primaries
+        ? [
+            ...imgs.filter((i) => infobox && i.title === infobox),
+            ...imgs.filter((i) => !infobox || i.title !== infobox),
+          ]
+        : [
+            ...imgs.filter((i) => infobox && i.title !== infobox),
+            ...imgs.filter((i) => !infobox || i.title === infobox),
+          ];
 
       let saved = false;
       for (const cand of ordered) {
+        const fileIdentity = wikiFileIdentityName(searchName);
+        const identityReject =
+          heldOutIdentityRejectReason(cand.title, fileIdentity) ||
+          heldOutSecondPersonRejectReason(cand.title, fileIdentity);
+        if (identityReject) {
+          console.log(`  skip ${cand.title}: ${identityReject}`);
+          continue;
+        }
         const result = await download(cand.url);
         if (!result) continue;
         if ("reject" in result) {
@@ -396,14 +814,41 @@ async function main() {
         }
         const buf = result.buffer;
         const sha = crypto.createHash("sha256").update(buf).digest("hex");
-        if (enrollSha && sha === enrollSha) continue;
-        if (enroll && Math.abs(buf.length - fs.statSync(enroll).size) < 80) continue;
+        if (!mode.primaries && blocked.has(sha)) continue;
+
         fs.mkdirSync(destDir, { recursive: true });
-        fs.writeFileSync(dest, buf);
-        fetched.set(`/celebs/held-out/${entry.id}/${EVAL_SLOT}.jpg`, {
-          sourceUrl: cand.url,
-          wikiTitle: title,
-        });
+        const tmp = `${dest}.part`;
+        fs.writeFileSync(tmp, buf);
+
+        if (inspectPortrait) {
+          const insp = await inspectPortrait(tmp);
+          const scene = heldOutSceneRejectReason(insp);
+          if (scene) {
+            console.log(`  skip ${cand.title}: ${scene} (${insp.faceCount} faces)`);
+            fs.unlinkSync(tmp);
+            continue;
+          }
+          const enrolled = galleryById?.get(entry.id);
+          const primaryJpg = path.join(celebsDir, `${entry.id}.jpg`);
+          if (enrolled && insp.d512?.length && fs.existsSync(primaryJpg)) {
+            const { cosineDistance, l2Normalize } = await import("./lib/gallery-binary.mjs");
+            const d = cosineDistance(l2Normalize(Float32Array.from(insp.d512)), enrolled);
+            const same = heldOutSamePersonRejectReason(d);
+            if (same) {
+              console.log(`  skip ${cand.title}: ${same} (d=${d.toFixed(3)})`);
+              fs.unlinkSync(tmp);
+              continue;
+            }
+          }
+        }
+
+        fs.renameSync(tmp, dest);
+        if (!mode.primaries) {
+          fetched.set(`/celebs/held-out/${entry.id}/${EVAL_SLOT}.jpg`, {
+            sourceUrl: cand.url,
+            wikiTitle: title,
+          });
+        }
         console.log(`+ ${entry.id}  ← ${title}  (${cand.title})`);
         ok++;
         saved = true;
@@ -418,6 +863,11 @@ async function main() {
       fail++;
     }
     await sleep(DELAY_MS);
+  }
+
+  if (mode.primaries) {
+    console.log(`done primaries ok=${ok} skip=${skip} fail=${fail}`);
+    return;
   }
 
   const carried = [

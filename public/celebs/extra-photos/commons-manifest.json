@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 213,
+  "count": 403,
   "photos": [
     {
       "id": "sandra-oh",
@@ -181,9 +181,9 @@
     {
       "id": "ben-affleck",
       "file": "002.jpg",
-      "commonsTitle": "File:The town affleck hamm.JPG",
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/The_town_affleck_hamm.JPG/960px-The_town_affleck_hamm.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-      "fetchedAt": "2026-08-18T04:08:42.322Z"
+      "commonsTitle": "File:Ben Affleck 1998.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Ben_Affleck_1998.jpg",
+      "fetchedAt": "2026-08-27T11:05:00.000Z"
     },
     {
       "id": "bill-gates",
@@ -216,7 +216,7 @@
     {
       "id": "bill-skarsgard",
       "file": "002.jpg",
-      "commonsTitle": "File:Bill Skarsgård.jpg",
+      "commonsTitle": "File:Bill Skarsg\u00e5rd.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Bill_Skarsg%C3%A5rd.jpg/960px-Bill_Skarsg%C3%A5rd.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:09:11.646Z"
     },
@@ -265,7 +265,7 @@
     {
       "id": "bruno-mars",
       "file": "004.jpg",
-      "commonsTitle": "File:Johnny Matos - Cantor - Youtuber e Intéprete de Bruno Mars no Brasil.jpg",
+      "commonsTitle": "File:Johnny Matos - Cantor - Youtuber e Int\u00e9prete de Bruno Mars no Brasil.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Johnny_Matos_-_Cantor_-_Youtuber_e_Int%C3%A9prete_de_Bruno_Mars_no_Brasil.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-18T04:09:51.861Z"
     },
@@ -307,7 +307,7 @@
     {
       "id": "david-beckham",
       "file": "002.jpg",
-      "commonsTitle": "File:MAL131 David Beckham 40 x 30 mm. Artysta malarz Paweł Brodzisz olej - alkid na płótnie 2025. Eksponat Muzeum Miniaturowej Sztuki Profesjonalnej Henryk Jan Dominiak w Tychach.jpg",
+      "commonsTitle": "File:MAL131 David Beckham 40 x 30 mm. Artysta malarz Pawe\u0142 Brodzisz olej - alkid na p\u0142\u00f3tnie 2025. Eksponat Muzeum Miniaturowej Sztuki Profesjonalnej Henryk Jan Dominiak w Tychach.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/MAL131_David_Beckham_40_x_30_mm._Artysta_malarz_Pawe%C5%82_Brodzisz_olej_-_alkid_na_p%C5%82%C3%B3tnie_2025._Eksponat_Muzeum_Miniaturowej_Sztuki_Profesjonalnej_Henryk_Jan_Dominiak_w_Tychach.jpg/960px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:10:49.860Z"
     },
@@ -545,7 +545,7 @@
     {
       "id": "jennifer-lopez",
       "file": "005.jpg",
-      "commonsTitle": "File:Jennifer López- Como ama una mujer.png",
+      "commonsTitle": "File:Jennifer L\u00f3pez- Como ama una mujer.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Jennifer_L%C3%B3pez-_Como_ama_una_mujer.png/960px-Jennifer_L%C3%B3pez-_Como_ama_una_mujer.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:17:54.106Z"
     },
@@ -559,14 +559,14 @@
     {
       "id": "justin-bieber",
       "file": "002.jpg",
-      "commonsTitle": "File:Es el álbum de Justin Bieber cuya canción fue Boyfriend 2014-04-14 19-27.jpg",
+      "commonsTitle": "File:Es el \u00e1lbum de Justin Bieber cuya canci\u00f3n fue Boyfriend 2014-04-14 19-27.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Es_el_%C3%A1lbum_de_Justin_Bieber_cuya_canci%C3%B3n_fue_Boyfriend_2014-04-14_19-27.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
       "fetchedAt": "2026-08-18T04:18:04.437Z"
     },
     {
       "id": "justin-bieber",
       "file": "003.jpg",
-      "commonsTitle": "File:Mistletoe (canción de Justin Bieber).jpg",
+      "commonsTitle": "File:Mistletoe (canci\u00f3n de Justin Bieber).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Mistletoe_%28canci%C3%B3n_de_Justin_Bieber%29.jpg/960px-Mistletoe_%28canci%C3%B3n_de_Justin_Bieber%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:18:10.982Z"
     },
@@ -657,7 +657,7 @@
     {
       "id": "zoe-kravitz",
       "file": "002.jpg",
-      "commonsTitle": "File:Zoë Kravitz (Berlin Film Festival 2011).jpg",
+      "commonsTitle": "File:Zo\u00eb Kravitz (Berlin Film Festival 2011).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Zo%C3%AB_Kravitz_%28Berlin_Film_Festival_2011%29.jpg/960px-Zo%C3%AB_Kravitz_%28Berlin_Film_Festival_2011%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:42:42.876Z"
     },
@@ -795,16 +795,9 @@
       "fetchedAt": "2026-08-18T04:45:02.350Z"
     },
     {
-      "id": "dakota-johnson",
-      "file": "004.jpg",
-      "commonsTitle": "File:Dakota Johnson (2014).jpg",
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Dakota_Johnson_%282014%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-      "fetchedAt": "2026-08-18T04:45:02.641Z"
-    },
-    {
       "id": "gael-garcia-bernal",
       "file": "002.jpg",
-      "commonsTitle": "File:Gael García Bernal.jpg",
+      "commonsTitle": "File:Gael Garc\u00eda Bernal.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Gael_Garc%C3%ADa_Bernal.jpg/960px-Gael_Garc%C3%ADa_Bernal.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:08.900Z"
     },
@@ -818,14 +811,14 @@
     {
       "id": "gael-garcia-bernal",
       "file": "004.jpg",
-      "commonsTitle": "File:Gael García Bernal (Guadalajara Film Festival) 2.jpg",
+      "commonsTitle": "File:Gael Garc\u00eda Bernal (Guadalajara Film Festival) 2.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_2.jpg/960px-Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:13.953Z"
     },
     {
       "id": "gael-garcia-bernal",
       "file": "005.jpg",
-      "commonsTitle": "File:Gael García Bernal (Guadalajara Film Festival) 4.jpg",
+      "commonsTitle": "File:Gael Garc\u00eda Bernal (Guadalajara Film Festival) 4.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_4.jpg/960px-Gael_Garc%C3%ADa_Bernal_%28Guadalajara_Film_Festival%29_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "fetchedAt": "2026-08-18T04:45:21.053Z"
     },
@@ -1077,7 +1070,7 @@
     {
       "id": "anna-sawai",
       "file": "002.jpg",
-      "commonsTitle": "File:Anna Sawai at “Shogun” event at Zojoji 20240220 (cropped).jpg",
+      "commonsTitle": "File:Anna Sawai at \u201cShogun\u201d event at Zojoji 20240220 (cropped).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Anna_Sawai_at_%E2%80%9CShogun%E2%80%9D_event_at_Zojoji_20240220_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T04:56:31.060Z"
     },
@@ -1098,7 +1091,7 @@
     {
       "id": "beyonce",
       "file": "002.jpg",
-      "commonsTitle": "File:Beyoncé Knowles GMA Run the World cropped.jpg",
+      "commonsTitle": "File:Beyonc\u00e9 Knowles GMA Run the World cropped.jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Beyonc%C3%A9_Knowles_GMA_Run_the_World_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T04:56:43.787Z"
     },
@@ -1182,7 +1175,7 @@
     {
       "id": "florence-pugh",
       "file": "002.jpg",
-      "commonsTitle": "File:Florence Pugh at the 2024 Toronto International Film Festival 13 (cropped 2 – color adjusted).jpg",
+      "commonsTitle": "File:Florence Pugh at the 2024 Toronto International Film Festival 13 (cropped 2 \u2013 color adjusted).jpg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Florence_Pugh_at_the_2024_Toronto_International_Film_Festival_13_%28cropped_2_%E2%80%93_color_adjusted%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T04:57:02.504Z"
     },
@@ -1493,6 +1486,1476 @@
       "commonsTitle": "File:Vin diesel.png",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Vin_diesel.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
       "fetchedAt": "2026-08-18T05:01:15.060Z"
+    },
+    {
+      "id": "adele",
+      "file": "003.jpg",
+      "commonsTitle": "File:Adele - Live 2009 (1).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adele_-_Live_2009_%281%29.jpg/960px-Adele_-_Live_2009_%281%29.jpg",
+      "fetchedAt": "2026-08-27T09:36:00.000Z"
+    },
+    {
+      "id": "adele",
+      "file": "004.jpg",
+      "commonsTitle": "File:Adele - Live 2009 (2).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Adele_-_Live_2009_%282%29.jpg/960px-Adele_-_Live_2009_%282%29.jpg",
+      "fetchedAt": "2026-08-27T09:36:00.000Z"
+    },
+    {
+      "id": "adele",
+      "file": "005.jpg",
+      "commonsTitle": "File:Adele 2009.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Adele_2009.jpg/960px-Adele_2009.jpg",
+      "fetchedAt": "2026-08-27T09:36:00.000Z"
+    },
+    {
+      "id": "doja-cat",
+      "file": "002.jpg",
+      "commonsTitle": "File:Doja Cat Hot Pink Party1.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Doja_Cat_Hot_Pink_Party1.png",
+      "fetchedAt": "2026-08-27T09:41:00.000Z"
+    },
+    {
+      "id": "karol-g",
+      "file": "003.jpg",
+      "commonsTitle": "File:Karol G 2018.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Karol_G_2018.png",
+      "fetchedAt": "2026-08-27T10:31:30.558Z"
+    },
+    {
+      "id": "karol-g",
+      "file": "005.jpg",
+      "commonsTitle": "File:Karol G entrevista.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Karol_G_entrevista.jpg",
+      "fetchedAt": "2026-08-27T10:31:41.401Z"
+    },
+    {
+      "id": "karol-g",
+      "file": "006.jpg",
+      "commonsTitle": "File:Karol G 2018 2.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/Karol_G_2018_2.png",
+      "fetchedAt": "2026-08-27T10:31:53.994Z"
+    },
+    {
+      "id": "steve-carell",
+      "file": "003.jpg",
+      "commonsTitle": "File:Steve Carell 2010.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Steve_Carell_2010.jpg",
+      "fetchedAt": "2026-08-27T11:26:00.000Z"
+    },
+    {
+      "id": "steve-carell",
+      "file": "004.jpg",
+      "commonsTitle": "File:Steve Carell at the 2010 SAG Awards.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Steve_Carell_at_the_2010_SAG_Awards.jpg",
+      "fetchedAt": "2026-08-27T11:26:00.000Z"
+    },
+    {
+      "id": "ana-de-armas",
+      "file": "004.jpg",
+      "commonsTitle": "File:Ana de Armas 2017 crop.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ana_de_Armas_2017_crop.jpg",
+      "fetchedAt": "2026-08-27T11:26:00.000Z"
+    },
+    {
+      "id": "lisa-blackpink",
+      "file": "001.jpg",
+      "commonsTitle": "File:20240314 Lisa Manoban 12 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:20240314_Lisa_Manoban_12_(cropped).jpg",
+      "fetchedAt": "2026-08-27T11:26:00.000Z"
+    },
+    {
+      "id": "antonio-banderas",
+      "file": "001.jpg",
+      "commonsTitle": "File:Antonio Banderas 2020.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antonio_Banderas_2020.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "antonio-banderas",
+      "file": "002.jpg",
+      "commonsTitle": "File:Antonio Banderas 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antonio_Banderas_2014.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "antonio-banderas",
+      "file": "003.jpg",
+      "commonsTitle": "File:Antonio Banderas 2011.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antonio_Banderas_2011.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "nicole-kidman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Nicole Kidman Cannes 2013.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicole_Kidman_Cannes_2013.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "nicole-kidman",
+      "file": "003.jpg",
+      "commonsTitle": "File:Nicole Kidman 10 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicole_Kidman_10_(cropped).jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "nicole-kidman",
+      "file": "004.jpg",
+      "commonsTitle": "File:Nicole Kidman Cannes 2017 2.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicole_Kidman_Cannes_2017_2.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "file": "001.jpg",
+      "commonsTitle": "File:Elizabeth Olsen 2018.png",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Olsen_2018.png",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "file": "002.jpg",
+      "commonsTitle": "File:Elizabeth Olsen by Gage Skidmore.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Olsen_by_Gage_Skidmore.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "elizabeth-olsen",
+      "file": "003.jpg",
+      "commonsTitle": "File:Elizabeth Olsen 2 SDCC 2014 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Olsen_2_SDCC_2014_(cropped).jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "sofia-vergara",
+      "file": "001.jpg",
+      "commonsTitle": "File:Sof\u00eda Vergara at 2015 PaleyFest.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sof\u00eda_Vergara_at_2015_PaleyFest.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "sofia-vergara",
+      "file": "002.jpg",
+      "commonsTitle": "File:Sofia Vergara at Golden Globes Red Carpet 2020.png",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sofia_Vergara_at_Golden_Globes_Red_Carpet_2020.png",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "chris-evans",
+      "file": "003.jpg",
+      "commonsTitle": "File:Chris Evans TIFF 2012.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chris_Evans_TIFF_2012.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "chris-evans",
+      "file": "004.jpg",
+      "commonsTitle": "File:Chris Evans in 2019.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chris_Evans_in_2019.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "cardi-b",
+      "file": "001.jpg",
+      "commonsTitle": "File:Cardi B 2021 02.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cardi_B_2021_02.jpg",
+      "fetchedAt": "2026-08-27T12:30:00.000Z"
+    },
+    {
+      "id": "maluma",
+      "file": "006.jpg",
+      "commonsTitle": "File:Maluma - Cuatro Babys - Festival de Vi\u00f1a del Mar 2017.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Maluma_-_Cuatro_Babys_-_Festival_de_Vi\u00f1a_del_Mar_2017.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "maluma",
+      "file": "007.jpg",
+      "commonsTitle": "File:Maluma - Espa\u00e7o das Am\u00e9ricas (37591053894).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Maluma_-_Espa\u00e7o_das_Am\u00e9ricas_(37591053894).jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "beyonce",
+      "file": "003.jpg",
+      "commonsTitle": "File:Beyonc\u00e9 Knowles 2009.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beyonc\u00e9_Knowles_2009.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "beyonce",
+      "file": "004.jpg",
+      "commonsTitle": "File:Flickr - smilesea - Beyonc\u00e9 Newcastle 2009 (17).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_smilesea_-_Beyonc\u00e9_Newcastle_2009_(17).jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "gemma-chan",
+      "file": "001.jpg",
+      "commonsTitle": "File:Gemma Chan at the Moet BIFA 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gemma_Chan_at_the_Moet_BIFA_2014.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "gemma-chan",
+      "file": "002.jpg",
+      "commonsTitle": "File:Gemma Chan Marvel 2019.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gemma_Chan_Marvel_2019.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "harry-styles",
+      "file": "003.jpg",
+      "commonsTitle": "File:Harry Styles November 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Harry_Styles_November_2014.jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "serena-williams",
+      "file": "006.jpg",
+      "commonsTitle": "File:Serena Williams Doha 2013 (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Serena_Williams_Doha_2013_(cropped).jpg",
+      "fetchedAt": "2026-08-27T12:45:00.000Z"
+    },
+    {
+      "id": "donald-glover",
+      "file": "001.jpg",
+      "commonsTitle": "File:Childish Gambino (15178926456).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Childish_Gambino_(15178926456).jpg",
+      "fetchedAt": "2026-08-27T13:21:00.000Z",
+      "note": "product-crop of the concert wide shot; group frame fails acceptPrimaryEmbed"
+    },
+    {
+      "id": "donald-glover",
+      "file": "002.jpg",
+      "commonsTitle": "File:Donald Glover.jpeg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Donald_Glover.jpeg",
+      "fetchedAt": "2026-08-27T13:21:00.000Z",
+      "note": "product-crop of full-body concert frame; whole-image embed was too far from primary"
+    },
+    {
+      "id": "julia-roberts",
+      "file": "001.jpg",
+      "commonsTitle": "File:Julia Roberts 2011 Shankbone.JPG",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Julia_Roberts_2011_Shankbone.JPG",
+      "fetchedAt": "2026-08-27T13:40:00.000Z",
+      "note": "product-crop of 2011 event portrait; not the 80s B&W eval sitting"
+    },
+    {
+      "id": "julia-roberts",
+      "file": "002.jpg",
+      "commonsTitle": "File:Julia Roberts 2010.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Julia_Roberts_2010.jpg",
+      "fetchedAt": "2026-08-27T13:40:00.000Z",
+      "note": "product-crop of 2010 event portrait"
+    },
+    {
+      "id": "sebastian-stan",
+      "file": "001.jpg",
+      "commonsTitle": "File:Sebastian Stan at the 2026 Cannes Film Festival.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sebastian_Stan_at_the_2026_Cannes_Film_Festival.jpg",
+      "fetchedAt": "2026-08-27T14:04:00.000Z",
+      "note": "product-crop of 2026 Cannes buzz-cut tuxedo; not the 2024 beige-suit eval sitting"
+    },
+    {
+      "id": "ariana-grande",
+      "file": "001.jpg",
+      "commonsTitle": "File:Ariana Grande during The Honeymoon Tour in Jakarta 2015.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ariana_Grande_during_The_Honeymoon_Tour_in_Jakarta_2015.jpg",
+      "fetchedAt": "2026-08-27T14:04:00.000Z",
+      "note": "product-crop of Honeymoon Tour Jakarta 2015 cat-ears still; not the 2013 Jingle Ball eval sitting"
+    },
+    {
+      "id": "doja-cat",
+      "file": "003.jpg",
+      "commonsTitle": "File:Doja Cat in 2024.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Doja_Cat_in_2024.jpg",
+      "fetchedAt": "2026-08-27T14:04:00.000Z",
+      "note": "product-crop of Scarlet-era profile; Austin jumbotron frame is the same sitting and was not enrolled"
+    },
+    {
+      "id": "lionel-messi",
+      "file": "001.jpg",
+      "commonsTitle": "File:Lionel Messi PSG (cropped).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lionel_Messi_PSG_(cropped).jpg",
+      "fetchedAt": "2026-08-27T14:22:00.000Z",
+      "note": "product-crop of PSG portrait; not the 2011-12 Barcelona action eval sitting"
+    },
+    {
+      "id": "kendrick-lamar",
+      "file": "001.jpg",
+      "commonsTitle": "File:Kendrick Lamar Pitchfork 2012.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kendrick_Lamar_Pitchfork_2012.jpg",
+      "fetchedAt": "2026-08-27T14:44:00.000Z",
+      "note": "product-crop of Pitchfork 2012 gingham concert still; not the 2016 FEQ eval sitting"
+    },
+    {
+      "id": "kendrick-lamar",
+      "file": "003.jpg",
+      "commonsTitle": "File:Kendrick Lamar 3 F.I.B. 2016 (cropped 3).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kendrick_Lamar_3_F.I.B._2016_(cropped_3).jpg",
+      "fetchedAt": "2026-08-27T14:44:00.000Z",
+      "note": "product-crop of FIB 2016 B&W concert still; not the FEQ July 2016 eval sitting"
+    },
+    {
+      "id": "martin-scorsese",
+      "file": "001.jpg",
+      "commonsTitle": "(pre-existing extra-photos/martin-scorsese/001.jpg)",
+      "sourceUrl": "",
+      "fetchedAt": "2026-08-27T15:12:00.000Z",
+      "note": "product-crop of on-disk glasses studio portrait; not 65th Peabody Awards eval sitting"
+    },
+    {
+      "id": "martin-scorsese",
+      "file": "002.jpg",
+      "commonsTitle": "(pre-existing extra-photos/martin-scorsese/002.jpg)",
+      "sourceUrl": "",
+      "fetchedAt": "2026-08-27T15:12:00.000Z",
+      "note": "product-crop isolating Scorsese from an awards-stage frame with DiCaprio; not Peabody eval"
+    },
+    {
+      "id": "florence-pugh",
+      "file": "005.jpg",
+      "commonsTitle": "File:Florence Pugh at the 2024 Toronto International Film Festival 4.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Florence_Pugh_at_the_2024_Toronto_International_Film_Festival_4.jpg",
+      "fetchedAt": "2026-08-27T15:12:00.000Z",
+      "note": "product-crop of 2024 TIFF van 3/4; Comic-Con extra 003 is the eval sitting and was not enrolled. BFI LFF enrolls via held-out/003.jpg"
+    },
+    {
+      "id": "kate-winslet",
+      "file": "001.jpg",
+      "commonsTitle": "File:Kate Winslet in 2023 (1) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Kate_Winslet_in_2023_%281%29_%28cropped%29.jpg/1920px-Kate_Winslet_in_2023_%281%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:33.563Z",
+      "note": "2023 white blazer waves; not 2011 Venice updo/navy-gown eval"
+    },
+    {
+      "id": "kate-winslet",
+      "file": "003.jpg",
+      "commonsTitle": "File:Kate Winslet TIFF 2015.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Kate_Winslet_TIFF_2015.jpg/1920px-Kate_Winslet_TIFF_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:33.871Z",
+      "note": "TIFF 2015 autograph navy sequin; not Venice 2011 eval"
+    },
+    {
+      "id": "the-weeknd",
+      "file": "006.jpg",
+      "commonsTitle": "File:The Weeknd Cannes 2023.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/The_Weeknd_Cannes_2023.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:34.128Z",
+      "note": "Cannes 2023 tuxedo; not red/blue concert jacket eval"
+    },
+    {
+      "id": "vanessa-kirby",
+      "file": "001.jpg",
+      "commonsTitle": "File:Vanessa Kirby 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Vanessa_Kirby_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:34.427Z",
+      "note": "2018 leopard turtleneck interview; not black-blazer studio eval"
+    },
+    {
+      "id": "vanessa-kirby",
+      "file": "002.jpg",
+      "commonsTitle": "File:Vanessa Kirby in Paris, 2018.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Vanessa_Kirby_in_Paris%2C_2018.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:34.695Z",
+      "note": "strapless red-carpet updo; not black-blazer studio eval"
+    },
+    {
+      "id": "awkwafina",
+      "file": "001.jpg",
+      "commonsTitle": "File:Awkwafina, 2018 (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Awkwafina%2C_2018_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:35.058Z",
+      "note": "2018 studio turtleneck/nose-ring; not Golden Globes ruffled collar eval"
+    },
+    {
+      "id": "awkwafina",
+      "file": "002.jpg",
+      "commonsTitle": "File:Awkwafina at BAFTA 2026.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Awkwafina_at_BAFTA_2026.jpg/1920px-Awkwafina_at_BAFTA_2026.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:35.333Z",
+      "note": "BAFTA TV 2026 orange dress; not Golden Globes ruffled collar eval"
+    },
+    {
+      "id": "adriana-lima",
+      "file": "004.jpg",
+      "commonsTitle": "File:Adriana Lima in 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Adriana_Lima_in_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:35.591Z",
+      "note": "2011 outdoor sequin interview; not 2010 Fantasy Bra red-dress eval"
+    },
+    {
+      "id": "tom-hanks",
+      "file": "001.jpg",
+      "commonsTitle": "File:Tom Hanks 2016.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Tom_Hanks_2016.jpg/1920px-Tom_Hanks_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:38:36.213Z",
+      "note": "2016 blue-backdrop suede; not Kennedy Center Honors eval"
+    },
+    {
+      "id": "tom-hanks",
+      "file": "003.jpg",
+      "commonsTitle": "File:Tom Hanks at the Elvis Premiere 2022.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Tom_Hanks_at_the_Elvis_Premiere_2022.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:36.461Z",
+      "note": "Elvis premiere 2022 overcoat; not Kennedy Center Honors eval"
+    },
+    {
+      "id": "hrithik-roshan",
+      "file": "001.jpg",
+      "commonsTitle": "File:Hrithik Roshan in 2019.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Hrithik_Roshan_in_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:36.709Z",
+      "note": "2019 orange tee microphone; not Netflix HRX-cap eval"
+    },
+    {
+      "id": "hrithik-roshan",
+      "file": "004.jpg",
+      "commonsTitle": "File:Hrithik Roshan in 2016.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Hrithik_Roshan_in_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:36.952Z",
+      "note": "2016 pinstripe blazer pink cubes; not Netflix HRX-cap eval"
+    },
+    {
+      "id": "hrithik-roshan",
+      "file": "005.jpg",
+      "commonsTitle": "File:Hrithik Roshan at Homebound screening (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Hrithik_Roshan_at_Homebound_screening_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:37.192Z",
+      "note": "Cannes 2025 Homebound leather; not Netflix HRX-cap eval"
+    },
+    {
+      "id": "steve-carell",
+      "file": "005.jpg",
+      "commonsTitle": "File:Steve Carell November 2014.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Steve_Carell_November_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:37.453Z",
+      "note": "Montclair Film 2014 no-glasses; not Despicable Me 2 glasses eval"
+    },
+    {
+      "id": "lady-gaga",
+      "file": "006.jpg",
+      "commonsTitle": "File:Lady Gaga JWT Toronto, 2017-09-06 (cropped 2).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Lady_Gaga_JWT_Toronto%2C_2017-09-06_%28cropped_2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:38:37.716Z",
+      "note": "JWT Toronto Joanne-guitar look; not leather A-Yo orange-backdrop eval"
+    },
+    {
+      "id": "heidi-klum",
+      "file": "001.jpg",
+      "commonsTitle": "File:Heidi Klum Judges Red Carpet event April 2014 (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/60/Heidi_Klum_Judges_Red_Carpet_event_April_2014_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:01.760Z",
+      "note": "AGT 2014 black V-neck; not 2001 Heavenly Star Bra eval"
+    },
+    {
+      "id": "gwyneth-paltrow",
+      "file": "006.jpg",
+      "commonsTitle": "File:Gwyneth Paltrow 2010.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Gwyneth_Paltrow_2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:02.015Z",
+      "note": "2010 striped shirt studio smile; not Venice 2011 Contagion eval"
+    },
+    {
+      "id": "gwyneth-paltrow",
+      "file": "007.jpg",
+      "commonsTitle": "File:Gwyneth Paltrow avp Iron Man 3 Paris.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Gwyneth_Paltrow_avp_Iron_Man_3_Paris.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:02.281Z",
+      "note": "Iron Man 3 Paris AVP; not Venice 2011 Contagion eval"
+    },
+    {
+      "id": "gwyneth-paltrow",
+      "file": "008.jpg",
+      "commonsTitle": "File:Gwyneth Paltrow 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Gwyneth_Paltrow_2012.jpg/1920px-Gwyneth_Paltrow_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:59:02.623Z",
+      "note": "2012 white-neckline red carpet; not Venice 2011 Contagion eval"
+    },
+    {
+      "id": "bill-skarsgard",
+      "file": "001.jpg",
+      "commonsTitle": "File:Bill Skarsgård (42717006345) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Bill_Skarsg%C3%A5rd_%2842717006345%29_%28cropped%29.jpg/1920px-Bill_Skarsg%C3%A5rd_%2842717006345%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:59:02.969Z",
+      "note": "2017 IT Comic-Con floral shirt; not cable-knit Mark Verheiden panel eval"
+    },
+    {
+      "id": "ian-somerhalder",
+      "file": "001.jpg",
+      "commonsTitle": "File:Ian Somerhalder by Gage Skidmore 2.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Ian_Somerhalder_by_Gage_Skidmore_2.jpg/1920px-Ian_Somerhalder_by_Gage_Skidmore_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T16:59:03.245Z",
+      "note": "Comic-Con Team Stefan checkered fedora; not grey-fedora dark V-neck eval"
+    },
+    {
+      "id": "taylor-swift",
+      "file": "001.jpg",
+      "commonsTitle": "File:Taylor Swift AMAs 2019.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Taylor_Swift_AMAs_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:03.514Z",
+      "note": "AMAs 2019 bangs green sequin; not TIME 100 2010 curly black-strapless eval"
+    },
+    {
+      "id": "daniel-radcliffe",
+      "file": "006.jpg",
+      "commonsTitle": "File:Daniel Radcliffe 2009.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Daniel_Radcliffe_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:03.764Z",
+      "note": "2009 pink shirt grey blazer; not 2006 Empire Awards graphic-tee eval"
+    },
+    {
+      "id": "joaquin-phoenix",
+      "file": "001.jpg",
+      "commonsTitle": "File:Joaquin Phoenix at the 2018 Berlin Film Festival.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Joaquin_Phoenix_at_the_2018_Berlin_Film_Festival.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:04.370Z",
+      "note": "Berlinale 2018 no sunglasses; not outdoor tortoiseshell-sunglasses eval"
+    },
+    {
+      "id": "sandra-bullock",
+      "file": "001.jpg",
+      "commonsTitle": "File:Sandra Bullock in July 2013.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Sandra_Bullock_in_July_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:04.655Z",
+      "note": "July 2013 teal embroidered blouse updo; not layered-pearls eval"
+    },
+    {
+      "id": "sandra-bullock",
+      "file": "002.jpg",
+      "commonsTitle": "File:Sandra Bullock, The Heat, London, 2013 (crop).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Sandra_Bullock%2C_The_Heat%2C_London%2C_2013_%28crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T16:59:04.904Z",
+      "note": "The Heat London 2013 waves black lace; not layered-pearls eval"
+    },
+    {
+      "id": "margot-robbie",
+      "file": "003.jpg",
+      "commonsTitle": "File:Margot Robbie 2016 cropped and retouched.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/26/Margot_Robbie_2016_cropped_and_retouched.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:37.518Z",
+      "note": "2016 beaded white collar; not Comic-Con tan clap eval"
+    },
+    {
+      "id": "margot-robbie",
+      "file": "004.jpg",
+      "commonsTitle": "File:Margot Robbie MTV 2018 (cropped).png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/Margot_Robbie_MTV_2018_%28cropped%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:37.772Z",
+      "note": "MTV 2018 blue geometric shirt; not Comic-Con tan clap eval"
+    },
+    {
+      "id": "margot-robbie",
+      "file": "005.jpg",
+      "commonsTitle": "File:Margot Robbie Whiskey Tango Foxtrot premiere.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Margot_Robbie_Whiskey_Tango_Foxtrot_premiere.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:38.019Z",
+      "note": "WTF premiere black V-neck ponytail; not Comic-Con tan clap eval"
+    },
+    {
+      "id": "penelope-cruz",
+      "file": "001.jpg",
+      "commonsTitle": "File:Penélope Cruz - Cannes 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Pen%C3%A9lope_Cruz_-_Cannes_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:38.260Z",
+      "note": "Cannes 2011 royal-blue halter; not LA City Hall certificate eval"
+    },
+    {
+      "id": "penelope-cruz",
+      "file": "002.jpg",
+      "commonsTitle": "File:Penelope Cruz Cannes 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Penelope_Cruz_Cannes_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:38.518Z",
+      "note": "Cannes 2018 black lace ruby earrings; not LA City Hall certificate eval"
+    },
+    {
+      "id": "penelope-cruz",
+      "file": "003.jpg",
+      "commonsTitle": "File:Penélope Cruz TIFF 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Pen%C3%A9lope_Cruz_TIFF_2012.jpg/1920px-Pen%C3%A9lope_Cruz_TIFF_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:22:38.851Z",
+      "note": "TIFF 2012 blush off-shoulder; not LA City Hall certificate eval"
+    },
+    {
+      "id": "cristiano-ronaldo",
+      "file": "001.jpg",
+      "commonsTitle": "File:Cristiano Ronaldo Portugal 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Cristiano_Ronaldo_Portugal_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.105Z",
+      "note": "Portugal WC 2018 white Uruguay jersey; not Juventus 2019-20 Jeep eval"
+    },
+    {
+      "id": "cristiano-ronaldo",
+      "file": "002.jpg",
+      "commonsTitle": "File:Cristiano Ronaldo 2018.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.361Z",
+      "note": "Portugal WC 2018 red Spain jersey; not Juventus 2019-20 Jeep eval"
+    },
+    {
+      "id": "drew-barrymore",
+      "file": "002.jpg",
+      "commonsTitle": "File:Drew Barrymore Berlin 2014.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Drew_Barrymore_Berlin_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.625Z",
+      "note": "Berlin Blended 2014 3/4 waves; not profile updo sparkly-headband eval"
+    },
+    {
+      "id": "zayn-malik",
+      "file": "001.jpg",
+      "commonsTitle": "File:ZaynWWATchile Cropped.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/ZaynWWATchile_Cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:39.922Z",
+      "note": "WWA Chile STAY REAL jersey; not 2012 white-red concert eval"
+    },
+    {
+      "id": "zayn-malik",
+      "file": "002.jpg",
+      "commonsTitle": "File:Zayn Malik - One Direction (14936271965).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Zayn_Malik_-_One_Direction_%2814936271965%29.jpg/1920px-Zayn_Malik_-_One_Direction_%2814936271965%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:22:40.192Z",
+      "note": "WWA Iron Maiden tank; not 2012 white-red concert eval"
+    },
+    {
+      "id": "simu-liu",
+      "file": "001.jpg",
+      "commonsTitle": "File:Simu Liu (202).png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Simu_Liu_%28202%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:22:40.442Z",
+      "note": "Theater dark blazer yellow collar; not Kim's Convenience blue-suit eval"
+    },
+    {
+      "id": "lee-jung-jae",
+      "file": "001.jpg",
+      "commonsTitle": "File:20210923—Lee Jung-jae 이정재, interview, ELLE Taiwan screenshot (02m06s).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1c/20210923%E2%80%94Lee_Jung-jae_%EC%9D%B4%EC%A0%95%EC%9E%AC%2C_interview%2C_ELLE_Taiwan_screenshot_%2802m06s%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:17.499Z",
+      "note": "Squid Game Netflix cutout jacket; not Typhoon 2005 white-suit eval"
+    },
+    {
+      "id": "park-seo-joon",
+      "file": "001.jpg",
+      "commonsTitle": "File:Park Seo-joon in June 2019.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Park_Seo-joon_in_June_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:17.765Z",
+      "note": "June 2019 black blazer wave; not green-black-white colorblock eval"
+    },
+    {
+      "id": "orlando-bloom",
+      "file": "001.jpg",
+      "commonsTitle": "File:Orlando Bloom 2014 Comic Con (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Orlando_Bloom_2014_Comic_Con_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:18.032Z",
+      "note": "SDCC 2014 man-bun striped shirt; not dark-suit white pocket-square eval"
+    },
+    {
+      "id": "orlando-bloom",
+      "file": "002.jpg",
+      "commonsTitle": "File:Orlando Bloom Cannes 2013.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Orlando_Bloom_Cannes_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:40:18.286Z",
+      "note": "Cannes 2013 navy jacket light-blue shirt; not dark-suit white pocket-square eval"
+    },
+    {
+      "id": "cailee-spaeny",
+      "file": "001.jpg",
+      "commonsTitle": "File:Cailee Spaeny TIFF 2025.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Cailee_Spaeny_TIFF_2025.jpg/1920px-Cailee_Spaeny_TIFF_2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:40:18.592Z",
+      "note": "TIFF 2025 white lace two-piece; not pink crystal-cutout bangs eval"
+    },
+    {
+      "id": "anthony-hopkins",
+      "file": "002.jpg",
+      "commonsTitle": "File:Oliver Mark - Anthony Hopkins, Berlin 2001.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Oliver_Mark_-_Anthony_Hopkins%2C_Berlin_2001.jpg/1920px-Oliver_Mark_-_Anthony_Hopkins%2C_Berlin_2001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T17:40:19.205Z",
+      "note": "Berlin 2001 black turtleneck; not fedora popped-collar polo eval"
+    },
+    {
+      "id": "eva-longoria",
+      "file": "001.jpg",
+      "commonsTitle": "File:Eva Longoria 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/6/64/Eva_Longoria_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:18.803Z",
+      "note": "2012 black velvet Pepsi LIVE; not cream sleeveless swirl-pendant eval"
+    },
+    {
+      "id": "eva-longoria",
+      "file": "002.jpg",
+      "commonsTitle": "File:Eva Longoria 6, 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Eva_Longoria_6%2C_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.071Z",
+      "note": "2011 red origami strapless updo; not cream sleeveless swirl-pendant eval"
+    },
+    {
+      "id": "logan-lerman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Logan Lerman TIFF 2012.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Logan_Lerman_TIFF_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.371Z",
+      "note": "TIFF 2012 buzz-cut brown blazer loosened tie; not Fury 2014 tweed eval"
+    },
+    {
+      "id": "logan-lerman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Logan Lerman 2013.png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Logan_Lerman_2013.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.629Z",
+      "note": "Percy Jackson 2013 interview; not Fury 2014 tweed eval"
+    },
+    {
+      "id": "amy-adams",
+      "file": "001.jpg",
+      "commonsTitle": "File:Amy Adams (29708985502) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Amy_Adams_%2829708985502%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:19.893Z",
+      "note": "2016 cobalt ruffle wave; not 2009 Oscars red bib-necklace eval"
+    },
+    {
+      "id": "amy-adams",
+      "file": "002.jpg",
+      "commonsTitle": "File:Amy Adams UK Nocturnal Animals Premiere (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Amy_Adams_UK_Nocturnal_Animals_Premiere_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:20.243Z",
+      "note": "2014 BAFTA black velvet knotted neckline; not 2009 Oscars red bib-necklace eval"
+    },
+    {
+      "id": "rachel-mcadams",
+      "file": "001.jpg",
+      "commonsTitle": "File:Rachel McAdams 3.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Rachel_McAdams_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T17:59:20.496Z",
+      "note": "2011 Cannes teal one-shoulder Old Hollywood waves; not Sherlock 2009 updo red-lipstick eval"
+    },
+    {
+      "id": "chris-hemsworth",
+      "file": "001.jpg",
+      "commonsTitle": "File:Chris Hemsworth (7400859048).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/58/Chris_Hemsworth_%287400859048%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:35:08.397Z",
+      "note": "navy pinstripe 3-piece open collar; not Comic-Con blue matching-tie eval"
+    },
+    {
+      "id": "chris-hemsworth",
+      "file": "002.jpg",
+      "commonsTitle": "File:Chris Hemsworth Bali 2019 3.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Chris_Hemsworth_Bali_2019_3.jpg/1920px-Chris_Hemsworth_Bali_2019_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:35:08.677Z",
+      "note": "MIB 2019 grey vest peace-sign; not Comic-Con blue matching-tie eval"
+    },
+    {
+      "id": "hugh-jackman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Hugh Jackman Suit.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hugh_Jackman_Suit.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:35:08.948Z",
+      "note": "charcoal blazer black shirt outdoor; not navy grey-shirt slim-tie eval"
+    },
+    {
+      "id": "hugh-jackman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Hugh Jackman - SDCC13.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hugh_Jackman_-_SDCC13.jpg/1920px-Hugh_Jackman_-_SDCC13.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:35:09.282Z",
+      "note": "SDCC 2013 white-shirt beard panel; not navy grey-shirt slim-tie eval"
+    },
+    {
+      "id": "rosalia",
+      "file": "001.jpg",
+      "commonsTitle": "File:2023-11-16 Gala de los Latin Grammy, 27 (cropped)02.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/2023-11-16_Gala_de_los_Latin_Grammy%2C_27_%28cropped%2902.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:35:09.579Z",
+      "note": "2023 Latin Grammy black lace over-shoulder; not Goya 2019 embroidered-jacket eval"
+    },
+    {
+      "id": "andrew-garfield",
+      "file": "001.jpg",
+      "commonsTitle": "File:Andrew Garfield 2011.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Andrew_Garfield_2011.jpg/1920px-Andrew_Garfield_2011.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:35:09.881Z",
+      "note": "2011 Comic-Con orange striped sweater; not navy-suit black-shirt slim-tie eval"
+    },
+    {
+      "id": "hyun-bin",
+      "file": "002.jpg",
+      "commonsTitle": "File:20240620 Hyun Bin (\ud604\ube48) 03.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/20240620_Hyun_Bin_%28%ED%98%84%EB%B9%88%29_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:49:59.626Z",
+      "note": "2024 white double-breasted red backdrop; not PiFan tuxedo eval"
+    },
+    {
+      "id": "gary-oldman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Gary Oldman at the London premiere of Tinker Tailor Soldier Spy (cropped).png",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Gary_Oldman_at_the_London_premiere_of_Tinker_Tailor_Soldier_Spy_%28cropped%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:49:59.897Z",
+      "note": "Tinker Tailor purple shirt translucent glasses; not Comic-Con striped-blazer eval"
+    },
+    {
+      "id": "gary-oldman",
+      "file": "002.jpg",
+      "commonsTitle": "File:Gary Oldman 2019 TIFF.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Gary_Oldman_2019_TIFF.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:00.185Z",
+      "note": "TIFF 2019 navy blazer white shirt round glasses; not Comic-Con striped-blazer eval"
+    },
+    {
+      "id": "uma-thurman",
+      "file": "001.jpg",
+      "commonsTitle": "File:Uma Thurman 2014 (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/be/Uma_Thurman_2014_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:00.464Z",
+      "note": "2014 grey wool coat chandelier earrings; not Cannes 2000 bead-necklace eval"
+    },
+    {
+      "id": "chris-pine",
+      "file": "001.jpg",
+      "commonsTitle": "File:Chris Pine (43043463084) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Chris_Pine_%2843043463084%29_%28cropped%29.jpg/1920px-Chris_Pine_%2843043463084%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T18:50:00.809Z",
+      "note": "peach linen open collar gold chain; not blue v-neck beard eval"
+    },
+    {
+      "id": "oscar-isaac",
+      "file": "001.jpg",
+      "commonsTitle": "File:Oscar Isaac 2025.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Oscar_Isaac_2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:01.078Z",
+      "note": "2025 black neck-wrap wave; not Comic-Con dark-shirt mic eval"
+    },
+    {
+      "id": "oscar-isaac",
+      "file": "002.jpg",
+      "commonsTitle": "File:Oscar Isaac 2013.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Oscar_Isaac_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T18:50:01.332Z",
+      "note": "2013 navy suit slim tie pocket square; not Comic-Con dark-shirt mic eval"
+    },
+    {
+      "id": "mahershala-ali",
+      "file": "001.jpg",
+      "commonsTitle": "File:MahershalalhashbazAliCCJuly07.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3d/MahershalalhashbazAliCCJuly07.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:02:57.731Z",
+      "note": "2007 Comic-Con cap forest-green polo; not denim white-collar eval"
+    },
+    {
+      "id": "mark-zuckerberg",
+      "file": "001.jpg",
+      "commonsTitle": "File:Mark Zuckerberg (7977779798).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mark_Zuckerberg_%287977779798%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:02:58.005Z",
+      "note": "TechCrunch Disrupt grey tee; not Harvard hoodie iBook eval"
+    },
+    {
+      "id": "brie-larson",
+      "file": "001.jpg",
+      "commonsTitle": "File:Brie Larson (28503337132) (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Brie_Larson_%2828503337132%29_%28cropped%29.jpg/1920px-Brie_Larson_%2828503337132%29_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "fetchedAt": "2026-08-27T19:13:51.442Z",
+      "note": "Comic-Con panel white ruffle mic; not SXSW 2013 Lacoste eval"
+    },
+    {
+      "id": "brie-larson",
+      "file": "002.jpg",
+      "commonsTitle": "File:Kong- Skull Island Japan Premiere Red Carpet - Brie Larson (cropped).jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Kong-_Skull_Island_Japan_Premiere_Red_Carpet_-_Brie_Larson_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:13:51.717Z",
+      "note": "Kong Japan premiere updo toothy smile; not SXSW 2013 Lacoste eval"
+    },
+    {
+      "id": "fan-bingbing",
+      "file": "001.jpg",
+      "commonsTitle": "File:Fan Bingbing attending BIFAN 2026 11.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Fan_Bingbing_attending_BIFAN_2026_11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fetchedAt": "2026-08-27T19:13:51.971Z",
+      "note": "BIFAN 2026 silver gown black gloves; not X-Men Hugh Jackman eval"
+    },
+    {
+        "id": "matt-damon",
+        "file": "001.jpg",
+        "commonsTitle": "File:Matt Damon 2014 3.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Matt_Damon_2014_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Navy blazer 2014 close-up; not Bourne white-shirt eval"
+    },
+    {
+        "id": "matt-damon",
+        "file": "002.jpg",
+        "commonsTitle": "File:Matt Damon TIFF 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/Matt_Damon_TIFF_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "The Martian NASA pin TIFF 2015; not Bourne white-shirt eval"
+    },
+    {
+        "id": "channing-tatum",
+        "file": "001.jpg",
+        "commonsTitle": "File:Channing Tatum July 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Channing_Tatum_July_2015.jpg/1280px-Channing_Tatum_July_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Grey suit white shirt necktie; not leather-jacket henley eval"
+    },
+    {
+        "id": "deepika-padukone",
+        "file": "001.jpg",
+        "commonsTitle": "File:Deepika Padukone December 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/14/Deepika_Padukone_December_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Peter Pan collar pearl studs; not white off-shoulder eval"
+    },
+    {
+        "id": "deepika-padukone",
+        "file": "002.jpg",
+        "commonsTitle": "File:Deepika Padukone at Garnier event.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Deepika_Padukone_at_Garnier_event.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Floral halter Garnier; not white off-shoulder eval"
+    },
+    {
+        "id": "chadwick-boseman",
+        "file": "001.jpg",
+        "commonsTitle": "File:Chadwick Boseman by Sachyn Mital.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Chadwick_Boseman_by_Sachyn_Mital.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Gods of Egypt premiere olive shirt; not Comic-Con paisley eval"
+    },
+    {
+        "id": "martin-freeman",
+        "file": "001.jpg",
+        "commonsTitle": "File:Martin Freeman-5257.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Martin_Freeman-5257.jpg/1280px-Martin_Freeman-5257.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T19:52:17.389Z",
+        "note": "Berlinale green corduroy; not Folk Awards amber-glasses eval"
+    },
+    {
+        "id": "scarlett-johansson",
+        "file": "001.jpg",
+        "commonsTitle": "File:Scarlett Johansson 3.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Scarlett_Johansson_3.jpg/1280px-Scarlett_Johansson_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T19:52:17.390Z",
+        "note": "Pink cardigan Marines visit; not SDCC 2019 mesh-bun eval"
+    },
+    {
+        "id": "son-ye-jin",
+        "file": "001.jpg",
+        "commonsTitle": "File:Son Ye-jin in March 2024.png",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Son_Ye-jin_in_March_2024.png/1280px-Son_Ye-jin_in_March_2024.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "Studio white floral shirt hair down; not Baeksang pearl-strap gown eval"
+    },
+    {
+        "id": "tony-leung",
+        "file": "001.jpg",
+        "commonsTitle": "File:Tony Leung (cropped).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Tony_Leung_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "Black vest white shirt mic; not Intercontinental dark-shirt eval"
+    },
+    {
+        "id": "lupita-nyongo",
+        "file": "001.jpg",
+        "commonsTitle": "File:Lupita Nyong'o Cannes 2015.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Lupita_Nyong%27o_Cannes_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "Cannes 2015 emerald gown doughnut bun; not Tribeca TIME blue-suit eval"
+    },
+    {
+        "id": "benedict-cumberbatch",
+        "file": "001.jpg",
+        "commonsTitle": "File:Benedict Cumberbatch (48470892131).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Benedict_Cumberbatch_%2848470892131%29.jpg/1280px-Benedict_Cumberbatch_%2848470892131%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "SDCC navy cardigan grey tee; not Sherlock overcoat scarf eval"
+    },
+    {
+        "id": "joseph-gordon-levitt",
+        "file": "001.jpg",
+        "commonsTitle": "File:Joseph Gordon-Levitt (6855057100).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Joseph_Gordon-Levitt_%286855057100%29.jpg/1280px-Joseph_Gordon-Levitt_%286855057100%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-27T20:15:12.411Z",
+        "note": "WonderCon navy blazer striped shirt; not v-neck sweater patterned-tie eval"
+    }    ,
+    {
+        "id": "britney-spears",
+        "file": "001.jpg",
+        "commonsTitle": "File:Britney Spears - Femme Fatale Tour (Toronto) (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Britney_Spears_-_Femme_Fatale_Tour_(Toronto)_(cropped).jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Toronto Femme Fatale silver sequin; not gold metallic jacket eval"
+    }    ,
+    {
+        "id": "britney-spears",
+        "file": "002.jpg",
+        "commonsTitle": "File:Britney Spears 2011.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Britney_Spears_2011.jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Purple studded Hold It Against Me costume; not gold jacket eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "003.jpg",
+        "commonsTitle": "File:Mark Ruffalo (Berlin Film Festival 2010).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_(Berlin_Film_Festival_2010).jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Berlin 2010 black suit wave; not Kids Are All Right peace-sign eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "004.jpg",
+        "commonsTitle": "File:Mark Ruffalo (Berlin Film Festival 2010) 2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_(Berlin_Film_Festival_2010)_2.jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Berlin 2010 outdoor parka; not Kids Are All Right peace-sign eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "005.jpg",
+        "commonsTitle": "File:Mark Ruffalo - 2010 New York Film Festival (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_-_2010_New_York_Film_Festival_(cropped).jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "NYFF 2010 grey blazer black shirt; not Kids Are All Right pinstripe eval"
+    }    ,
+    {
+        "id": "mark-ruffalo",
+        "file": "006.jpg",
+        "commonsTitle": "File:Mark Ruffalo 2012.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mark_Ruffalo_2012.jpg",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Avengers 2012 navy shirt Marvel backdrop; not Kids Are All Right eval"
+    }    ,
+    {
+        "id": "jonathan-bailey",
+        "file": "001.jpg",
+        "commonsTitle": "File:Jonathan Bailey at Testament of Youth Premiere in October 2014 2.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jonathan_Bailey_at_Testament_of_Youth_Premiere_in_October_2014_2.png",
+        "fetchedAt": "2026-08-27T20:36:43.390Z",
+        "note": "Testament of Youth 2014 no glasses; not Independent Filmmakers Ball eval"
+    }    ,
+    {
+        "id": "jisoo",
+        "file": "005.jpg",
+        "commonsTitle": "File:Kim Ji-soo at the Golden Disc Awards on January 5, 2019 (7).png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kim_Ji-soo_at_the_Golden_Disc_Awards_on_January_5%2C_2019_(7).png",
+        "fetchedAt": "2026-08-27T20:49:56.090Z",
+        "note": "Golden Disc 2019 gold sequin smile; not 2017 floral concert eval"
+    }    ,
+    {
+        "id": "song-kang",
+        "file": "003.jpg",
+        "commonsTitle": "File:Song Kang in November 2025.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Song_Kang_in_November_2025.jpg",
+        "fetchedAt": "2026-08-27T21:04:00.000Z",
+        "note": "November 2025 high-collar press; not wet-look denim eval"
+    }    ,
+    {
+        "id": "austin-butler",
+        "file": "001.jpg",
+        "commonsTitle": "File:Austin Butler at Caught stealing premiere London 2025.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Austin_Butler_at_Caught_stealing_premiere_London_2025.jpg",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "Caught Stealing London premiere stubble quiff; not dark-pompadour studio eval"
+    }    ,
+    {
+        "id": "tom-hiddleston",
+        "file": "001.jpg",
+        "commonsTitle": "File:Tom Hiddleston Comic Con 2016.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tom_Hiddleston_Comic_Con_2016.jpg",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "Comic-Con 2016 grey polo smile; not navy-sweater Comic-Con eval"
+    }    ,
+    {
+        "id": "tom-hiddleston",
+        "file": "002.jpg",
+        "commonsTitle": "File:Tom Hiddleston by Gage Skidmore 2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tom_Hiddleston_by_Gage_Skidmore_2.jpg",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "Gage Skidmore linen blazer panel; not navy-sweater Comic-Con eval"
+    }    ,
+    {
+        "id": "robert-de-niro",
+        "file": "008.jpg",
+        "commonsTitle": "File:Robert De Niro 2011 1.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Robert_De_Niro_2011_1.JPG",
+        "fetchedAt": "2026-08-27T21:45:00.000Z",
+        "note": "2011 bowtie glasses; not salt-pepper patterned-tie eval"
+    }    ,
+    {
+        "id": "cara-delevingne",
+        "file": "006.jpg",
+        "commonsTitle": "File:Cara Delevingne September 2014.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cara_Delevingne_September_2014.jpg",
+        "fetchedAt": "2026-08-27T22:05:00.000Z",
+        "note": "September 2014 velvet blazer bun; not runway color-block eval"
+    }    ,
+    {
+        "id": "penelope-cruz-m",
+        "file": "001.jpg",
+        "commonsTitle": "File:Penélope Cruz TIFF 2012.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pen%C3%A9lope_Cruz_TIFF_2012.jpg",
+        "fetchedAt": "2026-08-27T22:05:00.000Z",
+        "note": "TIFF 2012 blush off-shoulder; not burgundy strapless updo eval"
+    }    ,
+    {
+        "id": "penelope-cruz-m",
+        "file": "002.jpg",
+        "commonsTitle": "File:Premios Goya 2018 - Penélope Cruz.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Premios_Goya_2018_-_Pen%C3%A9lope_Cruz.jpg",
+        "fetchedAt": "2026-08-27T22:05:00.000Z",
+        "note": "Goya 2018 white beaded; not burgundy strapless updo eval"
+    }    ,
+    {
+        "id": "lee-min-ho",
+        "file": "001.jpg",
+        "commonsTitle": "File:Lee Min-ho in December 2025.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lee_Min-ho_in_December_2025.png",
+        "fetchedAt": "2026-08-27T22:25:00.000Z",
+        "note": "Dec 2025 Disney+ brown leather grey sweater; not autumnal floral eval"
+    }    ,
+    {
+        "id": "lee-min-ho",
+        "file": "002.jpg",
+        "commonsTitle": "File:Lee Min-ho at the press conference for 'Omniscient Reader - The Prophet', 18 June 2025.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lee_Min-ho_at_the_press_conference_for_%27Omniscient_Reader_-_The_Prophet%27,_18_June_2025.png",
+        "fetchedAt": "2026-08-27T22:25:00.000Z",
+        "note": "Omniscient Reader Jun 2025 black blazer pendant; not autumnal floral eval"
+    }    ,
+    {
+        "id": "keira-knightley",
+        "file": "003.jpg",
+        "commonsTitle": "File:Keira Knightley 2005 (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Keira_Knightley_2005_(cropped).jpg",
+        "fetchedAt": "2026-08-27T22:25:00.000Z",
+        "note": "2005 honey-blonde half-up plaid; not brunette updo champagne-lace eval"
+    }    ,
+    {
+        "id": "glen-powell",
+        "file": "001.jpg",
+        "commonsTitle": "File:Glen Powell in 2016.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Glen_Powell_in_2016.jpg",
+        "fetchedAt": "2026-08-27T22:45:00.000Z",
+        "note": "2016 Golden Globes tuxedo NASA pin; not outdoor-night navy-suit necktie eval"
+    }    ,
+    {
+        "id": "glen-powell",
+        "file": "002.jpg",
+        "commonsTitle": "File:Glen Powell at Top Gun- Maverick premiere.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Glen_Powell_at_Top_Gun-_Maverick_premiere.jpg",
+        "fetchedAt": "2026-08-27T22:45:00.000Z",
+        "note": "Top Gun Maverick premiere tuxedo bowtie interview; not outdoor-night navy-suit necktie eval"
+    }    ,
+    {
+        "id": "colman-domingo",
+        "file": "004.jpg",
+        "commonsTitle": "File:Colman Domingo, 2018 (cropped).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Colman_Domingo,_2018_(cropped).jpg",
+        "fetchedAt": "2026-08-27T22:45:00.000Z",
+        "note": "2018 Comic-Con colorful painterly shirt; not gold-embroidered mandarin eval"
+    },
+    {
+        "id": "keanu-reeves",
+        "file": "005.jpg",
+        "commonsTitle": "File:Keanu Reeves 2014.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Keanu_Reeves_2014.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "2014 short/spiky messy hair charcoal collared shirt festival; not long-hair grey-blazer black-tee eval"
+    },
+    {
+        "id": "nicolas-cage",
+        "file": "005.jpg",
+        "commonsTitle": "File:Nicolas Cage cropped 2009.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nicolas_Cage_cropped_2009.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "Venice 2009 Mostra charcoal jacket white open-collar gold chain; not black-tuxedo black-shirt necktie outdoor eval"
+    },
+    {
+        "id": "alexander-skarsgard",
+        "file": "001.jpg",
+        "commonsTitle": "File:Alexander Skarsgard by Gage Skidmore.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alexander_Skarsgard_by_Gage_Skidmore.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "Gage Skidmore Comic-Con charcoal blazer grey crew tee DEXTER lanyard; not black unbuttoned shirt silver-chain SDCC panel eval"
+    },
+    {
+        "id": "alexander-skarsgard",
+        "file": "002.jpg",
+        "commonsTitle": "File:Alexander Skarsgard 1 by David Shankbone.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alexander_Skarsgard_1_by_David_Shankbone.jpg",
+        "fetchedAt": "2026-08-27T23:00:00.000Z",
+        "note": "Tribeca dark blazer black shirt silver chain gold bead; not black unbuttoned shirt silver-chain SDCC panel eval"
+    },
+    {
+        "id": "chris-pratt",
+        "file": "003.jpg",
+        "commonsTitle": "File:Chris Pratt (29427541570).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chris_Pratt_(29427541570).jpg",
+        "fetchedAt": "2026-08-27T23:20:00.000Z",
+        "note": "gingham shirt burgundy tie dark jacket indoor S-mark backdrop; not grey windowpane geometric-tie studio eval"
+    },
+    {
+        "id": "sadie-sink",
+        "file": "006.jpg",
+        "commonsTitle": "File:Sadie Sink at Paleyfest 2018.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sadie_Sink_at_Paleyfest_2018.jpg",
+        "fetchedAt": "2026-08-27T23:20:00.000Z",
+        "note": "Paleyfest 2018 black headband cream pleated shoulders; not Comic-Con geometric sleeveless panel eval"
+    },
+    {
+        "id": "prince-harry",
+        "file": "004.jpg",
+        "commonsTitle": "File:Prince Harry in the US 2013.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Prince_Harry_in_the_US_2013.jpg",
+        "fetchedAt": "2026-08-27T23:30:00.000Z",
+        "note": "2013 US navy suit pink patterned tie; not Blues and Royals beret medals waving eval"
+    },
+    {
+        "id": "paul-wesley",
+        "file": "005.jpg",
+        "commonsTitle": "File:Paul Wesley at the 38th People's Choice Award.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paul_Wesley_at_the_38th_People's_Choice_Award.jpg",
+        "fetchedAt": "2026-08-27T23:30:00.000Z",
+        "note": "People's Choice charcoal suit open grey shirt; not Comic-Con grey zip-hoodie panel eval"
+    },
+    {
+        "id": "drake",
+        "file": "001.jpg",
+        "commonsTitle": "File:Drake and Future 2016 Summer Sixteen Tour (cropped 3x4).jpeg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Drake_and_Future_2016_Summer_Sixteen_Tour_(cropped_3x4).jpeg",
+        "fetchedAt": "2026-08-27T23:50:00.000Z",
+        "note": "Summer Sixteen Tour 2016 dark jacket gold curb chains low-angle; not OVO black-tee technical parka concert eval"
+    },
+    {
+        "id": "gal-gadot",
+        "file": "001.jpg",
+        "commonsTitle": "File:Gal Gadot 2017.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gal_Gadot_2017.jpg",
+        "fetchedAt": "2026-08-28T00:25:00.000Z",
+        "note": "2017 gold scalloped high-collar updo; not Comic-Con plunging black V-neck red lipstick eval"
+    },
+    {
+        "id": "taylor-lautner",
+        "file": "001.jpg",
+        "commonsTitle": "File:Taylor Lautner Comic-Con 2011.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taylor_Lautner_Comic-Con_2011.jpg",
+        "fetchedAt": "2026-08-28T01:30:00.000Z",
+        "note": "2011 Comic-Con maroon leather-jacket panel; not Abduction pinstripe-suit premiere eval"
+    },
+    {
+        "id": "idris-elba",
+        "file": "001.jpg",
+        "commonsTitle": "File:Idris Elba-4822.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Idris_Elba-4822.jpg",
+        "fetchedAt": "2026-08-28T01:50:00.000Z",
+        "note": "waffle-knit crew-neck press smile; not shearling collar plus pink tee LIDO/AOD PALACE eval"
+    },
+    {
+        "id": "henry-cavill",
+        "file": "001.jpg",
+        "commonsTitle": "File:Henry Cavill (8463776101).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Henry_Cavill_(8463776101).jpg",
+        "fetchedAt": "2026-08-28T04:45:00.000Z",
+        "note": "Man of Steel premiere tuxedo; not Adidas V-neck SDCC 2015 eval"
+    },
+    {
+        "id": "jennifer-aniston",
+        "file": "006.jpg",
+        "commonsTitle": "File:JenniferAnistonFeb09.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:JenniferAnistonFeb09.jpg",
+        "fetchedAt": "2026-08-28T04:45:00.000Z",
+        "note": "2009 Crest Whitestrips updo black blazer; not outdoor black-tank eval. Padded before product-crop so SCRFD detScore cleared 0.5"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "001.jpg",
+        "commonsTitle": "File:Ranveer Singh 2025.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ranveer_Singh_2025.jpg",
+        "fetchedAt": "2026-08-28T06:50:00.000Z",
+        "note": "2025 studio velvet double-breasted blazer white open collar; not NBA Ruffles graffiti-jersey eval"
+    },
+    {
+        "id": "michael-b-jordan",
+        "file": "002.jpg",
+        "commonsTitle": "File:Michael B. Jordan (36245564315).jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Michael_B._Jordan_(36245564315).jpg",
+        "fetchedAt": "2026-08-28T07:28:00.000Z",
+        "note": "SDCC 2015 tan/camel bomber orange-white ribbed collar, panel mic + Smartwater; tighter crop of the Commons sitting. Not Ferragamo-polo eval and not navy-blazer primary."
+    },
+    {
+        "id": "viola-davis",
+        "file": "003.jpg",
+        "commonsTitle": "File:Viola Davis 2009.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Viola_Davis_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:57:39.274Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "002.jpg",
+        "commonsTitle": "File:Ranveer singh new look.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Ranveer_singh_new_look.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:57:46.597Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "003.jpg",
+        "commonsTitle": "File:Ranveer Singh at Esha Deol's sangeet ceremony 17.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/Ranveer_Singh_at_Esha_Deol%27s_sangeet_ceremony_17.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:57:59.335Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "004.jpg",
+        "commonsTitle": "File:Ranveer Singh promotes Men's Health magazine.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/Ranveer_Singh_promotes_Men%27s_Health_magazine.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:58:00.016Z"
+    },
+    {
+        "id": "ranveer-singh",
+        "file": "005.jpg",
+        "commonsTitle": "File:Ranveer Singh at Sahara Star New Year's bash press meet1.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Ranveer_Singh_at_Sahara_Star_New_Year%27s_bash_press_meet1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:58:05.085Z"
+    },
+    {
+        "id": "donald-glover",
+        "file": "003.jpg",
+        "commonsTitle": "File:Donald Glover at PaleyFest2010.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Donald_Glover_at_PaleyFest2010.jpg/960px-Donald_Glover_at_PaleyFest2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:58:38.882Z"
+    },
+    {
+        "id": "donald-glover",
+        "file": "004.jpg",
+        "commonsTitle": "File:Donald Glover 2011 Vancouver (6623121867).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Donald_Glover_2011_Vancouver_%286623121867%29.jpg/960px-Donald_Glover_2011_Vancouver_%286623121867%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:58:39.466Z"
+    },
+    {
+        "id": "sebastian-stan",
+        "file": "003.jpg",
+        "commonsTitle": "File:WW Chicago 2014 - Sebastian Stan 01 (15035666116).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/WW_Chicago_2014_-_Sebastian_Stan_01_%2815035666116%29.jpg/960px-WW_Chicago_2014_-_Sebastian_Stan_01_%2815035666116%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:59:43.659Z"
+    },
+    {
+        "id": "sebastian-stan",
+        "file": "004.jpg",
+        "commonsTitle": "File:Sebastian Stan 2007 Drama League Awards.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Sebastian_Stan_2007_Drama_League_Awards.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T05:59:48.713Z"
+    },
+    {
+        "id": "sebastian-stan",
+        "file": "005.jpg",
+        "commonsTitle": "File:WW Chicago 2014 - Sebastian Stan 04 (14872088118).jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/WW_Chicago_2014_-_Sebastian_Stan_04_%2814872088118%29.jpg/960px-WW_Chicago_2014_-_Sebastian_Stan_04_%2814872088118%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T05:59:53.832Z"
+    },
+    {
+        "id": "julia-roberts",
+        "file": "003.jpg",
+        "commonsTitle": "File:Julia Roberts 2001.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Julia_Roberts_2001.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:00:02.789Z"
+    },
+    {
+        "id": "julia-roberts",
+        "file": "004.jpg",
+        "commonsTitle": "File:Julia Roberts in May 2002.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Julia_Roberts_in_May_2002.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:00:03.216Z"
+    },
+    {
+        "id": "adam-driver",
+        "file": "002.jpg",
+        "commonsTitle": "File:Adam Driver 2013.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/Adam_Driver_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:00:48.208Z"
+    },
+    {
+        "id": "serena-williams",
+        "file": "008.jpg",
+        "commonsTitle": "File:Serena Williams 2004.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Serena_Williams_2004.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:01:14.301Z"
+    },
+    {
+        "id": "doja-cat",
+        "file": "005.jpg",
+        "commonsTitle": "File:Doja Cat August 2019.png",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Doja_Cat_August_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:01:29.664Z"
+    },
+    {
+        "id": "kylian-mbappe",
+        "file": "003.jpg",
+        "commonsTitle": "File:Kylian Mbappe - March 2018.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Kylian_Mbappe_-_March_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:18:12.298Z"
+    },
+    {
+        "id": "kylian-mbappe",
+        "file": "005.jpg",
+        "commonsTitle": "File:Kylian Mbappe celebrating - March 2018.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Kylian_Mbappe_celebrating_-_March_2018.jpg/960px-Kylian_Mbappe_celebrating_-_March_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:18:17.863Z"
+    },
+    {
+        "id": "lizzo",
+        "file": "005.jpg",
+        "commonsTitle": "File:T4T sticker found in Toronto bus stop lizzo.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/T4T_sticker_found_in_Toronto_bus_stop_lizzo.jpg/960px-T4T_sticker_found_in_Toronto_bus_stop_lizzo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:18:51.061Z"
+    },
+    {
+        "id": "hugh-grant",
+        "file": "008.jpg",
+        "commonsTitle": "File:Hugh Grant Cannes.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Hugh_Grant_Cannes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:20:26.086Z"
+    },
+    {
+        "id": "hugh-grant",
+        "file": "006.jpg",
+        "commonsTitle": "File:Hugh Grant Dunhill 2007.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hugh_Grant_Dunhill_2007.jpg/960px-Hugh_Grant_Dunhill_2007.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:20:16.967Z"
+    },
+    {
+        "id": "harry-styles",
+        "file": "005.jpg",
+        "commonsTitle": "File:Harry Styles, 2012.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Harry_Styles%2C_2012.jpg/960px-Harry_Styles%2C_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:20:36.811Z"
+    },
+    {
+        "id": "karol-g",
+        "file": "010.jpg",
+        "commonsTitle": "File:Karol G Viña 2023 01.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Karol_G_Vi%C3%B1a_2023_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:21:23.113Z"
+    },
+    {
+        "id": "gemma-chan",
+        "file": "003.jpg",
+        "commonsTitle": "File:Gemma Chan 2018 cropped.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Gemma_Chan_2018_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:21:33.166Z"
+    },
+    {
+        "id": "gemma-chan",
+        "file": "004.jpg",
+        "commonsTitle": "File:Gemma Chan at the 2026 Berlin International Film Festival-69949.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Gemma_Chan_at_the_2026_Berlin_International_Film_Festival-69949.jpg/960px-Gemma_Chan_at_the_2026_Berlin_International_Film_Festival-69949.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:21:46.346Z"
+    },
+    {
+        "id": "gemma-chan",
+        "file": "005.jpg",
+        "commonsTitle": "File:110818 Gemma Chan in an interview for Collider Video.png",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/110818_Gemma_Chan_in_an_interview_for_Collider_Video.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:22:07.052Z"
     }
   ]
 }

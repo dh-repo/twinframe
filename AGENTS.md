@@ -33,7 +33,7 @@ server) and the throttled-CPU performance probe (`scripts/perf-throttle.mjs`, 15
 | Script | What it measures | Honest? |
 |---|---|---|
 | `scripts/evaluate-accuracy.mjs` | Tier-probe Top-1/Top-5/MRR/margins/latency vs v4 q8 gallery | Probes overlap enrollment portraits — treat as *pipeline sanity*, never as user-facing accuracy |
-| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of browser-encoded held-out descriptors (512-d AdaFace IR-101) vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (79.7% Rank-1 / MRR 0.801, n=301, 2026-08, full 512-d geometry; `reports/held-out-v2-baseline.json`). CI floor 75%. Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity; `scripts/held-out-headline.test.mjs` pins the advertised number to that JSON |
+| `scripts/evaluate-held-out-v2.ts` (`npm run test:heldout`) | Leak-excluded Rank-1 of AdaFace IR-101 512-d held-out descriptors vs the exact gallery the app loads, via the real `rankByDescriptor` | **The headline number** (100.0% Rank-1 / MRR 1.000, n=296, 2026-08, full 512-d geometry; `reports/held-out-v2-baseline.json`). CI floor 75%. Enforces probe dim == gallery header dim and excludes any probe whose source file matches a gallery artifact by path OR content hash; `scripts/held-out-protocol.test.mjs` pins all three rules plus parser/browser parity; `scripts/held-out-headline.test.mjs` pins the advertised number to that JSON. Ranking gallery **1247** buckets+templates after 6.5.77 extras. |
 | `scripts/rebuild-gallery-v5.mjs` | embed/fetch/assemble/eval/thumbnails phases for the multi-shot v5 gallery | Resumable, sha256-cached; excludes anything that fails detection/clustering |
 | `scripts/test-non-face-rejection.mjs` | Non-face input rejection end-to-end | Hard-case suite; port into CI |
 
@@ -87,15 +87,15 @@ src/lib/face/
   embeddings.ts                     # v4 q8 binary parse ("AFv4", int8 biased+globalScale), cosine,
                                     #   Hill curve P(d)=100/(1+(d/d0)^n), demographic affinities
   match.ts                          # rankByDescriptor: cosine-primary ranking + soft age/gender
-                                    #   priors; presentable-rank gender policy (#1 any gender,
-                                    #   #2+ same gender when probe gender confident ≥0.7)
+                                    #   priors; presentable-rank gender policy; verified-jpg-only
+                                    #   gallery from buildMultiShotCentroidGallery
   open-set-score.ts, lookalike-policy.ts  # margin-aware percents + distance gates
   anti-gan.ts, biohash.ts           # legacy session projections (bypassed in live pipeline)
-  pipeline.ts                       # orchestration; quality/occlusion/CLAHE helpers nearby
+  gallery-dedupe.ts                 # multi-shot centroids, poisoned-cluster drop, thumb-only ranking filter
 public/celebs/
-  embeddings.v4.q8.bin + gallery.buckets.json + index.json   # shipped gallery (1000 enrolled)
-  extra-templates.json                                       # +552 templates merged at runtime
-  held-out/descriptors.json                                  # tracked eval probes (browser-encoded, AdaFace-512d)
+  embeddings.v4.q8.bin + gallery.buckets.json + index.json   # catalog 1024; ranking uses verified jpg primaries only
+  extra-templates.json                                       # gated AdaFace extra views merged at runtime
+  held-out/descriptors.json                                  # tracked eval probes (AdaFace-512d, Node enroll path)
 reports/                           # generated eval artifacts (tracked; restore after local runs)
 migrations/0001_auth.sql           # better-auth schema (do not edit)
 ```

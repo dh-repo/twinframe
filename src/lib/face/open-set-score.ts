@@ -3,7 +3,7 @@
  *
  * Closed-set ranking (who is nearest) stays cosine distance. Displayed percent
  * answers a different question: is this a distinctive look-alike, or just the
- * nearest of ~1,000 famous faces?
+ * nearest of the verified enrolled faces?
  *
  * Hill(d) maps absolute cosine distance. Margin (d2 − d1) down-weights crowded
  * nearest-neighbors so typical open-set 60–75% scores become honest

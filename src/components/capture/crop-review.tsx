@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   CROP_ZOOM_MAX,
   CROP_ZOOM_MIN,
+  GROUP_SHOT_PICK_HINT,
   STANDING_SHOT_HINT,
+  cropReviewNeedsExplicitPick,
+  initialCropReviewFaceId,
   isStandingFullBodyShot,
   maxCropPan,
   offsetToCenterBox,
@@ -135,10 +138,11 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
         if (!isMounted || list.length === 0) return;
         setCandidates(list);
         setDetectError(null);
-        const primaryIdx = list.findIndex((c) => c.isPrimary);
-        const selIdx = primaryIdx >= 0 ? primaryIdx : 0;
-        setSelectedFaceId(selIdx);
-        const face = list[selIdx]!.unscaledBox;
+        const selId = initialCropReviewFaceId(list.map((c) => c.id));
+        setSelectedFaceId(selId);
+        if (selId == null) return;
+        const face = list.find((c) => c.id === selId)?.unscaledBox;
+        if (!face) return;
         const faceSide = Math.max(face.width, face.height);
         const zoom = zoomToFillFace(faceSide, iw, ih);
         setScale(zoom);
@@ -278,6 +282,7 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
 
   const handleApprove = useCallback(async () => {
     if (isApproving || isDetectingFaces) return;
+    if (cropReviewNeedsExplicitPick(candidates.length) && selectedFaceId === null) return;
     setIsApproving(true);
     try {
       const img = imgRef.current;
@@ -356,7 +361,10 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
   }, [offset, scale, stageSize, onApprove, isApproving, isDetectingFaces, candidates, selectedFaceId]);
 
   const qualityHint = (() => {
-    const selected = candidates.find((c) => c.id === selectedFaceId) ?? candidates.find((c) => c.isPrimary);
+    if (cropReviewNeedsExplicitPick(candidates.length) && selectedFaceId === null) {
+      return { tone: "warn" as const, text: GROUP_SHOT_PICK_HINT };
+    }
+    const selected = candidates.find((c) => c.id === selectedFaceId);
     if (selected) {
       const coverage = (selected.box.width / 100) * (selected.box.height / 100);
       if (coverage >= PHONE_CLOSEUP_MIN_COVERAGE) {
@@ -663,18 +671,24 @@ export function CropReview({ imageSrc, fileName, onApprove, onRetake }: CropRevi
             size="md"
             onClick={handleApprove}
             className="flex-[1.4]"
-            disabled={isApproving || isDetectingFaces}
+            disabled={
+              isApproving ||
+              isDetectingFaces ||
+              (cropReviewNeedsExplicitPick(candidates.length) && selectedFaceId === null)
+            }
           >
             <Check className="h-4 w-4" />
             {isApproving
               ? "Preparing…"
               : isDetectingFaces
                 ? "Finding face…"
-                : selectedFaceId !== null && candidates.length > 1
-                  ? `Match ${candidates.find((c) => c.id === selectedFaceId)?.label ?? "face"}`
-                  : candidates.length === 0
-                    ? "Use this crop"
-                    : "Approve & Match"}
+                : cropReviewNeedsExplicitPick(candidates.length) && selectedFaceId === null
+                  ? "Select a face"
+                  : selectedFaceId !== null && candidates.length > 1
+                    ? `Match ${candidates.find((c) => c.id === selectedFaceId)?.label ?? "face"}`
+                    : candidates.length === 0
+                      ? "Use this crop"
+                      : "Approve & Match"}
           </Button>
         </div>
       </div>

@@ -8,6 +8,11 @@
  * two-feature logistic regression over raw cosine distances): features are
  * dTrue and the discriminative gap dBestWrong - dTrue, target is rank === 1.
  *
+ * All-positive held-out (every probe Rank-1) cannot identify distance/gap
+ * slopes — MLE collapses to intercept-only, which would make the UI report
+ * ~constant P(correct) even for weak look-alikes. Fewer than
+ * MIN_NEGATIVES_FOR_SLOPE_FIT misses keeps the last identifiable slopes.
+ *
  * Run: node --experimental-strip-types scripts/refit-calibration.ts [--json]
  * Exits 1 if shipped coefficients drift beyond tolerance from the refit —
  * i.e. someone changed data or constants without re-fitting.
@@ -20,6 +25,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const ITERATIONS = 6000;
 const LR = 0.1;
+/** Below this many rank≠1 rows, slope MLE is unidentified — keep prior weights. */
+export const MIN_NEGATIVES_FOR_SLOPE_FIT = 3;
 
 function fit(data: Array<{ f1: number; f2: number; y: number }>) {
   const n = data.length;
@@ -46,7 +53,10 @@ function fit(data: Array<{ f1: number; f2: number; y: number }>) {
   return { intercept: w[0], wDtrue: w[1], wGap: w[2], muDtrue: mu[0], muGap: mu[1], sdDtrue: sd[0], sdGap: sd[1] };
 }
 
-export function refitFromRecords(records: Array<{ dTrue: number | null; dBestWrong: number | null; rank: number }>) {
+export function refitFromRecords(
+  records: Array<{ dTrue: number | null; dBestWrong: number | null; rank: number }>,
+  slopePrior: { intercept: number; wDtrue: number; wGap: number } | null = null,
+) {
   const data = records
     .filter(
       (r) =>
@@ -58,7 +68,19 @@ export function refitFromRecords(records: Array<{ dTrue: number | null; dBestWro
       f2: (r.dBestWrong as number) - (r.dTrue as number),
       y: r.rank === 1 ? 1 : 0,
     }));
-  return fit(data);
+  const fitted = fit(data);
+  const nNeg = data.filter((d) => d.y === 0).length;
+  if (nNeg >= MIN_NEGATIVES_FOR_SLOPE_FIT) return fitted;
+  const prior = slopePrior ?? readShippedCoefficients();
+  return {
+    intercept: prior.intercept,
+    wDtrue: prior.wDtrue,
+    wGap: prior.wGap,
+    muDtrue: fitted.muDtrue,
+    muGap: fitted.muGap,
+    sdDtrue: fitted.sdDtrue,
+    sdGap: fitted.sdGap,
+  };
 }
 
 function main() {
