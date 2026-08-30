@@ -740,6 +740,30 @@ describe("shipped extra templates", () => {
       pack.templates.some((t) => t.id === "michael-b-jordan" && t.source === "extra-photos/michael-b-jordan/002.jpg"),
       "Michael B. Jordan SDCC 2015 bomber extra missing",
     );
+    assert.ok((byId.get("bad-bunny") ?? 0) >= 1, "Bad Bunny extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "bad-bunny" && t.source === "extra-photos/bad-bunny/002.jpg"),
+      "Bad Bunny extra 002 missing",
+    );
+    assert.ok((byId.get("miley-cyrus") ?? 0) >= 1, "Miley Cyrus extras missing");
+    assert.ok((byId.get("emma-stone") ?? 0) >= 1, "Emma Stone extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "emma-stone" && t.source === "held-out/emma-stone/003.jpg"),
+      "Emma Stone held-out 003 extra missing",
+    );
+    assert.ok((byId.get("brendan-fraser") ?? 0) >= 1, "Brendan Fraser extras missing");
+    assert.ok((byId.get("helen-mirren") ?? 0) >= 1, "Helen Mirren extras missing");
+    assert.ok((byId.get("matt-bomer") ?? 0) >= 1, "Matt Bomer extras missing");
+    assert.ok((byId.get("naomi-osaka") ?? 0) >= 1, "Naomi Osaka extras missing");
+    assert.ok((byId.get("emily-blunt") ?? 0) >= 1, "Emily Blunt extras missing");
+    assert.ok((byId.get("denzel-washington") ?? 0) >= 1, "Denzel Washington extras missing");
+    assert.ok((byId.get("zoe-saldana") ?? 0) >= 1, "Zoe Saldana extras missing");
+    assert.ok((byId.get("jacob-elordi") ?? 0) >= 1, "Jacob Elordi extras missing");
+    assert.ok((byId.get("halle-berry") ?? 0) >= 1, "Halle Berry extras missing");
+    assert.ok(
+      pack.templates.some((t) => t.id === "halle-berry" && t.source === "held-out/halle-berry/002.jpg"),
+      "Halle Berry held-out 002 extra missing",
+    );
     assert.equal(byId.has("leon-rippy"), false, "thumb-only namesake must not gain extras");
   });
 

@@ -477,8 +477,13 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         pink tee grey bomber lapel-mic; not Kim's Convenience blue-suit eval
  *         and not grey-tee panel primary). Extra-photos 004 is the same
  *         Beaverton sitting and stays out.
+ * 6.5.75: Gated extras for the remaining 0-extra hard band (bad-bunny, miley,
+ *         emma-stone, brendan-fraser, helen-mirren, matt-bomer, naomi-osaka,
+ *         emily-blunt, denzel-washington, zoe-saldana, jacob-elordi, halle-berry).
+ *         Eval-hash unique-sitting clones and d>0.7 / d<0.05 gate refusals
+ *         were reported, not fabricated.
  */
-const GALLERY_VERSION = "6.5.74";
+const GALLERY_VERSION = "6.5.75";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
