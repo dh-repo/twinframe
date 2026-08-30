@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Diverse Wikimedia Commons views fetched for multi-shot gallery centroids.",
-  "count": 393,
+  "count": 403,
   "photos": [
     {
       "id": "sandra-oh",
@@ -2886,6 +2886,76 @@
         "commonsTitle": "File:Doja Cat August 2019.png",
         "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Doja_Cat_August_2019.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
         "fetchedAt": "2026-08-30T06:01:29.664Z"
+    },
+    {
+        "id": "kylian-mbappe",
+        "file": "003.jpg",
+        "commonsTitle": "File:Kylian Mbappe - March 2018.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Kylian_Mbappe_-_March_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:18:12.298Z"
+    },
+    {
+        "id": "kylian-mbappe",
+        "file": "005.jpg",
+        "commonsTitle": "File:Kylian Mbappe celebrating - March 2018.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Kylian_Mbappe_celebrating_-_March_2018.jpg/960px-Kylian_Mbappe_celebrating_-_March_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:18:17.863Z"
+    },
+    {
+        "id": "lizzo",
+        "file": "005.jpg",
+        "commonsTitle": "File:T4T sticker found in Toronto bus stop lizzo.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/T4T_sticker_found_in_Toronto_bus_stop_lizzo.jpg/960px-T4T_sticker_found_in_Toronto_bus_stop_lizzo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:18:51.061Z"
+    },
+    {
+        "id": "hugh-grant",
+        "file": "008.jpg",
+        "commonsTitle": "File:Hugh Grant Cannes.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Hugh_Grant_Cannes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:20:26.086Z"
+    },
+    {
+        "id": "hugh-grant",
+        "file": "006.jpg",
+        "commonsTitle": "File:Hugh Grant Dunhill 2007.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hugh_Grant_Dunhill_2007.jpg/960px-Hugh_Grant_Dunhill_2007.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:20:16.967Z"
+    },
+    {
+        "id": "harry-styles",
+        "file": "005.jpg",
+        "commonsTitle": "File:Harry Styles, 2012.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Harry_Styles%2C_2012.jpg/960px-Harry_Styles%2C_2012.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:20:36.811Z"
+    },
+    {
+        "id": "karol-g",
+        "file": "010.jpg",
+        "commonsTitle": "File:Karol G Viña 2023 01.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Karol_G_Vi%C3%B1a_2023_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:21:23.113Z"
+    },
+    {
+        "id": "gemma-chan",
+        "file": "003.jpg",
+        "commonsTitle": "File:Gemma Chan 2018 cropped.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Gemma_Chan_2018_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:21:33.166Z"
+    },
+    {
+        "id": "gemma-chan",
+        "file": "004.jpg",
+        "commonsTitle": "File:Gemma Chan at the 2026 Berlin International Film Festival-69949.jpg",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Gemma_Chan_at_the_2026_Berlin_International_Film_Festival-69949.jpg/960px-Gemma_Chan_at_the_2026_Berlin_International_Film_Festival-69949.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "fetchedAt": "2026-08-30T06:21:46.346Z"
+    },
+    {
+        "id": "gemma-chan",
+        "file": "005.jpg",
+        "commonsTitle": "File:110818 Gemma Chan in an interview for Collider Video.png",
+        "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/110818_Gemma_Chan_in_an_interview_for_Collider_Video.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "fetchedAt": "2026-08-30T06:22:07.052Z"
     }
   ]
 }

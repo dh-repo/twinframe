@@ -487,8 +487,14 @@ async function idbSet(version: string, data: CelebrityEmbedding[]): Promise<void
  *         doja). Eval-sitting titles and 001 hashes skipped; d>0.7 / no-face
  *         refusals reported, not fabricated. Binary embeddings.v4.q8.bin
  *         untouched. 0-extra easy ids (dTrue ≲ 0.05) were not crawled.
+ * 6.5.77: Gated Commons extras for remaining HIGH dTrue ids with cap room
+ *         (kylian March 2018, lizzo, hugh-grant Dunhill/Cannes, harry 2012,
+ *         karol Viña 2023, gemma 2018/Berlin/Collider). Eval-near-clone
+ *         (karol ho 002), d>0.7, and no-face refusals reported, not
+ *         fabricated. Failed new files deleted so they do not fill the cap.
+ *         Binary untouched. 0-extra easy ids were not crawled.
  */
-const GALLERY_VERSION = "6.5.76";
+const GALLERY_VERSION = "6.5.77";
 
 /** Load precomputed EdgeFace celebrity descriptors (dimension from AFv4 header). */
 export async function loadCelebrityEmbeddings(): Promise<CelebrityEmbedding[]> {
