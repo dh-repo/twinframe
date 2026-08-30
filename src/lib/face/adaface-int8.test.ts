@@ -214,6 +214,22 @@ describe("AdaFace fast-path / INT8 fallback", () => {
     }
   });
 
+  it("prefetchAdafaceFastPath only HEADs the fp16 URL, never fp32 or INT8", async () => {
+    const origFetch = globalThis.fetch;
+    const urls: string[] = [];
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      urls.push(String(input));
+      return { status: 200 } as Response;
+    }) as typeof fetch;
+    try {
+      assert.equal(await prefetchAdafaceFastPath(), true);
+      assert.deepEqual(urls, [ADAFACE_FAST_PATH]);
+      assert.ok(!urls.some((u) => u.includes(".int8.") || u.endsWith("webface12m.onnx")));
+    } finally {
+      globalThis.fetch = origFetch;
+    }
+  });
+
   it("prefetch 404 of the fast path skips it on the next embed", async () => {
     const origFetch = globalThis.fetch;
     globalThis.fetch = (async () => ({ status: 404 }) as Response) as typeof fetch;
@@ -266,5 +282,22 @@ describe("AdaFace fast-path / INT8 fallback", () => {
     const c = new Float32Array(ADAFACE_EMBED_DIM);
     c[1] = 1;
     assert.ok(Math.abs(meanCosineDrift(b, c) - 1) < 1e-6);
+  });
+});
+
+describe("pipeline prefetch does not double-load AdaFace", () => {
+  it("prefetchModel warms the FP16 fast path and never mentions the 249MB fp32 URL", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const url = await import("node:url");
+    const root = path.dirname(url.fileURLToPath(import.meta.url));
+    const src = fs.readFileSync(path.join(root, "pipeline.ts"), "utf8");
+    const start = src.indexOf("export function prefetchModel");
+    const end = src.indexOf("export function padSourceForDetection");
+    assert.ok(start >= 0 && end > start, "prefetchModel block not found");
+    const block = src.slice(start, end);
+    assert.match(block, /prefetchAdafaceFastPath/);
+    assert.doesNotMatch(block, /adaface_ir101_webface12m\.onnx/);
+    assert.doesNotMatch(block, /int8\.onnx/);
   });
 });

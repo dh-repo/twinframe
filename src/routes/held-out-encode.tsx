@@ -182,7 +182,7 @@ function HeldOutEncodePage() {
             ]);
           const ort = await import("onnxruntime-web");
           await loadFaceApi();
-          const adaPath = params.get("adaModel") || "/models/adaface_ir101_webface12m.onnx";
+          const adaPath = params.get("adaModel") || "/models/adaface_ir101_webface12m.fp16.onnx";
           appendLog("creating adaface session (260MB, may take a while)…");
           const adaSession = await ort.InferenceSession.create(adaPath, {
             executionProviders: ["wasm"],

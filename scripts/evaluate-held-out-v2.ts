@@ -115,7 +115,7 @@ export function loadGallery(): GalleryEntry[] {
   return out;
 }
 
-function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
+export function mergeExtraTemplates(base: GalleryEntry[]): GalleryEntry[] {
   const file = path.join(CELEBS, "extra-templates.json");
   if (!fs.existsSync(file)) return base;
   const data = JSON.parse(fs.readFileSync(file, "utf8")) as {

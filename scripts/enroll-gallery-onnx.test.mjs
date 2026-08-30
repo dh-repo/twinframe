@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { acceptPrimaryEmbed, adafaceModelReady, swapRgbToBgr } from "./enroll-gallery-onnx.mjs";
+import { acceptPrimaryEmbed, adafaceFp16Ready, adafaceModelReady, swapRgbToBgr } from "./enroll-gallery-onnx.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ADAFACE = path.join(ROOT, "public/models/adaface_ir101_webface12m.onnx");
@@ -22,6 +22,14 @@ describe("AdaFace enroll path", () => {
     if (fs.existsSync(ADAFACE) && fs.statSync(ADAFACE).size >= 50 * 1024 * 1024) {
       assert.equal(adafaceModelReady(), true);
     }
+  });
+
+  it("reports FP16 ready only when the compressed IR-101 is at least 20MB", () => {
+    assert.equal(adafaceFp16Ready(path.join(os.tmpdir(), "no-fp16.onnx")), false);
+    const tiny = path.join(os.tmpdir(), "twinframe-tiny-fp16.onnx");
+    fs.writeFileSync(tiny, "onnx");
+    assert.equal(adafaceFp16Ready(tiny), false);
+    fs.unlinkSync(tiny);
   });
 
   it("swaps RGB and BGR planes and is its own inverse", () => {
