@@ -282,6 +282,8 @@ export interface FaceTelemetry {
   estimatedRoll?: number;
   /** Estimated smile intensity [0.0..1.0] */
   smileIntensity?: number;
+  /** AdaFace IR-101 precision that produced the descriptor (never EdgeFace). */
+  embedderVariant?: "int8" | "fp16" | "fp32";
 }
 
 export interface MatchResult {

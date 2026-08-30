@@ -1,57 +1,122 @@
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { pipeline } from "node:stream/promises";
 
-// AdaFace IR-101 exceeds GitHub's 100MB file limit, so it's gitignored and
-// fetched here at build time instead. Without this step a production build
-// silently ships without it: every analysis then fails the primary embedding
-// pass and falls back to the slow legacy CPU detector on every single
-// request (see the AccuFace/EdgeFace fallback in src/lib/face/pipeline.ts).
 const MODEL_URL =
   "https://huggingface.co/Evn9172/cvlface_adaface_ir101_webface12m_onnx/resolve/main/adaface_ir101.onnx";
-const MODEL_PATH = path.resolve("public/models/adaface_ir101_webface12m.onnx");
-// The real model is well over 100MB; anything smaller on disk is a stale or
-// partial download and must be re-fetched rather than trusted.
-const MIN_EXPECTED_BYTES = 50 * 1024 * 1024;
 
-function isPresentAndSized() {
+export const FP32_PATH = path.resolve("public/models/adaface_ir101_webface12m.onnx");
+export const FP16_PATH = path.resolve("public/models/adaface_ir101_webface12m.fp16.onnx");
+export const INT8_PATH = path.resolve("public/models/adaface_ir101_webface12m.int8.onnx");
+export const MIN_FP32_BYTES = 50 * 1024 * 1024;
+export const MIN_FAST_BYTES = 20 * 1024 * 1024;
+export const QUANTIZE_SCRIPT = path.resolve("scripts/quantize_adaface.py");
+
+export function isPresentAndSized(modelPath, minBytes) {
   try {
-    const stat = fs.statSync(MODEL_PATH);
-    return stat.size >= MIN_EXPECTED_BYTES;
+    return fs.statSync(modelPath).size >= minBytes;
   } catch {
     return false;
   }
 }
 
-async function download() {
-  fs.mkdirSync(path.dirname(MODEL_PATH), { recursive: true });
-  const tmpPath = `${MODEL_PATH}.download`;
-  const res = await fetch(MODEL_URL);
+export async function downloadFp32(url = MODEL_URL, dest = FP32_PATH) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  const tmpPath = `${dest}.download`;
+  const res = await fetch(url);
   if (!res.ok || !res.body) {
     throw new Error(`Download failed: HTTP ${res.status} ${res.statusText}`);
   }
   const fileStream = fs.createWriteStream(tmpPath);
   await pipeline(res.body, fileStream);
-  fs.renameSync(tmpPath, MODEL_PATH);
+  fs.renameSync(tmpPath, dest);
 }
 
-if (isPresentAndSized()) {
-  console.log(`[Face Model] ${MODEL_PATH} already present, skipping download.`);
-} else {
-  console.log(`[Face Model] Fetching AdaFace IR-101 model from Hugging Face...`);
-  try {
-    await download();
-    const bytes = fs.statSync(MODEL_PATH).size;
-    console.log(`[Face Model] Downloaded ${MODEL_PATH} (${Math.round(bytes / 1024 / 1024)}MB).`);
-  } catch (err) {
-    // Do not fail the build on a network hiccup in a sandboxed/offline build
-    // environment — but make the gap loud, since a missing model silently
-    // degrades every analysis in production rather than erroring at build time.
-    console.warn(
-      `[Face Model] Could not download the AdaFace model: ${err instanceof Error ? err.message : err}`,
-    );
-    console.warn(
-      `[Face Model] The deployed app will fall back to the slow legacy detector on every analysis until this is resolved.`,
-    );
+function pythonHas(mods) {
+  const r = spawnSync("python3", ["-c", `import ${mods}`], { encoding: "utf8" });
+  return r.status === 0;
+}
+
+export function ensureQuantizePython() {
+  if (pythonHas("onnx, onnxruntime, onnxconverter_common, PIL, numpy")) return true;
+  const r = spawnSync(
+    "python3",
+    ["-m", "pip", "install", "--user", "--quiet", "onnxruntime", "onnx", "onnxconverter-common", "pillow", "numpy"],
+    { encoding: "utf8" },
+  );
+  if (r.status !== 0) {
+    console.warn(`[Face Model] pip install quantize deps failed: ${r.stderr || r.stdout}`);
+    return false;
   }
+  return pythonHas("onnx, onnxruntime, onnxconverter_common, PIL, numpy");
+}
+
+export function generateFastModels({ int8 = false, force = false } = {}) {
+  if (!isPresentAndSized(FP32_PATH, MIN_FP32_BYTES)) {
+    throw new Error("fp32 AdaFace missing; download first");
+  }
+  if (!ensureQuantizePython()) {
+    throw new Error("python onnxruntime/onnxconverter_common unavailable");
+  }
+  const args = [
+    QUANTIZE_SCRIPT,
+    "--input",
+    FP32_PATH,
+    "--fp16-output",
+    FP16_PATH,
+    "--int8-output",
+    INT8_PATH,
+    "--calib-dir",
+    path.resolve("public/celebs"),
+  ];
+  if (int8) args.push("--int8");
+  if (force) args.push("--force");
+  const r = spawnSync("python3", args, { encoding: "utf8", stdio: "inherit" });
+  if (r.status !== 0) {
+    throw new Error(`quantize_adaface.py exited ${r.status}`);
+  }
+}
+
+export async function ensureFaceModels({ int8 = false } = {}) {
+  if (isPresentAndSized(FP32_PATH, MIN_FP32_BYTES)) {
+    console.log(`[Face Model] ${FP32_PATH} already present, skipping download.`);
+  } else {
+    console.log("[Face Model] Fetching AdaFace IR-101 model from Hugging Face...");
+    try {
+      await downloadFp32();
+      const bytes = fs.statSync(FP32_PATH).size;
+      console.log(`[Face Model] Downloaded ${FP32_PATH} (${Math.round(bytes / 1024 / 1024)}MB).`);
+    } catch (err) {
+      console.warn(
+        `[Face Model] Could not download the AdaFace model: ${err instanceof Error ? err.message : err}`,
+      );
+      console.warn(
+        "[Face Model] The deployed app will fall back to the slow legacy detector on every analysis until this is resolved.",
+      );
+      return { fp32: false, fp16: false, int8: false };
+    }
+  }
+
+  try {
+    generateFastModels({ int8 });
+  } catch (err) {
+    console.warn(
+      `[Face Model] Fast-path compress failed: ${err instanceof Error ? err.message : err}`,
+    );
+    console.warn("[Face Model] Runtime will lazy-load fp32 AdaFace IR-101.");
+  }
+
+  return {
+    fp32: isPresentAndSized(FP32_PATH, MIN_FP32_BYTES),
+    fp16: isPresentAndSized(FP16_PATH, MIN_FAST_BYTES),
+    int8: isPresentAndSized(INT8_PATH, 8 * 1024 * 1024),
+  };
+}
+
+const invoked = process.argv[1] && path.resolve(process.argv[1]);
+if (invoked === fileURLToPath(import.meta.url)) {
+  const wantInt8 = process.argv.includes("--int8");
+  await ensureFaceModels({ int8: wantInt8 });
 }

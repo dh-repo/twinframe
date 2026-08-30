@@ -175,7 +175,9 @@ describe("EdgeFace-M 256-d Feature Extraction Unit Suite", () => {
 
       try {
         const inputTensor = new Float32Array(1 * 3 * 112 * 112).fill(0.1);
-        const res = await extractEdgeFaceEmbeddingWithTta(inputTensor);
+        const res = await extractEdgeFaceEmbeddingWithTta(inputTensor, undefined, {
+          modelPath: "/models/edgeface_m.onnx",
+        });
         assert.equal(runs, 6);
         assert.equal(res.ttaApplied, true);
         assert.equal(res.ttaViews, 6);
@@ -211,7 +213,9 @@ describe("EdgeFace-M 256-d Feature Extraction Unit Suite", () => {
 
       try {
         const inputTensor = new Float32Array(1 * 3 * 112 * 112).fill(0.1);
-        const res = await extractEdgeFaceEmbeddingWithTta(inputTensor);
+        const res = await extractEdgeFaceEmbeddingWithTta(inputTensor, undefined, {
+          modelPath: "/models/edgeface_m.onnx",
+        });
         assert.equal(runs, 1);
         assert.equal(res.ttaApplied, false);
         assert.equal(res.ttaViews, 1);

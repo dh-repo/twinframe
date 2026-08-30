@@ -1,0 +1,62 @@
+{
+  "at": "2026-08-30T01:34:33.242Z",
+  "provider": "onnxruntime-node-cpu",
+  "note": "CPU node baseline, not browser WASM. Same 512-d AdaFace IR-101 graph; no new geometry. Gallery binaries were not rewritten.",
+  "studentTrained": false,
+  "studentReason": "No WebFace12M corpus and no GPU training cluster in this environment; INT8 of the same IR-101 graph is the honest speed path, and FP16 is the shippable fast path when PTQ fails the identity gate.",
+  "liveFastPath": "fp16",
+  "int8Live": false,
+  "probes": [
+    "a-c-bradley.jpg",
+    "aaron-taylor-johnson.jpg",
+    "adam-driver.jpg",
+    "adam-sandler.jpg",
+    "adam-stein.jpg",
+    "adele.jpg",
+    "adriana-lima.jpg",
+    "agam-darshi.jpg"
+  ],
+  "fp32": {
+    "path": "public/models/adaface_ir101_webface12m.onnx",
+    "bytes": 260701576,
+    "loadMs": 467.649743,
+    "medianEmbedMs": 350.810092,
+    "meanEmbedMs": 350.688726,
+    "dim": 512
+  },
+  "fp16": {
+    "path": "public/models/adaface_ir101_webface12m.fp16.onnx",
+    "bytes": 130423721,
+    "loadMs": 146.494764,
+    "medianEmbedMs": 93.732251,
+    "meanEmbedMs": 114.938958,
+    "dim": 512,
+    "sizeRatio": 0.5002797566517204,
+    "speedupMedian": 3.742682889371755
+  },
+  "int8": null,
+  "int8Rejected": {
+    "reason": "Full-graph INT8/QDQ of this PReLU-ResNet IR-101 breaks identity vs fp32 (mean cosine well below the 0.97 gate). Not installed as the live embedder.",
+    "staticQdq": {
+      "bytes": 66120521,
+      "medianEmbedMs": 20.985527,
+      "meanCosine": 0.5788445085926871,
+      "minCosine": 0.12107092156589756
+    },
+    "dynamic": {
+      "bytes": 65700375,
+      "meanEmbedMs": 223.18077,
+      "meanCosine": 0.751829175341955,
+      "minCosine": 0.4918
+    }
+  },
+  "cosine": {
+    "fp16": {
+      "n": 8,
+      "mean": 0.9999890215711088,
+      "min": 0.9999508563245202,
+      "max": 0.9999980324291677
+    },
+    "int8": null
+  }
+}

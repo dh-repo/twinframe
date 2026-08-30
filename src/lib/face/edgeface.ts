@@ -1,21 +1,55 @@
 import * as ort from "onnxruntime-web";
 import { computeCentroidEmbedding } from "./gallery-dedupe.ts";
-import { OnnxSessionManager, runInference } from "./onnx-engine.ts";
+import {
+  isModelKnownUnavailable,
+  OnnxSessionManager,
+  prefetchModelUrl,
+  runInference,
+} from "./onnx-engine.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
+
+export type AdafaceVariant = "int8" | "fp16" | "fp32";
+
+export const ADAFACE_FP32_PATH = "/models/adaface_ir101_webface12m.onnx";
+export const ADAFACE_FP16_PATH = "/models/adaface_ir101_webface12m.fp16.onnx";
+export const ADAFACE_INT8_PATH = "/models/adaface_ir101_webface12m.int8.onnx";
+export const ADAFACE_EMBED_DIM = 512;
+export const ADAFACE_INT8_SESSION_KEY = "adaface_ir101_int8";
+export const ADAFACE_FP16_SESSION_KEY = "adaface_ir101_fp16";
+export const ADAFACE_FP32_SESSION_KEY = "adaface_ir101_fp32";
+export const ADAFACE_EXPLICIT_SESSION_KEY = "edgeface_m";
+
+export const ADAFACE_INT8_LABEL = "AdaFace IR-101 (INT8)";
+export const ADAFACE_FP16_LABEL = "AdaFace IR-101 (FP16)";
+export const ADAFACE_FP32_LABEL = "AdaFace IR-101";
+
+export const STUDENT_NOT_TRAINED_REASON =
+  "No WebFace12M corpus and no GPU training cluster in this environment; INT8 of the same IR-101 graph is the honest speed path, and FP16 is the shippable fast path when PTQ fails the identity gate.";
+
+/** Full-graph INT8 PTQ of this IR-101 measured mean cosine 0.58–0.75 vs fp32. */
+export const ADAFACE_INT8_LIVE = false;
+export const ADAFACE_FAST_VARIANT: AdafaceVariant = "fp16";
+export const ADAFACE_FAST_PATH = ADAFACE_FP16_PATH;
+export const ADAFACE_FAST_SESSION_KEY = ADAFACE_FP16_SESSION_KEY;
+export const ADAFACE_FAST_MAX_MEAN_COSINE_DRIFT = 0.03;
+export const ADAFACE_INT8_MAX_MEAN_COSINE_DRIFT = 0.03;
 
 export interface EdgeFaceOptions {
   modelPath?: string;
   targetSize?: 112 | 160;
   mean?: [number, number, number];
   std?: [number, number, number];
-  /** Run query TTA even on wasm/cpu (tests / explicit override). */
   forceTta?: boolean;
+  preferFp32?: boolean;
+  preferInt8?: boolean;
+  requireFast?: boolean;
 }
 
 export interface EdgeFaceResult {
-  embedding: Float32Array; // 512-d L2-normalized Float32 vector (AdaFace IR-101)
+  embedding: Float32Array;
   latencyMs: number;
   providerUsed: string;
+  variant: AdafaceVariant;
 }
 
 export interface EdgeFaceTtaResult extends EdgeFaceResult {
@@ -29,7 +63,6 @@ export type QueryTtaView =
   | { kind: "scale"; factor: number }
   | { kind: "hflip" };
 
-/** Identity + ±4° + 0.95/1.05 scale + horizontal flip. */
 export const QUERY_TTA_VIEWS: readonly QueryTtaView[] = [
   { kind: "identity" },
   { kind: "rotate", degrees: 4 },
@@ -39,10 +72,6 @@ export const QUERY_TTA_VIEWS: readonly QueryTtaView[] = [
   { kind: "hflip" },
 ];
 
-/**
- * Query-side TTA is GPU-only. WASM/CPU already spend ~21s on detection;
- * extra EdgeFace views would stall the snap.
- */
 export function shouldApplyQueryTta(opts: {
   providerUsed?: string;
   force?: boolean;
@@ -55,9 +84,6 @@ export function shouldApplyQueryTta(opts: {
   return provider.includes("webgpu") || provider.includes("cuda") || provider.includes("dml");
 }
 
-/**
- * Computes L2 norm of a vector.
- */
 export function computeL2Norm(v: ArrayLike<number>): number {
   let sum = 0;
   for (let i = 0; i < v.length; i++) {
@@ -67,15 +93,11 @@ export function computeL2Norm(v: ArrayLike<number>): number {
   return Math.sqrt(sum);
 }
 
-/**
- * Normalizes an embedding vector using L2 normalization v_hat = v / ||v||_2.
- * Safely handles near-zero, zero, or non-finite vectors to prevent NaN/Infinity poisoning.
- */
 export function normalizeL2(embedding: ArrayLike<number>): Float32Array {
   const norm = computeL2Norm(embedding);
   const out = new Float32Array(embedding.length);
   if (!Number.isFinite(norm) || norm < 1e-12) {
-    return out; // Return zeroed Float32Array
+    return out;
   }
   for (let i = 0; i < embedding.length; i++) {
     const val = (embedding[i] ?? 0) / norm;
@@ -84,9 +106,101 @@ export function normalizeL2(embedding: ArrayLike<number>): Float32Array {
   return out;
 }
 
-/**
- * Helper to decode IEEE 754 float16 bit patterns (stored in Uint16) to float32 numbers.
- */
+let int8Failed = false;
+let fastPathFailed = false;
+let fastFailReason: string | null = null;
+
+export function resetAdafaceVariantState(): void {
+  int8Failed = false;
+  fastPathFailed = false;
+  fastFailReason = null;
+}
+
+export function adafaceFastPathFailed(): boolean {
+  return fastPathFailed;
+}
+
+export function adafaceInt8Failed(): boolean {
+  return int8Failed;
+}
+
+export function adafaceFastFailReason(): string | null {
+  return fastFailReason;
+}
+
+export function markAdafaceInt8Failed(reason: string): void {
+  int8Failed = true;
+  fastFailReason = reason;
+}
+
+export function markAdafaceFastPathFailed(reason: string): void {
+  fastPathFailed = true;
+  fastFailReason = reason;
+}
+
+export function embedderLabel(variant: AdafaceVariant): string {
+  if (variant === "int8") return ADAFACE_INT8_LABEL;
+  if (variant === "fp16") return ADAFACE_FP16_LABEL;
+  return ADAFACE_FP32_LABEL;
+}
+
+export function variantFromModelPath(modelPath: string): AdafaceVariant {
+  if (modelPath.includes(".int8.")) return "int8";
+  if (modelPath.includes(".fp16.")) return "fp16";
+  return "fp32";
+}
+
+export function isUsableAdafaceEmbedding(
+  raw: ArrayLike<number>,
+  expectedDim = ADAFACE_EMBED_DIM,
+): boolean {
+  if (raw.length !== expectedDim) return false;
+  const n = computeL2Norm(raw);
+  return Number.isFinite(n) && n >= 1e-6;
+}
+
+export function rgbPlanarToAdafaceBgr(rgb: Float32Array, targetSize: number): Float32Array {
+  const ch = targetSize * targetSize;
+  const bgr = new Float32Array(rgb.length);
+  for (let i = 0; i < ch; i++) {
+    bgr[i] = rgb[2 * ch + i] ?? 0;
+    bgr[ch + i] = rgb[ch + i] ?? 0;
+    bgr[2 * ch + i] = rgb[i] ?? 0;
+  }
+  return bgr;
+}
+
+export function meanCosineDrift(a: Float32Array, b: Float32Array): number {
+  const n = Math.min(a.length, b.length);
+  let s = 0;
+  for (let i = 0; i < n; i++) s += (a[i] ?? 0) * (b[i] ?? 0);
+  return 1 - s;
+}
+
+function shouldTryInt8(options: EdgeFaceOptions): boolean {
+  if (options.modelPath) return false;
+  if (options.preferFp32) return false;
+  if (int8Failed) return false;
+  if (isModelKnownUnavailable(ADAFACE_INT8_PATH)) return false;
+  return ADAFACE_INT8_LIVE || options.preferInt8 === true;
+}
+
+function shouldTryFastPath(options: EdgeFaceOptions): boolean {
+  if (options.modelPath) return false;
+  if (options.preferFp32) return false;
+  if (options.preferInt8) return false;
+  if (fastPathFailed) return false;
+  if (isModelKnownUnavailable(ADAFACE_FAST_PATH)) return false;
+  return true;
+}
+
+export async function prefetchAdafaceFastPath(): Promise<boolean> {
+  if (fastPathFailed) return false;
+  const ok = await prefetchModelUrl(ADAFACE_FAST_PATH);
+  if (!ok) markAdafaceFastPathFailed(`prefetch unavailable: ${ADAFACE_FAST_PATH}`);
+  return ok;
+}
+
 export function decodeFloat16(val: number): number {
   const s = (val & 0x8000) >> 15;
   const e = (val & 0x7c00) >> 10;
@@ -101,10 +215,6 @@ export function decodeFloat16(val: number): number {
   return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / 1024);
 }
 
-/**
- * Extracts NCHW Planar Float32Array [1, 3, targetSize, targetSize] tensor from canvas/image source
- * when facial landmarks are not available.
- */
 export function extractPlanarTensorFromCanvas(
   source: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement | OffscreenCanvas,
   targetSize = 112
@@ -142,7 +252,6 @@ export function extractPlanarTensorFromCanvas(
     const g = pixels[i * 4 + 1] ?? 0;
     const b = pixels[i * 4 + 2] ?? 0;
 
-    // Standardized normalization: (pixel - 127.5) / 128.0
     tensorData[rOffset + i] = (r - 127.5) / 128.0;
     tensorData[gOffset + i] = (g - 127.5) / 128.0;
     tensorData[bOffset + i] = (b - 127.5) / 128.0;
@@ -151,53 +260,121 @@ export function extractPlanarTensorFromCanvas(
   return tensorData;
 }
 
-/**
- * Extracts AdaFace IR-101 512-d Float16/Float32 embedding from an aligned face tensor or image source.
- * Output is strictly L2-normalized (||v_hat||_2 = 1.0).
- */
 export async function extractEdgeFaceEmbedding(
   source: Float32Array | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement | OffscreenCanvas,
   landmarks?: Float32Array | number[][],
   options: EdgeFaceOptions = {}
 ): Promise<EdgeFaceResult> {
   const t0 = performance.now();
-  const modelPath = options.modelPath ?? "/models/adaface_ir101_webface12m.onnx";
   const targetSize = options.targetSize ?? 112;
 
-  // 1. Obtain Planar NCHW Float32Array input tensor [1, 3, targetSize, targetSize]
-  let inputTensorData: Float32Array;
+  let rgb: Float32Array;
   if (source instanceof Float32Array) {
-    inputTensorData = source;
+    rgb = source;
   } else if (landmarks) {
-    inputTensorData = align5PointSimilarityTensor(source, landmarks, targetSize);
+    rgb = align5PointSimilarityTensor(source, landmarks, targetSize);
   } else {
-    inputTensorData = extractPlanarTensorFromCanvas(source, targetSize);
+    rgb = extractPlanarTensorFromCanvas(source, targetSize);
   }
 
-  // 2. Obtain ONNX Inference Session
+  if (options.modelPath) {
+    const ran = await runAdafaceOnce(rgb, targetSize, options.modelPath, ADAFACE_EXPLICIT_SESSION_KEY, t0);
+    return {
+      embedding: ran.embedding,
+      latencyMs: ran.latencyMs,
+      providerUsed: ran.providerUsed,
+      variant: variantFromModelPath(options.modelPath),
+    };
+  }
+
+  if (shouldTryInt8(options)) {
+    const int8 = await tryVariant(rgb, targetSize, t0, {
+      path: ADAFACE_INT8_PATH,
+      key: ADAFACE_INT8_SESSION_KEY,
+      variant: "int8",
+      requireDim: true,
+      markFailed: markAdafaceInt8Failed,
+    });
+    if (int8) return int8;
+    if (options.requireFast && options.preferInt8) {
+      throw new Error(fastFailReason ?? "AdaFace INT8 required but unusable");
+    }
+  }
+
+  if (shouldTryFastPath(options)) {
+    const fast = await tryVariant(rgb, targetSize, t0, {
+      path: ADAFACE_FAST_PATH,
+      key: ADAFACE_FAST_SESSION_KEY,
+      variant: ADAFACE_FAST_VARIANT,
+      requireDim: true,
+      markFailed: markAdafaceFastPathFailed,
+    });
+    if (fast) return fast;
+    if (options.requireFast) {
+      throw new Error(fastFailReason ?? "AdaFace fast path required but unusable");
+    }
+  }
+
+  const fp32 = await runAdafaceOnce(rgb, targetSize, ADAFACE_FP32_PATH, ADAFACE_FP32_SESSION_KEY, t0);
+  return {
+    embedding: fp32.embedding,
+    latencyMs: fp32.latencyMs,
+    providerUsed: fp32.providerUsed,
+    variant: "fp32",
+  };
+}
+
+async function tryVariant(
+  rgb: Float32Array,
+  targetSize: number,
+  t0: number,
+  spec: {
+    path: string;
+    key: string;
+    variant: AdafaceVariant;
+    requireDim: boolean;
+    markFailed: (reason: string) => void;
+  },
+): Promise<EdgeFaceResult | null> {
+  try {
+    const ran = await runAdafaceOnce(rgb, targetSize, spec.path, spec.key, t0);
+    if (spec.requireDim && !isUsableAdafaceEmbedding(ran.raw)) {
+      throw new Error(`unusable ${spec.variant} output dim=${ran.raw.length}`);
+    }
+    return {
+      embedding: ran.embedding,
+      latencyMs: ran.latencyMs,
+      providerUsed: ran.providerUsed,
+      variant: spec.variant,
+    };
+  } catch (err) {
+    spec.markFailed(err instanceof Error ? err.message : String(err));
+    await OnnxSessionManager.getInstance().disposeSession(spec.key);
+    return null;
+  }
+}
+
+async function runAdafaceOnce(
+  rgb: Float32Array,
+  targetSize: number,
+  modelPath: string,
+  sessionKey: string,
+  t0: number,
+): Promise<{ embedding: Float32Array; raw: Float32Array; latencyMs: number; providerUsed: string }> {
   const sessionManager = OnnxSessionManager.getInstance();
-  const session = await sessionManager.getSession("edgeface_m", modelPath);
+  const session = await sessionManager.getSession(sessionKey, modelPath);
   const inputName = (session as any).inputNames?.[0] || "input";
   const outputName = (session as any).outputNames?.[0] || "embedding";
 
-  // 3. Create ONNX Tensor & Run Inference
-  // AdaFace expects BGR; the alignment pipeline produces RGB. Swap channels 0 and 2.
-  const chSize = targetSize * targetSize;
-  for (let i = 0; i < chSize; i++) {
-    const tmp = inputTensorData[i];
-    inputTensorData[i] = inputTensorData[2 * chSize + i];
-    inputTensorData[2 * chSize + i] = tmp;
-  }
-  const tensor = new ort.Tensor("float32", inputTensorData, [1, 3, targetSize, targetSize]);
+  const bgr = rgbPlanarToAdafaceBgr(rgb, targetSize);
+  const tensor = new ort.Tensor("float32", bgr, [1, 3, targetSize, targetSize]);
   const { outputMap, latencyMs, providerUsed } = await runInference(session, { [inputName]: tensor });
 
   const rawOutput = outputMap[outputName] || Object.values(outputMap)[0];
   if (!rawOutput || !rawOutput.data) {
-    throw new Error("[EdgeFace] ONNX session returned empty output tensor");
+    throw new Error("[AdaFace] ONNX session returned empty output tensor");
   }
 
-  // 4. Extract raw Float32/Float16 data at the model's native dimension
-  // AdaFace IR-101 emits 512-d; the shipped gallery is enrolled at the same dim.
   const rawData = rawOutput.data as Float32Array | Uint16Array;
   const outLen = Math.max(1, rawData.length);
   const rawArray = new Float32Array(outLen);
@@ -207,18 +384,16 @@ export async function extractEdgeFaceEmbedding(
       rawArray[i] = rawData[i] ?? 0;
     }
   } else {
-    // Decode Float16 (stored in Uint16Array) to Float32 if required by WebGPU EP
     for (let i = 0; i < outLen; i++) {
       rawArray[i] = decodeFloat16(rawData[i]!);
     }
   }
 
-  // 5. Apply L2 Normalization v_hat = v / ||v||_2
   const embedding = normalizeL2(rawArray);
   const totalLatencyMs = Math.round(performance.now() - t0);
-
   return {
     embedding,
+    raw: rawArray,
     latencyMs: totalLatencyMs > 0 ? totalLatencyMs : Math.round(latencyMs),
     providerUsed,
   };
@@ -234,7 +409,6 @@ export function resolveEdgeFaceInputTensor(
   return extractPlanarTensorFromCanvas(source, targetSize);
 }
 
-/** Horizontal flip of a planar NCHW [1,3,S,S] tensor. */
 export function hflipAlignedNchw(tensor: Float32Array, size = 112): Float32Array {
   const out = new Float32Array(tensor.length);
   const plane = size * size;
@@ -301,10 +475,6 @@ export function applyQueryTtaView(
   }
 }
 
-/**
- * EdgeFace embed with optional query TTA on the aligned 112 tensor.
- * Identity runs first so the EP can be probed; wasm/cpu skip the extra views.
- */
 export async function extractEdgeFaceEmbeddingWithTta(
   source: Float32Array | HTMLCanvasElement | HTMLImageElement | HTMLVideoElement | OffscreenCanvas,
   landmarks?: Float32Array | number[][],
@@ -334,6 +504,7 @@ export async function extractEdgeFaceEmbeddingWithTta(
     embedding: computeCentroidEmbedding(embeddings),
     latencyMs,
     providerUsed,
+    variant: identity.variant,
     ttaApplied: true,
     ttaViews: embeddings.length,
   };

@@ -11,6 +11,7 @@
     "build": "node scripts/ensure-face-model.mjs && node scripts/copy-ort-assets.mjs && vite build && node scripts/post-build-patch.mjs && npm run db:migrate",
     "copy:ort": "node scripts/copy-ort-assets.mjs",
     "model:ensure": "node scripts/ensure-face-model.mjs",
+    "probe:embed": "node scripts/probe-embed-latency.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",

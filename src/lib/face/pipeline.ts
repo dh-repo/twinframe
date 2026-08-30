@@ -28,7 +28,11 @@ import { loadGalleryFeatures } from "../celebrities/load-gallery-features.ts";
 import { detectSCRFD } from "./scrfd.ts";
 import { runExpNormFrontalizationWGSL } from "./exp-norm-wgsl.ts";
 import { align5PointSimilarityTensor } from "./similarity-transform.ts";
-import { extractEdgeFaceEmbeddingWithTta } from "./edgeface.ts";
+import {
+  extractEdgeFaceEmbeddingWithTta,
+  prefetchAdafaceFastPath,
+  type AdafaceVariant,
+} from "./edgeface.ts";
 import { computeBiohash } from "./biohash.ts";
 import { detectionFromAccuFace, pipelineLog, sourceDimensions, unpadScrfdDetections } from "./accuface-detection.ts";
 import {
@@ -64,6 +68,7 @@ export type FaceAnalyzeSource =
 export function prefetchModel(): void {
   if (typeof window === "undefined") return;
   prefetchEmbeddings();
+  void prefetchAdafaceFastPath();
   void loadGalleryFeatures();
   void loadAppearanceFamilies();
   // The legacy engine (~320KB gz with tfjs) must not compete with first paint;
@@ -146,6 +151,7 @@ interface QueryEmbedPass {
   embeddingPassMs: number;
   ttaApplied: boolean;
   ttaViews: number;
+  embedderVariant: AdafaceVariant | null;
 }
 
 /**
@@ -230,24 +236,27 @@ async function runDetectAlignEmbed(
   let embeddingPassMs = 0;
   let ttaApplied = false;
   let ttaViews = 0;
+  let embedderVariant: AdafaceVariant | null = null;
 
   try {
     pipelineLog("edgeface:start", { hasAlignedTensor: Boolean(alignedTensor) });
     const efRes = await withTimeout(
       extractEdgeFaceEmbeddingWithTta(alignedTensor ?? source, scrfdResult?.primary?.landmarks),
       EDGEFACE_EMBED_TIMEOUT_MS,
-      "EdgeFace embedding extraction",
+      "AdaFace embedding extraction",
     );
     edgeFaceEmbedding = efRes.embedding;
     embeddingPassMs = efRes.latencyMs;
     ttaApplied = efRes.ttaApplied;
     ttaViews = efRes.ttaViews;
+    embedderVariant = efRes.variant;
     pipelineLog("edgeface:done", {
       ms: embeddingPassMs,
       dim: edgeFaceEmbedding.length,
       ttaApplied,
       ttaViews,
       provider: efRes.providerUsed,
+      variant: efRes.variant,
     });
   } catch (err) {
     console.warn("[Pipeline] AdaFace embedding failed; falling back:", err);
@@ -268,6 +277,7 @@ async function runDetectAlignEmbed(
     embeddingPassMs,
     ttaApplied,
     ttaViews,
+    embedderVariant,
   };
 }
 
@@ -429,6 +439,7 @@ async function completeQueryAnalysis(
       primary,
       latencies: accufaceLatencies,
       frontalizationMethod,
+      embedderVariant: pass.embedderVariant,
     });
   } else {
     pipelineLog("faceapi:fallback", {
@@ -468,6 +479,9 @@ async function completeQueryAnalysis(
         det.telemetry.estimatedPitch = scrfdResult.primary.pose.pitch;
         det.telemetry.estimatedRoll = scrfdResult.primary.pose.roll;
         det.telemetry.smileIntensity = scrfdResult.primary.smile?.smileIntensity;
+      }
+      if (pass.embedderVariant) {
+        det.telemetry.embedderVariant = pass.embedderVariant;
       }
     }
   }
