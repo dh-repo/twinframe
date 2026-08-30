@@ -439,7 +439,7 @@ async function completeQueryAnalysis(
       primary,
       latencies: accufaceLatencies,
       frontalizationMethod,
-      embedderVariant: pass.embedderVariant,
+      embedderVariant: pass.embedderVariant ?? undefined,
     });
   } else {
     pipelineLog("faceapi:fallback", {
