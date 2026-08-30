@@ -1,0 +1,467 @@
+{
+  "at": "2026-08-30T06:00:35.848Z",
+  "protocol": "held-out-v2.1-leak-excluded-fp16-session",
+  "provider": "onnxruntime-node-cpu",
+  "note": "Same leak-excluded photos, same aligned 112 tensor, FP16 vs fp32 AdaFace IR-101. Gallery binaries were not rewritten. CPU node is a ranking proof, not a browser-WASM latency claim.",
+  "ciFloorPct": 75,
+  "limit": 48,
+  "subsetSelected": 192,
+  "photosOnDisk": 48,
+  "detectMiss": 0,
+  "n": 48,
+  "gallerySize": 1024,
+  "loadMs": 700.7581790000004,
+  "elapsedMs": 35519,
+  "cosine": {
+    "n": 48,
+    "mean": 0.9999991158675949,
+    "min": 0.9999958002039732
+  },
+  "fp16": {
+    "n": 48,
+    "rank1Pct": 85.41666666666666,
+    "rank5Pct": 87.5,
+    "mrr": 0.8645833333333334
+  },
+  "fp32Paired": {
+    "n": 48,
+    "rank1Pct": 85.41666666666666,
+    "rank5Pct": 87.5,
+    "mrr": 0.8645833333333334
+  },
+  "rank1DropPct": 0,
+  "probes": [
+    {
+      "id": "aaron-taylor-johnson",
+      "source": "/celebs/held-out/aaron-taylor-johnson/001.jpg",
+      "cosine": 0.9999991760735855,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "aaron-taylor-johnson",
+      "top1Fp32": "aaron-taylor-johnson"
+    },
+    {
+      "id": "adam-driver",
+      "source": "/celebs/held-out/adam-driver/001.jpg",
+      "cosine": 0.9999993361863186,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "adam-driver",
+      "top1Fp32": "adam-driver"
+    },
+    {
+      "id": "adele",
+      "source": "/celebs/held-out/adele/001.jpg",
+      "cosine": 0.9999987182072818,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "adele",
+      "top1Fp32": "adele"
+    },
+    {
+      "id": "adriana-lima",
+      "source": "/celebs/held-out/adriana-lima/001.jpg",
+      "cosine": 0.9999992637318168,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "adriana-lima",
+      "top1Fp32": "adriana-lima"
+    },
+    {
+      "id": "alexander-skarsgard",
+      "source": "/celebs/held-out/alexander-skarsgard/001.jpg",
+      "cosine": 0.9999995419121296,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "alexander-skarsgard",
+      "top1Fp32": "alexander-skarsgard"
+    },
+    {
+      "id": "alia-bhatt",
+      "source": "/celebs/held-out/alia-bhatt/001.jpg",
+      "cosine": 0.9999995464202183,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "alia-bhatt",
+      "top1Fp32": "alia-bhatt"
+    },
+    {
+      "id": "alicia-vikander",
+      "source": "/celebs/held-out/alicia-vikander/001.jpg",
+      "cosine": 0.9999994969524036,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "alicia-vikander",
+      "top1Fp32": "alicia-vikander"
+    },
+    {
+      "id": "amy-adams",
+      "source": "/celebs/held-out/amy-adams/001.jpg",
+      "cosine": 0.9999994811546536,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "amy-adams",
+      "top1Fp32": "amy-adams"
+    },
+    {
+      "id": "ana-de-armas",
+      "source": "/celebs/held-out/ana-de-armas/001.jpg",
+      "cosine": 0.9999992293755937,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "ana-de-armas",
+      "top1Fp32": "ana-de-armas"
+    },
+    {
+      "id": "andrew-garfield",
+      "source": "/celebs/held-out/andrew-garfield/001.jpg",
+      "cosine": 0.9999993921903891,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "andrew-garfield",
+      "top1Fp32": "andrew-garfield"
+    },
+    {
+      "id": "andrew-scott",
+      "source": "/celebs/held-out/andrew-scott/001.jpg",
+      "cosine": 0.9999994535229809,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "andrew-scott",
+      "top1Fp32": "andrew-scott"
+    },
+    {
+      "id": "angela-bassett",
+      "source": "/celebs/held-out/angela-bassett/001.jpg",
+      "cosine": 0.999999549340345,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "angela-bassett",
+      "top1Fp32": "angela-bassett"
+    },
+    {
+      "id": "angelina-jolie",
+      "source": "/celebs/held-out/angelina-jolie/001.jpg",
+      "cosine": 0.9999995986135196,
+      "rankFp16": null,
+      "rankFp32": null,
+      "top1Fp16": "",
+      "top1Fp32": ""
+    },
+    {
+      "id": "anna-sawai",
+      "source": "/celebs/held-out/anna-sawai/001.jpg",
+      "cosine": 0.9999991914763611,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "anna-sawai",
+      "top1Fp32": "anna-sawai"
+    },
+    {
+      "id": "anthony-hopkins",
+      "source": "/celebs/held-out/anthony-hopkins/001.jpg",
+      "cosine": 0.9999993494787827,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "anthony-hopkins",
+      "top1Fp32": "anthony-hopkins"
+    },
+    {
+      "id": "antonio-banderas",
+      "source": "/celebs/held-out/antonio-banderas/001.jpg",
+      "cosine": 0.9999985200435577,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "antonio-banderas",
+      "top1Fp32": "antonio-banderas"
+    },
+    {
+      "id": "anya-taylor-joy",
+      "source": "/celebs/held-out/anya-taylor-joy/001.jpg",
+      "cosine": 0.9999958002039732,
+      "rankFp16": null,
+      "rankFp32": null,
+      "top1Fp16": "tristan-jensen",
+      "top1Fp32": "tristan-jensen"
+    },
+    {
+      "id": "ariana-grande",
+      "source": "/celebs/held-out/ariana-grande/001.jpg",
+      "cosine": 0.9999987148219434,
+      "rankFp16": 2,
+      "rankFp32": 2,
+      "top1Fp16": "janina-gavankar",
+      "top1Fp32": "janina-gavankar"
+    },
+    {
+      "id": "austin-butler",
+      "source": "/celebs/held-out/austin-butler/001.jpg",
+      "cosine": 0.999999442396427,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "austin-butler",
+      "top1Fp32": "austin-butler"
+    },
+    {
+      "id": "awkwafina",
+      "source": "/celebs/held-out/awkwafina/001.jpg",
+      "cosine": 0.9999994983462829,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "awkwafina",
+      "top1Fp32": "awkwafina"
+    },
+    {
+      "id": "bad-bunny",
+      "source": "/celebs/held-out/bad-bunny/001.jpg",
+      "cosine": 0.9999987079988588,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "bad-bunny",
+      "top1Fp32": "bad-bunny"
+    },
+    {
+      "id": "barack-obama",
+      "source": "/celebs/held-out/barack-obama/001.jpg",
+      "cosine": 0.9999996622222406,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "barack-obama",
+      "top1Fp32": "barack-obama"
+    },
+    {
+      "id": "bella-hadid",
+      "source": "/celebs/held-out/bella-hadid/001.jpg",
+      "cosine": 0.999999054326417,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "bella-hadid",
+      "top1Fp32": "bella-hadid"
+    },
+    {
+      "id": "benedict-cumberbatch",
+      "source": "/celebs/held-out/benedict-cumberbatch/001.jpg",
+      "cosine": 0.9999993363729526,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "benedict-cumberbatch",
+      "top1Fp32": "benedict-cumberbatch"
+    },
+    {
+      "id": "beyonce",
+      "source": "/celebs/held-out/beyonce/001.jpg",
+      "cosine": 0.9999988302040765,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "beyonce",
+      "top1Fp32": "beyonce"
+    },
+    {
+      "id": "billie-eilish",
+      "source": "/celebs/held-out/billie-eilish/001.jpg",
+      "cosine": 0.999998734976353,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "billie-eilish",
+      "top1Fp32": "billie-eilish"
+    },
+    {
+      "id": "brad-pitt",
+      "source": "/celebs/held-out/brad-pitt/001.jpg",
+      "cosine": 0.999999198855559,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "brad-pitt",
+      "top1Fp32": "brad-pitt"
+    },
+    {
+      "id": "bradley-cooper",
+      "source": "/celebs/held-out/bradley-cooper/001.jpg",
+      "cosine": 0.9999995300684188,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "bradley-cooper",
+      "top1Fp32": "bradley-cooper"
+    },
+    {
+      "id": "britney-spears",
+      "source": "/celebs/held-out/britney-spears/001.jpg",
+      "cosine": 0.9999993068142385,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "britney-spears",
+      "top1Fp32": "britney-spears"
+    },
+    {
+      "id": "cardi-b",
+      "source": "/celebs/held-out/cardi-b/001.jpg",
+      "cosine": 0.9999993357280998,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "cardi-b",
+      "top1Fp32": "cardi-b"
+    },
+    {
+      "id": "cate-blanchett",
+      "source": "/celebs/held-out/cate-blanchett/001.jpg",
+      "cosine": 0.9999994364558071,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "cate-blanchett",
+      "top1Fp32": "cate-blanchett"
+    },
+    {
+      "id": "chadwick-boseman",
+      "source": "/celebs/held-out/chadwick-boseman/001.jpg",
+      "cosine": 0.9999990284456326,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "chadwick-boseman",
+      "top1Fp32": "chadwick-boseman"
+    },
+    {
+      "id": "channing-tatum",
+      "source": "/celebs/held-out/channing-tatum/001.jpg",
+      "cosine": 0.999999248472233,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "channing-tatum",
+      "top1Fp32": "channing-tatum"
+    },
+    {
+      "id": "charlize-theron",
+      "source": "/celebs/held-out/charlize-theron/001.jpg",
+      "cosine": 0.9999993802885208,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "charlize-theron",
+      "top1Fp32": "charlize-theron"
+    },
+    {
+      "id": "chloe-grace-moretz",
+      "source": "/celebs/held-out/chloe-grace-moretz/001.jpg",
+      "cosine": 0.9999996066300596,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "chloe-grace-moretz",
+      "top1Fp32": "chloe-grace-moretz"
+    },
+    {
+      "id": "chris-evans",
+      "source": "/celebs/held-out/chris-evans/001.jpg",
+      "cosine": 0.9999991085148329,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "chris-evans",
+      "top1Fp32": "chris-evans"
+    },
+    {
+      "id": "chris-hemsworth",
+      "source": "/celebs/held-out/chris-hemsworth/001.jpg",
+      "cosine": 0.999999449689977,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "chris-hemsworth",
+      "top1Fp32": "chris-hemsworth"
+    },
+    {
+      "id": "cillian-murphy",
+      "source": "/celebs/held-out/cillian-murphy/001.jpg",
+      "cosine": 0.9999995072433937,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "cillian-murphy",
+      "top1Fp32": "cillian-murphy"
+    },
+    {
+      "id": "cole-sprouse",
+      "source": "/celebs/held-out/cole-sprouse/001.jpg",
+      "cosine": 0.9999993729575853,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "cole-sprouse",
+      "top1Fp32": "cole-sprouse"
+    },
+    {
+      "id": "cristiano-ronaldo",
+      "source": "/celebs/held-out/cristiano-ronaldo/001.jpg",
+      "cosine": 0.9999990991854445,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "cristiano-ronaldo",
+      "top1Fp32": "cristiano-ronaldo"
+    },
+    {
+      "id": "daniel-craig",
+      "source": "/celebs/held-out/daniel-craig/001.jpg",
+      "cosine": 0.9999995125898793,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "daniel-craig",
+      "top1Fp32": "daniel-craig"
+    },
+    {
+      "id": "deepika-padukone",
+      "source": "/celebs/held-out/deepika-padukone/001.jpg",
+      "cosine": 0.9999994810414129,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "deepika-padukone",
+      "top1Fp32": "deepika-padukone"
+    },
+    {
+      "id": "denzel-washington",
+      "source": "/celebs/held-out/denzel-washington/001.jpg",
+      "cosine": 0.9999993403691327,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "denzel-washington",
+      "top1Fp32": "denzel-washington"
+    },
+    {
+      "id": "dev-patel",
+      "source": "/celebs/held-out/dev-patel/001.jpg",
+      "cosine": 0.9999990029913309,
+      "rankFp16": 1,
+      "rankFp32": 1,
+      "top1Fp16": "dev-patel",
+      "top1Fp32": "dev-patel"
+    },
+    {
+      "id": "doja-cat",
+      "source": "/celebs/held-out/doja-cat/001.jpg",
+      "cosine": 0.9999981936306362,
+      "rankFp16": null,
+      "rankFp32": null,
+      "top1Fp16": "",
+      "top1Fp32": ""
+    },
+    {
+      "id": "donald-glover",
+      "source": "/celebs/held-out/donald-glover/001.jpg",
+      "cosine": 0.9999971031671798,
+      "rankFp16": null,
+      "rankFp32": null,
+      "top1Fp16": "",
+      "top1Fp32": ""
+    },
+    {
+      "id": "donnie-yen",
+      "source": "/celebs/held-out/donnie-yen/001.jpg",
+      "cosine": 0.999998249082908,
+      "rankFp16": null,
+      "rankFp32": null,
+      "top1Fp16": "",
+      "top1Fp32": ""
+    },
+    {
+      "id": "drake",
+      "source": "/celebs/held-out/drake/001.jpg",
+      "cosine": 0.9999994428727972,
+      "rankFp16": null,
+      "rankFp32": null,
+      "top1Fp16": "",
+      "top1Fp32": ""
+    }
+  ]
+}

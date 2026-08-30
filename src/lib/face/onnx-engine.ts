@@ -77,9 +77,22 @@ export function isModelKnownUnavailable(modelPath: string): boolean {
   return unavailableModelUrls.has(modelPath);
 }
 
+export function markModelUrlUnavailable(modelPath: string): void {
+  unavailableModelUrls.add(modelPath);
+}
+
 /** Test-only reset for the negative model cache. */
 export function resetUnavailableModelCache(): void {
   unavailableModelUrls.clear();
+}
+
+export async function prefetchModelUrl(modelPath: string): Promise<boolean> {
+  try {
+    await assertModelUrlAvailable(modelPath);
+    return !unavailableModelUrls.has(modelPath);
+  } catch {
+    return false;
+  }
 }
 
 async function assertModelUrlAvailable(modelPath: string): Promise<void> {
@@ -166,6 +179,7 @@ export async function runInference(
 export class OnnxSessionManager {
   private static instance: OnnxSessionManager;
   private sessions: Map<string, ort.InferenceSession> = new Map();
+  private inflight: Map<string, Promise<ort.InferenceSession>> = new Map();
 
   public static getInstance(): OnnxSessionManager {
     if (!OnnxSessionManager.instance) {
@@ -174,20 +188,40 @@ export class OnnxSessionManager {
     return OnnxSessionManager.instance;
   }
 
+  public hasSession(key: string): boolean {
+    return this.sessions.has(key);
+  }
+
+  public sessionCount(): number {
+    return this.sessions.size;
+  }
+
   public async getSession(
     key: string,
     modelPathOrBuffer: string | ArrayBuffer | Uint8Array,
     options?: ort.InferenceSession.SessionOptions
   ): Promise<ort.InferenceSession> {
-    if (this.sessions.has(key)) {
-      return this.sessions.get(key)!;
-    }
-    const session = await createInferenceSession(modelPathOrBuffer, options);
-    this.sessions.set(key, session);
-    return session;
+    const cached = this.sessions.get(key);
+    if (cached) return cached;
+    const pending = this.inflight.get(key);
+    if (pending) return pending;
+    const created = createInferenceSession(modelPathOrBuffer, options).then(
+      (session) => {
+        this.sessions.set(key, session);
+        this.inflight.delete(key);
+        return session;
+      },
+      (err) => {
+        this.inflight.delete(key);
+        throw err;
+      },
+    );
+    this.inflight.set(key, created);
+    return created;
   }
 
   public async disposeSession(key: string): Promise<void> {
+    this.inflight.delete(key);
     const session = this.sessions.get(key);
     if (session) {
       try {
@@ -200,6 +234,7 @@ export class OnnxSessionManager {
   }
 
   public async disposeAll(): Promise<void> {
+    this.inflight.clear();
     for (const [, session] of this.sessions.entries()) {
       try {
         await session.release();

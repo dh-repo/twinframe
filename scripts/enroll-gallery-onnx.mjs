@@ -48,7 +48,9 @@ const ONLY_IDS = new Set(
 );
 
 const ADAFACE_PATH = path.join(ROOT, "public/models/adaface_ir101_webface12m.onnx");
+const ADAFACE_FP16_PATH = path.join(ROOT, "public/models/adaface_ir101_webface12m.fp16.onnx");
 const ADAFACE_MIN_BYTES = 50 * 1024 * 1024;
+const ADAFACE_FP16_MIN_BYTES = 20 * 1024 * 1024;
 
 export function adafaceModelReady(modelPath = ADAFACE_PATH, minBytes = ADAFACE_MIN_BYTES) {
   try {
@@ -58,22 +60,38 @@ export function adafaceModelReady(modelPath = ADAFACE_PATH, minBytes = ADAFACE_M
   }
 }
 
+export function adafaceFp16Ready(modelPath = ADAFACE_FP16_PATH, minBytes = ADAFACE_FP16_MIN_BYTES) {
+  return adafaceModelReady(modelPath, minBytes);
+}
+
+/** @type {Promise<{ ort: typeof import("onnxruntime-web"), scrfdSession: any }> | null} */
+let scrfdPromise = null;
 /** @type {Promise<{ ort: typeof import("onnxruntime-web"), scrfdSession: any, embedSession: any, embedKind: "adaface" | "edgeface" }> | null} */
 let sessionsPromise = null;
+
+export function ensureScrfdSession() {
+  if (!scrfdPromise) scrfdPromise = loadScrfd();
+  return scrfdPromise;
+}
 
 export function ensureSessions() {
   if (!sessionsPromise) sessionsPromise = loadSessions();
   return sessionsPromise;
 }
 
-async function loadSessions() {
-  // Parent enroll/calibrate stay model-free; only embed workers load ORT.
+async function loadScrfd() {
   const ort = await import("onnxruntime-web");
   ort.env.wasm.numThreads = 1;
   const scrfdSession = await ort.InferenceSession.create(
     new Uint8Array(fs.readFileSync(path.join(ROOT, "public/models/scrfd_2.5g.onnx"))),
     { executionProviders: ["wasm"] },
   );
+  return { ort, scrfdSession };
+}
+
+async function loadSessions() {
+  // Parent enroll/calibrate stay model-free; only embed workers load ORT.
+  const { ort, scrfdSession } = await ensureScrfdSession();
   const useAda = adafaceModelReady();
   const embedPath = useAda ? ADAFACE_PATH : path.join(ROOT, "public/models/edgeface_m.onnx");
   const embedSession = await ort.InferenceSession.create(new Uint8Array(fs.readFileSync(embedPath)), {
@@ -108,7 +126,7 @@ function imageToLetterboxTensor(img) {
 }
 
 async function detectFaces(img, scoreThreshold = 0.4) {
-  const { ort, scrfdSession } = await ensureSessions();
+  const { ort, scrfdSession } = await ensureScrfdSession();
   const { data, scale, padX, padY, origW, origH } = imageToLetterboxTensor(img);
   const tensor = new ort.Tensor("float32", data, [1, 3, 640, 640]);
   const outputMap = await scrfdSession.run({ [scrfdSession.inputNames[0]]: tensor });
@@ -283,14 +301,13 @@ export async function productCropImageFile(filePath, outPath) {
   };
 }
 
-export async function embedImageFile(filePath) {
+export async function detectAndAlignImageFile(filePath) {
   const img = await loadImage(filePath);
   let faces = await detectFaces(img);
   let alignSource = img;
   let offset = 0;
 
   if (faces.length === 0) {
-    // Tight crops (192px thumbs) can fill the letterbox; retry with margin.
     const { canvas, margin } = padImage(img);
     faces = await detectFaces(canvas);
     alignSource = canvas;
@@ -301,14 +318,19 @@ export async function embedImageFile(filePath) {
   const tensor = usedDetection
     ? alignTensor(alignSource, faces[0].landmarks)
     : wholeCropTensor(img);
-  const emb = await embed(tensor);
   return {
-    ...emb,
+    tensor,
     usedDetection,
     padded: offset > 0 && usedDetection,
     faceCount: faces.length,
     score: faces[0]?.score ?? 0,
   };
+}
+
+export async function embedImageFile(filePath) {
+  const aligned = await detectAndAlignImageFile(filePath);
+  const emb = await embed(aligned.tensor);
+  return { ...emb, ...aligned };
 }
 
 /** Enrolled primaries straight from the shipping binary — no re-enroll needed. */

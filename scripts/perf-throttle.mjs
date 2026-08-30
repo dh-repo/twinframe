@@ -8,7 +8,10 @@
  * Per-rate budget scales as BUDGET_BASE_MS * rate (default base 20000): slower
  * is expected at higher throttle and on weaker hardware, so one flat number
  * cannot serve both a Mac Studio and 2-core CI runners. Measured 2026-08:
- * ~4.5s at 1x / ~14s at 4x on 2-core CI; ~2.4s/3.9s locally. The gate catches
+ * ~4.5s at 1x / ~14s at 4x on 2-core CI; ~2.4s/3.9s locally. The live embedder
+ * is AdaFace IR-101 FP16 (~124MB, ~3.7× CPU vs fp32 on node); full-graph INT8
+ * PTQ is parked (mean cosine 0.58–0.75 vs fp32). The 20s/rate budget stays —
+ * it still has to cover SCRFD + ranking, not just the embed. The gate catches
  * gross regressions (model reload loops, accidental sync work), not hardware.
  */
 import path from "node:path";

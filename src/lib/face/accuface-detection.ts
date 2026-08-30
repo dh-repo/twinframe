@@ -201,6 +201,7 @@ export function detectionFromAccuFace(args: {
   primary: SCRFDDetectionResult;
   latencies: FaceStageLatencies;
   frontalizationMethod: NonNullable<FaceTelemetry["frontalizationMethod"]>;
+  embedderVariant?: FaceTelemetry["embedderVariant"];
 }): FaceDetectionResult {
   const { w, h } = sourceDimensions(args.source);
   const srcW = Math.max(1, w);
@@ -248,6 +249,7 @@ export function detectionFromAccuFace(args: {
     estimatedPitch: args.primary.pose.pitch,
     estimatedRoll: args.primary.pose.roll,
     smileIntensity: args.primary.smile?.smileIntensity,
+    embedderVariant: args.embedderVariant,
   };
 
   return {
